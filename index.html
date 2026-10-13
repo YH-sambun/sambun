@@ -1292,7 +1292,7 @@ const NOTICES=[
   '레이드: 결투장 탭 → 레이드. 3일마다 새 적 3명(Lv40 · 돌파 5 · 보물 +50, 체력 20배)이 나타나요. 내 진형으로 10턴 싸워 준 피해가 모두의 게이지에 쌓이고, 하루 3회 도전할 수 있어요.',
   '레이드 보상: 게이지 25%(군량 3,000) · 50%(보물 획득권 10) · 75%(금 30,000) · 100%(보물 획득권 30). 그 회차에 1번 이상 도전한 군주 모두가 받고, 기여 1~3위는 회차가 끝난 뒤 추가 보상을 받아요. 보상은 다음 회차가 끝날 때까지 받을 수 있어요.',
   '보물 도감: 보물마다 +0(보유)·+10·+25·+50에 처음 도달하면 영구 등록되고 모든 장수가 강해져요. 판매해도 등록은 남아요. 세트 16종을 완성하면 추가 효과. 결투장에도 적용돼요. 지금 가진 보물은 자동으로 등록됐어요.',
-  '연습장: 결투장 탭 → 연습장. 모든 장수와 보물로 공격덱·NPC 방어덱을 3개씩 따로 저장하고, 전투 보기와 100판 승률로 조합을 시험할 수 있어요.',
+  '연습장: 결투장 탭 → 연습장. 모든 장수와 보물로 공격덱·NPC 방어덱을 3개씩 따로 저장하고, 전투 보기와 100판 승률로 조합을 시험할 수 있어요. 공격덱의 \'내 진형에 적용\'을 누르면 보유한 장수와 보물을 같은 배치로 내 진형에 옮겨요.',
   '속도가 같은 장수끼리는 이제 매 턴 무작위로 행동 순서를 정해요(이전에는 항상 공격 쪽이 먼저).']},
  {v:'1.13.0',date:'2026-10-13',title:'새 장수 초선·손견·축융 · 쿠폰 · 금화 룰렛',reward:{ap:20},items:[
   '새 장수: ★5 초선(군웅 책사, 미인계), ★5 손견(오 보병, 강동의 호랑이), ★4 축융(군웅 궁병, 비도).',
@@ -1487,7 +1487,7 @@ const HELP=[
   ['도발','도발 중인 장수가 있으면 상대의 단일 대상 공격이 그 장수에게 향해요.'],
   ['행동 순서','속도가 빠른 장수부터 행동해요. 속도가 같으면 매 턴 무작위로 순서를 정해요.'],
   ['판정','25턴 안에 결판이 나지 않으면 남은 체력 비율이 높은 쪽이 이겨요.'],
-  ['연습장','결투장 탭의 연습장에서 모든 장수(Lv40 · 돌파 5)와 모든 보물(+1·+25·+50)로 공격덱·NPC 방어덱을 3개씩 저장해 시험할 수 있어요. 보상·기록은 없고 보물 도감 효과는 빠져요.']]},
+  ['연습장','결투장 탭의 연습장에서 모든 장수(Lv40 · 돌파 5)와 모든 보물(+1·+25·+50)로 공격덱·NPC 방어덱을 3개씩 저장해 시험할 수 있어요. 보상·기록은 없고 보물 도감 효과는 빠져요. 공격덱의 [내 진형에 적용]으로 보유한 장수·보물을 같은 배치로 내 진형에 옮길 수 있어요.']]},
  {t:'진형 효과',rows:[
   ['진영 보너스','같은 진영의 ★3 이상 장수가 3·4·5명이면 그 진영 장수가 강해져요. 도감의 인연 탭에 전체 표가 있어요.'],
   ['인연','함께 편성하면 해당 장수들의 능력치가 올라요. 진형 탭에서 발동 중인 인연을 볼 수 있어요.'],
@@ -2082,7 +2082,7 @@ function labBoxHtml(side){
    <div class="chips" role="group" aria-label="보물 강화"><span class="flab">보물 강화</span>${LAB_PLUS.map(p=>`<button type="button" data-labp="${side}:${p}" aria-pressed="${D.p===p}">+${p}</button>`).join('')}</div>
    ${teamBoxHtml(specs,1)}
    ${D.s.map((_,i)=>labSlotHtml(side,D,specs,i)).join('')}
-   <div class="row" style="gap:6px;flex-wrap:wrap"><button type="button" class="btn ghost sm" data-labfill="${side}">무작위 편성</button><button type="button" class="btn ghost sm" data-labcopy="${side}">내 진형 복사</button><span class="sp"></span><button type="button" class="btn ghost sm" data-labclear="${side}">비우기</button></div></div>`;
+   <div class="row" style="gap:6px;flex-wrap:wrap"><button type="button" class="btn ghost sm" data-labfill="${side}">무작위 편성</button><button type="button" class="btn ghost sm" data-labcopy="${side}">내 진형 복사</button>${side==='atk'?`<button type="button" class="btn ghost sm" data-labapply>내 진형에 적용</button>`:''}<span class="sp"></span><button type="button" class="btn ghost sm" data-labclear="${side}">비우기</button></div></div>`;
 }
 function vLab(){
   const A=labCur('atk'), B=labCur('def'), ok=A.s.some(Boolean)&&B.s.some(Boolean);
@@ -2253,6 +2253,31 @@ document.addEventListener('click',async e=>{
   const nst=raidStats(c);
   playBattle(res,`레이드 제${c+1}회`,'내 진형','레이드 보스',()=>`<div class="stats" style="grid-template-columns:1fr 1fr;margin:8px 0"><div class="stat"><small>이번에 준 피해</small><b>${fmt(dmg)}</b></div><div class="stat"><small>공동 게이지</small><b>${(Math.min(1,nst.tot/RAID_HP)*100).toFixed(1)}%</b></div></div><p class="sub">오늘 남은 도전 ${raidLeft(nst)}/${RAID_DAILY}회</p>`,{verdict:{stamp:'討',lab:'토벌 종료'}});
 });
+// 연습장 공격덱 → 내 진형(스테이지·결투장): 보유한 장수와 보물만 같은 자리·같은 배치로 옮겨요
+function labApplyPlan(){
+  const D=labCur('atk');
+  return D.s.map((x,i)=>{if(!x)return {i};const own=!!S.gens[x.g];return {i,x,own,its:x.i.map(k=>{const it=S.items.find(y=>y.k===k);return {k,it,h:it?itemHolder(it.u):null}})}});
+}
+function openLabApply(){
+  const P=labApplyPlan(), ok=P.some(r=>r.x&&r.own);
+  const miss=P.filter(r=>r.x&&!r.own).length+P.reduce((a,r)=>a+(r.own?r.its.filter(o=>!o.it).length:0),0);
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">내 진형에 적용</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub" style="margin:0 0 10px">${esc(labCur('atk').n)}의 장수 자리와 보물 배치를 내 진형(스테이지·결투장 방어)에 옮겨요. 레벨·돌파·보물 강화 수치는 내 것 그대로이고, 다른 장수가 끼고 있던 보물은 옮겨 와요.${miss?' 보유하지 않은 장수·보물은 빠져요.':''}</p>
+   <div class="list">${P.map(r=>{const pos=`<div class="pos">${r.i+1}<small>${POS[r.i]}</small></div>`;
+     if(!r.x)return `<div class="slot empty">${pos}<div class="info"><b>빈 자리</b></div></div>`;
+     const g=GMAP[r.x.g];
+     return `<div class="slot" style="${r.own?'':'opacity:.5'}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)}${r.own?` <span class="sub" style="font-size:12px">Lv ${S.gens[r.x.g].lv}</span>`:' · 미보유 (빈 자리)'}</b>
+      ${r.own?`<span>${r.its.length?r.its.map(o=>{const it=IMAP[o.k];return o.it?`${esc(it.name)}${o.it.d?' +'+o.it.d:''}${o.h&&o.h!==r.x.g?` (${esc(GMAP[o.h].name)}에게서)`:''}`:`<s>${esc(it.name)}</s> 미보유`}).join(' · '):'보물 없음'}</span>`:''}</div></div>`}).join('')}</div>
+   <div class="row" style="margin-top:14px;gap:8px"><button type="button" class="btn ghost" data-close>취소</button><button type="button" class="btn red" style="flex:1" id="lab-apply-yes" ${ok?'':'disabled'}>${ok?'내 진형에 적용':'보유한 장수가 없어요'}</button></div>`);
+  const y=$('#lab-apply-yes');if(y)y.onclick=()=>{
+    const nd=[null,null,null,null,null];let moved=0;
+    for(const r of labApplyPlan()){if(!r.x||!r.own)continue;nd[r.i]=r.x.g;const us=[];
+      for(const o of r.its){if(!o.it)continue;const h=itemHolder(o.it.u);if(h&&h!==r.x.g){S.gens[h].its=S.gens[h].its.filter(u=>u!==o.it.u);moved++}us.push(o.it.u)}
+      S.gens[r.x.g].its=us.slice(0,ITEM_SLOTS)}
+    S.deck=nd;save();closeSheet();renderTop();renderView();toast(`내 진형에 적용했어요 · 장수 ${nd.filter(Boolean).length}명${moved?` · 보물 ${moved}개 옮김`:''}`);
+  };
+}
+document.addEventListener('click',e=>{if(e.target.closest('[data-labapply]'))openLabApply()});
 function pvpSegHtml(){return `<div class="seg" role="group" aria-label="결투장 메뉴"><button type="button" data-pvpm="duel" aria-pressed="${pvpMode==='duel'}">결투장</button><button type="button" data-pvpm="raid" aria-pressed="${pvpMode==='raid'}">레이드</button><button type="button" data-pvpm="lab" aria-pressed="${pvpMode==='lab'}">연습장</button></div>`}
 function vPvp(){
   const myP=deckPower(mySpecs());
