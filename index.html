@@ -180,7 +180,7 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 .bt-log{flex:1;min-height:90px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;gap:4px}
 .bt-log .sk{font-family:var(--display);font-size:26px;color:var(--bronze);min-height:1.2em}
 .bt-log .ln{font-size:13px;color:var(--mute);min-height:1.4em}
-.bt-res{position:absolute;inset:0;background:rgba(8,12,12,.86);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px 16px;text-align:center}
+.bt-res{position:absolute;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px 16px;text-align:center}
 .stamp{font-family:var(--display);font-size:64px;line-height:1;width:132px;height:132px;display:grid;place-items:center;border:4px solid currentColor;border-radius:14px;transform:rotate(-8deg);animation:stamp .35s cubic-bezier(.2,1.6,.4,1) both}
 .stamp.w{color:var(--cinnabar)} .stamp.l{color:var(--mute)}
 @keyframes stamp{from{transform:scale(2.2) rotate(-8deg);opacity:0}}
@@ -275,13 +275,38 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .bmem{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .bmem>span{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--mute)}
 .bmem .unown{opacity:.45;filter:grayscale(.8)}
+
+.bt-res{justify-content:flex-start!important;overflow-y:auto;padding-top:20px!important}
+.res-card{width:100%;max-width:440px;display:flex;flex-direction:column;align-items:center;gap:12px;background:var(--bg);padding:12px 4px}
+.res-sec{width:100%;text-align:left}
+.res-sec h3{margin:4px 0 8px}
+.sbar{display:grid;grid-template-columns:62px 1fr 56px;gap:8px;align-items:center;font-size:12px;margin:5px 0}
+.sbar .sn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sbar .st{height:12px;background:var(--panel2);border-radius:3px;overflow:hidden}
+.sbar .st i{display:block;height:100%;background:var(--bronze);border-radius:3px}
+.sbar b{text-align:right;font-variant-numeric:tabular-nums}
+.res-sec .chips{margin-bottom:4px}
+.mvp{width:100%;background:var(--panel);border:1px solid var(--bronze-d);border-radius:14px;padding:12px;text-align:left}
+.mvp-h{display:flex;align-items:center;gap:12px;position:relative}
+.mvp-t{position:absolute;right:0;top:0;font-family:var(--display);color:var(--cinnabar);border:2px solid var(--cinnabar);border-radius:6px;padding:0 6px;font-size:14px;transform:rotate(6deg)}
+.share-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%}
+#share-fallback textarea{width:100%;height:70px;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:8px;font:12px var(--body);padding:8px}
+.lockb{background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:5px 8px;font-size:12px;color:var(--mute)}
+.lockb[aria-pressed="true"]{border-color:var(--bronze);color:var(--bronze)}
+
+.flab{font-size:11px;color:var(--mute);align-self:center;min-width:28px}
+.lvbox{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}
+.lvbox input[type=range]{width:100%;accent-color:var(--bronze);margin:8px 0 2px;height:28px}
+.gc .meta.num{font-size:11px}
+.iact{display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex:none}
+.iact .btn{white-space:nowrap}
 </style>
 </head>
 <body>
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.8.1</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.9.0</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -327,7 +352,7 @@ const SKILL_DESC={
 // id, 이름, 한자, 세력, 등급, 병과, 무력, 지력, 통솔, 속도, 고유 전법
 const GENS_RAW=[
  ['lubu','여포','呂布','qun',5,'cav',100,26,87,96,'천하무쌍'],
- ['guanyu','관우','關羽','shu',5,'inf',97,75,95,80,'청룡참월'],
+ ['guanyu','관우','關羽','shu',5,'cav',97,75,95,80,'청룡참월'],
  ['zhaoyun','조운','趙雲','shu',5,'cav',96,76,91,92,'일기당천'],
  ['zhangfei','장비','張飛','shu',5,'inf',98,30,85,78,'장판교 일갈'],
  ['zhugeliang','제갈량','諸葛亮','shu',5,'tac',38,100,92,82,'팔진도'],
@@ -663,7 +688,7 @@ function mkUnit(spec,side,slot){
   if(it){const f=it.fx;hp*=1+(f.hp||0)/100;atk*=1+(f.atk||0)/100;def*=1+(f.def||0)/100;spd+=f.spd||0}
   const sk=skillOf(b);hp=Math.round(hp);
   return {id:b.id,name:b.name,hz:b.hz,fac:b.fac,rar:b.rar,cls:b.cls,skill:sk.n,sk,endure:!!sk.endure,
-    hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0,bf:[],burn:[],stun:0,endUsed:0};
+    hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0,bf:[],burn:[],stun:0,endUsed:0,lv,item:spec.i||null};
 }
 function buildTeam(specs,side){const us=specs.map((s,i)=>s?mkUnit(s,side,i):null).filter(Boolean);const info=applyBonuses(us);return {us,info}}
 function unitPower(u){return Math.round(u.atk*1.5+u.maxhp/6+u.def*1.2+u.spd)}
@@ -715,7 +740,7 @@ function simulate(As,Bs,seed){
             hit(t,m,S);if(!hitT.includes(t))hitT.push(t)}
         }
         if(S.stun)hitT.forEach(t=>{if(t.hp>0&&rng()<S.stun){t.stun=1;e.stuns.push({s:t.side,i:t.slot})}});
-        if(S.burn)hitT.forEach(t=>{if(t.hp>0)t.burn.push({d:Math.max(1,Math.round(atkV*S.burn.p)),dur:S.burn.dur})});
+        if(S.burn)hitT.forEach(t=>{if(t.hp>0)t.burn.push({d:Math.max(1,Math.round(atkV*S.burn.p)),dur:S.burn.dur,by:[u.side,u.slot]})});
         if(S.heal){const H=S.heal, tg=H.to==='all'?allies():H.to==='low'?[allies().reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a)]:[u];
           tg.forEach(t=>{const h=Math.min(t.maxhp-t.hp,Math.round(t.maxhp*H.p));t.hp+=h;e.heals.push({s:t.side,i:t.slot,h,hp:t.hp})})}
         arr(S.buff).forEach(b=>{(b.to==='all'?allies():[u]).forEach(t=>t.bf.push({atk:b.atk||0,def:b.def||0,dur:b.dur}));const x=fxStr({atk:b.atk>0?b.atk:0,def:b.def>0?b.def:0});const y=[b.atk<0?`공격 ${Math.round(b.atk*100)}%`:'',b.def<0?`방어 ${Math.round(b.def*100)}%`:''].filter(Boolean).join(' · ');e.notes.push(`${b.to==='all'?'아군':'자신'} ${[x,y].filter(Boolean).join(' · ')}`)});
@@ -728,7 +753,7 @@ function simulate(As,Bs,seed){
     // 턴 종료: 화상 피해, 효과 지속 시간 감소
     const tick={tick:1,hits:[],heals:[],notes:[]};
     [...T[0],...T[1]].forEach(u=>{
-      if(u.hp>0&&u.burn.length){const d=u.burn.reduce((a,b)=>a+b.d,0);dmgTo(u,d,tick,{burn:1})}
+      for(const b of u.burn){if(u.hp>0)dmgTo(u,b.d,tick,{burn:1,by:b.by})}
       u.burn=u.burn.filter(b=>--b.dur>0);u.bf=u.bf.filter(b=>--b.dur>0);
     });
     if(tick.hits.length)ev.push(tick);
@@ -849,6 +874,7 @@ function authMsg(e){
 }
 
 async function boot(){
+  const replay=openReplayFromHash();
   if(!configured()||!window.firebase){
     MODE='local';S=sanitize(lsLoad());
     setBanner(configured()?'서버에 연결하지 못해 이 기기에만 저장 중이에요.':'서버 설정 전이라 이 기기에만 저장돼요. (관리자: index.html의 FIREBASE_CONFIG를 채워 주세요)');
@@ -967,10 +993,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.8.1';
+const GAME_VERSION='1.9.0';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.9.0',date:'2026-10-13',title:'전투 기록 · 결과 공유 · 보물 잠금',reward:{ap:20},items:[
+  '전투가 끝나면 장수별 피해량, 공격 횟수, 회당 피해를 막대그래프로 볼 수 있어요. 아군·적군을 바꿔 볼 수 있고, MVP 장수의 능력치와 전투 기록도 보여줘요.',
+  '결투와 연습전이 끝나면 결과를 링크나 이미지로 공유할 수 있어요. 링크를 받은 사람은 같은 전투를 다시 재생해 볼 수 있어요.',
+  '결투장 순위의 군주마다 연습 버튼이 생겼어요. 도전 횟수를 쓰지 않고 그 군주의 방어 진형과 겨뤄 볼 수 있어요.',
+  '관우의 병과를 보병에서 기병으로 바꿨어요.',
+  '보물에 잠금 기능을 추가했어요. 무장 탭의 보물 목록에서 잠기지 않은 보물을 등급별로 골라 한 번에 판매할 수 있어요.',
+  '장수 정보에서 슬라이드바로 목표 레벨을 골라 한 번에 올릴 수 있어요. 레벨 초기화를 하면 Lv 1로 돌아가고 쓴 금을 모두 돌려받아요.',
+  '무장 탭에서 등급·병종·나라로 장수를 거르고, 등급순·레벨순·보유 인연수·전투력순으로 정렬할 수 있어요.']},
  {v:'1.8.1',date:'2026-10-13',title:'전법 이름 표시 오류 수정',items:['관우, 조운, 하후연 등 여러 번 공격하는 전법의 이름이 숫자로 보이던 문제를 고쳤어요. 전법 효과는 그대로예요.']},
  {v:'1.8.0',date:'2026-10-13',title:'장수별 고유 전법 · 진영 보너스 · 인연',reward:{ap:20},items:[
   '장수 44명 모두에게 연의의 일화를 딴 고유 전법이 생겼어요. 관우 오관참장, 조운 칠진칠출, 장비 장판교 일갈, 제갈량 팔진도, 황개 고육계 등 피해·회복·강화·약화·기절·화상 효과가 다양해요.',
@@ -1351,15 +1385,56 @@ function vGens(){
   const own=sortedOwned();
   let h=`<h2>무장</h2><div class="seg" role="group"><button type="button" data-gt="gens" aria-pressed="${genTab==='gens'}">장수 ${own.length}/${GENS.length}</button><button type="button" data-gt="items" aria-pressed="${genTab==='items'}">보물 ${S.items.length}</button></div>`;
   if(genTab==='gens'){
-    h+=`<div class="grid">${own.map(g=>{const b=GMAP[g],s=S.gens[g];return `<button type="button" class="gc ${S.deck.includes(g)?'in-deck':''}" data-gen="${g}">${seal(b)}<div class="nm">${esc(b.name)}</div><div class="stars r${b.rar}">${stars(b.rar)}</div><div class="meta"><span class="cls">${CLS[b.cls].g}</span><span class="num">Lv ${s.lv}</span>${S.deck.includes(g)?'<span class="chip">출전</span>':''}</div></button>`}).join('')}</div>`;
+    const chip=(k,v,lab)=>`<button type="button" data-gf="${k}:${v}" aria-pressed="${String(gf[k])===String(v)}">${lab}</button>`;
+    h+=`<div class="chips" role="group" aria-label="등급"><span class="flab">등급</span>${chip('rar',0,'전체')}${[5,4,3].map(r=>chip('rar',r,stars(r))).join('')}</div>
+    <div class="chips" role="group" aria-label="병종"><span class="flab">병종</span>${chip('cls','','전체')}${Object.entries(CLS).map(([k,c])=>chip('cls',k,c.n)).join('')}</div>
+    <div class="chips" role="group" aria-label="나라"><span class="flab">나라</span>${chip('fac','','전체')}${Object.entries(FAC).map(([k,n])=>chip('fac',k,n)).join('')}</div>
+    <div class="chips" role="group" aria-label="정렬"><span class="flab">정렬</span>${chip('sort','rar','등급순')}${chip('sort','lv','레벨순')}${chip('sort','bond','보유 인연수')}${chip('sort','power','전투력순')}</div>`;
+    const list=filteredGens();
+    h+=`<p class="sub" style="margin:4px 0 8px">${list.length}명 표시</p>`;
+    if(!list.length)return h+`<div class="empty-state"><b>將</b>조건에 맞는 장수가 없어요. 필터를 바꿔 보세요.</div>`;
+    h+=`<div class="grid">${list.map(({g,p,bn})=>{const b=GMAP[g],s=S.gens[g];return `<button type="button" class="gc ${S.deck.includes(g)?'in-deck':''}" data-gen="${g}">${seal(b)}<div class="nm">${esc(b.name)}</div><div class="stars r${b.rar}">${stars(b.rar)}</div><div class="meta"><span class="cls">${CLS[b.cls].g}</span><span class="num">Lv ${s.lv}</span>${S.deck.includes(g)?'<span class="chip">출전</span>':''}</div>${gf.sort==='power'?`<div class="meta num">전투력 ${fmt(p)}</div>`:gf.sort==='bond'?`<div class="meta">인연 ${bn}개</div>`:''}</button>`}).join('')}</div>`;
   } else {
     if(!S.items.length)return h+`<div class="empty-state"><b>寶庫</b>아직 보물이 없어요. 등용 탭의 보물 획득에서 얻을 수 있어요.</div>`;
     const items=[...S.items].sort((a,b)=>IMAP[b.k].rar-IMAP[a.k].rar||a.k.localeCompare(b.k));
-    h+=`<div class="list">${items.map(x=>{const it=IMAP[x.k],hd=itemHolder(x.u);return `<div class="li"><div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${ITYPE[it.g]} · ${fxText(it)}${hd?` · ${esc(GMAP[hd].name)} 장착`:''}</span></div>${hd?'':`<button type="button" class="btn ghost sm" data-sell="${x.u}">판매 金${SELL[it.rar]}</button>`}</div>`}).join('')}</div>`;
+    h+=`<div class="row" style="margin-bottom:10px"><span class="sub" style="margin:0">잠근 보물과 장착 중인 보물은 판매되지 않아요.</span><span class="sp"></span><button type="button" class="btn ghost sm" id="bulk-sell">일괄 판매</button></div>`;
+    h+=`<div class="list">${items.map(x=>{const it=IMAP[x.k],hd=itemHolder(x.u);return `<div class="li"><div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${ITYPE[it.g]} · ${fxText(it)}${hd?` · ${esc(GMAP[hd].name)} 장착`:''}</span></div><div class="iact"><button type="button" class="lockb" data-lock="${x.u}" aria-pressed="${!!x.lk}">${x.lk?'잠김':'잠금'}</button>${hd||x.lk?'':`<button type="button" class="btn ghost sm" data-sell="${x.u}">판매 金${SELL[it.rar]}</button>`}</div></div>`}).join('')}</div>`;
   }
   return h;
 }
+
+/* ---------------- 무장 필터 · 정렬 ---------------- */
+let gf={rar:0,cls:'',fac:'',sort:'rar'};
+function ownedBonds(g){return BONDS.filter(B=>B.ids.includes(g)&&B.ids.every(x=>S.gens[x])).length}
+function filteredGens(){
+  const L=Object.keys(S.gens).filter(g=>{const b=GMAP[g];return (!gf.rar||b.rar===+gf.rar)&&(!gf.cls||b.cls===gf.cls)&&(!gf.fac||b.fac===gf.fac)})
+    .map(g=>({g,p:specPower(specOf(g)),bn:ownedBonds(g),lv:S.gens[g].lv,r:GMAP[g].rar}));
+  const by={rar:(a,b)=>b.r-a.r||b.lv-a.lv||b.p-a.p,lv:(a,b)=>b.lv-a.lv||b.r-a.r||b.p-a.p,bond:(a,b)=>b.bn-a.bn||b.r-a.r||b.p-a.p,power:(a,b)=>b.p-a.p}[gf.sort]||((a,b)=>b.r-a.r);
+  return L.sort(by);
+}
+document.addEventListener('click',e=>{const c=e.target.closest('[data-gf]');if(!c)return;const[k,v]=c.dataset.gf.split(':');gf[k]=k==='rar'?+v:v;renderView()});
 const SELL={3:40,4:150,5:500};
+/* ---------------- 보물 잠금 · 일괄 판매 ---------------- */
+let bulkR={3:true,4:true,5:false};
+function bulkList(){return S.items.filter(x=>!x.lk&&!itemHolder(x.u)&&bulkR[IMAP[x.k].rar])}
+function openBulk(){
+  const L=bulkList(), g=L.reduce((a,x)=>a+SELL[IMAP[x.k].rar],0);
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">보물 일괄 판매</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub">잠그지 않았고 장착하지 않은 보물 중, 고른 등급만 판매해요.</p>
+   <div class="chips">${[3,4,5].map(r=>`<button type="button" data-bulkr="${r}" aria-pressed="${bulkR[r]}">${stars(r)}</button>`).join('')}</div>
+   <div class="stat" style="margin:8px 0 12px"><small>판매 대상</small><b>${L.length}개 · 金 +${fmt(g)}</b></div>
+   <button type="button" class="btn wide" id="bulk-ask" ${L.length?'':'disabled'}>${L.length}개 판매</button>
+   <div class="warn" id="bulk-warn" hidden><b>보물 ${L.length}개를 판매할까요?</b><br>판매한 보물은 되돌릴 수 없어요.<div class="row" style="margin-top:10px"><button type="button" class="btn ghost" id="bulk-no">취소</button><button type="button" class="btn red" id="bulk-yes" style="flex:1">네, 판매하기</button></div></div>`);
+  $('#bulk-ask').onclick=()=>{$('#bulk-warn').hidden=false;$('#bulk-ask').hidden=true};
+  $('#bulk-no').onclick=()=>{$('#bulk-warn').hidden=true;$('#bulk-ask').hidden=false};
+  $('#bulk-yes').onclick=()=>{const L2=bulkList(),ids=new Set(L2.map(x=>x.u)),g2=L2.reduce((a,x)=>a+SELL[IMAP[x.k].rar],0);S.items=S.items.filter(x=>!ids.has(x.u));S.gold+=g2;save();closeSheet();renderTop();renderView();toast(`보물 ${L2.length}개 판매 · 金 +${fmt(g2)}`)};
+}
+document.addEventListener('click',e=>{
+  const lk=e.target.closest('[data-lock]');if(lk){const x=S.items.find(i=>i.u===lk.dataset.lock);if(x){x.lk=!x.lk;if(!x.lk)delete x.lk;save();renderView()}return}
+  if(e.target.closest('#bulk-sell')){openBulk();return}
+  const br=e.target.closest('[data-bulkr]');if(br){bulkR[br.dataset.bulkr]=!bulkR[br.dataset.bulkr];openBulk();return}
+});
+
 function fxText(it){const f=it.fx,o=[];if(f.atk)o.push(`공격 +${f.atk}%`);if(f.hp)o.push(`체력 +${f.hp}%`);if(f.def)o.push(`방어 +${f.def}%`);if(f.spd)o.push(`속도 +${f.spd}`);return o.join(' · ')}
 let sellArm=null;
 document.addEventListener('click',e=>{
@@ -1380,8 +1455,38 @@ function openGen(gid){
   <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. 세 번째 행동마다 발동.</p>${bondsOfHtml(b.id)}
   <h3>장비</h3>
   <div class="li" style="margin-bottom:12px">${it?`<div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)}</b><span>${fxText(it)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>장착 없음</b><span>보물을 하나 장착할 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-equip="${gid}">${it?'변경':'장착'}</button></div>
-  <div class="row"><button type="button" class="btn" style="flex:1" data-lvup="${gid}" ${st.lv>=MAXLV||S.gold<cost?'disabled':''}>${st.lv>=MAXLV?'최대 레벨':`레벨 업 <b class="sl gold">金</b>${fmt(cost)}`}</button>
-  <button type="button" class="btn ghost" data-deckt="${gid}">${inDeck?'진형에서 빼기':'진형에 넣기'}</button></div>`);
+  <h3>레벨</h3>${lvBoxHtml(gid)}
+  <button type="button" class="btn ghost wide" data-deckt="${gid}" style="margin-top:10px">${inDeck?'진형에서 빼기':'진형에 넣기'}</button>`);
+  bindLv(gid);
+}
+/* ---------------- 레벨 슬라이더 · 초기화 ---------------- */
+const LV_COST=50;
+const lvCost=(a,b)=>b<=a?0:LV_COST*((b-1)*b/2-(a-1)*a/2);
+function maxAffordLv(lv){let t=lv;while(t<MAXLV&&lvCost(lv,t+1)<=S.gold)t++;return t}
+function lvBoxHtml(gid){
+  const st=S.gens[gid], mx=maxAffordLv(st.lv), refund=lvCost(1,st.lv);
+  return `<div class="lvbox">${st.lv>=MAXLV?'<p class="sub" style="margin:0">최대 레벨이에요.</p>':`
+   <div class="row"><span class="sub" style="margin:0">Lv ${st.lv} →</span><b id="lv-to" class="pc num">Lv ${st.lv+1}</b><span class="sp"></span><span class="num" id="lv-cost"></span></div>
+   <input type="range" id="lv-range" min="${st.lv+1}" max="${MAXLV}" value="${Math.max(st.lv+1,Math.min(mx,st.lv+1))}" step="1" aria-label="목표 레벨">
+   <div class="row" style="margin-top:2px"><span class="sub" style="margin:0">가진 금으로 Lv ${mx}까지 가능</span><span class="sp"></span>${mx>st.lv?`<button type="button" class="btn ghost sm" id="lv-max">가능한 만큼</button>`:''}</div>
+   <button type="button" class="btn wide" id="lv-go" style="margin-top:8px">레벨 올리기</button>`}
+   ${st.lv>1?`<div class="row" style="margin-top:10px"><span class="sub" style="margin:0">초기화하면 Lv 1로 돌아가고 쓴 금 ${fmt(refund)}을 모두 돌려받아요.</span><span class="sp"></span><button type="button" class="btn ghost sm" id="lv-reset">레벨 초기화</button></div>
+   <div class="warn" id="lv-warn" hidden><b>Lv ${st.lv} → Lv 1로 초기화할까요?</b><br>금 ${fmt(refund)}을 돌려받아요.<div class="row" style="margin-top:10px"><button type="button" class="btn ghost" id="lv-no">취소</button><button type="button" class="btn red" id="lv-yes" style="flex:1">네, 초기화</button></div></div>`:''}</div>`;
+}
+function bindLv(gid){
+  const st=S.gens[gid], r=$('#lv-range');
+  if(r){
+    const upd=()=>{const t=+r.value,c=lvCost(st.lv,t),ok=c<=S.gold;$('#lv-to').textContent='Lv '+t;const ce=$('#lv-cost');ce.textContent='金 '+fmt(c);ce.style.color=ok?'var(--fg)':'var(--cinnabar)';const g=$('#lv-go');g.disabled=!ok;g.textContent=ok?`Lv ${t}까지 올리기`:`금이 ${fmt(c-S.gold)} 부족해요`};
+    r.oninput=upd;upd();
+    const m=$('#lv-max');if(m)m.onclick=()=>{r.value=maxAffordLv(st.lv);upd()};
+    $('#lv-go').onclick=()=>{const t=Math.min(MAXLV,+r.value),c=lvCost(st.lv,t);if(t<=st.lv||c>S.gold)return;S.gold-=c;const from=st.lv;st.lv=t;save();renderTop();renderView();openGen(gid);toast(`${GMAP[gid].name} Lv ${from} → ${t}`)};
+  }
+  const rs=$('#lv-reset');
+  if(rs){
+    rs.onclick=()=>{$('#lv-warn').hidden=false;rs.hidden=true};
+    $('#lv-no').onclick=()=>{$('#lv-warn').hidden=true;rs.hidden=false};
+    $('#lv-yes').onclick=()=>{const g=lvCost(1,st.lv);S.gold+=g;st.lv=1;save();renderTop();renderView();openGen(gid);toast(`레벨 초기화 · 金 +${fmt(g)}`)};
+  }
 }
 document.addEventListener('click',e=>{
   const l=e.target.closest('[data-lvup]');
@@ -1479,7 +1584,7 @@ function vPvp(){
   rows.forEach(p=>{
     const mine=p.id===UID, r=rk[p.id];
     h+=`<div class="li ${mine?'me':''}" data-peek="${esc(p.id)}" role="button" tabindex="0" aria-label="진형 보기"><span class="rank">${r||'–'}</span><div class="info"><b data-uid="${esc(p.id)}">…</b><span class="num">${r?`${score(p.r)}점 · `:'오늘 미참여 · '}공 ${p.r.aw}-${p.r.al} 방 ${p.r.dw}-${p.r.dl} · 전투력 ${fmt(p.power)} · 완성도 ${pct(deckComp(p.deck))}</span></div>
-     ${mine?'<span class="chip">나</span>':`<button type="button" class="btn sm red" data-duel="${esc(p.id)}" ${ticketsLeft()<1||!mySpecs().some(Boolean)?'disabled':''}>도전</button>`}</div>`;
+     ${mine?'<span class="chip">나</span>':`<div class="iact"><button type="button" class="btn sm red" data-duel="${esc(p.id)}" ${ticketsLeft()<1||!mySpecs().some(Boolean)?'disabled':''}>도전</button><button type="button" class="btn sm ghost" data-spar="${esc(p.id)}">연습</button></div>`}</div>`;
   });
   h+=`</div>`;
   if(rows.length<2)h+=`<div class="empty-state" style="margin-top:12px"><b>群雄</b>아직 다른 군주가 없어요. 게임 링크를 친구에게 보내 주세요. 친구가 로그인해 진형을 짠 순간부터 서로 도전할 수 있어요.</div>`;
@@ -1507,22 +1612,27 @@ document.addEventListener('click',async e=>{
     const mine=mySpecs();if(!mine.some(Boolean)){toast('진형을 먼저 편성하세요');return}
     const avg=Math.max(1,Math.round(mine.filter(Boolean).reduce((a,s)=>a+s.lv,0)/mine.filter(Boolean).length));
     const foe=Array.from({length:5},()=>({g:pick(GENS.filter(x=>x.rar===rollRar())).id,lv:avg,d:0}));
-    const res=simulate(mine,foe,(Math.random()*2**31)|0);
-    playBattle(res,'연습전','아군','가상 적군',()=>`<p class="sub">연습전은 기록과 보상이 남지 않아요.</p>`);
+    const seed=(Math.random()*2**31)|0, res=simulate(mine,foe,seed), me=typeof MYNAME!=='undefined'&&MYNAME?MYNAME:'아군';
+    playBattle(res,'연습전',me,'가상 적군',()=>`<p class="sub">연습전은 기록과 보상이 남지 않아요.</p>`,{share:{title:'연습전',seed,a:mine,b:foe,an:me,bn:'가상 적군'}});
     return;
   }
+  const sp=e.target.closest('[data-spar]');
+  if(sp){closeSheet();const opp=PLAYERS.find(p=>p.id===sp.dataset.spar);if(!opp)return;const mine=mySpecs();if(!mine.some(Boolean)){toast('진형을 먼저 편성하세요');return}
+    const seed=(Math.random()*2**31)|0,res=simulate(mine,opp.deck,seed),me=typeof MYNAME!=='undefined'&&MYNAME?MYNAME:'나',on=typeof nameOf==='function'?nameOf(opp.id):'상대';
+    playBattle(res,'연습 대전',me,on,()=>`<p class="sub">연습 대전은 도전 횟수를 쓰지 않고, 기록과 보상이 남지 않아요.</p>`,{share:{title:'연습 대전',seed,a:mine,b:opp.deck,an:me,bn:on}});return}
   const d=e.target.closest('[data-duel]');if(!d||d.disabled)return;
   closeSheet();
   const opp=PLAYERS.find(p=>p.id===d.dataset.duel);if(!opp)return;
   if(ticketsLeft()<1){toast('오늘 도전 횟수를 모두 썼어요');return}
   const mine=mySpecs();
-  const res=simulate(mine,opp.deck,(Math.random()*2**31)|0);
+  const seed=(Math.random()*2**31)|0, res=simulate(mine,opp.deck,seed);
   useTicket();
   const rw=res.win?{gold:100,food:60}:{gold:30,food:0};
   S.gold+=rw.gold;S.food+=rw.food;save();
   let wrote=true;
   try{await writeRetry(()=>FS.collection('battles').add({att:UID,def:opp.id,win:res.win,at:Date.now(),ap:deckPower(mine),dp:deckPower(opp.deck)}))}catch(err){wrote=false}
-  playBattle(res,'군주 대전','나','상대',()=>rewardHtml(rw)+(wrote?'':'<p class="sub">전투 기록 저장에 실패해 순위에는 반영되지 않았어요.</p>'));
+  const me=typeof MYNAME!=='undefined'&&MYNAME?MYNAME:'나', on=typeof nameOf==='function'?nameOf(opp.id):'상대';
+  playBattle(res,'결투',me,on,()=>rewardHtml(rw)+(wrote?'':'<p class="sub">전투 기록 저장에 실패해 순위에는 반영되지 않았어요.</p>'),{share:{title:'결투',seed,a:mine,b:opp.deck,an:me,bn:on}});
 });
 
 /* ---------------- 다른 군주 진형 보기 · 초기화 ---------------- */
@@ -1545,7 +1655,7 @@ function openPeek(id){
    <h3>${mine?'내 방어 진형':'방어 진형'} (${p.deck.length}/5)</h3>
    ${p.deck.length?`<div class="list">${rows}</div>`:'<div class="empty-state">진형에 장수가 없어요.</div>'}
    <p class="sub" style="margin-top:10px">완성도는 레벨 60%, 돌파 25%, 장비 등급 15%를 반영해요. 빈 자리는 0%로 계산돼요.</p>
-   ${!mine&&MODE==='shared'?`<button type="button" class="btn red wide" data-duel="${esc(id)}" ${ticketsLeft()<1||!mySpecs().some(Boolean)?'disabled':''}>도전 (오늘 ${ticketsLeft()}/${PVP_DAILY}회 남음)</button>`:''}`);
+   ${!mine&&MODE==='shared'?`<div class="row"><button type="button" class="btn red" style="flex:1" data-duel="${esc(id)}" ${ticketsLeft()<1||!mySpecs().some(Boolean)?'disabled':''}>도전 (오늘 ${ticketsLeft()}/${PVP_DAILY}회 남음)</button><button type="button" class="btn ghost" data-spar="${esc(id)}">연습 대전</button></div>`:''}`);
   fillNames();
 }
 function resetBlock(){
@@ -1567,9 +1677,78 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-peek]')){e.preventDefault();openPeek(e.target.dataset.peek)}});
 
+/* ---------------- 전투 기록 · MVP · 결과 공유 ---------------- */
+const CAN_SHARE=typeof FIREBASE_CONFIG!=='undefined';
+function battleStats(res){
+  const st={};const K=(s,i)=>st[s+'-'+i]||(st[s+'-'+i]={acts:0,sk:0,dmg:0,crit:0,kills:0,heal:0});
+  res.init.forEach(t=>t.forEach(u=>K(u.side,u.slot)));
+  for(const e of res.ev){
+    if(e.skip)continue;
+    if(e.tick){for(const h of e.hits||[])if(h.by){const r=K(h.by[0],h.by[1]);r.dmg+=h.d;if(h.hp===0)r.kills++}continue}
+    const r=K(e.s,e.i);r.acts++;if(e.sk)r.sk++;
+    for(const h of e.hits||[]){if(h.self)continue;r.dmg+=h.d;if(h.c)r.crit++;if(h.hp===0)r.kills++}
+    for(const h of e.heals||[])r.heal+=h.h;
+  }
+  return st;
+}
+let rsSide=0, rsMetric='dmg';
+const RS_M={dmg:'피해량',acts:'공격 횟수',dps:'회당 피해'};
+function statChart(res,st){
+  const us=res.init[rsSide].map(u=>{const r=st[u.side+'-'+u.slot];return {u,r,v:rsMetric==='dps'?(r.acts?Math.round(r.dmg/r.acts):0):r[rsMetric]}}).sort((a,b)=>b.v-a.v);
+  const mx=Math.max(1,...us.map(x=>x.v));
+  return us.map(({u,r,v})=>`<div class="sbar"><span class="sn">${esc(u.name)}</span><span class="st"><i style="width:${v/mx*100}%"></i></span><b class="num">${fmt(v)}</b></div>`).join('');
+}
+function mvpOf(res,st,side){
+  let best=null;res.init[side].forEach(u=>{const r=st[u.side+'-'+u.slot],sc=r.dmg+r.heal*.6;if(!best||sc>best.sc)best={u,r,sc}});return best;
+}
+function mvpHtml(m){
+  if(!m)return '';const {u,r}=m;const it=u.item?IMAP[u.item]:null;
+  return `<div class="mvp"><div class="mvp-h"><span class="mvp-t">MVP</span>${seal(u,'lg')}<div style="text-align:left;min-width:0"><b style="font-size:17px">${esc(u.name)}</b> <span class="stars r${u.rar}">${stars(u.rar)}</span><div class="sub" style="margin:0">${FAC[u.fac]} · ${CLS[u.cls].g} ${CLS[u.cls].n}${u.lv?` · Lv ${u.lv}`:''}${it?` · ${esc(it.name)}`:''}</div><div class="sub" style="margin:0">전법 ${esc(u.skill)}</div></div></div>
+   <div class="stats" style="grid-template-columns:repeat(4,1fr);margin:10px 0 6px"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
+   <div class="stats" style="grid-template-columns:repeat(3,1fr);margin:0"><div class="stat"><small>총 피해</small><b>${fmt(r.dmg)}</b></div><div class="stat"><small>행동 · 전법</small><b>${r.acts} · ${r.sk}</b></div><div class="stat"><small>회당 피해</small><b>${fmt(r.acts?Math.round(r.dmg/r.acts):0)}</b></div><div class="stat"><small>치명타</small><b>${r.crit}</b></div><div class="stat"><small>처치</small><b>${r.kills}</b></div><div class="stat"><small>회복</small><b>${fmt(r.heal)}</b></div></div></div>`;
+}
+// 결과 링크: 진형과 시드를 담아 같은 전투를 다시 재생
+const packSpecs=a=>a.filter(Boolean).map(s=>[s.g,s.lv,s.d||0,s.i||0]);
+const unpackSpecs=a=>(Array.isArray(a)?a:[]).slice(0,5).filter(x=>Array.isArray(x)&&GMAP[x[0]]).map(x=>({g:x[0],lv:Math.min(MAXLV,Math.max(1,x[1]|0)),d:Math.min(5,Math.max(0,x[2]|0)),i:IMAP[x[3]]?x[3]:null}));
+const b64e=s=>btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+const b64d=s=>decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/'))));
+function shareUrl(sh,win){
+  const o={v:GAME_VERSION,t:sh.title,ts:Date.now(),s:sh.seed,w:win?1:0,a:{n:sh.an,d:packSpecs(sh.a)},b:{n:sh.bn,d:packSpecs(sh.b)}};
+  return location.origin+location.pathname+'#r='+b64e(JSON.stringify(o));
+}
+async function shareLink(sh,win){
+  const url=shareUrl(sh,win), text=`[연합 삼국지] ${sh.an} vs ${sh.bn} · ${win?sh.an+' 승리':sh.bn+' 승리'}`;
+  if(navigator.share){try{await navigator.share({title:'연합 삼국지 결투 결과',text,url});return}catch(e){if(e&&e.name==='AbortError')return}}
+  try{await navigator.clipboard.writeText(text+'\n'+url);toast('결과 링크를 복사했어요. 카카오톡 대화창에 붙여넣어 보내세요.')}
+  catch(e){const box=$('#share-fallback');if(box){box.hidden=false;const t=box.querySelector('textarea');t.value=text+'\n'+url;t.select()}}
+}
+function loadScript(src){return new Promise((ok,no)=>{if(document.querySelector(`script[src="${src}"]`))return ok();const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
+async function shareImage(node,sh){
+  toast('결과 이미지를 만드는 중…');
+  try{
+    await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
+    const cv=await window.html2canvas(node,{backgroundColor:getComputedStyle(document.body).backgroundColor,scale:2,ignoreElements:el=>el.classList&&el.classList.contains('no-cap')});
+    const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
+    const file=new File([blob],'yeonhap-samguk-result.png',{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:'연합 삼국지 결투 결과'});return}catch(e){if(e&&e.name==='AbortError')return}}
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;document.body.appendChild(a);a.click();a.remove();
+    toast('결과 이미지를 저장했어요. 카카오톡에서 사진으로 보내세요.');
+  }catch(e){toast('이미지를 만들지 못했어요. 휴대폰 화면 캡처를 이용해 주세요.')}
+}
+function openReplayFromHash(){
+  const m=location.hash.match(/^#r=([A-Za-z0-9_-]+)$/);if(!m)return false;
+  let o;try{o=JSON.parse(b64d(m[1]))}catch(e){return false}
+  const A=unpackSpecs(o.a&&o.a.d),B=unpackSpecs(o.b&&o.b.d);if(!A.length||!B.length)return false;
+  const res=simulate(A,B,Number(o.s)|0), an=cleanName(o.a&&o.a.n)||'공격측', bn=cleanName(o.b&&o.b.n)||'방어측';
+  const note=(o.w===1)!==res.win?`<p class="sub">이 결과는 v${esc(String(o.v||''))}에서 기록됐어요. 지금 버전의 능력치로 다시 재생해서 결과가 다를 수 있어요.</p>`:'';
+  const when=o.ts?new Date(Number(o.ts)).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+  playBattle(res,`${String(o.t||'결투')} 다시보기`,an,bn,()=>`<p class="sub">${esc(an)} vs ${esc(bn)}${when?` · ${when}`:''}</p>${note}`,{replay:true,share:{title:String(o.t||'결투'),seed:Number(o.s)|0,a:A,b:B,an,bn}});
+  return true;
+}
+
 /* ---------------- battle playback ---------------- */
 let btToken=0;
-function playBattle(res,title,allyLab,foeLab,resultHtml){
+function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
   const tok=++btToken;
   const units=[res.init[0].map(u=>({...u})),res.init[1].map(u=>({...u}))];
   const row=(k)=>{let h='';for(let i=0;i<5;i++){const u=units[k].find(x=>x.slot===i);h+=u?`<div class="bu" id="bu-${k}-${i}">${seal(u,'sm')}<div class="bn">${esc(u.name)}</div><div class="hp"><i style="width:100%"></i></div></div>`:`<div class="bu void"></div>`}return h};
@@ -1607,9 +1786,21 @@ function playBattle(res,title,allyLab,foeLab,resultHtml){
     while(idx<res.ev.length)apply(res.ev[idx++],false);
     document.querySelectorAll('.bu.act').forEach(n=>n.classList.remove('act'));
     const box=document.createElement('div');box.className='bt-res';
-    box.innerHTML=`<div class="stamp ${res.win?'w':'l'}">${res.win?'勝':'敗'}</div><h2 style="margin:0">${res.win?'승리':'패배'}</h2>${resultHtml()}<button type="button" class="btn" id="bt-close" style="min-width:160px">확인</button>`;
+    const stt=battleStats(res), sh=opts&&opts.share, rp=opts&&opts.replay;
+    const winLab=rp?`${res.win?allyLab:foeLab} 승리`:(res.win?'승리':'패배');
+    box.innerHTML=`<div class="res-card" id="res-card"><div class="stamp ${res.win||rp?'w':'l'}">${rp?'戰':res.win?'勝':'敗'}</div><h2 style="margin:0">${esc(winLab)}</h2>${resultHtml()}
+     <div class="res-sec"><h3>전투 기록</h3>
+      <div class="chips no-cap" role="group"><button type="button" data-rss="0" aria-pressed="${rsSide===0}">${esc(allyLab)}</button><button type="button" data-rss="1" aria-pressed="${rsSide===1}">${esc(foeLab)}</button><span class="sp"></span>${Object.entries(RS_M).map(([k,v])=>`<button type="button" data-rsm="${k}" aria-pressed="${rsMetric===k}">${v}</button>`).join('')}</div>
+      <div class="sub" id="rs-cap" style="margin:0 0 4px">${esc(rsSide?foeLab:allyLab)} · ${RS_M[rsMetric]}</div><div id="rs-chart">${statChart(res,stt)}</div></div>
+     ${mvpHtml(mvpOf(res,stt,rp?(res.win?0:1):0))}</div>
+     ${sh&&CAN_SHARE?`<div class="share-row"><button type="button" class="btn ghost" id="sh-link">결과 링크 공유</button><button type="button" class="btn ghost" id="sh-img">이미지로 공유</button></div><div id="share-fallback" hidden style="width:100%;max-width:440px"><p class="sub" style="margin:0 0 4px">아래 내용을 길게 눌러 복사한 뒤 카카오톡에 붙여넣으세요.</p><textarea readonly></textarea></div>`:''}
+     <button type="button" class="btn" id="bt-close" style="min-width:160px">${rp?'게임 하러 가기':'확인'}</button>`;
     $('.bt').appendChild(box);
-    $('#bt-close').onclick=()=>{el.hidden=true;el.innerHTML='';renderTop();renderView()};
+    const redraw=()=>{$('#rs-chart').innerHTML=statChart(res,stt);$('#rs-cap').textContent=`${rsSide?foeLab:allyLab} · ${RS_M[rsMetric]}`;box.querySelectorAll('[data-rss]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.rss===rsSide)));box.querySelectorAll('[data-rsm]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.rsm===rsMetric)))};
+    box.querySelectorAll('[data-rss]').forEach(b=>b.onclick=()=>{rsSide=+b.dataset.rss;redraw()});
+    box.querySelectorAll('[data-rsm]').forEach(b=>b.onclick=()=>{rsMetric=b.dataset.rsm;redraw()});
+    if(sh&&CAN_SHARE){$('#sh-link').onclick=()=>shareLink(sh,res.win);$('#sh-img').onclick=()=>shareImage($('#res-card'),sh)}
+    $('#bt-close').onclick=()=>{el.hidden=true;el.innerHTML='';if(rp){history.replaceState(null,'',location.pathname+location.search);if(typeof showLogin==='function'&&!S&&MODE!=='local')showLogin()}renderTop();renderView()};
     $('#bt-close').focus();
   };
   const step=()=>{if(tok!==btToken)return;if(idx>=res.ev.length){timer=setTimeout(finish,500);return}apply(res.ev[idx++],true);timer=setTimeout(step,560/speed)};
