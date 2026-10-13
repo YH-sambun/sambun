@@ -253,13 +253,19 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .nt-h small{color:var(--mute);font-size:11px}
 .ver{font-family:var(--display);color:var(--bronze);font-size:15px}
 .nt ul{margin:8px 0 10px;padding-left:18px;font-size:13px;color:var(--fg);display:flex;flex-direction:column;gap:4px}
+
+.sweep-box{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+.sweep-box .row b{font-size:15px}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.stepper button{background:var(--panel);border:0;width:36px;height:34px;font-size:18px}
+.stepper b{min-width:40px;text-align:center}
 </style>
 </head>
 <body>
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.5.0</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.6.0</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -376,44 +382,33 @@ const IMAP=Object.fromEntries(ITEMS.map(i=>[i.id,i]));
 const ITYPE={'武':'무기','甲':'갑옷','寶':'보물','書':'서책'};
 
 const TROOP_BASE={inf:[62,30,60,62],cav:[68,28,55,80],arc:[60,35,52,72],tac:[30,62,55,68]};
-const CH=[
- {n:'황건적의 난',hz:'黃巾',tr:['황건적','賊','qun'],boss:'장각 토벌',st:[
-  ['T:inf','T:inf','T:arc','T:arc','T:tac'],
-  ['T:inf','T:cav','T:inf','T:arc','T:arc'],
-  ['T:inf','T:cav','T:cav','T:arc','T:tac'],
-  ['T:inf','T:inf','T:cav','T:arc','T:tac'],
-  ['T:inf','T:inf','T:cav','T:arc','zhangjiao']]},
- {n:'반동탁 연합',hz:'虎牢',tr:['서량병','兵','qun'],boss:'호뢰관',st:[
-  ['T:cav','T:inf','T:cav','T:arc','T:arc'],
-  ['T:inf','T:cav','huaxiong','T:arc','T:tac'],
-  ['T:inf','huaxiong','T:cav','T:arc','T:arc'],
-  ['huaxiong','T:cav','T:inf','T:arc','dongzhuo'],
-  ['huaxiong','lubu','dongzhuo','T:arc','T:tac']]},
- {n:'군웅할거',hz:'群雄',tr:['원술군','兵','qun'],boss:'하비 공방',st:[
-  ['jiling','T:inf','T:cav','T:arc','yuanshu'],
-  ['jiling','T:inf','T:cav','T:arc','T:tac'],
-  ['gaoshun','T:inf','T:cav','T:arc','chengong'],
-  ['gaoshun','jiling','T:cav','yuanshu','chengong'],
-  ['gaoshun','lubu','T:cav','chengong','T:arc']]},
- {n:'관도대전',hz:'官渡',tr:['하북군','兵','qun'],boss:'관도',st:[
-  ['yanliang','T:inf','T:cav','T:arc','T:arc'],
-  ['wenchou','T:inf','T:cav','T:arc','T:tac'],
-  ['yanliang','wenchou','T:inf','T:arc','T:tac'],
-  ['yanliang','wenchou','T:cav','T:arc','T:tac'],
-  ['yanliang','wenchou','yuanshao','T:arc','T:tac']]},
- {n:'적벽대전',hz:'赤壁',tr:['오군','吳','wu'],boss:'적벽',st:[
-  ['zhoutai','T:inf','lingtong','T:arc','T:tac'],
-  ['huanggai','zhoutai','T:cav','chengpu','T:arc'],
-  ['zhoutai','lingtong','ganning','chengpu','T:tac'],
-  ['huanggai','lingtong','ganning','taishici','luxun'],
-  ['zhoutai','sunce','ganning','taishici','zhouyu']]},
- {n:'삼국정립',hz:'鼎立',tr:['위군','魏','wei'],boss:'천하통일',st:[
-  ['xuchu','dianwei','T:cav','xiahouyuan','T:tac'],
-  ['xiahoudun','xuchu','zhangliao','xiahouyuan','guojia'],
-  ['xiahoudun','dianwei','zhangliao','xiahouyuan','simayi'],
-  ['xuchu','xiahoudun','zhangliao','xiahouyuan','simayi'],
-  ['xiahoudun','xuchu','caocao','xiahouyuan','simayi']]}
+// 장 이름, 한자, 일반 병사[이름, 글자, 세력], 보스전 이름, 등장 장수, 보스전 진형
+const CH_DEF=[
+ ['황건적의 난','黃巾',['황건적','賊','qun'],'장각 토벌',[],['T:inf','T:inf','T:cav','T:arc','zhangjiao']],
+ ['반동탁 연합','虎牢',['서량병','兵','qun'],'호뢰관',['huaxiong','dongzhuo'],['huaxiong','lubu','dongzhuo','T:arc','T:tac']],
+ ['군웅할거','群雄',['원술군','兵','qun'],'수춘',['jiling','yuanshu'],['jiling','T:inf','yuanshu','T:arc','T:tac']],
+ ['하비 공방','下邳',['여포군','兵','qun'],'백문루',['gaoshun','chengong'],['gaoshun','lubu','T:cav','chengong','T:arc']],
+ ['관도대전','官渡',['하북군','兵','qun'],'오소 습격',['yanliang','wenchou'],['yanliang','wenchou','yuanshao','T:arc','T:tac']],
+ ['장판파','長坂',['조조군','魏','wei'],'장판교',['xuchu','yujin','lejin'],['xuchu','xiahoudun','caocao','T:arc','T:tac']],
+ ['적벽대전','赤壁',['오군','吳','wu'],'동남풍',['zhoutai','huanggai','chengpu'],['huanggai','zhoutai','chengpu','ganning','zhouyu']],
+ ['형주 쟁탈','荊州',['강동군','吳','wu'],'강릉',['lingtong','ganning','taishici'],['lingtong','sunce','ganning','taishici','sunquan']],
+ ['서량 정벌','西涼',['서량철기','騎','qun'],'동관',['madai','machao'],['madai','machao','T:cav','T:arc','T:tac']],
+ ['한중 공방','漢中',['위군','魏','wei'],'정군산',['xiahouyuan','dianwei','zhangliao'],['dianwei','xiahoudun','zhangliao','xiahouyuan','guojia']],
+ ['이릉대전','夷陵',['오군','吳','wu'],'화소연영',['ganning','taishici','luxun'],['zhoutai','lingtong','ganning','taishici','luxun']],
+ ['오장원','五丈原',['위군','魏','wei'],'천하통일',['zhangliao','xuchu','simayi'],['xiahoudun','xuchu','caocao','xiahouyuan','simayi']]
 ];
+const TROOP_ROT=[['inf','inf','arc','arc','tac'],['inf','cav','inf','arc','arc'],['inf','cav','cav','arc','tac'],['inf','inf','cav','arc','tac']];
+const GEN_CNT=[0,1,2,2], CLS_ORD={inf:0,cav:1,arc:2,tac:3}, ENEMY_SCALE=.7;
+const rowCls=x=>x.startsWith('T:')?x.slice(2):GMAP[x].cls;
+const CH=CH_DEF.map(([n,hz,tr,boss,pool,bossRow])=>{
+  const st=TROOP_ROT.map((rot,k)=>{
+    const row=rot.map(c=>'T:'+c), cnt=Math.min(pool.length,GEN_CNT[k]);
+    for(let i=0;i<cnt;i++){const g=pool[(k+i)%pool.length];let at=row.indexOf('T:'+GMAP[g].cls);if(at<0)at=row.findIndex(x=>x.startsWith('T:'));row[at]=g}
+    return row.sort((a,b)=>CLS_ORD[rowCls(a)]-CLS_ORD[rowCls(b)]);
+  });
+  st.push(bossRow);
+  return {n,hz,tr,boss,st};
+});
 const NSTAGE=CH.length*5, MAXLV=40, CAP_H=12, PVP_DAILY=10;
 const AP_CAP=120, AP_MS=5*60*1000, AP_COST=6, AP_WIN=3;
 const POS=['선봉','선봉','중군','후위','후위'];
@@ -537,7 +532,7 @@ function adv(a,b){if(BEATS[a]===b)return 1.25;if(BEATS[b]===a)return .85;return 
 function baseOf(spec){return spec.troop||GMAP[spec.g]}
 function mkUnit(spec,side,slot){
   const b=baseOf(spec), lv=spec.lv||1, d=spec.d||0;
-  const m=RMUL[b.rar]*(1+.07*(lv-1))*(1+.06*d);
+  const m=RMUL[b.rar]*(1+.07*(lv-1))*(1+.06*d)*(spec.sc||1);
   let hp=(b.lead*10+b.str*3+200)*m;
   let atk=((b.cls==='tac'?b.int:b.str)*1.6+b.lead*.3)*m;
   let def=(b.lead*.8+(b.cls==='inf'?20:0))*m;
@@ -597,13 +592,13 @@ function simulate(As,Bs,seed){
 
 /* ---------------- stages ---------------- */
 function mkTroop(tr,cls){const b=TROOP_BASE[cls];return {name:tr[0],hz:tr[1],fac:tr[2],rar:2,cls,str:b[0],int:b[1],lead:b[2],spd:b[3],skill:DEF_SKILL[cls]}}
-function stageLv(n){return 1+Math.floor(n*1.15)+(n%5===4?2:0)}
+function stageLv(n){return 1+Math.floor(n*.6)+(n%5===4?2:0)}
 function stageSpecs(n){
   const c=CH[Math.floor(n/5)],row=c.st[n%5],lv=stageLv(n);
-  return row.map(x=>x.startsWith('T:')?{troop:mkTroop(c.tr,x.slice(2)),lv,d:0}:{g:x,lv,d:0});
+  return row.map(x=>x.startsWith('T:')?{troop:mkTroop(c.tr,x.slice(2)),lv,d:0,sc:ENEMY_SCALE}:{g:x,lv,d:0,sc:ENEMY_SCALE});
 }
 function stageName(n){const c=CH[Math.floor(n/5)];return n%5===4?`${c.n} · ${c.boss}`:`${c.n} · 제${n%5+1}전`}
-function stageReward(n,first){const m=1+.15*Math.floor(n/5);return first?{gold:Math.round((150+40*n)*m),food:Math.round((200+25*n)*m)}:{gold:Math.round((60+20*n)*m),food:Math.round((20+4*n)*m)}}
+function stageReward(n,first){const m=1+.08*Math.floor(n/5);return first?{gold:Math.round((150+20*n)*m),food:Math.round((200+12*n)*m)}:{gold:Math.round((60+10*n)*m),food:Math.round((20+2*n)*m)}}
 
 /* ---------------- state ---------------- */
 let S=null, view='stage', genTab='gens';
@@ -635,8 +630,10 @@ function sanitize(s){
 function specOf(gid){const g=S.gens[gid];if(!g)return null;const it=g.it&&S.items.find(x=>x.u===g.it);return {g:gid,lv:g.lv,d:g.d,i:it?it.k:null}}
 function mySpecs(){return S.deck.map(g=>g?specOf(g):null)}
 function chaptersDone(){return Math.floor(S.stage/5)}
-function foodRate(){return 60+8*S.stage+50*chaptersDone()}
-function goldRate(){return 30+6*S.stage+30*chaptersDone()}
+function foodRateAt(st){return 60+4*st+25*Math.floor(st/5)}
+function goldRateAt(st){return 30+3*st+15*Math.floor(st/5)}
+function foodRate(){return foodRateAt(S.stage)}
+function goldRate(){return goldRateAt(S.stage)}
 function pendingRes(){const h=Math.min(CAP_H,Math.max(0,(Date.now()-S.last)/3.6e6));return {f:Math.floor(h*foodRate()),g:Math.floor(h*goldRate()),h}}
 function ticketsLeft(){return S.pvp.day===kstDay()?Math.max(0,PVP_DAILY-S.pvp.used):PVP_DAILY}
 function useTicket(){const d=kstDay();if(S.pvp.day!==d)S.pvp={day:d,used:0};S.pvp.used++}
@@ -707,7 +704,7 @@ async function boot(){
   }
   firebase.initializeApp(FIREBASE_CONFIG);
   AUTH=firebase.auth();FS=firebase.firestore();
-  try{await AUTH.getRedirectResult()}catch(e){toast(authMsg(e))}
+  try{const rr=await AUTH.getRedirectResult();if(rr&&rr.operationType==='link')setTimeout(()=>toast('구글 계정과 연동했어요.'),800)}catch(e){toast(linkMsg(e))}
   AUTH.onAuthStateChanged(async u=>{
     closeSheet();
     if(!u){unsubscribeAll();UID=null;S=null;MODE='boot';showLogin();return}
@@ -720,7 +717,7 @@ async function boot(){
       const pd=p.exists?p.data():null;
       MYNAME=cleanName(pd&&pd.name)||cleanName(u.displayName)||('군주'+Math.floor(1000+Math.random()*9000));
       lastPub='';
-      MODE='shared';setBanner(u.isAnonymous?'게스트로 플레이 중이에요. 이 휴대폰 브라우저에서만 이어서 할 수 있어요.':'');
+      MODE='shared';setBanner(u.isAnonymous?'게스트로 플레이 중이에요. 대전 탭 → 내 정보에서 구글 계정을 연동하면 다른 기기에서도 이어서 할 수 있어요.':'');
       dirty=true;flush();
       subscribe();showGame(true);render();
       if(!pd)setTimeout(()=>openSettings(true),400);else setTimeout(runPopups,500);
@@ -766,14 +763,32 @@ async function googleLogin(){
     else if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')toast(authMsg(e));
   }
 }
+
+function linkMsg(e){const c=e&&e.code||'';if(c==='auth/credential-already-in-use'||c==='auth/email-already-in-use'||c==='auth/provider-already-linked')return '이 구글 계정은 이미 다른 게임 기록에 연결돼 있어요. 다른 구글 계정으로 연동해 주세요.';return authMsg(e)}
+async function afterLink(user){
+  if(/^군주\d{4}$/.test(MYNAME)){const nm=cleanName(user.displayName);if(nm){MYNAME=nm;save()}}
+  setBanner('');closeSheet();renderView();toast('구글 계정과 연동했어요. 다른 기기에서도 구글로 로그인해 이어서 할 수 있어요.');
+}
+async function linkGoogle(){
+  const u=AUTH&&AUTH.currentUser;if(!u||!u.isAnonymous)return;
+  await flush();
+  const pr=new firebase.auth.GoogleAuthProvider();
+  try{const r=await u.linkWithPopup(pr);await afterLink(r.user)}
+  catch(e){
+    if(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment'){try{await u.linkWithRedirect(pr)}catch(e2){toast(linkMsg(e2))}}
+    else if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')toast(linkMsg(e));
+  }
+}
 let logoutArm=false;
 function openSettings(first){
   const anon=AUTH&&AUTH.currentUser&&AUTH.currentUser.isAnonymous;
   openSheet(`<div class="sheet-h"><h2 style="margin:0">${first?'군주 이름 정하기':'내 정보'}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <p class="sub">대전 순위에 보이는 이름이에요. 최대 12자.</p>
    <form id="name-form" class="row" style="margin-bottom:16px"><input id="name-input" maxlength="12" autocomplete="nickname" style="flex:1;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--fg);font:inherit" value="${esc(MYNAME)}"><button class="btn" type="submit">저장</button></form>
-   ${first?'':`<p class="sub">${anon?'게스트로 플레이 중이에요. 로그아웃하면 이 기록으로 다시 돌아올 수 없어요.':'구글 계정으로 로그인되어 있어요.'}</p><button type="button" class="btn ghost wide" id="logout">로그아웃</button><h3>처음부터 다시 시작</h3>${resetBlock()}`}`);
+   ${first?'':`<p class="sub">${anon?'게스트로 플레이 중이에요. 로그아웃하면 이 기록으로 다시 돌아올 수 없어요.':'구글 계정으로 로그인되어 있어요.'}</p>
+   ${anon?(isInApp()?`<div class="warn" style="margin:0 0 12px"><b>구글 연동</b><br>지금은 카카오톡 같은 앱 안 브라우저라 구글 연동이 막혀 있어요. 게스트 기록은 처음 시작한 브라우저에만 남아 있어서, 다른 브라우저로 옮기면 새 게스트가 돼요.</div>`:`<button type="button" class="btn wide" id="link-google" style="margin-bottom:6px">구글 계정 연동하기</button><p class="sub">연동하면 지금 기록이 그대로 구글 계정에 묶여서, 다른 기기에서도 구글로 로그인해 이어서 할 수 있어요.</p>`):''}<button type="button" class="btn ghost wide" id="logout">로그아웃</button><h3>처음부터 다시 시작</h3>${resetBlock()}`}`);
   logoutArm=false;bindReset();
+  const lg=$('#link-google');if(lg)lg.onclick=linkGoogle;
   $('#name-form').onsubmit=ev=>{ev.preventDefault();const v=cleanName($('#name-input').value);if(!v){toast('이름을 입력해 주세요');return}MYNAME=v;save();closeSheet();renderView();toast('이름을 저장했어요');if(first)setTimeout(runPopups,300)};
   const lo=$('#logout');
   if(lo)lo.onclick=()=>{
@@ -788,10 +803,15 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.5.0';
+const GAME_VERSION='1.6.0';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.6.0',date:'2026-10-13',title:'60개 스테이지와 소탕 · 구글 연동',reward:{ap:30},items:[
+  '스테이지를 12장 60개로 늘렸어요. 황건적의 난부터 오장원까지 이어지고, 적의 전체 난이도는 이전의 70% 수준으로 낮췄어요.',
+  '이미 깬 스테이지는 소탕할 수 있어요. 가진 군령 안에서 횟수를 골라 전투 없이 반복 보상을 한 번에 받아요(1회 군령 6개).',
+  '스테이지 수가 늘어난 만큼 보상과 시간당 생산량이 단계마다 조금씩, 더 오래 늘어나도록 조정했어요. 지금까지의 진척 숫자는 그대로 유지돼요.',
+  '게스트로 시작한 기록을 구글 계정에 연동할 수 있어요. 대전 탭의 내 정보에서 연동하면 기록이 그대로 유지돼요.']},
  {v:'1.5.0',date:'2026-10-13',title:'출석 보상과 공지 기능',reward:{ap:20},items:[
   '매일 첫 접속 때 출석 보상으로 군령 30개를 받아요. 7일 연속 출석하면 군량 500을 더 드려요.',
   '패치 소식을 게임 안 공지로 확인할 수 있어요. 보상이 걸린 공지는 확인하면 보상을 받아요.',
@@ -876,7 +896,8 @@ function renderTop(){
   updateDot();
 }
 $('#claim-btn').onclick=()=>{const p=pendingRes();if(p.f<1&&p.g<1)return;S.food+=p.f;S.gold+=p.g;S.last=Date.now();save();renderTop();toast(`군량 ${fmt(p.f)} · 금 ${fmt(p.g)} 징수`)};
-$('#tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b||!S)return;view=b.dataset.v;render();$('#view').scrollTop=0};
+function focusNext(){const n=document.querySelector('.node.next');if(n)n.closest('.chap').scrollIntoView({block:'start'})}
+$('#tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b||!S)return;view=b.dataset.v;render();$('#view').scrollTop=0;if(view==='stage')focusNext()};
 
 function seal(b,size=''){return `<div class="seal ${size} f-${b.fac} r${b.rar}" aria-hidden="true"><img class="px" src="${portrait(b)}" alt=""></div>`}
 function renderView(){
@@ -888,7 +909,7 @@ function renderView(){
 
 /* ---------------- 출정 ---------------- */
 function vStage(){
-  const nf=60+8*(S.stage+1)+50*Math.floor((S.stage+1)/5), ng=30+6*(S.stage+1)+30*Math.floor((S.stage+1)/5);
+  const nf=foodRateAt(S.stage+1), ng=goldRateAt(S.stage+1);
   let h=`<h2>출정</h2><p class="sub">도전마다 군령 ${AP_COST}개를 쓰고, 이기면 ${AP_WIN}개를 돌려받아요. 스테이지를 깰수록 보상과 시간당 생산량이 늘고, 장을 평정하면 크게 뛰어요. 진척 ${S.stage}/${NSTAGE}</p>
   <div class="stats" style="grid-template-columns:1fr 1fr;margin-top:0"><div class="stat"><small>현재 시간당 생산</small><b>糧 ${foodRate()} · 金 ${goldRate()}</b></div><div class="stat"><small>다음 스테이지 평정 시</small><b>${S.stage>=NSTAGE?'최대치':`糧 ${nf} · 金 ${ng}`}</b></div></div>`;
   CH.forEach((c,ci)=>{
@@ -915,9 +936,11 @@ function openStage(n){
   <h3>적 진형</h3><div class="reveal">${foe.map(s=>{const b=baseOf(s);return `<div class="rv" style="animation:none">${seal(b,'sm')}<div class="nm">${esc(b.name)}</div><div class="cls">${CLS[b.cls].g} ${CLS[b.cls].n}</div></div>`}).join('')}</div>
   <div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat"><small>적 전투력</small><b>${fmt(fp)}</b></div><div class="stat"><small>내 전투력</small><b style="color:${mp>=fp?'var(--jade)':'var(--cinnabar)'}">${fmt(mp)}</b></div></div>
   <div class="row" style="margin-bottom:14px"><span class="sub" style="margin:0">${first?'첫 승리 보상':'반복 보상'}</span><span class="sp"></span><span class="coin"><b class="sl gold">金</b>${fmt(rw.gold)}</span><span class="coin"><b class="sl food">糧</b>${fmt(rw.food)}</span><span class="coin"><b class="sl ap">令</b>+${AP_WIN}</span></div>
+  ${n<S.stage?sweepHtml(n):''}
   <button type="button" class="btn wide red" id="go" ${mine.some(Boolean)&&S.ap>=AP_COST?'':'disabled'}>출진 <b class="sl ap">令</b>${AP_COST}</button>
   ${S.ap<AP_COST?`<p class="sub" style="margin-top:8px">군령이 부족해요 (${S.ap}/${AP_COST}). 5분마다 1개씩, 스테이지 승리 시 ${AP_WIN}개씩 채워져요.</p>`:''}
   ${mine.some(Boolean)?'':'<p class="sub" style="margin-top:8px">진형 탭에서 장수를 먼저 편성하세요.</p>'}`);
+  if(n<S.stage)bindSweep(n);
   $('#go').onclick=()=>{
     closeSheet();
     tickAP();if(S.ap<AP_COST){toast('군령이 부족해요');return}
@@ -927,6 +950,30 @@ function openStage(n){
     if(res.win){const f=n>=S.stage;const r=stageReward(n,f);S.gold+=r.gold;S.food+=r.food;S.ap+=AP_WIN;r.ap=AP_WIN;if(f)S.stage=n+1;rwText=r}
     save();renderTop();
     playBattle(res,stageName(n),'아군','적군',()=>res.win?rewardHtml(rwText):`<p class="sub">장수를 강화하거나 진형을 바꿔 다시 도전하세요.</p>`);
+  };
+}
+
+/* ---------------- 소탕 ---------------- */
+let swN=1;
+const swMax=()=>Math.floor(S.ap/AP_COST);
+function sweepHtml(n){
+  const mx=swMax();swN=Math.max(1,Math.min(swN,mx||1));const r=stageReward(n,false);
+  return `<div class="sweep-box"><div class="row"><b>소탕</b><span class="sub" style="margin:0">전투 없이 반복 보상을 바로 받아요 · 1회 令 ${AP_COST}</span></div>
+   ${mx<1?`<p class="sub" style="margin:6px 0 0">군령이 부족해요 (${S.ap}/${AP_COST}).</p>`:`
+   <div class="row" style="margin-top:8px"><div class="stepper"><button type="button" data-sw="-1" aria-label="한 번 줄이기">−</button><b id="sw-n" class="num">${swN}</b><button type="button" data-sw="1" aria-label="한 번 늘리기">+</button></div>
+    <button type="button" class="btn ghost sm" data-sw="max">최대 ${mx}회</button><span class="sp"></span><span class="sub num" id="sw-r" style="margin:0">金 +${fmt(r.gold*swN)} · 糧 +${fmt(r.food*swN)}</span></div>
+   <button type="button" class="btn wide" id="sw-go" style="margin-top:8px">소탕 ${swN}회 · 令 ${AP_COST*swN}</button>`}</div>`;
+}
+function bindSweep(n){
+  const box=document.querySelector('.sweep-box');if(!box)return;
+  const r=stageReward(n,false);
+  const upd=()=>{const mx=swMax();swN=Math.max(1,Math.min(swN,mx));$('#sw-n').textContent=swN;$('#sw-r').textContent=`金 +${fmt(r.gold*swN)} · 糧 +${fmt(r.food*swN)}`;$('#sw-go').textContent=`소탕 ${swN}회 · 令 ${AP_COST*swN}`};
+  box.querySelectorAll('[data-sw]').forEach(b=>b.onclick=()=>{const v=b.dataset.sw;swN=v==='max'?swMax():swN+Number(v);upd()});
+  const go=$('#sw-go');
+  if(go)go.onclick=()=>{
+    tickAP();const k=Math.min(swN,swMax());if(k<1){toast('군령이 부족해요');return}
+    S.ap-=AP_COST*k;S.gold+=r.gold*k;S.food+=r.food*k;save();renderTop();
+    toast(`소탕 ${k}회 완료 · 金 +${fmt(r.gold*k)} · 糧 +${fmt(r.food*k)}`);openStage(n);
   };
 }
 function rewardHtml(r){return `<div class="rw"><span class="coin"><b class="sl gold">金</b>+${fmt(r.gold)}</span><span class="coin"><b class="sl food">糧</b>+${fmt(r.food)}</span>${r.ap?`<span class="coin"><b class="sl ap">令</b>+${r.ap}</span>`:''}</div>`}
