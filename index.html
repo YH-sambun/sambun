@@ -217,6 +217,7 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .dtab th,.dtab td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:right}
 .dtab th[scope="row"],.dtab thead th:first-child{text-align:left;color:var(--mute);font-weight:500}
 .dtab thead th{color:var(--mute);font-weight:500;font-size:12px}
+.dtab th[scope="row"]{white-space:nowrap}
 .top{flex-wrap:wrap}
 
 .warn{border:1px solid var(--cinnabar);background:rgba(208,80,58,.10);border-radius:12px;padding:12px;margin-top:10px;font-size:13px}
@@ -262,13 +263,25 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 
 .daychips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
 .daychips button{flex:none}
+
+.dmg.b{color:#f2a35a}
+.dmg.s{color:var(--r4);font-size:12px}
+.tbox{background:var(--panel);border:1px solid var(--bronze-d);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13px}
+.tb-h{color:var(--bronze);font-weight:500}
+.tbox ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+.tbox .hint{color:var(--mute)}
+.li.bond{align-items:flex-start}
+.bfx{color:var(--bronze)!important}
+.bmem{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.bmem>span{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--mute)}
+.bmem .unown{opacity:.45;filter:grayscale(.8)}
 </style>
 </head>
 <body>
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.7.0</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.8.0</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -360,6 +373,112 @@ const GENS_RAW=[
 ];
 const GENS=GENS_RAW.map(r=>({id:r[0],name:r[1],hz:r[2],fac:r[3],rar:r[4],cls:r[5],str:r[6],int:r[7],lead:r[8],spd:r[9],skill:r[10]||DEF_SKILL[r[5]]}));
 const GMAP=Object.fromEntries(GENS.map(g=>[g.id,g]));
+/* ---------------- 전법 · 진영 · 인연 데이터 ---------------- */
+// tg: front 맨앞 · back 맨뒤 · low 체력비율최저 · high 공격최고 · hpmax 체력비율최고 · rand 무작위 · all 전체 · none 공격 없음
+// m 배율 · n 타격 횟수 · ign 방어 무시 · crit 치명타 확정 · exe 처형(체력 비율 이하 시 배율) · cond 특정 아군 동반 시 배율
+// heal 회복 · buff 아군 강화 · deb 적 약화 · stun 기절 확률 · burn 화상(시전자 공격 비율, 턴) · cost 자기 체력 소모 · endure 불굴(한 번 버팀)
+const SK={
+ lubu:{n:'천하무쌍',d:'적 전체를 휩쓸어 0.9배 피해, 자신 공격 2턴 +20%',tg:'all',m:.9,buff:{to:'self',atk:.2,dur:2}},
+ guanyu:{n:'오관참장',d:'무작위 적을 5번 베어 각 0.6배 피해, 방어 30% 무시',tg:'rand',n:5,m:.6,ign:.3},
+ zhaoyun:{n:'칠진칠출',d:'적진을 일곱 번 드나들며 무작위 적에게 7번 0.38배 피해, 자신 체력 15% 회복',tg:'rand',n:7,m:.38,heal:{to:'self',p:.15}},
+ zhangfei:{n:'장판교 일갈',d:'적 전체 0.5배 피해, 각 50% 확률로 1턴 기절, 자신 방어 2턴 +30%',tg:'all',m:.5,stun:.5,buff:{to:'self',def:.3,dur:2}},
+ zhugeliang:{n:'팔진도',d:'적 전체 0.6배 피해, 적 전체 공격 2턴 -25%',tg:'all',m:.6,deb:{to:'all',atk:-.25,dur:2}},
+ caocao:{n:'난세의 간웅',d:'적 전체 0.5배 피해, 아군 전체 공격 2턴 +20%',tg:'all',m:.5,buff:{to:'all',atk:.2,dur:2}},
+ simayi:{n:'고평릉의 변',d:'적 전체 0.55배 피해, 적 전체 방어 2턴 -30%',tg:'all',m:.55,deb:{to:'all',def:-.3,dur:2}},
+ zhouyu:{n:'적벽화공',d:'적 전체 0.6배 피해, 3턴 동안 화상(매 턴 공격의 10%, 방어 무시)',tg:'all',m:.6,burn:{p:.1,dur:3}},
+ sunce:{n:'소패왕',d:'맨 앞 적에게 3.6배 피해, 방어 30% 무시',tg:'front',m:3.6,ign:.3},
+ liubei:{n:'인덕',d:'아군 전체 체력 15% 회복, 아군 전체 공격 2턴 +10%',tg:'none',heal:{to:'all',p:.15},buff:{to:'all',atk:.1,dur:2}},
+ machao:{n:'위수 추격',d:'체력이 가장 낮은 적에게 3.0배 피해, 대상 체력이 30% 이하면 4.5배',tg:'low',m:3,exe:{thr:.3,m:4.5}},
+ huangzhong:{n:'정군산의 일격',d:'공격력이 가장 높은 적에게 2.5배 치명타 확정',tg:'high',m:2.5,crit:1},
+ pangtong:{n:'연환계',d:'적 전체 0.45배 피해, 3턴 동안 화상(매 턴 공격의 8%, 방어 무시)',tg:'all',m:.45,burn:{p:.08,dur:3}},
+ xiahoudun:{n:'발시담정',d:'맨 앞 적 2.4배 피해, 자신 체력 25% 회복, 자신 공격 2턴 +20%',tg:'front',m:2.4,heal:{to:'self',p:.25},buff:{to:'self',atk:.2,dur:2}},
+ xiahouyuan:{n:'질풍신속',d:'무작위 적에게 3번 1.0배 피해',tg:'rand',n:3,m:1},
+ zhangliao:{n:'합비의 위명',d:'적 전체 0.6배 피해, 적 전체 공격 2턴 -20%',tg:'all',m:.6,deb:{to:'all',atk:-.2,dur:2}},
+ xuchu:{n:'나의투마초',d:'갑옷을 벗고 맨 앞 적에게 3.4배 피해, 자신 방어 2턴 -30%',tg:'front',m:3.4,buff:{to:'self',def:-.3,dur:2}},
+ dianwei:{n:'완성의 수호',d:'맨 앞 적 1.8배 피해, 아군 전체 방어 2턴 +30%',tg:'front',m:1.8,buff:{to:'all',def:.3,dur:2}},
+ guojia:{n:'귀재의 간파',d:'체력 비율이 가장 높은 적에게 2.6배 피해, 1턴 기절',tg:'hpmax',m:2.6,stun:1},
+ sunquan:{n:'강동 수성',d:'아군 전체 체력 12% 회복, 아군 전체 방어 2턴 +20%',tg:'none',heal:{to:'all',p:.12},buff:{to:'all',def:.2,dur:2}},
+ ganning:{n:'백기겁영',d:'적 전체 0.55배 피해, 자신 공격 2턴 +25%',tg:'all',m:.55,buff:{to:'self',atk:.25,dur:2}},
+ taishici:{n:'신정의 신궁',d:'공격력이 가장 높은 적에게 2.7배 피해, 50% 확률로 1턴 기절',tg:'high',m:2.7,stun:.5},
+ luxun:{n:'화소연영',d:'적 전체 0.45배 피해, 3턴 동안 화상(매 턴 공격의 12%, 방어 무시)',tg:'all',m:.45,burn:{p:.12,dur:3}},
+ zhangjiao:{n:'황천당립',d:'적 전체 0.5배 피해, 각 30% 확률로 1턴 기절',tg:'all',m:.5,stun:.3},
+ dongzhuo:{n:'주지육림',d:'적 전체 방어 2턴 -25%, 자신 체력 20% 회복',tg:'none',deb:{to:'all',def:-.25,dur:2},heal:{to:'self',p:.2}},
+ yuanshao:{n:'사세삼공',d:'아군 전체 공격과 방어 2턴 +25%',tg:'none',buff:{to:'all',atk:.25,def:.25,dur:2}},
+ weiyan:{n:'자오곡 기책',d:'맨 뒤 적에게 2.9배 피해',tg:'back',m:2.9},
+ guanping:{n:'부자동심',d:'맨 앞 적 2.3배 피해. 관우가 아군에 있으면 3.3배',tg:'front',m:2.3,cond:{ally:'guanyu',m:3.3}},
+ madai:{n:'참위연',d:'체력이 가장 낮은 적에게 2.4배 피해, 대상 체력이 30% 이하면 3.8배',tg:'low',m:2.4,exe:{thr:.3,m:3.8}},
+ liaohua:{n:'백전노장',d:'맨 앞 적 1.6배 피해, 자신 방어 3턴 +40%',tg:'front',m:1.6,buff:{to:'self',def:.4,dur:3}},
+ yujin:{n:'엄정한 군율',d:'맨 앞 적 1.3배 피해, 아군 전체 방어 2턴 +20%',tg:'front',m:1.3,buff:{to:'all',def:.2,dur:2}},
+ lejin:{n:'선등',d:'맨 앞 적에게 2.0배 치명타 확정',tg:'front',m:2,crit:1},
+ lidian:{n:'유장의 지략',d:'무작위 적 2번 0.8배 피해, 체력이 가장 낮은 아군 15% 회복',tg:'rand',n:2,m:.8,heal:{to:'low',p:.15}},
+ chengpu:{n:'강동의 원로',d:'무작위 적 2번 0.9배 피해, 아군 전체 공격 2턴 +10%',tg:'rand',n:2,m:.9,buff:{to:'all',atk:.1,dur:2}},
+ huanggai:{n:'고육계',d:'자신 체력 15%를 깎아 적 전체 0.7배 피해, 2턴 동안 화상(매 턴 공격의 10%, 방어 무시)',tg:'all',m:.7,cost:.15,burn:{p:.1,dur:2}},
+ zhoutai:{n:'불굴의 상흔',d:'자신 체력 25% 회복, 맨 앞 적 1.8배 피해. 특성: 전투마다 한 번, 쓰러질 피해를 체력 1로 버팀',tg:'front',m:1.8,heal:{to:'self',p:.25},endure:1},
+ lingtong:{n:'소요진 사투',d:'맨 앞 적 2.1배 피해, 자신 방어 2턴 +30%',tg:'front',m:2.1,buff:{to:'self',def:.3,dur:2}},
+ gaoshun:{n:'함진영',d:'맨 앞 적 2.2배 피해, 아군 전체 방어 2턴 +15%',tg:'front',m:2.2,buff:{to:'all',def:.15,dur:2}},
+ chengong:{n:'복양의 계책',d:'적 전체 0.45배 피해, 적 전체 공격 2턴 -15%',tg:'all',m:.45,deb:{to:'all',atk:-.15,dur:2}},
+ huaxiong:{n:'사수관 수문',d:'맨 앞 적 2.4배 피해, 자신 방어 2턴 +20%',tg:'front',m:2.4,buff:{to:'self',def:.2,dur:2}},
+ yanliang:{n:'하북 제일검',d:'맨 앞 적에게 2.9배 피해',tg:'front',m:2.9},
+ wenchou:{n:'연진 맹공',d:'무작위 적 2번 1.3배 피해',tg:'rand',n:2,m:1.3},
+ jiling:{n:'삼첨도',d:'맨 앞 적을 3번 찔러 각 0.85배 피해',tg:'front',n:3,m:.85},
+ yuanshu:{n:'옥새의 위세',d:'아군 전체 공격 2턴 +30%, 자신 방어 2턴 -20%',tg:'none',buff:[{to:'all',atk:.3,dur:2},{to:'self',def:-.2,dur:2}]}
+};
+const DEF_SK={
+ inf:{n:'철벽',d:'맨 앞 적 1.4배 피해, 자신 체력 18% 회복',tg:'front',m:1.4,heal:{to:'self',p:.18}},
+ cav:{n:'돌격',d:'맨 앞 적에게 1.8배 피해',tg:'front',m:1.8},
+ arc:{n:'연사',d:'무작위 적 2번 0.85배 피해',tg:'rand',n:2,m:.85},
+ tac:{n:'화계',d:'적 전체 0.6배 피해',tg:'all',m:.6}
+};
+const skillOf=b=>(b&&b.id&&SK[b.id])||DEF_SK[b.cls];
+GENS.forEach(g=>{g.skill=skillOf(g).n});
+// 진영 보너스: 같은 진영(★3 이상) 3명 / 4명 / 5명
+const FAC_BONUS={
+ wei:[{atk:.10},{atk:.18},{atk:.28}],
+ shu:[{hp:.12},{hp:.22},{hp:.35}],
+ wu:[{atk:.06,spd:6},{atk:.11,spd:10},{atk:.16,spd:15}],
+ qun:[{def:.15,atk:.04},{def:.25,atk:.08},{def:.38,atk:.12}]
+};
+// 인연: ids 전원이 진형에 있으면 발동(min이 있으면 그 수 이상, full은 전원일 때 효과)
+const BONDS=[
+ {n:'도원결의',ids:['liubei','guanyu','zhangfei'],fx:{atk:.15,hp:.15},d:'복숭아밭에서 의형제를 맺은 세 사람'},
+ {n:'오호대장군',ids:['guanyu','zhangfei','zhaoyun','machao','huangzhong'],min:3,fx:{atk:.10},full:{atk:.25,hp:.10},d:'촉의 다섯 맹장. 3명 이상이면 발동하고 5명 전원이면 효과가 커져요'},
+ {n:'수어지교',ids:['liubei','zhugeliang'],fx:{atk:.12,hp:.10},d:'물과 물고기 같은 군주와 책사'},
+ {n:'와룡봉추',ids:['zhugeliang','pangtong'],fx:{atk:.20},d:'하나만 얻어도 천하를 얻는다는 두 책사'},
+ {n:'관씨 부자',ids:['guanyu','guanping'],fx:{atk:.10,def:.10},d:'함께 형주를 지킨 아버지와 아들'},
+ {n:'하후 형제',ids:['xiahoudun','xiahouyuan'],fx:{atk:.12},d:'조조를 떠받친 하후씨의 두 장수'},
+ {n:'호위 쌍웅',ids:['xuchu','dianwei'],fx:{def:.20,hp:.10},d:'조조의 곁을 지킨 두 장사'},
+ {n:'군신의 지우',ids:['caocao','guojia'],fx:{atk:.10,spd:8},d:'조조가 가장 아낀 책사 곽가'},
+ {n:'단금지교',ids:['sunce','zhouyu'],fx:{atk:.18},d:'쇠도 자를 만큼 굳은 손책과 주유의 우정'},
+ {n:'적벽의 불길',ids:['zhouyu','huanggai'],fx:{atk:.15},d:'고육계로 화공을 이룬 대도독과 노장'},
+ {n:'신정의 맹약',ids:['sunce','taishici'],fx:{atk:.12,spd:5},d:'일기토 끝에 주군과 신하가 된 두 사람'},
+ {n:'원수에서 전우로',ids:['ganning','lingtong'],fx:{atk:.10,def:.10},d:'원수였으나 합비에서 서로를 구한 두 장수'},
+ {n:'불굴의 호위',ids:['sunquan','zhoutai'],fx:{def:.20,hp:.10},d:'온몸의 상처로 손권을 지킨 주태'},
+ {n:'하비의 최후',ids:['lubu','chengong','gaoshun'],fx:{atk:.10,def:.15},d:'하비성에서 끝까지 함께한 여포군'},
+ {n:'하북의 쌍벽',ids:['yanliang','wenchou'],fx:{atk:.15},d:'원소군을 대표한 두 맹장'},
+ {n:'의부자',ids:['dongzhuo','lubu'],fx:{hp:.15},d:'적토마로 맺어진 동탁과 여포'},
+ {n:'원씨 형제',ids:['yuanshao','yuanshu'],fx:{atk:.08,hp:.08},d:'사세삼공 명문가의 두 형제'},
+ {n:'숙명의 라이벌',ids:['zhugeliang','simayi'],fx:{atk:.15},d:'오장원에서 맞선 두 지략가'}
+];
+function fxStr(v){const o=[];if(v.atk)o.push(`공격 +${Math.round(v.atk*100)}%`);if(v.hp)o.push(`체력 +${Math.round(v.hp*100)}%`);if(v.def)o.push(`방어 +${Math.round(v.def*100)}%`);if(v.spd)o.push(`속도 +${v.spd}`);return o.join(' · ')}
+function bondActive(B,ids){const have=B.ids.filter(x=>ids.has(x)).length;return have>=(B.min||B.ids.length)}
+function bondFx(B,ids){return B.full&&B.ids.every(x=>ids.has(x))?B.full:B.fx}
+function teamBonusInfo(us){
+  const cnt={};us.forEach(u=>{if(u.rar>=3)cnt[u.fac]=(cnt[u.fac]||0)+1});
+  const facs=Object.entries(cnt).filter(([f,c])=>c>=3&&FAC_BONUS[f]).map(([f,c])=>({f,c,b:FAC_BONUS[f][Math.min(c,5)-3]}));
+  const ids=new Set(us.map(u=>u.id).filter(Boolean));
+  return {facs,bonds:BONDS.filter(B=>bondActive(B,ids)),ids};
+}
+function applyBonuses(us){
+  const info=teamBonusInfo(us);
+  us.forEach(u=>{
+    let a=0,h=0,d=0,sp=0;const add=v=>{a+=v.atk||0;h+=v.hp||0;d+=v.def||0;sp+=v.spd||0};
+    info.facs.forEach(F=>{if(u.fac===F.f&&u.rar>=3)add(F.b)});
+    info.bonds.forEach(B=>{if(B.ids.includes(u.id))add(bondFx(B,info.ids))});
+    u.atk=Math.round(u.atk*(1+a));u.maxhp=u.hp=Math.round(u.maxhp*(1+h));u.def=Math.round(u.def*(1+d));u.spd=Math.round((u.spd+sp)*10)/10;
+  });
+  return info;
+}
+
 // id, 이름, 종류 글자, 등급, 효과(%)/속도(+)
 const ITEMS_RAW=[
  ['qinglong','청룡언월도','武',5,{atk:25}],
@@ -542,56 +661,85 @@ function mkUnit(spec,side,slot){
   let spd=b.spd+lv*.3;
   const it=spec.i&&IMAP[spec.i];
   if(it){const f=it.fx;hp*=1+(f.hp||0)/100;atk*=1+(f.atk||0)/100;def*=1+(f.def||0)/100;spd+=f.spd||0}
-  const base={inf:1.4,cav:1.8,arc:.85,tac:.6}[b.cls]*(b.rar===5?1.3:1);
-  hp=Math.round(hp);
-  return {id:b.id,name:b.name,hz:b.hz,fac:b.fac,rar:b.rar,cls:b.cls,skill:b.skill||DEF_SKILL[b.cls],sm:base,
-    hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0};
+  const sk=skillOf(b);hp=Math.round(hp);
+  return {id:b.id,name:b.name,hz:b.hz,fac:b.fac,rar:b.rar,cls:b.cls,skill:sk.n,sk,endure:!!sk.endure,
+    hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0,bf:[],burn:[],stun:0,endUsed:0};
 }
+function buildTeam(specs,side){const us=specs.map((s,i)=>s?mkUnit(s,side,i):null).filter(Boolean);const info=applyBonuses(us);return {us,info}}
 function unitPower(u){return Math.round(u.atk*1.5+u.maxhp/6+u.def*1.2+u.spd)}
 function specPower(s){return unitPower(mkUnit(s,0,0))}
-function deckPower(specs){return specs.reduce((a,s)=>a+(s?specPower(s):0),0)}
-
+function deckPower(specs){return buildTeam(specs,0).us.reduce((a,u)=>a+unitPower(u),0)}
+const arr=x=>!x?[]:Array.isArray(x)?x:[x];
+function eff(u,k){let v=1;for(const b of u.bf)v+=b[k]||0;return Math.max(.3,v)}
 function simulate(As,Bs,seed){
   const rng=mulberry(seed);
-  const T=[As.map((s,i)=>s?mkUnit(s,0,i):null).filter(Boolean),Bs.map((s,i)=>s?mkUnit(s,1,i):null).filter(Boolean)];
+  const A=buildTeam(As,0), B=buildTeam(Bs,1), T=[A.us,B.us];
   const init=[T[0].map(u=>({...u})),T[1].map(u=>({...u}))];
-  const ev=[];
-  const alive=k=>T[k].some(x=>x.hp>0);
+  const ev=[], alive=k=>T[k].some(x=>x.hp>0);
+  const dmgTo=(t,d,e,extra)=>{t.hp-=d;if(t.hp<=0){if(t.endure&&!t.endUsed){t.hp=1;t.endUsed=1;e.notes.push(`${t.name} 불굴`)}else t.hp=0}e.hits.push({s:t.side,i:t.slot,d,hp:t.hp,...extra})};
   for(let r=1;r<=25&&alive(0)&&alive(1);r++){
     const order=[...T[0],...T[1]].filter(u=>u.hp>0).sort((a,b)=>b.spd-a.spd||a.side-b.side||a.slot-b.slot);
     for(const u of order){
       if(u.hp<=0)continue;
-      const foes=T[1-u.side].filter(x=>x.hp>0);
-      if(!foes.length)break;
+      if(!alive(1-u.side))break;
+      if(u.stun>0){u.stun--;ev.push({s:u.side,i:u.slot,skip:1,hits:[],heals:[],notes:[]});continue}
       u.acts++;
-      const sk=u.acts%3===0;
-      const e={s:u.side,i:u.slot,sk:sk?u.skill:null,hits:[],heal:0};
-      const hit=(t,mult)=>{
-        const crit=rng()<.1;
-        const raw=u.atk*mult*adv(u.cls,t.cls)*(.9+rng()*.2)*(crit?1.5:1);
-        const ed=u.cls==='tac'?t.def*.6:t.def;
-        const d=Math.max(1,Math.round(raw*120/(120+ed)));
-        t.hp=Math.max(0,t.hp-d);
-        e.hits.push({s:t.side,i:t.slot,d,c:crit});
+      const sk=u.acts%3===0, S=u.sk, e={s:u.side,i:u.slot,sk:sk?S.n:null,hits:[],heals:[],stuns:[],notes:[]};
+      const atkV=u.atk*eff(u,'atk');
+      const foes=()=>T[1-u.side].filter(x=>x.hp>0), allies=()=>T[u.side].filter(x=>x.hp>0);
+      const hit=(t,mult,o)=>{
+        if(!t||t.hp<=0)return;const crit=(o&&o.crit)||rng()<.1;
+        const raw=atkV*mult*adv(u.cls,t.cls)*(.9+rng()*.2)*(crit?1.5:1);
+        let ed=t.def*eff(t,'def')*(1-((o&&o.ign)||0));if(u.cls==='tac')ed*=.6;
+        dmgTo(t,Math.max(1,Math.round(raw*120/(120+ed))),e,{c:crit});
       };
-      if(u.cls==='inf'){hit(foes[0],sk?u.sm:1);if(sk){const h=Math.round(u.maxhp*.18);u.hp=Math.min(u.maxhp,u.hp+h);e.heal=h}}
-      else if(u.cls==='cav'){hit(foes[0],sk?u.sm:1)}
-      else if(u.cls==='arc'){
-        if(sk){for(let k=0;k<2;k++){const al=T[1-u.side].filter(x=>x.hp>0);if(!al.length)break;hit(al[Math.floor(rng()*al.length)],u.sm)}}
-        else hit(foes.reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a),1);
+      if(!sk){
+        const f=foes();
+        if(u.cls==='inf'||u.cls==='cav')hit(f[0],1);
+        else if(u.cls==='arc')hit(f.reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a),1);
+        else hit(f[Math.floor(rng()*f.length)],1);
       } else {
-        if(sk)foes.forEach(t=>hit(t,u.sm));else hit(foes[Math.floor(rng()*foes.length)],1);
+        if(S.cost){const c=Math.round(u.maxhp*S.cost);u.hp=Math.max(1,u.hp-c);e.hits.push({s:u.side,i:u.slot,d:c,hp:u.hp,self:1})}
+        const pick=()=>{const f=foes();if(!f.length)return null;
+          switch(S.tg){case 'front':return f[0];case 'back':return f[f.length-1];
+            case 'low':return f.reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a);
+            case 'hpmax':return f.reduce((a,b)=>b.hp/b.maxhp>a.hp/a.maxhp?b:a);
+            case 'high':return f.reduce((a,b)=>b.atk*eff(b,'atk')>a.atk*eff(a,'atk')?b:a);
+            default:return f[Math.floor(rng()*f.length)]}};
+        const hitT=[];
+        if(S.tg==='all'){foes().forEach(t=>{hit(t,S.m,S);hitT.push(t)})}
+        else if(S.tg!=='none'){
+          for(let k=0;k<(S.n||1);k++){const t=pick();if(!t)break;let m=S.m;
+            if(S.exe&&t.hp/t.maxhp<=S.exe.thr)m=S.exe.m;
+            if(S.cond&&T[u.side].some(x=>x.id===S.cond.ally&&x.hp>0))m=S.cond.m;
+            hit(t,m,S);if(!hitT.includes(t))hitT.push(t)}
+        }
+        if(S.stun)hitT.forEach(t=>{if(t.hp>0&&rng()<S.stun){t.stun=1;e.stuns.push({s:t.side,i:t.slot})}});
+        if(S.burn)hitT.forEach(t=>{if(t.hp>0)t.burn.push({d:Math.max(1,Math.round(atkV*S.burn.p)),dur:S.burn.dur})});
+        if(S.heal){const H=S.heal, tg=H.to==='all'?allies():H.to==='low'?[allies().reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a)]:[u];
+          tg.forEach(t=>{const h=Math.min(t.maxhp-t.hp,Math.round(t.maxhp*H.p));t.hp+=h;e.heals.push({s:t.side,i:t.slot,h,hp:t.hp})})}
+        arr(S.buff).forEach(b=>{(b.to==='all'?allies():[u]).forEach(t=>t.bf.push({atk:b.atk||0,def:b.def||0,dur:b.dur}));const x=fxStr({atk:b.atk>0?b.atk:0,def:b.def>0?b.def:0});const y=[b.atk<0?`공격 ${Math.round(b.atk*100)}%`:'',b.def<0?`방어 ${Math.round(b.def*100)}%`:''].filter(Boolean).join(' · ');e.notes.push(`${b.to==='all'?'아군':'자신'} ${[x,y].filter(Boolean).join(' · ')}`)});
+        arr(S.deb).forEach(b=>{(b.to==='all'?foes():hitT.filter(t=>t.hp>0)).forEach(t=>t.bf.push({atk:b.atk||0,def:b.def||0,dur:b.dur}));e.notes.push(`적 ${[b.atk?`공격 ${Math.round(b.atk*100)}%`:'',b.def?`방어 ${Math.round(b.def*100)}%`:''].filter(Boolean).join(' · ')}`)});
+        if(S.burn&&hitT.length)e.notes.push('화상');
+        if(e.stuns.length)e.notes.push(`기절 ${e.stuns.length}명`);
       }
       ev.push(e);
-      if(!alive(1-u.side))break;
     }
+    // 턴 종료: 화상 피해, 효과 지속 시간 감소
+    const tick={tick:1,hits:[],heals:[],notes:[]};
+    [...T[0],...T[1]].forEach(u=>{
+      if(u.hp>0&&u.burn.length){const d=u.burn.reduce((a,b)=>a+b.d,0);dmgTo(u,d,tick,{burn:1})}
+      u.burn=u.burn.filter(b=>--b.dur>0);u.bf=u.bf.filter(b=>--b.dur>0);
+    });
+    if(tick.hits.length)ev.push(tick);
   }
   let win;
   if(alive(0)&&!alive(1))win=true;
   else if(!alive(0))win=false;
   else{const pct=k=>T[k].reduce((a,x)=>a+x.hp/x.maxhp,0)/T[k].length;win=pct(0)>pct(1)}
-  return {win,ev,init};
+  return {win,ev,init,bonus:[A.info,B.info]};
 }
+function bonusLine(info){if(!info)return '';const p=[...info.bonds.map(b=>b.n),...info.facs.map(f=>`${FAC[f.f]} ${f.c}명`)];return p.join(' · ')}
 
 /* ---------------- stages ---------------- */
 function mkTroop(tr,cls){const b=TROOP_BASE[cls];return {name:tr[0],hz:tr[1],fac:tr[2],rar:2,cls,str:b[0],int:b[1],lead:b[2],spd:b[3],skill:DEF_SKILL[cls]}}
@@ -819,10 +967,15 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.7.0';
+const GAME_VERSION='1.8.0';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.8.0',date:'2026-10-13',title:'장수별 고유 전법 · 진영 보너스 · 인연',reward:{ap:20},items:[
+  '장수 44명 모두에게 연의의 일화를 딴 고유 전법이 생겼어요. 관우 오관참장, 조운 칠진칠출, 장비 장판교 일갈, 제갈량 팔진도, 황개 고육계 등 피해·회복·강화·약화·기절·화상 효과가 다양해요.',
+  '같은 진영(★3 이상) 장수를 3·4·5명 넣으면 진영 보너스를 받아요. 위는 공격, 촉은 체력, 오는 공격과 속도, 군웅은 방어와 공격이 올라요.',
+  '도원결의, 오호대장군, 와룡봉추, 단금지교 등 인연 18종이 생겼어요. 진형 탭에서 발동 중인 효과와 1명만 더 있으면 발동하는 인연을 볼 수 있어요.',
+  '도감에 인연 탭을 추가했어요. 장수 정보에서도 그 장수의 전법 설명과 인연을 볼 수 있어요.']},
  {v:'1.7.0',date:'2026-10-13',title:'결투장 일일 정산과 장수 사용률',reward:{ap:20},items:[
   '대전 탭 이름을 결투장으로 바꿨어요. 순위는 매일 자정까지의 결투로 정해지고, 다음 날 오전 9시에 정산 보상을 받아요.',
   '정산 보상(군량): 1위 1,620(장수 10회 + 보물 10회 등용분), 2위 900(장수 10회), 3위 720(보물 10회), 그 외 참여자 300(장수 3회). 그날 한 번 이상 도전해야 순위에 올라요.',
@@ -1131,7 +1284,7 @@ document.addEventListener('click',e=>{
 function vDeck(){
   const specs=mySpecs();
   let h=`<div class="row"><div><h2>진형</h2><p class="sub" style="margin:0">이 진형으로 출정하고, 대전에서는 방어 진형으로도 쓰여요.</p></div></div>
-  <div class="row" style="margin:12px 0"><div><div class="sub" style="margin:0">총 전투력</div><div class="power num">${fmt(deckPower(specs))}</div></div><span class="sp"></span><button type="button" class="btn ghost sm" id="auto">자동 편성</button></div>`;
+  <div class="row" style="margin:12px 0"><div><div class="sub" style="margin:0">총 전투력</div><div class="power num">${fmt(deckPower(specs))}</div></div><span class="sp"></span><button type="button" class="btn ghost sm" id="auto">자동 편성</button></div>${teamBoxHtml(specs)}`;
   S.deck.forEach((gid,i)=>{
     const pos=`<div class="pos">${i+1}<small>${POS[i]}</small></div>`;
     if(!gid){h+=`<div class="slot empty" role="button" tabindex="0" data-slot="${i}">${pos}<div class="info"><b>빈 자리</b><span>눌러서 장수 편성</span></div></div>`;return}
@@ -1139,7 +1292,7 @@ function vDeck(){
     h+=`<div class="slot" role="button" tabindex="0" data-slot="${i}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${CLS[g.cls].g} ${CLS[g.cls].n} · Lv ${s.lv}${s.d?` · 돌파 ${s.d}`:''}${it?` · ${esc(it.name)}`:''} · 전투력 ${fmt(specPower(s))}</span></div>
     <div class="mv"><button type="button" data-mv="${i}:-1" aria-label="앞으로" ${i===0?'disabled':''}>▲</button><button type="button" data-mv="${i}:1" aria-label="뒤로" ${i===4?'disabled':''}>▼</button></div></div>`;
   });
-  h+=`<div class="legend"><b>전투 규칙</b><br>보병·기병은 앞 번호의 적부터 공격하고, 궁병은 체력이 가장 낮은 적을, 책사는 무작위 적을 노립니다. 세 번째 행동마다 전법이 발동해요.<br><b>상성</b> 기병 → 보병 → 궁병 → 기병 (유리하면 피해 +25%)</div>`;
+  h+=`<div class="legend"><b>전투 규칙</b><br>보병·기병은 앞 번호의 적부터 공격하고, 궁병은 체력이 가장 낮은 적을, 책사는 무작위 적을 노립니다. 세 번째 행동마다 전법이 발동해요.<br><b>상성</b> 기병 → 보병 → 궁병 → 기병 (유리하면 피해 +25%)<br><b>진영·인연</b> 같은 진영 3명 이상, 또는 인연 있는 장수를 함께 넣으면 능력치가 올라요. 도감의 인연 탭에서 전체 목록을 볼 수 있어요.</div>`;
   return h;
 }
 document.addEventListener('click',e=>{
@@ -1169,6 +1322,28 @@ document.addEventListener('click',e=>{
   if(g){const at=S.deck.indexOf(g);if(at>=0)S.deck[at]=S.deck[idx];S.deck[idx]=g}else S.deck[idx]=null;
   save();closeSheet();renderView();
 });
+/* ---------------- 진영·인연 화면 ---------------- */
+function teamBoxHtml(specs){
+  const us=specs.filter(Boolean).map((s,i)=>mkUnit(s,0,i)), info=teamBonusInfo(us);
+  const li=[...info.facs.map(F=>`<li><b>${FAC[F.f]} ${F.c}명</b> · ${fxStr(F.b)} <span class="sub">(${FAC[F.f]} 장수)</span></li>`),
+    ...info.bonds.map(B=>`<li><b>인연 · ${B.n}</b> · ${fxStr(bondFx(B,info.ids))} <span class="sub">(${B.ids.filter(x=>info.ids.has(x)).map(x=>GMAP[x].name).join('·')})</span></li>`)];
+  const hints=BONDS.filter(B=>!bondActive(B,info.ids)).map(B=>{const have=B.ids.filter(x=>info.ids.has(x)),need=(B.min||B.ids.length)-have.length;return {B,have,need}})
+    .filter(x=>x.have.length&&x.need===1).slice(0,3)
+    .map(({B,have})=>`<li class="hint">${B.n}: ${B.ids.filter(x=>!info.ids.has(x)).map(x=>`${GMAP[x].name}${S.gens[x]?'':'(미보유)'}`).join(' 또는 ')} 추가 시 발동</li>`);
+  return `<div class="tbox"><b class="tb-h">진영·인연 효과</b>${li.length?`<ul>${li.join('')}</ul>`:'<p class="sub" style="margin:4px 0 0">같은 진영 장수를 3명 이상 넣거나 인연이 있는 장수를 함께 넣으면 능력치가 올라요.</p>'}${hints.length?`<ul>${hints.join('')}</ul>`:''}</div>`;
+}
+function bondsOfHtml(id){
+  const bs=BONDS.filter(B=>B.ids.includes(id));if(!bs.length)return '';
+  return `<h3>인연</h3><div class="list">${bs.map(B=>`<div class="li" style="display:block"><b>${B.n}</b> <span class="sub">· ${fxStr(B.fx)}${B.full?` (전원 ${fxStr(B.full)})`:''}</span><div class="sub" style="margin:2px 0 0">${B.ids.map(x=>GMAP[x].name).join(' · ')}${B.min?` 중 ${B.min}명 이상`:''}</div></div>`).join('')}</div>`;
+}
+function bondsDexHtml(){
+  const facRows=Object.entries(FAC_BONUS).map(([f,t])=>`<tr><th scope="row">${FAC[f]}</th>${t.map(v=>`<td>${fxStr(v)}</td>`).join('')}</tr>`).join('');
+  return `<h3>진영 보너스 <span style="font-weight:400">· 같은 진영 ★3 이상 장수에게 적용</span></h3>
+  <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>3명</th><th>4명</th><th>5명</th></tr></thead><tbody>${facRows}</tbody></table></div>
+  <h3>인연 ${BONDS.length}종 <span style="font-weight:400">· 함께 편성하면 해당 장수들에게 적용</span></h3>
+  <div class="list">${BONDS.map(B=>`<div class="li bond"><div class="info"><b>${B.n}</b><span>${esc(B.d)}</span><span class="bfx">${fxStr(B.fx)}${B.full?` · 전원 시 ${fxStr(B.full)}`:''}${B.min?` · ${B.min}명 이상`:''}</span>
+    <div class="bmem">${B.ids.map(x=>`<span class="${S.gens[x]?'':'unown'}" title="${GMAP[x].name}">${seal(GMAP[x],'sm')}<small>${GMAP[x].name}</small></span>`).join('')}</div></div></div>`).join('')}</div>`;
+}
 
 /* ---------------- 무장 ---------------- */
 function vGens(){
@@ -1201,7 +1376,7 @@ function openGen(gid){
    <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${st.lv}/${MAXLV} · 돌파 ${st.d}/5</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <div class="stats"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
   ${usageHtml(gid)}<div class="row sub" style="margin:0 0 4px">무력 ${b.str} · 지력 ${b.int} · 통솔 ${b.lead}<span class="sp"></span>전투력 <b style="color:var(--bronze)">${fmt(unitPower(u))}</b></div>
-  <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${SKILL_DESC[b.cls]}${b.rar===5?' (고유 전법: 위력 30% 증가)':''}. 세 번째 행동마다 발동.</p>
+  <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. 세 번째 행동마다 발동.</p>${bondsOfHtml(b.id)}
   <h3>장비</h3>
   <div class="li" style="margin-bottom:12px">${it?`<div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)}</b><span>${fxText(it)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>장착 없음</b><span>보물을 하나 장착할 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-equip="${gid}">${it?'변경':'장착'}</button></div>
   <div class="row"><button type="button" class="btn" style="flex:1" data-lvup="${gid}" ${st.lv>=MAXLV||S.gold<cost?'disabled':''}>${st.lv>=MAXLV?'최대 레벨':`레벨 업 <b class="sl gold">金</b>${fmt(cost)}`}</button>
@@ -1231,7 +1406,8 @@ function statCell(lab,v,max){return `<div class="dc"><small>${lab}</small><b cla
 function vDex(){
   const ownedN=GENS.filter(g=>S.gens[g.id]).length, kinds=new Set(S.items.map(x=>x.k));
   let h=`<h2>도감</h2><p class="sub">모든 장수와 보물의 기본 능력치예요. 보유한 것은 밝게, 아직 없는 것은 흐리게 표시돼요.</p>
-  <div class="seg" role="group"><button type="button" data-dt="gens" aria-pressed="${dexTab==='gens'}">장수 ${ownedN}/${GENS.length}</button><button type="button" data-dt="items" aria-pressed="${dexTab==='items'}">보물 ${kinds.size}/${ITEMS.length}</button></div>`;
+  <div class="seg" role="group"><button type="button" data-dt="gens" aria-pressed="${dexTab==='gens'}">장수 ${ownedN}/${GENS.length}</button><button type="button" data-dt="items" aria-pressed="${dexTab==='items'}">보물 ${kinds.size}/${ITEMS.length}</button><button type="button" data-dt="bonds" aria-pressed="${dexTab==='bonds'}">인연</button></div>`;
+  if(dexTab==='bonds')return h+bondsDexHtml();
   if(dexTab==='gens'){
     h+=`<div class="chips" role="group" aria-label="세력">${[['all','전체'],...Object.entries(FAC)].map(([k,v])=>`<button type="button" data-dfac="${k}" aria-pressed="${dexFac===k}">${v}</button>`).join('')}</div>
     <div class="chips" role="group" aria-label="정렬"><span class="sub" style="margin:0;align-self:center">정렬</span>${Object.entries(DSORT).map(([k,v])=>`<button type="button" data-dsort="${k}" aria-pressed="${dexSort===k}">${v}</button>`).join('')}</div>`;
@@ -1254,7 +1430,7 @@ function openDex(id){
   ${usageHtml(id)}<h3>전투 능력치 (보물 미장착 기준)</h3>
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>Lv 1</th><th>Lv ${MAXLV} · 돌파 5</th></tr></thead><tbody>
   ${row('체력',fmt(a.maxhp),fmt(z.maxhp))}${row('공격',fmt(a.atk),fmt(z.atk))}${row('방어',fmt(a.def),fmt(z.def))}${row('속도',a.spd,z.spd)}${row('전투력',fmt(unitPower(a)),fmt(unitPower(z)))}</tbody></table></div>
-  <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${SKILL_DESC[b.cls]}${b.rar===5?' (고유 전법: 위력 30% 증가)':''}. 세 번째 행동마다 발동.</p>
+  <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. 세 번째 행동마다 발동.</p>${bondsOfHtml(b.id)}
   ${own?`<button type="button" class="btn ghost wide" data-gen="${id}">내 장수 화면으로</button>`:`<p class="sub">등용 탭의 장수 등용에서 얻을 수 있어요.</p>`}`);
 }
 document.addEventListener('click',e=>{
@@ -1399,7 +1575,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml){
   const el=$('#battle');
   el.innerHTML=`<div class="bt"><div class="bt-head"><span class="bt-title">${esc(title)}</span><button type="button" class="btn ghost sm" id="bt-speed">1배속</button><button type="button" class="btn ghost sm" id="bt-skip">결과 보기</button></div>
   <div class="bt-side">${esc(foeLab)}</div><div class="bt-row bt-foe">${row(1)}</div>
-  <div class="bt-log"><div class="sk" id="bt-sk"></div><div class="ln" id="bt-ln">전투 개시</div></div>
+  <div class="bt-log"><div class="sk" id="bt-sk"></div><div class="ln" id="bt-ln">${esc(bonusLine(res.bonus&&res.bonus[0])?'아군 효과 · '+bonusLine(res.bonus[0]):'전투 개시')}</div></div>
   <div class="bt-row bt-ally">${row(0)}</div><div class="bt-side" style="text-align:right">${esc(allyLab)}</div></div>`;
   el.hidden=false;
   let speed=1, idx=0, timer=null;
@@ -1407,15 +1583,22 @@ function playBattle(res,title,allyLab,foeLab,resultHtml){
   const paint=(s,i)=>{const u=U(s,i),n=$(`#bu-${s}-${i}`);if(!u||!n)return;n.querySelector('.hp i').style.width=(u.hp/u.maxhp*100)+'%';n.classList.toggle('dead',u.hp<=0)};
   const float=(s,i,txt,cls)=>{const n=$(`#bu-${s}-${i}`);if(!n)return;const f=document.createElement('span');f.className='dmg '+cls;f.textContent=txt;n.appendChild(f);setTimeout(()=>f.remove(),800)};
   const apply=(e,anim)=>{
-    const a=U(e.s,e.i);
-    for(const h of e.hits){const t=U(h.s,h.i);t.hp=Math.max(0,t.hp-h.d);paint(h.s,h.i);if(anim){float(h.s,h.i,'-'+h.d,h.c?'c':'');const n=$(`#bu-${h.s}-${h.i}`);n.classList.remove('hit');void n.offsetWidth;n.classList.add('hit')}}
-    if(e.heal){a.hp=Math.min(a.maxhp,a.hp+e.heal);paint(e.s,e.i);if(anim)float(e.s,e.i,'+'+e.heal,'h')}
+    const a=e.tick?null:U(e.s,e.i);
+    for(const h of e.hits||[]){const t=U(h.s,h.i);if(!t)continue;t.hp=h.hp;paint(h.s,h.i);if(anim){float(h.s,h.i,'-'+h.d,h.c?'c':(h.self||h.burn)?'b':'');const n=$(`#bu-${h.s}-${h.i}`);if(n){n.classList.remove('hit');void n.offsetWidth;n.classList.add('hit')}}}
+    for(const h of e.heals||[]){const t=U(h.s,h.i);if(!t)continue;t.hp=h.hp;paint(h.s,h.i);if(anim&&h.h>0)float(h.s,h.i,'+'+h.h,'h')}
+    if(anim)for(const st of e.stuns||[])float(st.s,st.i,'기절','s');
     if(anim){
       document.querySelectorAll('.bu.act').forEach(n=>n.classList.remove('act'));
-      const an=$(`#bu-${e.s}-${e.i}`);an&&an.classList.add('act');
+      if(a){const an=$(`#bu-${e.s}-${e.i}`);an&&an.classList.add('act')}
       $('#bt-sk').textContent=e.sk||'';
-      const tgt=e.hits.length>1?(e.sk&&a.cls==='tac'?'적 전체':`${e.hits.length}회`):(e.hits[0]?U(e.hits[0].s,e.hits[0].i).name:'');
-      $('#bt-ln').textContent=`${a.name} → ${tgt} ${e.hits.reduce((x,h)=>x+h.d,0)} 피해${e.hits.some(h=>h.c)?' · 치명타':''}`;
+      let ln;
+      if(e.tick)ln='화상 피해';
+      else if(e.skip)ln=`${a.name} 기절로 행동하지 못함`;
+      else{const hs=(e.hits||[]).filter(h=>!h.self),tot=hs.reduce((x,h)=>x+h.d,0),uniq=new Set(hs.map(h=>h.s+'-'+h.i)).size;
+        const tgt=uniq>1?`적 ${uniq}명`:hs[0]?U(hs[0].s,hs[0].i).name:'';
+        ln=hs.length?`${a.name} → ${tgt} ${fmt(tot)} 피해${hs.length>uniq?` (${hs.length}회)`:''}${hs.some(h=>h.c)?' · 치명타':''}`:a.name}
+      if(e.notes&&e.notes.length)ln+=' · '+e.notes.join(' · ');
+      $('#bt-ln').textContent=ln;
     }
   };
   const finish=()=>{
