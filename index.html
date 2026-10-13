@@ -306,7 +306,7 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.9.0</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.9.1</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -461,7 +461,7 @@ const FAC_BONUS={
  wei:[{atk:.10},{atk:.18},{atk:.28}],
  shu:[{hp:.12},{hp:.22},{hp:.35}],
  wu:[{atk:.06,spd:6},{atk:.11,spd:10},{atk:.16,spd:15}],
- qun:[{def:.15,atk:.04},{def:.25,atk:.08},{def:.38,atk:.12}]
+ qun:[{def:.15,atk:.05,hp:.05,r3:{atk:.02,hp:.02}},{def:.25,atk:.10,hp:.10,r3:{atk:.04,hp:.04}},{def:.35,atk:.14,hp:.14,r3:{atk:.06,hp:.06}}]
 };
 // 인연: ids 전원이 진형에 있으면 발동(min이 있으면 그 수 이상, full은 전원일 때 효과)
 const BONDS=[
@@ -485,6 +485,7 @@ const BONDS=[
  {n:'숙명의 라이벌',ids:['zhugeliang','simayi'],fx:{atk:.15},d:'오장원에서 맞선 두 지략가'}
 ];
 function fxStr(v){const o=[];if(v.atk)o.push(`공격 +${Math.round(v.atk*100)}%`);if(v.hp)o.push(`체력 +${Math.round(v.hp*100)}%`);if(v.def)o.push(`방어 +${Math.round(v.def*100)}%`);if(v.spd)o.push(`속도 +${v.spd}`);return o.join(' · ')}
+function facStr(v){return fxStr(v)+(v.r3?` · ★3 장수 추가 ${fxStr(v.r3)}`:'')}
 function bondActive(B,ids){const have=B.ids.filter(x=>ids.has(x)).length;return have>=(B.min||B.ids.length)}
 function bondFx(B,ids){return B.full&&B.ids.every(x=>ids.has(x))?B.full:B.fx}
 function teamBonusInfo(us){
@@ -497,7 +498,7 @@ function applyBonuses(us){
   const info=teamBonusInfo(us);
   us.forEach(u=>{
     let a=0,h=0,d=0,sp=0;const add=v=>{a+=v.atk||0;h+=v.hp||0;d+=v.def||0;sp+=v.spd||0};
-    info.facs.forEach(F=>{if(u.fac===F.f&&u.rar>=3)add(F.b)});
+    info.facs.forEach(F=>{if(u.fac===F.f&&u.rar>=3){add(F.b);if(F.b.r3&&u.rar===3)add(F.b.r3)}});
     info.bonds.forEach(B=>{if(B.ids.includes(u.id))add(bondFx(B,info.ids))});
     u.atk=Math.round(u.atk*(1+a));u.maxhp=u.hp=Math.round(u.maxhp*(1+h));u.def=Math.round(u.def*(1+d));u.spd=Math.round((u.spd+sp)*10)/10;
   });
@@ -993,10 +994,11 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.9.0';
+const GAME_VERSION='1.9.1';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.9.1',date:'2026-10-13',title:'군웅 진영 보너스 강화',items:['★3 장수가 많은 군웅 진영 보너스를 올렸어요. 3·4·5명일 때 방어 +15/25/35%, 공격 +5/10/14%, 체력 +5/10/14%예요.','군웅 진영 보너스가 발동하면 ★3 군웅 장수는 공격과 체력을 3명 +2%, 4명 +4%, 5명 +6% 더 받아요.']},
  {v:'1.9.0',date:'2026-10-13',title:'전투 기록 · 결과 공유 · 보물 잠금',reward:{ap:20},items:[
   '전투가 끝나면 장수별 피해량, 공격 횟수, 회당 피해를 막대그래프로 볼 수 있어요. 아군·적군을 바꿔 볼 수 있고, MVP 장수의 능력치와 전투 기록도 보여줘요.',
   '결투와 연습전이 끝나면 결과를 링크나 이미지로 공유할 수 있어요. 링크를 받은 사람은 같은 전투를 다시 재생해 볼 수 있어요.',
@@ -1360,7 +1362,7 @@ document.addEventListener('click',e=>{
 /* ---------------- 진영·인연 화면 ---------------- */
 function teamBoxHtml(specs){
   const us=specs.filter(Boolean).map((s,i)=>mkUnit(s,0,i)), info=teamBonusInfo(us);
-  const li=[...info.facs.map(F=>`<li><b>${FAC[F.f]} ${F.c}명</b> · ${fxStr(F.b)} <span class="sub">(${FAC[F.f]} 장수)</span></li>`),
+  const li=[...info.facs.map(F=>`<li><b>${FAC[F.f]} ${F.c}명</b> · ${facStr(F.b)} <span class="sub">(${FAC[F.f]} 장수)</span></li>`),
     ...info.bonds.map(B=>`<li><b>인연 · ${B.n}</b> · ${fxStr(bondFx(B,info.ids))} <span class="sub">(${B.ids.filter(x=>info.ids.has(x)).map(x=>GMAP[x].name).join('·')})</span></li>`)];
   const hints=BONDS.filter(B=>!bondActive(B,info.ids)).map(B=>{const have=B.ids.filter(x=>info.ids.has(x)),need=(B.min||B.ids.length)-have.length;return {B,have,need}})
     .filter(x=>x.have.length&&x.need===1).slice(0,3)
@@ -1372,7 +1374,7 @@ function bondsOfHtml(id){
   return `<h3>인연</h3><div class="list">${bs.map(B=>`<div class="li" style="display:block"><b>${B.n}</b> <span class="sub">· ${fxStr(B.fx)}${B.full?` (전원 ${fxStr(B.full)})`:''}</span><div class="sub" style="margin:2px 0 0">${B.ids.map(x=>GMAP[x].name).join(' · ')}${B.min?` 중 ${B.min}명 이상`:''}</div></div>`).join('')}</div>`;
 }
 function bondsDexHtml(){
-  const facRows=Object.entries(FAC_BONUS).map(([f,t])=>`<tr><th scope="row">${FAC[f]}</th>${t.map(v=>`<td>${fxStr(v)}</td>`).join('')}</tr>`).join('');
+  const facRows=Object.entries(FAC_BONUS).map(([f,t])=>`<tr><th scope="row">${FAC[f]}</th>${t.map(v=>`<td>${facStr(v)}</td>`).join('')}</tr>`).join('');
   return `<h3>진영 보너스 <span style="font-weight:400">· 같은 진영 ★3 이상 장수에게 적용</span></h3>
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>3명</th><th>4명</th><th>5명</th></tr></thead><tbody>${facRows}</tbody></table></div>
   <h3>인연 ${BONDS.length}종 <span style="font-weight:400">· 함께 편성하면 해당 장수들에게 적용</span></h3>
