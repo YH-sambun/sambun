@@ -332,7 +332,7 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.17.0</span></span></div><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.17.1</span></span></div><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -979,7 +979,7 @@ function mkUnit(spec,side,slot){
   if(spec.cb)for(const k in spec.cb)f[k]=(f[k]||0)+(+spec.cb[k]||0);
   its.forEach(({it,d})=>{const x=itemFx(it,d,b);for(const k in x)f[k]=(f[k]||0)+x[k]});
   hp*=1+(f.hp||0)/100;atk*=1+(f.atk||0)/100;def*=1+(f.def||0)/100;spd+=f.spd||0;
-  const cr=Math.min(.6,.1+(f.cr||0)/100), cd=1.5+(f.cd||0)/100, ls=Math.min(.5,(f.ls||0)/100), dr=Math.min(.5,(f.dr||0)/100), skp=(f.sk||0)/100;
+  const cr=Math.min(.6,.1+(f.cr||0)/100), cd=Math.min(3,1.5+(f.cd||0)/100), ls=Math.min(.5,(f.ls||0)/100), dr=Math.min(.5,(f.dr||0)/100), skp=(f.sk||0)/100;
   if(spec.hpx)hp*=spec.hpx;
   const sk=skillOf(b);hp=Math.round(hp);
   return {id:b.id,name:b.name,hz:b.hz,fac:b.fac,rar:b.rar,cls:b.cls,skill:sk.n,sk,endure:!!sk.endure,
@@ -1309,10 +1309,14 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.17.0';
+const GAME_VERSION='1.17.1';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.17.1',date:'2026-10-14',title:'치명 표시와 상한',reward:{ap:20},items:[
+  '장수 상세 화면에 치명 확률 · 치명 피해 · 흡혈 · 피해 감소 · 전법 피해가 표시돼요.',
+  '치명 피해의 최대치를 300%로 정했어요(기본 150%에 보물·도감의 치명 피해가 그대로 더해져요).',
+  '도움말의 치명 · 치명 피해 설명을 예시와 함께 더 쉽게 고쳤어요.']},
  {v:'1.17.0',date:'2026-10-13',title:'군령 → 나팔 · 출정 규칙 · 새 ★3 장수',reward:{ap:30},items:[
   '\'군령\'의 이름이 \'나팔(角)\'로 바뀌었어요. 가지고 있던 수량은 그대로예요.',
   '나팔은 3분마다 1개씩 차고, 최대치는 12시간 동안 모이는 240개로 늘었어요(이전 5분 · 120개).',
@@ -1551,7 +1555,7 @@ const HELP=[
   ['상성','기병 → 보병 → 궁병 → 기병. 유리하면 피해 +25%, 불리하면 -15%. 단, 궁병은 기병에게 +50%, 기병은 궁병에게 -25%예요.'],
   ['기병 사냥','궁병의 일반 공격은 기병을 먼저 노려요. 기병이 없으면 체력 비율이 가장 낮은 적을 노려요.'],
   ['기병 전법','기병은 전법을 자주 쓰는 대신 전법 위력이 75%로 적용돼요.'],
-  ['치명타','모든 공격에 기본 10% 확률로 1.5배 피해. 보물로 확률(최대 60%)과 배율을 올릴 수 있어요. 피해는 매번 ±10% 범위에서 흔들려요.'],
+  ['치명타','공격마다 치명 확률(기본 10%, 최대 60%)로 치명타가 터지고, 그때 피해에 치명 피해 배율(기본 150%, 최대 300%)을 곱해요. 확정 치명 전법도 같은 배율을 써요. 피해는 매번 ±10% 범위에서 흔들려요.'],
   ['도발','도발 중인 장수가 있으면 상대의 단일 대상 공격이 그 장수에게 향해요.'],
   ['행동 순서','속도가 빠른 장수부터 행동해요. 속도가 같으면 매 턴 무작위로 순서를 정해요.'],
   ['판정','25턴 안에 결판이 나지 않으면 남은 체력 비율이 높은 쪽이 이겨요.'],
@@ -1570,8 +1574,8 @@ const HELP=[
   ['돌파','같은 보물이 또 나오면 돌파 +1, 최대 +'+ITEM_MAXD+'. 1단계마다 그 보물의 모든 효과 +3%, +50이면 2.5배예요.'],
   ['정련','금으로 돌파를 올려요. 비용은 ★3 200 · ★4 600 · ★5 2,000금에 (1 + 현재 돌파÷5, 소수점 버림)을 곱해요. 판매하면 정련에 쓴 금을 모두 돌려받아요.'],
   ['+50 이후','최대 돌파 뒤 같은 보물이 나오면 ★3 100 · ★4 300 · ★5 1,000금으로 바뀌어요.'],
-  ['치명','치명타 확률을 올려요. 기본 10%, 최대 60%.'],
-  ['치명 피해','치명타 배율(기본 1.5배)을 올려요.'],
+  ['치명','치명타 확률이에요. 기본 10%에 그대로 더해져요(예: 치명 +12% → 22%). 최대 60%.'],
+  ['치명 피해','치명타가 터졌을 때의 피해 배율이에요. 기본 150%에 그대로 더해져요(예: 치명 피해 +20% → 170%, +50% → 200%). 최대 300%.'],
   ['흡혈','준 피해의 일부만큼 체력을 회복해요. 최대 50%.'],
   ['피해 감소','받는 피해를 줄여요. 화상 피해에는 적용되지 않고, 최대 50%.'],
   ['전법 피해','전법으로 주는 피해가 늘어요.'],
@@ -2012,7 +2016,7 @@ function openGen(gid){
   openSheet(`<div class="sheet-h">${seal(b,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz)}</span></h2>
    <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${st.lv}/${MAXLV}</div>${dupHtml(st.d,1,maxD(b.rar))}</div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <div class="row" style="margin-top:8px"><span class="sub" style="margin:0">능력치</span><button type="button" class="qh" data-help="1" aria-label="능력치 도움말">?</button></div><div class="stats" style="margin-top:4px"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
-  ${usageHtml(gid)}<div class="row sub" style="margin:0 0 4px">무력 ${b.str} · 지력 ${b.int} · 통솔 ${b.lead}<span class="sp"></span>전투력 <b style="color:var(--bronze)">${fmt(unitPower(u))}</b></div>
+  <div class="sub" style="margin:2px 0 6px">치명 ${Math.round(u.cr*100)}% · 치명 피해 ${Math.round(u.cd*100)}%${u.ls?` · 흡혈 ${Math.round(u.ls*1000)/10}%`:''}${u.dr?` · 피해 감소 ${Math.round(u.dr*1000)/10}%`:''}${u.skp?` · 전법 피해 +${Math.round(u.skp*1000)/10}%`:''}</div>${usageHtml(gid)}<div class="row sub" style="margin:0 0 4px">무력 ${b.str} · 지력 ${b.int} · 통솔 ${b.lead}<span class="sp"></span>전투력 <b style="color:var(--bronze)">${fmt(unitPower(u))}</b></div>
   <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. ${cdText(b.cls)} 발동.</p>${bondsOfHtml(b.id)}
   <h3>보물 <span style="font-weight:400">· ${st.its.length}/${ITEM_SLOTS}칸 · 명마는 1개까지</span></h3>
   <div class="list" style="margin-bottom:12px">${Array.from({length:ITEM_SLOTS},(_,k)=>{const x=st.its[k]&&S.items.find(i=>i.u===st.its[k]),iv=x&&IMAP[x.k];return `<div class="li">${iv?`${itemTile(iv,x.d)}<div class="info"><b>${esc(iv.name)}${x.d?` <span class="pc">+${x.d}</span>`:''}</b><span>${fxText(iv,x.d,b)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>빈 칸</b><span>보물을 장착할 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-equip="${gid}:${iv?k:st.its.length}">${iv?'변경':'장착'}</button></div>`}).join('')}</div>
