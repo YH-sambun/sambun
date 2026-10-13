@@ -235,13 +235,31 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .itm{overflow:hidden}
 .itm .px{width:32px;height:32px}
 .ig .px{display:inline-block;width:16px;height:16px;vertical-align:-3px}
+
+.brand-row{display:flex;align-items:center;gap:10px;min-width:0}
+.nb{position:relative;width:34px;height:34px;flex:none;border-radius:50%;background:var(--panel);border:1px solid var(--line);font-family:var(--display);font-size:17px;color:var(--bronze);padding:0}
+.nb .dot{position:absolute;top:-1px;right:-1px;width:10px;height:10px;border-radius:50%;background:var(--cinnabar);border:2px solid var(--bg)}
+.att-card{background:var(--panel2);border:1px solid var(--bronze-d);border-radius:12px;padding:12px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px}
+.att{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
+.ad{border:1px solid var(--line);border-radius:8px;padding:5px 0;text-align:center;display:flex;flex-direction:column;align-items:center}
+.ad small{font-size:10px;color:var(--mute)}
+.ad b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--mute)}
+.ad.done{background:var(--bronze-d);border-color:var(--bronze)}
+.ad.done b{color:var(--fg)}
+.ad.today{border-color:var(--cinnabar);box-shadow:0 0 0 2px rgba(208,80,58,.25)}
+.ad.today b{color:var(--cinnabar)}
+.nt{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}
+.nt-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.nt-h small{color:var(--mute);font-size:11px}
+.ver{font-family:var(--display);color:var(--bronze);font-size:15px}
+.nt ul{margin:8px 0 10px;padding-left:18px;font-size:13px;color:var(--fg);display:flex;flex-direction:column;gap:4px}
 </style>
 </head>
 <body>
 
 <div id="app">
   <header class="top">
-    <div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐</span></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.5.0</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -594,7 +612,7 @@ let PLAYERS=[], BATTLES=[];
 function newState(){
   return {v:1,gold:500,food:1000,last:Date.now(),stage:0,seq:1,
     gens:{liaohua:{lv:1,d:0,it:null},lejin:{lv:1,d:0,it:null},lidian:{lv:1,d:0,it:null}},
-    items:[],deck:['liaohua','lejin','lidian',null,null],pvp:{day:'',used:0},ap:AP_CAP,apT:Date.now(),created:Date.now()};
+    items:[],deck:['liaohua','lejin','lidian',null,null],pvp:{day:'',used:0},ap:AP_CAP,apT:Date.now(),att:{day:'',streak:0,total:0},notice:{read:[],claimed:[]},created:Date.now()};
 }
 function sanitize(s){
   const n=newState();
@@ -608,6 +626,8 @@ function sanitize(s){
   for(const k of['gold','food','last','stage','seq'])o[k]=Number(o[k])||n[k];
   o.stage=Math.min(NSTAGE,Math.max(0,o.stage|0));
   o.ap=Number.isFinite(Number(s.ap))?Math.max(0,Math.min(999,Math.floor(Number(s.ap)))):AP_CAP;o.apT=Number(s.apT)||Date.now();
+  const at=s.att&&typeof s.att==='object'?s.att:{};o.att={day:String(at.day||''),streak:Math.max(0,at.streak|0),total:Math.max(0,at.total|0)};
+  const nt=s.notice&&typeof s.notice==='object'?s.notice:{};const strs=a=>Array.isArray(a)?a.filter(x=>typeof x==='string').slice(-60):[];o.notice={read:strs(nt.read),claimed:strs(nt.claimed)};
   const ids=new Set(o.items.map(x=>x.u));
   for(const g of Object.values(o.gens))if(g.it&&!ids.has(g.it))g.it=null;
   return o;
@@ -683,7 +703,7 @@ async function boot(){
   if(!configured()||!window.firebase){
     MODE='local';S=sanitize(lsLoad());
     setBanner(configured()?'서버에 연결하지 못해 이 기기에만 저장 중이에요.':'서버 설정 전이라 이 기기에만 저장돼요. (관리자: index.html의 FIREBASE_CONFIG를 채워 주세요)');
-    showGame(true);render();setInterval(renderTop,1000);return;
+    showGame(true);render();setInterval(renderTop,1000);setTimeout(runPopups,500);return;
   }
   firebase.initializeApp(FIREBASE_CONFIG);
   AUTH=firebase.auth();FS=firebase.firestore();
@@ -703,7 +723,7 @@ async function boot(){
       MODE='shared';setBanner(u.isAnonymous?'게스트로 플레이 중이에요. 이 휴대폰 브라우저에서만 이어서 할 수 있어요.':'');
       dirty=true;flush();
       subscribe();showGame(true);render();
-      if(!pd)setTimeout(()=>openSettings(true),400);
+      if(!pd)setTimeout(()=>openSettings(true),400);else setTimeout(runPopups,500);
     }catch(e){toast('기록을 불러오지 못했어요 ('+(e.code||'오류')+')');showLogin()}
   });
   setInterval(renderTop,1000);
@@ -754,7 +774,7 @@ function openSettings(first){
    <form id="name-form" class="row" style="margin-bottom:16px"><input id="name-input" maxlength="12" autocomplete="nickname" style="flex:1;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--fg);font:inherit" value="${esc(MYNAME)}"><button class="btn" type="submit">저장</button></form>
    ${first?'':`<p class="sub">${anon?'게스트로 플레이 중이에요. 로그아웃하면 이 기록으로 다시 돌아올 수 없어요.':'구글 계정으로 로그인되어 있어요.'}</p><button type="button" class="btn ghost wide" id="logout">로그아웃</button><h3>처음부터 다시 시작</h3>${resetBlock()}`}`);
   logoutArm=false;bindReset();
-  $('#name-form').onsubmit=ev=>{ev.preventDefault();const v=cleanName($('#name-input').value);if(!v){toast('이름을 입력해 주세요');return}MYNAME=v;save();closeSheet();renderView();toast('이름을 저장했어요')};
+  $('#name-form').onsubmit=ev=>{ev.preventDefault();const v=cleanName($('#name-input').value);if(!v){toast('이름을 입력해 주세요');return}MYNAME=v;save();closeSheet();renderView();toast('이름을 저장했어요');if(first)setTimeout(runPopups,300)};
   const lo=$('#logout');
   if(lo)lo.onclick=()=>{
     if(anon&&!logoutArm){logoutArm=true;lo.textContent='한 번 더 누르면 로그아웃 (게스트 기록은 사라져요)';lo.classList.add('red');return}
@@ -767,6 +787,82 @@ document.addEventListener('click',e=>{
   if(e.target.closest('#settings')){openSettings(false);return}
 });
 
+/* ---------------- 출석 · 공지 · 버전 ---------------- */
+const GAME_VERSION='1.5.0';
+const ATT_AP=30, ATT_BONUS_FOOD=500;
+// 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
+const NOTICES=[
+ {v:'1.5.0',date:'2026-10-13',title:'출석 보상과 공지 기능',reward:{ap:20},items:[
+  '매일 첫 접속 때 출석 보상으로 군령 30개를 받아요. 7일 연속 출석하면 군량 500을 더 드려요.',
+  '패치 소식을 게임 안 공지로 확인할 수 있어요. 보상이 걸린 공지는 확인하면 보상을 받아요.',
+  '화면 위쪽 제목 아래에 게임 버전이 표시돼요.']},
+ {v:'1.4.0',date:'2026-10-13',title:'장수 초상화와 보물 아이콘',items:[
+  '장수 44명의 초상화와 보물 17종의 아이콘을 픽셀아트로 추가했어요.']},
+ {v:'1.3.0',date:'2026-10-13',title:'다시 시작과 군주 진형 보기',items:[
+  '대전 탭에 처음부터 다시 시작 기능을 추가했어요. 경고 상자에서 한 번 더 눌러야 초기화돼요.',
+  '대전 순위에서 군주를 누르면 방어 진형의 장수, 레벨, 장비, 완성도를 볼 수 있어요.']},
+ {v:'1.2.0',date:'2026-10-13',title:'군령과 도감',items:[
+  '스테이지 도전에 군령이 필요해요. 5분마다 1개씩, 최대 120개까지 충전돼요. 도전에 6개를 쓰고 이기면 3개를 돌려받아요.',
+  '도감 메뉴를 추가했어요. 모든 장수의 능력치와 보물 효과를 볼 수 있어요.']},
+ {v:'1.1.0',date:'2026-10-13',title:'진척에 따른 생산량 증가',items:[
+  '스테이지를 깰수록 시간당 생산량과 스테이지 보상이 늘어나요. 장을 평정할 때마다 크게 증가해요.',
+  '시간당 금 생산을 추가했어요.']},
+ {v:'1.0.0',date:'2026-10-13',title:'연합 삼국지 · 창천토벌 첫 공개',items:[
+  '30개 스테이지, 장수·보물 등용, 5인 진형, 군주 간 비동기 대전을 시작했어요.']}
+];
+const kstYesterday=()=>new Date(Date.now()+9*3600e3-864e5).toISOString().slice(0,10);
+const attDue=()=>!!S&&S.att.day!==kstDay();
+function rewardText(r){const o=[];if(r.ap)o.push(`令 +${r.ap}`);if(r.food)o.push(`糧 +${fmt(r.food)}`);if(r.gold)o.push(`金 +${fmt(r.gold)}`);return o.join(' · ')}
+function updateDot(){const d=$('#notice-dot');if(!d)return;d.hidden=!(S&&(attDue()||NOTICES.some(n=>!S.notice.read.includes(n.v))||NOTICES.some(n=>n.reward&&!S.notice.claimed.includes(n.v))))}
+function attHtml(){
+  const streak=S.att.day===kstYesterday()?S.att.streak+1:1, pos=(streak-1)%7+1, bonus=pos===7;
+  let boxes='';for(let k=1;k<=7;k++)boxes+=`<div class="ad ${k<pos?'done':''} ${k===pos?'today':''}"><small>${k}일</small><b>${k===7?'糧':'令'}</b></div>`;
+  return `<div class="att-card"><div class="row"><b>출석 보상</b><span class="sp"></span><span class="sub" style="margin:0">연속 ${streak}일째</span></div>
+   <div class="att">${boxes}</div>
+   <button type="button" class="btn wide" id="att-claim">오늘 출석하고 받기 · 令 +${ATT_AP}${bonus?` · 糧 +${ATT_BONUS_FOOD}`:''}</button></div>`;
+}
+function bindAtt(after){
+  const b=$('#att-claim');if(!b)return;
+  b.onclick=()=>{
+    if(!attDue())return;
+    const streak=S.att.day===kstYesterday()?S.att.streak+1:1, bonus=(streak-1)%7+1===7;
+    S.att={day:kstDay(),streak,total:(S.att.total||0)+1};
+    tickAP();S.ap+=ATT_AP;if(bonus)S.food+=ATT_BONUS_FOOD;
+    save();renderTop();toast(`출석 ${streak}일째 · 군령 +${ATT_AP}${bonus?` · 군량 +${ATT_BONUS_FOOD}`:''}`);
+    after();
+  };
+}
+function noticeHtml(n){
+  const claimed=S&&S.notice.claimed.includes(n.v);
+  return `<article class="nt"><div class="nt-h"><span class="ver">v${n.v}</span><b>${esc(n.title)}</b><span class="sp"></span><small>${n.date}</small></div>
+   <ul>${n.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>
+   ${n.reward&&S?(claimed?`<div class="sub" style="margin:0">보상 받음 · ${rewardText(n.reward)}</div>`:`<button type="button" class="btn sm" data-nclaim="${n.v}">확인하고 보상 받기 · ${rewardText(n.reward)}</button>`):''}</article>`;
+}
+function markRead(list){if(!S)return;let ch=false;list.forEach(n=>{if(!S.notice.read.includes(n.v)){S.notice.read.push(n.v);ch=true}});if(ch){S.notice.read=S.notice.read.slice(-60);save()}updateDot()}
+function openNotices(only){
+  const list=only?NOTICES.filter(n=>n.v===only):NOTICES;
+  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${only?'새 소식':'공지'}</h2><div class="sub" style="margin:0">현재 버전 v${GAME_VERSION}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   ${S&&attDue()&&!only?attHtml():''}
+   <div class="list">${list.map(noticeHtml).join('')}</div>
+   ${only?`<button type="button" class="btn ghost wide" id="all-notices" style="margin-top:12px">지난 공지 모두 보기</button>`:''}`);
+  markRead(list);
+  bindAtt(()=>openNotices(only));
+  const a=$('#all-notices');if(a)a.onclick=()=>openNotices();
+}
+let popupsRan=false;
+function runPopups(){
+  if(!S)return;updateDot();
+  if(attDue()){openSheet(`<div class="sheet-h"><h2 style="margin:0">오늘의 출석</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${attHtml()}`);bindAtt(()=>{closeSheet();setTimeout(runPopups,250)});return}
+  const n=NOTICES[0];if(!S.notice.read.includes(n.v))openNotices(n.v);
+}
+document.addEventListener('click',e=>{
+  if(e.target.closest('#notice-btn')){openNotices();return}
+  const c=e.target.closest('[data-nclaim]');
+  if(c&&S){const n=NOTICES.find(x=>x.v===c.dataset.nclaim);if(!n||!n.reward||S.notice.claimed.includes(n.v))return;
+    const r=n.reward;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.notice.claimed.push(n.v);save();renderTop();updateDot();
+    c.outerHTML=`<div class="sub" style="margin:0">보상 받음 · ${rewardText(r)}</div>`;toast(`공지 보상 ${rewardText(r)}`)}
+});
+
 /* ---------------- render: shell ---------------- */
 function render(){renderTop();renderView();document.querySelectorAll('.tab').forEach(t=>t.setAttribute('aria-current',String(t.dataset.v===view)))}
 function renderTop(){
@@ -777,6 +873,7 @@ function renderTop(){
   $('#claim-lab').textContent=`징수 대기 糧 +${fmt(p.f)} · 金 +${fmt(p.g)} · 최대 ${CAP_H}시간 분량`;
   $('#claim-bar').style.width=(p.h/CAP_H*100)+'%';
   $('#claim-btn').disabled=p.f<1&&p.g<1;
+  updateDot();
 }
 $('#claim-btn').onclick=()=>{const p=pendingRes();if(p.f<1&&p.g<1)return;S.food+=p.f;S.gold+=p.g;S.last=Date.now();save();renderTop();toast(`군량 ${fmt(p.f)} · 금 ${fmt(p.g)} 징수`)};
 $('#tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b||!S)return;view=b.dataset.v;render();$('#view').scrollTop=0};
