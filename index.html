@@ -281,7 +281,7 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.8.0</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.8.1</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -375,12 +375,12 @@ const GENS=GENS_RAW.map(r=>({id:r[0],name:r[1],hz:r[2],fac:r[3],rar:r[4],cls:r[5
 const GMAP=Object.fromEntries(GENS.map(g=>[g.id,g]));
 /* ---------------- 전법 · 진영 · 인연 데이터 ---------------- */
 // tg: front 맨앞 · back 맨뒤 · low 체력비율최저 · high 공격최고 · hpmax 체력비율최고 · rand 무작위 · all 전체 · none 공격 없음
-// m 배율 · n 타격 횟수 · ign 방어 무시 · crit 치명타 확정 · exe 처형(체력 비율 이하 시 배율) · cond 특정 아군 동반 시 배율
+// m 배율 · h 타격 횟수 · ign 방어 무시 · crit 치명타 확정 · exe 처형(체력 비율 이하 시 배율) · cond 특정 아군 동반 시 배율
 // heal 회복 · buff 아군 강화 · deb 적 약화 · stun 기절 확률 · burn 화상(시전자 공격 비율, 턴) · cost 자기 체력 소모 · endure 불굴(한 번 버팀)
 const SK={
  lubu:{n:'천하무쌍',d:'적 전체를 휩쓸어 0.9배 피해, 자신 공격 2턴 +20%',tg:'all',m:.9,buff:{to:'self',atk:.2,dur:2}},
- guanyu:{n:'오관참장',d:'무작위 적을 5번 베어 각 0.6배 피해, 방어 30% 무시',tg:'rand',n:5,m:.6,ign:.3},
- zhaoyun:{n:'칠진칠출',d:'적진을 일곱 번 드나들며 무작위 적에게 7번 0.38배 피해, 자신 체력 15% 회복',tg:'rand',n:7,m:.38,heal:{to:'self',p:.15}},
+ guanyu:{n:'오관참장',d:'무작위 적을 5번 베어 각 0.6배 피해, 방어 30% 무시',tg:'rand',h:5,m:.6,ign:.3},
+ zhaoyun:{n:'칠진칠출',d:'적진을 일곱 번 드나들며 무작위 적에게 7번 0.38배 피해, 자신 체력 15% 회복',tg:'rand',h:7,m:.38,heal:{to:'self',p:.15}},
  zhangfei:{n:'장판교 일갈',d:'적 전체 0.5배 피해, 각 50% 확률로 1턴 기절, 자신 방어 2턴 +30%',tg:'all',m:.5,stun:.5,buff:{to:'self',def:.3,dur:2}},
  zhugeliang:{n:'팔진도',d:'적 전체 0.6배 피해, 적 전체 공격 2턴 -25%',tg:'all',m:.6,deb:{to:'all',atk:-.25,dur:2}},
  caocao:{n:'난세의 간웅',d:'적 전체 0.5배 피해, 아군 전체 공격 2턴 +20%',tg:'all',m:.5,buff:{to:'all',atk:.2,dur:2}},
@@ -392,7 +392,7 @@ const SK={
  huangzhong:{n:'정군산의 일격',d:'공격력이 가장 높은 적에게 2.5배 치명타 확정',tg:'high',m:2.5,crit:1},
  pangtong:{n:'연환계',d:'적 전체 0.45배 피해, 3턴 동안 화상(매 턴 공격의 8%, 방어 무시)',tg:'all',m:.45,burn:{p:.08,dur:3}},
  xiahoudun:{n:'발시담정',d:'맨 앞 적 2.4배 피해, 자신 체력 25% 회복, 자신 공격 2턴 +20%',tg:'front',m:2.4,heal:{to:'self',p:.25},buff:{to:'self',atk:.2,dur:2}},
- xiahouyuan:{n:'질풍신속',d:'무작위 적에게 3번 1.0배 피해',tg:'rand',n:3,m:1},
+ xiahouyuan:{n:'질풍신속',d:'무작위 적에게 3번 1.0배 피해',tg:'rand',h:3,m:1},
  zhangliao:{n:'합비의 위명',d:'적 전체 0.6배 피해, 적 전체 공격 2턴 -20%',tg:'all',m:.6,deb:{to:'all',atk:-.2,dur:2}},
  xuchu:{n:'나의투마초',d:'갑옷을 벗고 맨 앞 적에게 3.4배 피해, 자신 방어 2턴 -30%',tg:'front',m:3.4,buff:{to:'self',def:-.3,dur:2}},
  dianwei:{n:'완성의 수호',d:'맨 앞 적 1.8배 피해, 아군 전체 방어 2턴 +30%',tg:'front',m:1.8,buff:{to:'all',def:.3,dur:2}},
@@ -410,8 +410,8 @@ const SK={
  liaohua:{n:'백전노장',d:'맨 앞 적 1.6배 피해, 자신 방어 3턴 +40%',tg:'front',m:1.6,buff:{to:'self',def:.4,dur:3}},
  yujin:{n:'엄정한 군율',d:'맨 앞 적 1.3배 피해, 아군 전체 방어 2턴 +20%',tg:'front',m:1.3,buff:{to:'all',def:.2,dur:2}},
  lejin:{n:'선등',d:'맨 앞 적에게 2.0배 치명타 확정',tg:'front',m:2,crit:1},
- lidian:{n:'유장의 지략',d:'무작위 적 2번 0.8배 피해, 체력이 가장 낮은 아군 15% 회복',tg:'rand',n:2,m:.8,heal:{to:'low',p:.15}},
- chengpu:{n:'강동의 원로',d:'무작위 적 2번 0.9배 피해, 아군 전체 공격 2턴 +10%',tg:'rand',n:2,m:.9,buff:{to:'all',atk:.1,dur:2}},
+ lidian:{n:'유장의 지략',d:'무작위 적 2번 0.8배 피해, 체력이 가장 낮은 아군 15% 회복',tg:'rand',h:2,m:.8,heal:{to:'low',p:.15}},
+ chengpu:{n:'강동의 원로',d:'무작위 적 2번 0.9배 피해, 아군 전체 공격 2턴 +10%',tg:'rand',h:2,m:.9,buff:{to:'all',atk:.1,dur:2}},
  huanggai:{n:'고육계',d:'자신 체력 15%를 깎아 적 전체 0.7배 피해, 2턴 동안 화상(매 턴 공격의 10%, 방어 무시)',tg:'all',m:.7,cost:.15,burn:{p:.1,dur:2}},
  zhoutai:{n:'불굴의 상흔',d:'자신 체력 25% 회복, 맨 앞 적 1.8배 피해. 특성: 전투마다 한 번, 쓰러질 피해를 체력 1로 버팀',tg:'front',m:1.8,heal:{to:'self',p:.25},endure:1},
  lingtong:{n:'소요진 사투',d:'맨 앞 적 2.1배 피해, 자신 방어 2턴 +30%',tg:'front',m:2.1,buff:{to:'self',def:.3,dur:2}},
@@ -419,14 +419,14 @@ const SK={
  chengong:{n:'복양의 계책',d:'적 전체 0.45배 피해, 적 전체 공격 2턴 -15%',tg:'all',m:.45,deb:{to:'all',atk:-.15,dur:2}},
  huaxiong:{n:'사수관 수문',d:'맨 앞 적 2.4배 피해, 자신 방어 2턴 +20%',tg:'front',m:2.4,buff:{to:'self',def:.2,dur:2}},
  yanliang:{n:'하북 제일검',d:'맨 앞 적에게 2.9배 피해',tg:'front',m:2.9},
- wenchou:{n:'연진 맹공',d:'무작위 적 2번 1.3배 피해',tg:'rand',n:2,m:1.3},
- jiling:{n:'삼첨도',d:'맨 앞 적을 3번 찔러 각 0.85배 피해',tg:'front',n:3,m:.85},
+ wenchou:{n:'연진 맹공',d:'무작위 적 2번 1.3배 피해',tg:'rand',h:2,m:1.3},
+ jiling:{n:'삼첨도',d:'맨 앞 적을 3번 찔러 각 0.85배 피해',tg:'front',h:3,m:.85},
  yuanshu:{n:'옥새의 위세',d:'아군 전체 공격 2턴 +30%, 자신 방어 2턴 -20%',tg:'none',buff:[{to:'all',atk:.3,dur:2},{to:'self',def:-.2,dur:2}]}
 };
 const DEF_SK={
  inf:{n:'철벽',d:'맨 앞 적 1.4배 피해, 자신 체력 18% 회복',tg:'front',m:1.4,heal:{to:'self',p:.18}},
  cav:{n:'돌격',d:'맨 앞 적에게 1.8배 피해',tg:'front',m:1.8},
- arc:{n:'연사',d:'무작위 적 2번 0.85배 피해',tg:'rand',n:2,m:.85},
+ arc:{n:'연사',d:'무작위 적 2번 0.85배 피해',tg:'rand',h:2,m:.85},
  tac:{n:'화계',d:'적 전체 0.6배 피해',tg:'all',m:.6}
 };
 const skillOf=b=>(b&&b.id&&SK[b.id])||DEF_SK[b.cls];
@@ -709,7 +709,7 @@ function simulate(As,Bs,seed){
         const hitT=[];
         if(S.tg==='all'){foes().forEach(t=>{hit(t,S.m,S);hitT.push(t)})}
         else if(S.tg!=='none'){
-          for(let k=0;k<(S.n||1);k++){const t=pick();if(!t)break;let m=S.m;
+          for(let k=0;k<(S.h||1);k++){const t=pick();if(!t)break;let m=S.m;
             if(S.exe&&t.hp/t.maxhp<=S.exe.thr)m=S.exe.m;
             if(S.cond&&T[u.side].some(x=>x.id===S.cond.ally&&x.hp>0))m=S.cond.m;
             hit(t,m,S);if(!hitT.includes(t))hitT.push(t)}
@@ -967,10 +967,11 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.8.0';
+const GAME_VERSION='1.8.1';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.8.1',date:'2026-10-13',title:'전법 이름 표시 오류 수정',items:['관우, 조운, 하후연 등 여러 번 공격하는 전법의 이름이 숫자로 보이던 문제를 고쳤어요. 전법 효과는 그대로예요.']},
  {v:'1.8.0',date:'2026-10-13',title:'장수별 고유 전법 · 진영 보너스 · 인연',reward:{ap:20},items:[
   '장수 44명 모두에게 연의의 일화를 딴 고유 전법이 생겼어요. 관우 오관참장, 조운 칠진칠출, 장비 장판교 일갈, 제갈량 팔진도, 황개 고육계 등 피해·회복·강화·약화·기절·화상 효과가 다양해요.',
   '같은 진영(★3 이상) 장수를 3·4·5명 넣으면 진영 보너스를 받아요. 위는 공격, 촉은 체력, 오는 공격과 속도, 군웅은 방어와 공격이 올라요.',
