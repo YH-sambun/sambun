@@ -332,7 +332,7 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.17.1</span></span></div><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.18.0</span></span></div><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -560,6 +560,9 @@ const BONDS=[
 // 서로 다른 진영 장수로 이루어진 인연(타국 인연)은 효과가 CROSS_MUL배
 const CROSS_MUL=2;
 BONDS.forEach(B=>{B.cross=new Set(B.ids.map(id=>GMAP[id].fac)).size>1;if(B.cross){const sc=o=>{if(!o)return;for(const k of Object.keys(o))o[k]=k==='spd'?Math.round(o[k]*CROSS_MUL):Math.round(o[k]*CROSS_MUL*1000)/1000};B.base={fx:{...B.fx},full:B.full?{...B.full}:null};sc(B.fx);sc(B.full)}});
+// 인연 효과는 진형 전원에게 적용돼요(v1.18.0~). 전원 적용으로 바뀐 만큼, 진형 전체가 받는 효과의 총합이 이전과 비슷하도록 수치를 40%로 조정
+const BOND_TEAM=.4;
+BONDS.forEach(B=>{const sc=o=>{if(!o)return;for(const k of Object.keys(o))o[k]=k==='spd'?Math.max(1,Math.round(o[k]*BOND_TEAM)):Math.max(.01,Math.round(o[k]*BOND_TEAM*100)/100)};sc(B.fx);sc(B.full);if(B.base){sc(B.base.fx);sc(B.base.full)}});
 function fxStr(v){const o=[];if(v.atk)o.push(`공격 +${Math.round(v.atk*100)}%`);if(v.hp)o.push(`체력 +${Math.round(v.hp*100)}%`);if(v.def)o.push(`방어 +${Math.round(v.def*100)}%`);if(v.spd)o.push(`속도 +${v.spd}`);return o.join(' · ')}
 function facStr(v){return fxStr(v)+(v.r3?` · ★3 장수 추가 ${fxStr(v.r3)}`:'')}
 function bondActive(B,ids){const have=B.ids.filter(x=>ids.has(x)).length;return have>=(B.min||B.ids.length)}
@@ -580,7 +583,7 @@ function applyBonuses(us){
   us.forEach(u=>{
     let a=0,h=0,d=0,sp=0;const add=v=>{a+=v.atk||0;h+=v.hp||0;d+=v.def||0;sp+=v.spd||0};
     info.facs.forEach(F=>{if(u.fac===F.f&&u.rar>=3){add(F.b);if(F.b.r3&&u.rar===3)add(F.b.r3)}});
-    info.bonds.forEach(B=>{if(B.ids.includes(u.id))add(bondFx(B,info.ids))});
+    info.bonds.forEach(B=>add(bondFx(B,info.ids)));
     if(info.vol&&u.rar===3&&u.id&&GMAP[u.id])add(info.vol.b);
     if(info.ally&&u.rar>=3)add(info.ally.b);
     u.atk=Math.round(u.atk*(1+a));u.maxhp=u.hp=Math.round(u.maxhp*(1+h));u.def=Math.round(u.def*(1+d));u.spd=Math.round((u.spd+sp)*10)/10;
@@ -1309,10 +1312,14 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.17.1';
+const GAME_VERSION='1.18.0';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.18.0',date:'2026-10-14',title:'인연 효과가 진형 전원에게',reward:{ap:20},items:[
+  '인연이 발동하면 이제 인연에 속한 장수뿐 아니라 진형의 모든 장수가 효과를 받아요.',
+  '모두가 받게 된 만큼 인연 수치는 이전의 40%로 조정했어요. 진형 전체가 받는 효과의 총합은 이전과 비슷해요(예: 도원결의 공격·체력 +15% → +6%, 진형 5명 모두).',
+  '인연 목록과 조건, 타국 인연 2배, 오호대장군 4명 강화 등 다른 규칙은 그대로예요.']},
  {v:'1.17.1',date:'2026-10-14',title:'치명 표시와 상한',reward:{ap:20},items:[
   '장수 상세 화면에 치명 확률 · 치명 피해 · 흡혈 · 피해 감소 · 전법 피해가 표시돼요.',
   '치명 피해의 최대치를 300%로 정했어요(기본 150%에 보물·도감의 치명 피해가 그대로 더해져요).',
@@ -1562,7 +1569,7 @@ const HELP=[
   ['연습장','결투장 탭의 연습장에서 모든 장수(Lv'+MAXLV+' · 돌파 최대)와 모든 보물(+1·+25·+50)로 공격덱·NPC 방어덱을 3개씩 저장해 시험할 수 있어요. 보상·기록은 없고 보물 도감 효과는 빠져요. 공격덱의 [내 진형에 적용]으로 보유한 장수·보물을 같은 배치로 내 진형에 옮길 수 있어요.']]},
  {t:'진형 효과',rows:[
   ['진영 보너스','같은 진영의 ★3 이상 장수가 3·4·5명이면 그 진영 장수가 강해져요. 도감의 인연 탭에 전체 표가 있어요.'],
-  ['인연','함께 편성하면 해당 장수들의 능력치가 올라요. 진형 탭에서 발동 중인 인연을 볼 수 있어요.'],
+  ['인연','함께 편성하면 발동하고, 진형의 모든 장수 능력치가 올라요. 진형 탭에서 발동 중인 인연을 볼 수 있어요.'],
   ['타국 인연','서로 다른 진영의 장수로 이루어진 인연은 효과가 '+CROSS_MUL+'배예요. 여러 나라 장수를 섞어 쓰도록 돕는 보너스예요.'],
   ['연합군','★3 이상 장수의 나라가 3개국이면 ★3 이상 전원 공격·체력·방어 +5%, 4개국이면 +8%. 진영 보너스·인연과 함께 적용돼요.'],
   ['의용군','진형에 ★3 장수가 1·2·3명 이상이면 그 ★3 장수들의 공격·체력이 +5% · +10% · +15%. 연합군·진영 보너스·인연과 함께 적용돼요.'],
@@ -1850,7 +1857,7 @@ function vDeck(){
     h+=`<div class="slot" role="button" tabindex="0" data-slot="${i}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${CLS[g.cls].g} ${CLS[g.cls].n} · Lv ${s.lv} · ${dupHtml(s.d,0,maxD(g.rar))}${it?` · ${esc(it.name)}`:''} · 전투력 ${fmt(specPower(s))}</span></div>
     <div class="mv"><button type="button" data-mv="${i}:-1" aria-label="앞으로" ${i===0?'disabled':''}>▲</button><button type="button" data-mv="${i}:1" aria-label="뒤로" ${i===4?'disabled':''}>▼</button></div></div>`;
   });
-  h+=`<div class="legend"><b>전투 규칙</b><br>보병·기병은 앞 번호의 적부터 공격하고, 궁병은 체력이 가장 낮은 적을, 책사는 무작위 적을 노립니다. 전법은 기병 2번째, 보병·궁병 3번째, 책사 4번째 행동마다 발동해요. 도발 중인 적이 있으면 단일 공격은 그 적에게 향해요.<br><b>상성</b> 기병 → 보병 → 궁병 → 기병 (유리하면 피해 +25%, 궁병은 기병에게 +50%). 궁병은 기병을 먼저 노려요.<br><b>진영·인연</b> 같은 진영 3명 이상, 또는 인연 있는 장수를 함께 넣으면 능력치가 올라요. 다른 나라 장수끼리의 타국 인연은 효과가 2배이고, 3개국 이상 섞으면 연합군 보너스를 받아요. 도감의 인연 탭에서 전체 목록을 볼 수 있어요.<br><button type="button" class="btn ghost sm" data-help="3" style="margin-top:8px">전투 규칙 자세히 보기</button></div>`;
+  h+=`<div class="legend"><b>전투 규칙</b><br>보병·기병은 앞 번호의 적부터 공격하고, 궁병은 체력이 가장 낮은 적을, 책사는 무작위 적을 노립니다. 전법은 기병 2번째, 보병·궁병 3번째, 책사 4번째 행동마다 발동해요. 도발 중인 적이 있으면 단일 공격은 그 적에게 향해요.<br><b>상성</b> 기병 → 보병 → 궁병 → 기병 (유리하면 피해 +25%, 궁병은 기병에게 +50%). 궁병은 기병을 먼저 노려요.<br><b>진영·인연</b> 같은 진영 3명 이상, 또는 인연 있는 장수를 함께 넣으면 능력치가 올라요(인연은 진형 전원에게 적용). 다른 나라 장수끼리의 타국 인연은 효과가 2배이고, 3개국 이상 섞으면 연합군 보너스를 받아요. 도감의 인연 탭에서 전체 목록을 볼 수 있어요.<br><button type="button" class="btn ghost sm" data-help="3" style="margin-top:8px">전투 규칙 자세히 보기</button></div>`;
   return h;
 }
 document.addEventListener('click',e=>{
@@ -1887,7 +1894,7 @@ function teamBoxHtml(specs,all){
   const li=[...info.facs.map(F=>`<li><b>${FAC[F.f]} ${F.c}명</b> · ${facStr(F.b)} <span class="sub">(${FAC[F.f]} 장수)</span></li>`),
     ...(info.ally?[`<li><b>연합군 ${info.ally.n}개국</b> · ${fxStr(info.ally.b)} <span class="sub">(★3 이상 전원)</span></li>`]:[]),
     ...(info.vol?[`<li><b>의용군 ${info.vol.n}명</b> · ${fxStr(info.vol.b)} <span class="sub">(★3 장수)</span></li>`]:[]),
-    ...info.bonds.map(B=>`<li><b>인연 · ${B.n}</b>${B.cross?` <span class="chip">타국 ×${CROSS_MUL}</span>`:''} · ${fxStr(bondFx(B,info.ids))} <span class="sub">(${B.ids.filter(x=>info.ids.has(x)).map(x=>GMAP[x].name).join('·')})</span></li>`)];
+    ...info.bonds.map(B=>`<li><b>인연 · ${B.n}</b>${B.cross?` <span class="chip">타국 ×${CROSS_MUL}</span>`:''} · ${fxStr(bondFx(B,info.ids))} <span class="sub">(${B.ids.filter(x=>info.ids.has(x)).map(x=>GMAP[x].name).join('·')} → 전원)</span></li>`)];
   const hints=BONDS.filter(B=>!bondActive(B,info.ids)).map(B=>{const have=B.ids.filter(x=>info.ids.has(x)),need=(B.min||B.ids.length)-have.length;return {B,have,need}})
     .filter(x=>x.have.length&&x.need===1).slice(0,3)
     .map(({B,have})=>`<li class="hint">${B.n}: ${B.ids.filter(x=>!info.ids.has(x)).map(x=>`${GMAP[x].name}${all||S.gens[x]?'':'(미보유)'}`).join(' 또는 ')} 추가 시 발동</li>`);
@@ -1906,7 +1913,7 @@ function bondsDexHtml(){
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>3개국</th><th>4개국</th></tr></thead><tbody><tr><th scope="row">연합군</th><td>${fxStr(ALLY_BONUS[3])}</td><td>${fxStr(ALLY_BONUS[4])}</td></tr></tbody></table></div>
   <h3>의용군 <span style="font-weight:400">· 진형의 ★3 장수 수, ★3 장수에게만 적용</span></h3>
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>1명</th><th>2명</th><th>3명 이상</th></tr></thead><tbody><tr><th scope="row">의용군</th><td>${fxStr(VOL_BONUS[1])}</td><td>${fxStr(VOL_BONUS[2])}</td><td>${fxStr(VOL_BONUS[3])}</td></tr></tbody></table></div>
-  <h3>인연 ${BONDS.length}종 <span style="font-weight:400">· 함께 편성하면 해당 장수들에게 적용</span></h3>
+  <h3>인연 ${BONDS.length}종 <span style="font-weight:400">· 발동하면 진형 전원에게 적용</span></h3>
   <div class="list">${BONDS.map(B=>`<div class="li bond"><div class="info"><b>${B.n}${B.cross?` <span class="chip">타국 ×${CROSS_MUL}</span>`:''}</b><span>${esc(B.d)}</span><span class="bfx">${fxStr(B.fx)}${B.full?` · ${B.fullMin?B.fullMin+'명 이상':'전원'} 시 ${fxStr(B.full)}`:''}${B.min?` · ${B.min}명 이상`:''}</span>
     <div class="bmem">${B.ids.map(x=>`<span class="${S.gens[x]?'':'unown'}" title="${GMAP[x].name}">${seal(GMAP[x],'sm')}<small>${GMAP[x].name}</small></span>`).join('')}</div></div></div>`).join('')}</div>`;
 }
