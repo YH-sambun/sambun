@@ -218,6 +218,23 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .dtab th[scope="row"],.dtab thead th:first-child{text-align:left;color:var(--mute);font-weight:500}
 .dtab thead th{color:var(--mute);font-weight:500;font-size:12px}
 .top{flex-wrap:wrap}
+
+.warn{border:1px solid var(--cinnabar);background:rgba(208,80,58,.10);border-radius:12px;padding:12px;margin-top:10px;font-size:13px}
+.warn b{color:var(--fg)}
+.pc{font-family:var(--display);color:var(--bronze);font-size:17px;flex:none}
+.ig{color:var(--rc);font-family:var(--display)}
+.li[data-peek]{cursor:pointer}
+.li[data-peek]:hover{border-color:var(--bronze-d)}
+.li .info .bar{margin-top:6px}
+.li .info>span{display:block}
+
+.seal{overflow:hidden}
+.seal .px{width:100%;height:100%}
+.seal.sm{width:38px;height:38px}
+.px{display:block;image-rendering:crisp-edges;image-rendering:pixelated}
+.itm{overflow:hidden}
+.itm .px{width:32px;height:32px}
+.ig .px{display:inline-block;width:16px;height:16px;vertical-align:-3px}
 </style>
 </head>
 <body>
@@ -383,6 +400,107 @@ const NSTAGE=CH.length*5, MAXLV=40, CAP_H=12, PVP_DAILY=10;
 const AP_CAP=120, AP_MS=5*60*1000, AP_COST=6, AP_WIN=3;
 const POS=['선봉','선봉','중군','후위','후위'];
 
+/* ---------------- pixel art (코드로 그리는 초상화·아이콘) ---------------- */
+const PX={};
+const SKIN={n:['#e8b98a','#c9925f'],d:['#c48a58','#9a6a3e'],r:['#c4523c','#93362a']};
+const FARM={wei:['#3d5f8f','#26405f','#a9bccf'],shu:['#3f7f5f','#285a40','#cfcdb8'],wu:['#a8402f','#6e2a1e','#dcb474'],qun:['#6a5288','#46365c','#bcaccc']};
+const TR=(hg,bd,o={})=>({hg,bd,...o});
+const TRAIT={
+ lubu:TR('plume','none',{fierce:1}),guanyu:TR('hood','long',{sk:'r',fierce:1,hood:'#2f7a4a'}),zhaoyun:TR('helm','none',{white:1}),zhangfei:TR('helm','bushy',{sk:'d',big:1,fierce:1}),
+ zhugeliang:TR('scholar','goatee',{fan:1,robe:1}),caocao:TR('crown','goatee',{fierce:1}),simayi:TR('crown','thin',{robe:1}),zhouyu:TR('helm','none',{}),sunce:TR('helm','none',{fierce:1}),
+ liubei:TR('crown','goatee',{}),machao:TR('helm','none',{white:1,fierce:1}),huangzhong:TR('helm','long',{old:1}),pangtong:TR('scholar','stubble',{sk:'d',robe:1}),
+ xiahoudun:TR('helm','goatee',{patch:1,fierce:1}),xiahouyuan:TR('band','goatee',{}),zhangliao:TR('helm','goatee',{fierce:1}),xuchu:TR('wrap','stubble',{sk:'d',fat:1}),
+ dianwei:TR('wrap','bushy',{sk:'d',fierce:1}),guojia:TR('scholar','none',{robe:1}),sunquan:TR('crown','goatee',{beard:'#6a3a8a',eye:'#2f8a6a'}),ganning:TR('band','stubble',{fierce:1}),
+ taishici:TR('band','goatee',{}),luxun:TR('scholar','none',{robe:1}),zhangjiao:TR('turban','long',{robe:1}),dongzhuo:TR('crown','bushy',{fat:1}),yuanshao:TR('crown','goatee',{gold:1}),
+ weiyan:TR('helm','bushy',{sk:'d',fierce:1}),guanping:TR('hood','none',{hood:'#2f7a4a'}),madai:TR('helm','goatee',{}),liaohua:TR('band','stubble',{}),yujin:TR('helm','goatee',{}),
+ lejin:TR('helm','none',{}),lidian:TR('band','goatee',{}),chengpu:TR('helm','long',{old:1}),huanggai:TR('helm','bushy',{old:1}),zhoutai:TR('band','stubble',{sk:'d',fierce:1}),
+ lingtong:TR('band','none',{}),gaoshun:TR('helm','goatee',{fierce:1}),chengong:TR('scholar','goatee',{robe:1}),huaxiong:TR('helm','bushy',{fierce:1}),yanliang:TR('helm','bushy',{sk:'d',fierce:1}),
+ wenchou:TR('helm','goatee',{fierce:1}),jiling:TR('helm','bushy',{}),yuanshu:TR('crown','goatee',{gold:1})
+};
+function pxGrid(n,s){const c=document.createElement('canvas');c.width=c.height=n*s;const x=c.getContext('2d');return {c,p:(col,i,j,w=1,h=1)=>{if(!col||w<=0||h<=0)return;x.fillStyle=col;x.fillRect(i*s,j*s,w*s,h*s)}}}
+function portrait(b){
+  const key=b.id||('T'+b.name+b.cls);if(PX[key])return PX[key];
+  let t=TRAIT[b.id];
+  if(!t){t=b.hz==='賊'?TR('turban','stubble',{sk:'d'}):b.cls==='arc'||b.fac==='wu'?TR('band','stubble',{}):b.cls==='tac'?TR('scholar','none',{robe:1}):TR('helm','none',{});t={...t,troop:1}}
+  const {c,p}=pxGrid(24,4);
+  const [sk,ss]=SKIN[t.sk||'n'], [A,AD,M]=FARM[b.fac]||FARM.qun;
+  const hair=t.old?'#e6e1d6':'#1e1a18', B=t.beard||(t.old?'#e6e1d6':'#1e1a18'), OUT='#120d0a', MOUTH='#8a3a2e';
+  const ar=t.white?'#dfe3e6':t.robe?'#d8d0bc':A, ard=t.white?'#9aa4ab':t.robe?'#a89e86':AD;
+  p(ard,5,18,14,1);p(ar,6,18,12,1);p(ard,3,19,18,1);p(ar,4,19,16,1);p(ard,2,20,20,4);p(ar,3,20,18,4);
+  if(!t.robe){p(M,3,19,4,2);p(M,17,19,4,2);p(ard,3,21,4,1);p(ard,17,21,4,1)}
+  const col=t.robe?A:'#e8e0c8';p(col,10,18,4,1);p(col,11,19,2,2);
+  p(ss,10,16,4,2);
+  const f=t.fat?1:0;
+  p(sk,8-f,7,8+2*f,1);p(sk,7-f,8,10+2*f,6);p(sk,8-f,14,8+2*f,1);p(sk,9,15,6,1);p(sk,10,16,4,1);
+  p(ss,7-f,9,1,5);p(ss,9,15,1,1);p(ss,14,15,1,1);p(ss,6-f,10,1,2);p(ss,17+f,10,1,2);
+  p(hair,7-f,6,10+2*f,2);p(hair,7-f,8,1,3);p(hair,16+f,8,1,3);
+  const eye=t.eye||OUT;
+  if(t.big){p('#ffffff',9,11,2,1);p('#ffffff',13,11,2,1)}
+  p(eye,10,11,1,1);p(eye,13,11,1,1);
+  const brow=t.old?'#cfc8bb':hair;
+  if(t.fierce){p(brow,9,9);p(brow,10,10);p(brow,14,9);p(brow,13,10)}else{p(brow,9,10,2,1);p(brow,13,10,2,1)}
+  p(ss,11,13,2,1);p(MOUTH,11,15,2,1);
+  if(t.bd==='long'){p(B,9,14,2,1);p(B,13,14,2,1);p(B,9,15,6,1);p(B,8,16,8,2);p(B,9,18,6,2);p(B,10,20,4,2);p(B,11,22,2,2)}
+  else if(t.bd==='bushy'){p(B,6-f,12,2,3);p(B,16+f,12,2,3);p(B,7-f,15,10+2*f,1);p(B,8,16,8,2);p(B,10,18,4,1);p(B,9,14,2,1);p(B,13,14,2,1);p(MOUTH,11,15,2,1)}
+  else if(t.bd==='goatee'){p(B,9,14,2,1);p(B,13,14,2,1);p(B,11,16,2,2)}
+  else if(t.bd==='thin'){p(B,9,14,2,1);p(B,13,14,2,1);p(B,11,16,2,4)}
+  else if(t.bd==='stubble'){p(ss,8,14,8,1);p(ss,9,15,1,1);p(ss,14,15,1,1)}
+  if(t.patch){p(OUT,7,9,10,1);p(OUT,9,10,3,2)}
+  const hg=t.hg;
+  if(hg==='helm'||hg==='plume'){
+    const m=hg==='plume'?'#e2b85a':t.white?'#e8ecef':M, md=hg==='plume'?'#9a7424':t.white?'#9aa4ab':AD;
+    p(m,9,2,6,1);p(m,8,3,8,1);p(m,7,4,10,3);p(md,7,6,10,1);p(md,6,7,12,1);p('#ffffff',10,3,2,1);p(m,6,8,1,4);p(m,17,8,1,4);
+    p(t.white?'#c84a36':A,11,0,2,2);
+    if(hg==='plume'){const f1='#f0c860',f2='#a8402f',L=[[8,2],[7,2],[6,3],[5,4],[4,5],[4,6],[3,7],[3,8]];L.forEach(([i,j],k)=>{p(k%2?f2:f1,i,j);p(k%2?f2:f1,23-i,j)});p('#c84a36',11,0,2,2)}
+  } else if(hg==='scholar'){const s='#2a3550';p(s,8,2,8,6);p('#e8e0c8',9,3,1,4);p('#e8e0c8',12,3,1,4);p('#e8e0c8',14,3,1,4);p(s,16,6,2,6);p(s,6,6,2,5)}
+  else if(hg==='crown'){p(OUT,9,3,6,4);p(t.gold?'#e9c66c':'#d2aa55',7,4,10,1);p('#3a2a1e',8,6,8,1)}
+  else if(hg==='hood'){const h=t.hood;p(h,8,2,8,1);p(h,7,3,10,4);p(h,6,7,2,6);p(h,16,7,2,6);p('#1e4a2e',7,6,10,1)}
+  else if(hg==='turban'){const y='#e2c03a',yd='#a8861e';p(y,7,3,10,4);p(yd,7,6,10,1);p(y,11,1,2,2);p(yd,6,5,1,2)}
+  else if(hg==='band'){p(hair,8,3,8,3);p(hair,11,1,2,2);p(t.troop?'#a8402f':A,7,6,10,1);p(t.troop?'#a8402f':A,17,7,2,2)}
+  else if(hg==='wrap'){p('#5a4030',8,3,8,4);p('#3a2a1e',7,6,10,1)}
+  if(t.fan){p('#7a5a3a',19,20,1,4);p('#f4f0e6',17,14,5,6);p('#f4f0e6',18,13,3,1);p('#d8d0bc',17,19,5,1);p('#cfc8bb',19,14,1,5)}
+  return PX[key]=c.toDataURL();
+}
+const ISPR={
+ sword:['...............k','..............kb','.............kba','............kbak','...........kbak.','..........kbak..','.........kbak...','........kbak....','.......kbak.....','...dd.kbak......','...ddkbak.......','....ddak........','...eedd.........','..eek.dd........','.eek............','dek.............'],
+ guandao:['..........kkkk..','.........kbbbak.','........kbaaaak.','.......kbaaaak..','......kbaaaak...','......kaaaak....','......kaak......','.....ddk........','....ddd.........','....ed..........','...ee...........','..ee............','..e.............','.ee.............','.e..............','e...............'],
+ halberd:['..............k.','.............kbk','............kbak','......kk...kbak.','.....kbak.kbak..','......kbakbak...','.......kbbak.kk.','........eakkbak.','.......ddekbak..','......ddde.kk...','.......de.......','......ee........','.....ee.........','....ee..........','...ee...........','..e.............'],
+ snake:['..............kb','.............kba','..............ak','.............ka.','............kba.','............ak..','...........kak..','..........dek...','.........dde....','.........ed.....','........ee......','.......ee.......','......ee........','....eee.........','...ee...........','..e.............'],
+ spear:['..............kk','.............kbk','............kbak','...........kbak.','............kk..','..........dd....','.........dde....','..........e.....','.........e......','........e.......','.......e........','......e.........','.....e..........','....e...........','...e............','..e.............'],
+ bow:['.....kk.........','....kaak........','....kab.w.......','...kab...w......','...kab....w.....','..kab......w....','..kab......w....','..kdd.......w...','..kdd.......w...','..kab......w....','..kab......w....','...kab....w.....','...kab...w......','....kab.w.......','....kaak........','.....kk.........'],
+ armor:['................','....kk....kk....','...kddkkkkddk...','..kdaaabbaaadk..','..kdabababbadk..','..kkaaaaaaaakk..','...kababababk...','...kaaaaaaaak...','...kababababk...','...kaaaaaaaak...','...kddddddddk...','...kababababk...','...kaaaaaaaak...','...kcacacacak...','....kkkkkkkk....','................'],
+ armorM:['................','....kk....kk....','...kddkkkkddk...','..kdaaabbaaadk..','..kdawwaawwadk..','..kkawwaawwakk..','...kababababk...','...kaaaaaaaak...','...kababababk...','...kaaaaaaaak...','...kddddddddk...','...kababababk...','...kaaaaaaaak...','...kcacacacak...','....kkkkkkkk....','................'],
+ horse:['................','.........kk.....','........kak.....','.......kaakkk...','......kaaaaddk..','.....kaakaaaddk.','....kaaaaaaaaddk','...kaaaaaaaaaddk','..kaaaaackaaaddk','.kaaaackk.kaaddk','kcaaak....kaaddk','kkcak.....kaaadk','.kkk......kaaaak','..........kaaaak','.........kaaaaak','.........kkkkkk.'],
+ book:['................','..kkkkkkkkkkk...','..kdaaaaaaaaak..','..kdaaaaaaaaak..','..kdaabbbbbaak..','..kdaabwwwbaak..','..kdaabbbbbaak..','..kdaaaaaaaaak..','..kdaaaaaaaaak..','..kdaaaaaaaaak..','..kdaaaaaaaaak..','..kdaaaaaaaaak..','..kdwwwwwwwwwk..','..kdkkkkkkkkkk..','...kk...........','................'],
+ scroll:['................','................','.kkkkkkkkkkkkkk.','.kacacacacacack.','.kddddddddddddk.','.kacacacacacack.','.kacacacacacack.','.kacacacacacack.','.kacacacacacack.','.kacacacacacack.','.kddddddddddddk.','.kacacacacacack.','.kkkkkkkkkkkkkk.','................','................','................']
+};
+const IPAL={
+ qinglong:['guandao',{a:'#7fb59c',b:'#d9f0e4',e:'#6a4428',d:'#e2b85a',k:'#0d1a16'}],
+ fangtian:['halberd',{a:'#c9d1d6',b:'#ffffff',e:'#8a3028',d:'#e04a3a',k:'#151515'}],
+ chitu:['horse',{a:'#c8432f',c:'#8a2a1e',d:'#5a1a12',k:'#1a0d0a'}],
+ taiping:['book',{a:'#e2c25a',d:'#8a6a20',b:'#c84a36',w:'#f5e9c0',k:'#2a1d08'}],
+ yitian:['sword',{a:'#cfd6da',b:'#ffffff',d:'#e2b85a',e:'#5a3a22',k:'#141414'}],
+ qinggang:['sword',{a:'#9fc3dd',b:'#e8f4ff',d:'#5b8fd1',e:'#3a3a52',k:'#101418'}],
+ zhangba:['snake',{a:'#c9d1d6',b:'#ffffff',e:'#4a4a4a',d:'#c84a36',k:'#111111'}],
+ jueying:['horse',{a:'#55556a',c:'#3a3a4a',d:'#1a1a22',k:'#050508'}],
+ dilu:['horse',{a:'#e6e2d6',c:'#b8b2a2',d:'#6a6458',k:'#1a1814'}],
+ mingguang:['armorM',{a:'#d6b85a',b:'#f4e29a',c:'#9a7a2a',d:'#8a5a2a',w:'#ffffff',k:'#2a1d08'}],
+ mengde:['book',{a:'#4a6fa8',d:'#2a3f66',b:'#e8dcc0',w:'#d8e4f4',k:'#0e1626'}],
+ tieqiang:['spear',{a:'#c9d1d6',b:'#ffffff',e:'#8a6040',d:'#c84a36',k:'#111111'}],
+ qianggong:['bow',{a:'#8a5a2a',b:'#c8924a',d:'#c84a36',w:'#e8e0c8',k:'#1a0e06'}],
+ pijia:['armor',{a:'#9a6a3a',b:'#c8925a',c:'#6a4220',d:'#4a2a12',k:'#1a0e06'}],
+ tiejia:['armor',{a:'#8a949a',b:'#c4ccd2',c:'#5a6268',d:'#3a4248',k:'#111111'}],
+ junma:['horse',{a:'#8a5a32',c:'#6a4020',d:'#2a1a0e',k:'#120a04'}],
+ bingfa:['scroll',{a:'#c8b27a',c:'#a8925a',d:'#7a2a24',k:'#2a1d08'}]
+};
+function itemPx(id){
+  if(PX['i'+id])return PX['i'+id];
+  const [tpl,pal]=IPAL[id], {c,p}=pxGrid(16,6);
+  ISPR[tpl].forEach((r,j)=>{for(let i=0;i<16;i++){const ch=r[i]||'.';if(ch!=='.')p(pal[ch]||'#000',i,j)}});
+  return PX['i'+id]=c.toDataURL();
+}
+const itemImg=it=>`<img class="px" src="${itemPx(it.id)}" alt="">`;
+
 /* ---------------- utils ---------------- */
 const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -410,7 +528,7 @@ function mkUnit(spec,side,slot){
   if(it){const f=it.fx;hp*=1+(f.hp||0)/100;atk*=1+(f.atk||0)/100;def*=1+(f.def||0)/100;spd+=f.spd||0}
   const base={inf:1.4,cav:1.8,arc:.85,tac:.6}[b.cls]*(b.rar===5?1.3:1);
   hp=Math.round(hp);
-  return {name:b.name,hz:b.hz,fac:b.fac,rar:b.rar,cls:b.cls,skill:b.skill||DEF_SKILL[b.cls],sm:base,
+  return {id:b.id,name:b.name,hz:b.hz,fac:b.fac,rar:b.rar,cls:b.cls,skill:b.skill||DEF_SKILL[b.cls],sm:base,
     hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0};
 }
 function unitPower(u){return Math.round(u.atk*1.5+u.maxhp/6+u.def*1.2+u.spd)}
@@ -634,8 +752,8 @@ function openSettings(first){
   openSheet(`<div class="sheet-h"><h2 style="margin:0">${first?'군주 이름 정하기':'내 정보'}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <p class="sub">대전 순위에 보이는 이름이에요. 최대 12자.</p>
    <form id="name-form" class="row" style="margin-bottom:16px"><input id="name-input" maxlength="12" autocomplete="nickname" style="flex:1;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--fg);font:inherit" value="${esc(MYNAME)}"><button class="btn" type="submit">저장</button></form>
-   ${first?'':`<p class="sub">${anon?'게스트로 플레이 중이에요. 로그아웃하면 이 기록으로 다시 돌아올 수 없어요.':'구글 계정으로 로그인되어 있어요.'}</p><button type="button" class="btn ghost wide" id="logout">로그아웃</button>`}`);
-  logoutArm=false;
+   ${first?'':`<p class="sub">${anon?'게스트로 플레이 중이에요. 로그아웃하면 이 기록으로 다시 돌아올 수 없어요.':'구글 계정으로 로그인되어 있어요.'}</p><button type="button" class="btn ghost wide" id="logout">로그아웃</button><h3>처음부터 다시 시작</h3>${resetBlock()}`}`);
+  logoutArm=false;bindReset();
   $('#name-form').onsubmit=ev=>{ev.preventDefault();const v=cleanName($('#name-input').value);if(!v){toast('이름을 입력해 주세요');return}MYNAME=v;save();closeSheet();renderView();toast('이름을 저장했어요')};
   const lo=$('#logout');
   if(lo)lo.onclick=()=>{
@@ -663,7 +781,7 @@ function renderTop(){
 $('#claim-btn').onclick=()=>{const p=pendingRes();if(p.f<1&&p.g<1)return;S.food+=p.f;S.gold+=p.g;S.last=Date.now();save();renderTop();toast(`군량 ${fmt(p.f)} · 금 ${fmt(p.g)} 징수`)};
 $('#tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b||!S)return;view=b.dataset.v;render();$('#view').scrollTop=0};
 
-function seal(b,size=''){return `<div class="seal ${size} f-${b.fac} r${b.rar}" aria-hidden="true">${esc(b.hz[0])}</div>`}
+function seal(b,size=''){return `<div class="seal ${size} f-${b.fac} r${b.rar}" aria-hidden="true"><img class="px" src="${portrait(b)}" alt=""></div>`}
 function renderView(){
   if(!S)return;
   const v=$('#view');
@@ -753,7 +871,7 @@ document.addEventListener('click',e=>{
   save();renderTop();renderView();
   out.sort((a,b)=>b.rar-a.rar);
   openSheet(`<div class="sheet-h"><h2 style="margin:0">${kind==='g'?'등용 결과':'획득한 보물'}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-  <div class="reveal">${out.map((x,i)=>`<div class="rv" style="animation-delay:${i*70}ms">${kind==='g'?seal(x):`<div class="itm r${x.rar}">${x.g}</div>`}<div class="nm">${esc(x.name)}</div><div class="stars r${x.rar}">${stars(x.rar)}</div><div class="tag">${esc(x.tag)}</div></div>`).join('')}</div>
+  <div class="reveal">${out.map((x,i)=>`<div class="rv" style="animation-delay:${i*70}ms">${kind==='g'?seal(x):`<div class="itm r${x.rar}">${itemImg(x)}</div>`}<div class="nm">${esc(x.name)}</div><div class="stars r${x.rar}">${stars(x.rar)}</div><div class="tag">${esc(x.tag)}</div></div>`).join('')}</div>
   <div class="row" style="margin-top:16px"><button type="button" class="btn ghost wide" data-close>확인</button></div>`);
 });
 
@@ -809,7 +927,7 @@ function vGens(){
   } else {
     if(!S.items.length)return h+`<div class="empty-state"><b>寶庫</b>아직 보물이 없어요. 등용 탭의 보물 획득에서 얻을 수 있어요.</div>`;
     const items=[...S.items].sort((a,b)=>IMAP[b.k].rar-IMAP[a.k].rar||a.k.localeCompare(b.k));
-    h+=`<div class="list">${items.map(x=>{const it=IMAP[x.k],hd=itemHolder(x.u);return `<div class="li"><div class="itm r${it.rar}">${it.g}</div><div class="info"><b>${esc(it.name)} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${ITYPE[it.g]} · ${fxText(it)}${hd?` · ${esc(GMAP[hd].name)} 장착`:''}</span></div>${hd?'':`<button type="button" class="btn ghost sm" data-sell="${x.u}">판매 金${SELL[it.rar]}</button>`}</div>`}).join('')}</div>`;
+    h+=`<div class="list">${items.map(x=>{const it=IMAP[x.k],hd=itemHolder(x.u);return `<div class="li"><div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${ITYPE[it.g]} · ${fxText(it)}${hd?` · ${esc(GMAP[hd].name)} 장착`:''}</span></div>${hd?'':`<button type="button" class="btn ghost sm" data-sell="${x.u}">판매 金${SELL[it.rar]}</button>`}</div>`}).join('')}</div>`;
   }
   return h;
 }
@@ -833,7 +951,7 @@ function openGen(gid){
   <div class="row sub" style="margin:0 0 4px">무력 ${b.str} · 지력 ${b.int} · 통솔 ${b.lead}<span class="sp"></span>전투력 <b style="color:var(--bronze)">${fmt(unitPower(u))}</b></div>
   <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${SKILL_DESC[b.cls]}${b.rar===5?' (고유 전법: 위력 30% 증가)':''}. 세 번째 행동마다 발동.</p>
   <h3>장비</h3>
-  <div class="li" style="margin-bottom:12px">${it?`<div class="itm r${it.rar}">${it.g}</div><div class="info"><b>${esc(it.name)}</b><span>${fxText(it)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>장착 없음</b><span>보물을 하나 장착할 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-equip="${gid}">${it?'변경':'장착'}</button></div>
+  <div class="li" style="margin-bottom:12px">${it?`<div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)}</b><span>${fxText(it)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>장착 없음</b><span>보물을 하나 장착할 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-equip="${gid}">${it?'변경':'장착'}</button></div>
   <div class="row"><button type="button" class="btn" style="flex:1" data-lvup="${gid}" ${st.lv>=MAXLV||S.gold<cost?'disabled':''}>${st.lv>=MAXLV?'최대 레벨':`레벨 업 <b class="sl gold">金</b>${fmt(cost)}`}</button>
   <button type="button" class="btn ghost" data-deckt="${gid}">${inDeck?'진형에서 빼기':'진형에 넣기'}</button></div>`);
 }
@@ -851,7 +969,7 @@ function openEquip(gid){
   const items=[...S.items].sort((a,b)=>IMAP[b.k].rar-IMAP[a.k].rar);
   openSheet(`<div class="sheet-h"><h2 style="margin:0">${esc(GMAP[gid].name)} 장비</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   ${cur?`<button type="button" class="btn ghost wide" data-puton="${gid}:" style="margin-bottom:10px">장비 해제</button>`:''}
-  ${items.length?`<div class="list">${items.filter(x=>x.u!==cur).map(x=>{const it=IMAP[x.k],h=itemHolder(x.u);return `<button type="button" class="li" style="text-align:left" data-puton="${gid}:${x.u}"><div class="itm r${it.rar}">${it.g}</div><div class="info"><b>${esc(it.name)} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${fxText(it)}${h?` · ${esc(GMAP[h].name)}에게서 옮김`:''}</span></div></button>`}).join('')}</div>`:`<div class="empty-state"><b>寶庫</b>보물이 없어요. 등용 탭에서 얻을 수 있어요.</div>`}`);
+  ${items.length?`<div class="list">${items.filter(x=>x.u!==cur).map(x=>{const it=IMAP[x.k],h=itemHolder(x.u);return `<button type="button" class="li" style="text-align:left" data-puton="${gid}:${x.u}"><div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${fxText(it)}${h?` · ${esc(GMAP[h].name)}에게서 옮김`:''}</span></div></button>`}).join('')}</div>`:`<div class="empty-state"><b>寶庫</b>보물이 없어요. 등용 탭에서 얻을 수 있어요.</div>`}`);
 }
 
 /* ---------------- 도감 ---------------- */
@@ -870,7 +988,7 @@ function vDex(){
       <div class="dst">${statCell('무력',g.str,100)}${statCell('지력',g.int,100)}${statCell('통솔',g.lead,100)}${statCell('속도',g.spd,100)}</div></div></button>`}).join('')}</div>`;
   } else {
     const list=[...ITEMS].sort((a,b)=>b.rar-a.rar||a.g.localeCompare(b.g));
-    h+=`<div class="list">${list.map(it=>{const n=S.items.filter(x=>x.k===it.id).length;return `<div class="li ${n?'':'unown'}"><div class="itm r${it.rar}">${it.g}</div><div class="info"><b>${esc(it.name)} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${ITYPE[it.g]} · ${fxText(it)}</span></div><span class="chip">${n?`보유 ${n}`:'미보유'}</span></div>`}).join('')}</div>`;
+    h+=`<div class="list">${list.map(it=>{const n=S.items.filter(x=>x.k===it.id).length;return `<div class="li ${n?'':'unown'}"><div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${ITYPE[it.g]} · ${fxText(it)}</span></div><span class="chip">${n?`보유 ${n}`:'미보유'}</span></div>`}).join('')}</div>`;
   }
   return h;
 }
@@ -906,17 +1024,18 @@ function vPvp(){
   let h=`<div class="row"><h2>대전</h2><span class="sp"></span>${MODE==='shared'?'<button type="button" class="btn ghost sm" id="settings">내 정보</button>':''}</div><p class="sub">다른 군주의 방어 진형에 도전하세요. 공격 승리 3점, 방어 성공 1점. 내 진형 탭의 덱이 그대로 방어 진형이 됩니다.</p>`;
   if(MODE!=='shared'){
     return h+`<div class="empty-state"><b>對戰</b>서버 설정이 끝나면 친구들과 대전할 수 있어요. 지금은 연습전만 가능합니다.</div>
-    <button type="button" class="btn ghost wide" id="practice" style="margin-top:12px">연습전 (보상 없음)</button>`;
+    <button type="button" class="btn ghost wide" id="practice" style="margin-top:12px">연습전 (보상 없음)</button>
+    <button type="button" class="btn ghost wide" id="reset-open" style="margin-top:24px;color:var(--mute)">처음부터 다시 시작</button>`;
   }
   const st=standings(), me=st[UID]||{aw:0,al:0,dw:0,dl:0};
   h+=`<div class="recbox"><div class="stat"><small>공격</small><b>${me.aw}승 ${me.al}패</b></div><div class="stat"><small>방어</small><b>${me.dw}승 ${me.dl}패</b></div><div class="stat"><small>오늘 도전</small><b>${ticketsLeft()}/${PVP_DAILY}</b></div></div>`;
   const rows=PLAYERS.map(p=>({...p,power:deckPower(p.deck),sc:score(st[p.id]),r:st[p.id]||{aw:0,al:0,dw:0,dl:0}}));
   if(!rows.some(p=>p.id===UID))rows.push({id:UID,deck:mySpecs().filter(Boolean),power:myP,sc:score(me),r:me});
   rows.sort((a,b)=>b.sc-a.sc||b.power-a.power);
-  h+=`<h3>순위</h3><div class="list">`;
+  h+=`<h3>순위 <span style="font-weight:400">· 군주를 누르면 진형을 볼 수 있어요</span></h3><div class="list">`;
   rows.forEach((p,i)=>{
     const mine=p.id===UID;
-    h+=`<div class="li ${mine?'me':''}"><span class="rank">${i+1}</span><div class="info"><b data-uid="${esc(p.id)}">…</b><span class="num">전투력 ${fmt(p.power)} · ${p.sc}점 · 공 ${p.r.aw}-${p.r.al} 방 ${p.r.dw}-${p.r.dl}</span></div>
+    h+=`<div class="li ${mine?'me':''}" data-peek="${esc(p.id)}" role="button" tabindex="0" aria-label="진형 보기"><span class="rank">${i+1}</span><div class="info"><b data-uid="${esc(p.id)}">…</b><span class="num">전투력 ${fmt(p.power)} · 완성도 ${pct(deckComp(p.deck))} · ${p.sc}점 · 공 ${p.r.aw}-${p.r.al} 방 ${p.r.dw}-${p.r.dl}</span></div>
      ${mine?'<span class="chip">나</span>':`<button type="button" class="btn sm red" data-duel="${esc(p.id)}" ${ticketsLeft()<1||!mySpecs().some(Boolean)?'disabled':''}>도전</button>`}</div>`;
   });
   h+=`</div>`;
@@ -926,7 +1045,8 @@ function vPvp(){
     h+=`<h3>최근 전투</h3><div class="list">${mineB.map(b=>{const atk=b.att===UID,other=atk?b.def:b.att,won=atk?b.win:!b.win;
       return `<div class="li"><span class="rank" style="color:${won?'var(--cinnabar)':'var(--mute)'}">${won?'勝':'敗'}</span><div class="info"><b><span data-uid="${esc(other)}">…</span> ${atk?'공격':'방어'}</b><span>${new Date(Number(b.at)||0).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span></div></div>`}).join('')}</div>`;
   }
-  h+=`<button type="button" class="btn ghost wide" id="practice" style="margin-top:16px">연습전 (보상 없음 · 도전 횟수 차감 없음)</button>`;
+  h+=`<button type="button" class="btn ghost wide" id="practice" style="margin-top:16px">연습전 (보상 없음 · 도전 횟수 차감 없음)</button>
+  <button type="button" class="btn ghost wide" id="reset-open" style="margin-top:24px;color:var(--mute)">처음부터 다시 시작</button>`;
   return h;
 }
 function nameOf(id){if(id===UID)return (MYNAME||'나')+' (나)';const p=PLAYERS.find(x=>x.id===id);return (p&&p.name)||'이름 모를 군주'}
@@ -941,6 +1061,7 @@ document.addEventListener('click',async e=>{
     return;
   }
   const d=e.target.closest('[data-duel]');if(!d||d.disabled)return;
+  closeSheet();
   const opp=PLAYERS.find(p=>p.id===d.dataset.duel);if(!opp)return;
   if(ticketsLeft()<1){toast('오늘 도전 횟수를 모두 썼어요');return}
   const mine=mySpecs();
@@ -952,6 +1073,48 @@ document.addEventListener('click',async e=>{
   try{await writeRetry(()=>FS.collection('battles').add({att:UID,def:opp.id,win:res.win,at:Date.now(),ap:deckPower(mine),dp:deckPower(opp.deck)}))}catch(err){wrote=false}
   playBattle(res,'군주 대전','나','상대',()=>rewardHtml(rw)+(wrote?'':'<p class="sub">전투 기록 저장에 실패해 순위에는 반영되지 않았어요.</p>'));
 });
+
+/* ---------------- 다른 군주 진형 보기 · 초기화 ---------------- */
+const ITEM_COMP={3:.4,4:.7,5:1};
+function genComp(s){const it=s.i?IMAP[s.i]:null;return (s.lv/MAXLV)*.6+((s.d||0)/5)*.25+(it?ITEM_COMP[it.rar]:0)*.15}
+function deckComp(specs){const a=specs.filter(Boolean);let t=0;a.forEach(s=>t+=genComp(s));return t/5}
+const pct=x=>Math.round(x*100)+'%';
+function openPeek(id){
+  const mine=id===UID;
+  const p=mine?{id,deck:mySpecs().filter(Boolean)}:PLAYERS.find(x=>x.id===id);
+  if(!p)return;
+  const st=standings()[id]||{aw:0,al:0,dw:0,dl:0}, dc=deckComp(p.deck);
+  const rows=p.deck.map((s,k)=>{const b=GMAP[s.g],it=s.i?IMAP[s.i]:null,c=genComp(s);
+    return `<div class="li" style="align-items:flex-start">${seal(b,'sm')}<div class="info"><b>${k+1}. ${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span></b>
+      <span>${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${s.lv}/${MAXLV}${s.d?` · 돌파 ${s.d}`:''} · 전투력 ${fmt(specPower(s))}</span>
+      <span>${it?`<span class="ig r${it.rar}">${itemImg(it)}</span> ${esc(it.name)} ${stars(it.rar)} · ${fxText(it)}`:'장비 없음'}</span>
+      <div class="bar"><i style="width:${c*100}%;background:var(--bronze)"></i></div></div><span class="pc num">${pct(c)}</span></div>`}).join('');
+  openSheet(`<div class="sheet-h"><div style="min-width:0"><h2 style="margin:0" data-uid="${esc(id)}">…</h2><div class="sub" style="margin:0">전투력 ${fmt(deckPower(p.deck))} · 공 ${st.aw}-${st.al} · 방 ${st.dw}-${st.dl} · ${score(st)}점</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <div class="stat" style="text-align:left;margin:8px 0 12px"><div class="row"><small style="font-size:12px">진형 완성도</small><span class="sp"></span><span class="pc num" style="font-size:22px">${pct(dc)}</span></div><div class="bar"><i style="width:${dc*100}%;background:var(--bronze)"></i></div></div>
+   <h3>${mine?'내 방어 진형':'방어 진형'} (${p.deck.length}/5)</h3>
+   ${p.deck.length?`<div class="list">${rows}</div>`:'<div class="empty-state">진형에 장수가 없어요.</div>'}
+   <p class="sub" style="margin-top:10px">완성도는 레벨 60%, 돌파 25%, 장비 등급 15%를 반영해요. 빈 자리는 0%로 계산돼요.</p>
+   ${!mine&&MODE==='shared'?`<button type="button" class="btn red wide" data-duel="${esc(id)}" ${ticketsLeft()<1||!mySpecs().some(Boolean)?'disabled':''}>도전 (오늘 ${ticketsLeft()}/${PVP_DAILY}회 남음)</button>`:''}`);
+  fillNames();
+}
+function resetBlock(){
+  return `<p class="sub">장수, 보물, 금과 군량, 군령, 스테이지 진척을 모두 지우고 처음 상태로 돌아가요. 군주 이름과 지난 대전 기록, 오늘 쓴 대전 횟수는 그대로 남아요.</p>
+  <button type="button" class="btn ghost wide" id="reset-ask">처음부터 다시 시작</button>
+  <div class="warn" id="reset-warn" hidden role="alert"><b>정말 처음부터 다시 시작할까요?</b><br>장수 ${Object.keys(S.gens).length}명, 보물 ${S.items.length}개, 스테이지 진척 ${S.stage}/${NSTAGE}이 모두 사라지고 되돌릴 수 없어요.
+   <div class="row" style="margin-top:10px"><button type="button" class="btn ghost" id="reset-no">취소</button><button type="button" class="btn red" id="reset-yes" style="flex:1">네, 모두 지우고 다시 시작</button></div></div>`;
+}
+function bindReset(){
+  const a=$('#reset-ask');if(!a)return;
+  a.onclick=()=>{$('#reset-warn').hidden=false;a.hidden=true;$('#reset-no').focus()};
+  $('#reset-no').onclick=()=>{$('#reset-warn').hidden=true;a.hidden=false};
+  $('#reset-yes').onclick=()=>{const keep=S.pvp;S=newState();S.pvp=keep;save();closeSheet();view='stage';render();$('#view').scrollTop=0;toast('처음부터 다시 시작했어요')};
+}
+function openReset(){openSheet(`<div class="sheet-h"><h2 style="margin:0">처음부터 다시 시작</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${resetBlock()}`);bindReset()}
+document.addEventListener('click',e=>{
+  if(e.target.closest('#reset-open')){openReset();return}
+  const pk=e.target.closest('[data-peek]');if(pk&&!e.target.closest('[data-duel]')){openPeek(pk.dataset.peek);return}
+});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-peek]')){e.preventDefault();openPeek(e.target.dataset.peek)}});
 
 /* ---------------- battle playback ---------------- */
 let btToken=0;
