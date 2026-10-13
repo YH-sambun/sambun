@@ -332,11 +332,11 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.16.0</span></span></div><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.17.0</span></span></div><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
-      <span class="coin" title="군령: 스테이지 도전에 쓰여요. 5분마다 1개 충전"><b class="sl ap">令</b><span id="r-ap">0</span><small id="r-apt" class="apt"></small></span>
+      <span class="coin" title="나팔: 스테이지 도전에 쓰여요. 3분마다 1개 충전"><b class="sl ap">角</b><span id="r-ap">0</span><small id="r-apt" class="apt"></small></span>
     </div>
   </header>
   <div class="claim" id="claim">
@@ -425,7 +425,10 @@ const GENS_RAW=[
  ['yanliang','안량','顔良','qun',3,'cav',89,32,76,82],
  ['wenchou','문추','文醜','qun',3,'cav',89,26,74,82],
  ['jiling','기령','紀靈','qun',3,'inf',81,48,74,66],
- ['yuanshu','원술','袁術','qun',3,'arc',60,67,70,70]
+ ['yuanshu','원술','袁術','qun',3,'arc',60,67,70,70],
+ ['wenpin','문빙','文聘','wei',3,'inf',80,68,82,66],
+ ['yanyan','엄안','嚴顔','shu',3,'arc',82,62,78,70],
+ ['handang','한당','韓當','wu',3,'cav',80,55,76,82]
 ];
 const GENS=GENS_RAW.map(r=>({id:r[0],name:r[1],hz:r[2],fac:r[3],rar:r[4],cls:r[5],str:r[6],int:r[7],lead:r[8],spd:r[9],skill:r[10]||DEF_SKILL[r[5]]}));
 const GMAP=Object.fromEntries(GENS.map(g=>[g.id,g]));
@@ -482,6 +485,9 @@ const SK={
  jiling:{n:'삼첨도',d:'맨 앞 적을 3번 찔러 각 0.85배 피해',tg:'front',h:3,m:.85},
  dengai:{n:'음평의 결의',d:'2턴 동안 적의 단일 대상 공격을 자신에게 끌어오고(도발) 자신 방어 2턴 +50%, 맨 뒤 적에게 1.4배 기습',tg:'back',m:1.4,taunt:2,buff:{to:'self',def:.5,dur:2}},
  xusheng:{n:'의성의 계',d:'맨 앞 적 1.6배 피해, 적 전체 공격 2턴 -15%, 자신 방어 2턴 +30%',tg:'front',m:1.6,deb:{to:'all',atk:-.15,dur:2},buff:{to:'self',def:.3,dur:2}},
+ wenpin:{n:'강하 수비',d:'맨 앞 적에게 1.3배 피해, 자신 2턴 도발, 자신 방어 2턴 +30%',tg:'front',m:1.3,taunt:2,buff:{to:'self',def:.3,dur:2}},
+ yanyan:{n:'노장의 일시',d:'체력이 가장 낮은 적에게 2.2배 피해, 치명타 확정',tg:'low',m:2.2,crit:1},
+ handang:{n:'강동 기병',d:'맨 앞 적을 2번 베어 각 1.1배 피해, 맞은 적 방어 2턴 -15%',tg:'front',h:2,m:1.1,deb:{to:'hit',def:-.15,dur:2}},
  yuanshu:{n:'옥새의 위세',d:'아군 전체 공격 2턴 +30%, 자신 방어 2턴 -20%',tg:'none',buff:[{to:'all',atk:.3,dur:2},{to:'self',def:-.2,dur:2}]}
 };
 const DEF_SK={
@@ -541,10 +547,14 @@ const BONDS=[
  {n:'형주 수비대',ids:['guanyu','guanping','liaohua'],fx:{def:.12,hp:.08},d:'관우와 함께 형주를 지킨 관평과 요화'},
  {n:'합비 방어전',ids:['zhangliao','lejin','lidian'],fx:{atk:.10,def:.10},d:'칠천 명으로 손권의 십만 대군을 막은 세 장수'},
  {n:'칠군 수몰',ids:['guanyu','yujin'],fx:{atk:.08},d:'번성에서 관우의 수공에 항복한 우금'},
- {n:'강동의 노장',ids:['sunjian','chengpu','huanggai'],min:2,fx:{hp:.10},full:{hp:.10,def:.12},d:'손견 때부터 손씨 삼대를 섬긴 정보와 황개. 2명이면 발동, 3명 전원이면 효과가 커져요'},
+ {n:'강동의 노장',ids:['sunjian','chengpu','huanggai','handang'],min:2,fx:{hp:.10},full:{hp:.10,def:.12,atk:.05},d:'손견 때부터 손씨 삼대를 섬긴 정보·황개·한당. 2명 이상이면 발동, 4명 전원이면 효과가 커져요'},
  {n:'반하의 일기토',ids:['zhaoyun','wenchou'],fx:{atk:.08},d:'반하에서 일기토를 벌인 조운과 문추'},
  {n:'여포군의 두 장수',ids:['gaoshun','zhangliao'],fx:{def:.08},d:'여포 아래에서 함진영과 기병을 이끈 고순과 장료'},
- {n:'원술의 대장',ids:['yuanshu','jiling'],fx:{atk:.10,hp:.08},d:'원술군을 이끈 대장 기령'}
+ {n:'원술의 대장',ids:['yuanshu','jiling'],fx:{atk:.10,hp:.08},d:'원술군을 이끈 대장 기령'},
+ {n:'촉의 노장',ids:['yanyan','huangzhong'],fx:{atk:.12},d:'나이를 잊고 활을 당긴 두 노장 엄안과 황충'},
+ {n:'파군의 의리',ids:['yanyan','zhangfei'],fx:{def:.10,atk:.08},d:'파군에서 사로잡힌 엄안의 기개에 장비가 결박을 풀어 준 인연'},
+ {n:'귀순한 충신',ids:['wenpin','caocao'],fx:{def:.10,hp:.05},d:'유표의 장수였던 문빙을 조조가 믿고 강하를 맡긴 인연'},
+ {n:'강하 공방',ids:['wenpin','ganning'],fx:{def:.08},d:'강하를 지킨 문빙과 이를 노린 감녕'}
 ];
 
 // 서로 다른 진영 장수로 이루어진 인연(타국 인연)은 효과가 CROSS_MUL배
@@ -802,7 +812,7 @@ const CH=CH_DEF.map(([n,hz,tr,boss,pool,bossRow])=>{
   return {n,hz,tr,boss,st};
 });
 const NSTAGE=CH.length*5, MAXLV=50, CAP_H=12, PVP_DAILY=10;
-const AP_CAP=120, AP_MS=5*60*1000, AP_COST=6, AP_WIN=3;
+const AP_CAP=240, AP_MS=3*60*1000, AP_COST=3, AP_WIN=0;  // 나팔: 3분에 1개, 도전 3개(지면 돌려받음)
 const MAX5=2;
 const count5=(deck,skip)=>deck.filter((g,i)=>g&&i!==skip&&GMAP[g]&&GMAP[g].rar===5).length;
 const capFive=a=>{let n=0;return a.filter(s=>!(s&&s.g&&GMAP[s.g]&&GMAP[s.g].rar===5&&++n>MAX5))};
@@ -823,7 +833,7 @@ const TRAIT={
  weiyan:TR('helm','bushy',{sk:'d',fierce:1}),guanping:TR('hood','none',{hood:'#2f7a4a'}),madai:TR('helm','goatee',{}),liaohua:TR('band','stubble',{}),yujin:TR('helm','goatee',{}),
  lejin:TR('helm','none',{}),lidian:TR('band','goatee',{}),chengpu:TR('helm','long',{old:1}),huanggai:TR('helm','bushy',{old:1}),zhoutai:TR('band','stubble',{sk:'d',fierce:1}),
  lingtong:TR('band','none',{}),gaoshun:TR('helm','goatee',{fierce:1}),chengong:TR('scholar','goatee',{robe:1}),huaxiong:TR('helm','bushy',{fierce:1}),yanliang:TR('helm','bushy',{sk:'d',fierce:1}),
- dengai:TR('helm','goatee',{}),xusheng:TR('helm','goatee',{}),wenchou:TR('helm','goatee',{fierce:1}),jiling:TR('helm','bushy',{}),yuanshu:TR('crown','goatee',{gold:1}),
+ dengai:TR('helm','goatee',{}),xusheng:TR('helm','goatee',{}),wenchou:TR('helm','goatee',{fierce:1}),jiling:TR('helm','bushy',{}),yuanshu:TR('crown','goatee',{gold:1}),wenpin:TR('helm','goatee',{}),yanyan:TR('helm','long',{old:1,fierce:1}),handang:TR('band','goatee',{}),
  sunjian:TR('helm','goatee',{fierce:1}),diaochan:TR('lady','none',{fem:1,robe:1,dress:['#e48aa8','#b05a78']}),zhurong:TR('tribal','none',{fem:1,sk:'d',fierce:1})
 };
 function pxGrid(n,s){const c=document.createElement('canvas');c.width=c.height=n*s;const x=c.getContext('2d');return {c,p:(col,i,j,w=1,h=1)=>{if(!col||w<=0||h<=0)return;x.fillStyle=col;x.fillRect(i*s,j*s,w*s,h*s)}}}
@@ -1064,7 +1074,9 @@ function stageSpecs(n){
   return row.map(x=>x.startsWith('T:')?{troop:mkTroop(c.tr,x.slice(2)),lv,d:0,sc:ENEMY_SCALE}:{g:x,lv,d:0,sc:ENEMY_SCALE});
 }
 function stageName(n){const c=CH[Math.floor(n/5)];return n%5===4?`${c.n} · ${c.boss}`:`${c.n} · 제${n%5+1}전`}
-function stageReward(n,first){const m=1+.08*Math.floor(n/5);return first?{gold:Math.round((150+20*n)*m),food:Math.round((200+12*n)*m)}:{gold:Math.round((60+10*n)*m),food:Math.round((20+2*n)*m)}}
+// 반복(소탕) 보상 배율: 하루 소탕량이 48회 → 160회로 늘어난 만큼(48/160) 줄여 하루 총량을 이전과 비슷하게 맞춤
+const REP_MUL=.3;
+function stageReward(n,first){const m=1+.08*Math.floor(n/5);return first?{gold:Math.round((150+20*n)*m),food:Math.round((200+12*n)*m)}:{gold:Math.round((60+10*n)*m*REP_MUL),food:Math.round((20+2*n)*m*REP_MUL)}}
 
 /* ---------------- state ---------------- */
 let S=null, view='stage', genTab='gens';
@@ -1297,12 +1309,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.16.0';
+const GAME_VERSION='1.17.0';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.17.0',date:'2026-10-13',title:'군령 → 나팔 · 출정 규칙 · 새 ★3 장수',reward:{ap:30},items:[
+  '\'군령\'의 이름이 \'나팔(角)\'로 바뀌었어요. 가지고 있던 수량은 그대로예요.',
+  '나팔은 3분마다 1개씩 차고, 최대치는 12시간 동안 모이는 240개로 늘었어요(이전 5분 · 120개).',
+  '스테이지 도전은 나팔 3개를 쓰고, 지면 돌려받아요. 이겼을 때 3개를 돌려받던 규칙은 없어졌어요(이긴 경우 실제 사용량은 이전과 같은 3개).',
+  '소탕도 1회에 나팔 3개예요(이전 6개). 하루에 할 수 있는 소탕이 약 3배로 늘어난 만큼, 반복(소탕) 보상은 30%로 줄여 하루에 모이는 총량을 이전과 비슷하게 맞췄어요. 첫 승리 보상은 그대로예요.',
+  '★3 장수 문빙(위 보병) · 엄안(촉 궁병) · 한당(오 기병)이 추가됐어요. 새 인연: 촉의 노장(엄안·황충), 파군의 의리(엄안·장비), 귀순한 충신(문빙·조조), 강하 공방(문빙·감녕, 타국). 강동의 노장에 한당이 들어가 4명 전원이면 효과가 커져요.']},
  {v:'1.16.0',date:'2026-10-13',title:'중복 환불 조정 · 출정 화면 · 쿠폰함',reward:{ap:20},items:[
-  '돌파를 다 채운 장수가 다시 나오면 군령 대신 금을 드려요(★3 200 · ★4 300 · ★5 1,000). 군령 환불이 소탕과 맞물려 군량이 끝없이 불어나는 문제가 있었어요.',
+  '돌파를 다 채운 장수가 다시 나오면 나팔 대신 금을 드려요(★3 200 · ★4 300 · ★5 1,000). 나팔 환불이 소탕과 맞물려 군량이 끝없이 불어나는 문제가 있었어요.',
   '출정 화면에서 지금 진행 중인 장이 맨 위에 오고, 평정한 장은 높은 단계부터 보여요. 맨 위의 \'최근 평정\' 버튼으로 바로 소탕할 수 있어요.',
   '화면 위 券 버튼에서 쿠폰 목록(이름 · 보상 · 기한)을 보고 바로 받을 수 있어요.']},
  {v:'1.15.0',date:'2026-10-13',title:'★3 한계돌파 · 의용군 · 레벨 50',reward:{ap:20},items:[
@@ -1337,7 +1355,7 @@ const NOTICES=[
   '서로 다른 진영 장수로 이루어진 타국 인연은 효과가 2배예요. 화용도의 의리, 적벽 동맹, 손유 동맹, 백문루의 인연 등 타국 인연 9종을 새로 추가했어요(전체 29종).',
   '촉 진영 보너스를 체력 +10/16/24%로 조정했어요(이전 +12/22/35%).',
   '연합군 보너스 추가: ★3 이상 장수의 나라가 3개국이면 ★3 이상 전원 공격·체력·방어 +5%, 4개국이면 +8%예요. 진형 화면에서 효과를, 도감 인연 탭에서 표를 볼 수 있어요.',
-  '돌파 5단계가 끝난 ★4·★5 장수가 다시 나오면 군령 30개로 돌려드려요(★3은 금 200).']},
+  '돌파 5단계가 끝난 ★4·★5 장수가 다시 나오면 나팔 30개로 돌려드려요(★3은 금 200).']},
  {v:'1.10.0',date:'2026-10-13',title:'새 장수 등애·서성 · 병종별 전법 주기',reward:{ap:20},items:[
   '위에 ★5 보병 등애가 합류했어요. 전법 음평의 결의는 2턴 동안 적의 단일 공격을 자신에게 끌어오는 도발과 방어 강화, 기습 공격을 함께 해요.',
   '오에 ★4 보병 서성이 합류했어요. 전법 의성의 계로 적 전체의 공격력을 낮추고 자신의 방어를 올려요.',
@@ -1367,11 +1385,11 @@ const NOTICES=[
   '장수 정보와 도감에서 그 장수를 진형에 넣은 군주의 비율(사용률)을 볼 수 있어요.']},
  {v:'1.6.0',date:'2026-10-13',title:'60개 스테이지와 소탕 · 구글 연동',reward:{ap:30},items:[
   '스테이지를 12장 60개로 늘렸어요. 황건적의 난부터 오장원까지 이어지고, 적의 전체 난이도는 이전의 70% 수준으로 낮췄어요.',
-  '이미 깬 스테이지는 소탕할 수 있어요. 가진 군령 안에서 횟수를 골라 전투 없이 반복 보상을 한 번에 받아요(1회 군령 6개).',
+  '이미 깬 스테이지는 소탕할 수 있어요. 가진 나팔 안에서 횟수를 골라 전투 없이 반복 보상을 한 번에 받아요(1회 나팔 6개).',
   '스테이지 수가 늘어난 만큼 보상과 시간당 생산량이 단계마다 조금씩, 더 오래 늘어나도록 조정했어요. 지금까지의 진척 숫자는 그대로 유지돼요.',
   '게스트로 시작한 기록을 구글 계정에 연동할 수 있어요. 대전 탭의 내 정보에서 연동하면 기록이 그대로 유지돼요.']},
  {v:'1.5.0',date:'2026-10-13',title:'출석 보상과 공지 기능',reward:{ap:20},items:[
-  '매일 첫 접속 때 출석 보상으로 군령 30개를 받아요. 7일 연속 출석하면 군량 500을 더 드려요.',
+  '매일 첫 접속 때 출석 보상으로 나팔 30개를 받아요. 7일 연속 출석하면 군량 500을 더 드려요.',
   '패치 소식을 게임 안 공지로 확인할 수 있어요. 보상이 걸린 공지는 확인하면 보상을 받아요.',
   '화면 위쪽 제목 아래에 게임 버전이 표시돼요.']},
  {v:'1.4.0',date:'2026-10-13',title:'장수 초상화와 보물 아이콘',items:[
@@ -1379,8 +1397,8 @@ const NOTICES=[
  {v:'1.3.0',date:'2026-10-13',title:'다시 시작과 군주 진형 보기',items:[
   '대전 탭에 처음부터 다시 시작 기능을 추가했어요. 경고 상자에서 한 번 더 눌러야 초기화돼요.',
   '대전 순위에서 군주를 누르면 방어 진형의 장수, 레벨, 장비, 완성도를 볼 수 있어요.']},
- {v:'1.2.0',date:'2026-10-13',title:'군령과 도감',items:[
-  '스테이지 도전에 군령이 필요해요. 5분마다 1개씩, 최대 120개까지 충전돼요. 도전에 6개를 쓰고 이기면 3개를 돌려받아요.',
+ {v:'1.2.0',date:'2026-10-13',title:'나팔과 도감',items:[
+  '스테이지 도전에 나팔이 필요해요. 5분마다 1개씩, 최대 120개까지 충전돼요. 도전에 6개를 쓰고 이기면 3개를 돌려받아요.',
   '도감 메뉴를 추가했어요. 모든 장수의 능력치와 보물 효과를 볼 수 있어요.']},
  {v:'1.1.0',date:'2026-10-13',title:'진척에 따른 생산량 증가',items:[
   '스테이지를 깰수록 시간당 생산량과 스테이지 보상이 늘어나요. 장을 평정할 때마다 크게 증가해요.',
@@ -1438,14 +1456,14 @@ document.addEventListener('click',async e=>{
   const g=e.target.closest('[data-cpnget]');if(g&&!g.disabled){g.disabled=true;const r=await redeemCoupon(g.dataset.cpnget);toast(r.ok?'쿠폰 보상 '+r.ok:r.err);fillCouponList()}
 });
 function bindCoupon(){const f=$('#cpn-form');if(!f)return;f.onsubmit=async ev=>{ev.preventDefault();const b=f.querySelector('button');b.disabled=true;const r=await redeemCoupon($('#cpn-input').value);b.disabled=false;const m=$('#cpn-msg');if(!m)return;m.textContent=r.ok?'받았어요 · '+r.ok:r.err;m.style.color=r.ok?'var(--bronze)':'var(--cinnabar)';if(r.ok){$('#cpn-input').value='';toast('쿠폰 보상 '+r.ok);fillCouponList()}}}
-function rewardText(r){const o=[];if(r.ap)o.push(`令 +${r.ap}`);if(r.food)o.push(`糧 +${fmt(r.food)}`);if(r.gold)o.push(`金 +${fmt(r.gold)}`);if(r.itk)o.push(`보물 획득권 ${r.itk}장`);return o.join(' · ')}
+function rewardText(r){const o=[];if(r.ap)o.push(`角 +${r.ap}`);if(r.food)o.push(`糧 +${fmt(r.food)}`);if(r.gold)o.push(`金 +${fmt(r.gold)}`);if(r.itk)o.push(`보물 획득권 ${r.itk}장`);return o.join(' · ')}
 function updateDot(){const d=$('#notice-dot');if(!d)return;d.hidden=!(S&&((typeof PENDING!=='undefined'&&PENDING.length)||attDue()||NOTICES.some(n=>!S.notice.read.includes(n.v))||NOTICES.some(n=>n.reward&&!S.notice.claimed.includes(n.v))))}
 function attHtml(){
   const streak=S.att.day===kstYesterday()?S.att.streak+1:1, pos=(streak-1)%7+1, bonus=pos===7;
-  let boxes='';for(let k=1;k<=7;k++)boxes+=`<div class="ad ${k<pos?'done':''} ${k===pos?'today':''}"><small>${k}일</small><b>${k===7?'糧':'令'}</b></div>`;
+  let boxes='';for(let k=1;k<=7;k++)boxes+=`<div class="ad ${k<pos?'done':''} ${k===pos?'today':''}"><small>${k}일</small><b>${k===7?'糧':'角'}</b></div>`;
   return `<div class="att-card"><div class="row"><b>출석 보상</b><span class="sp"></span><span class="sub" style="margin:0">연속 ${streak}일째</span></div>
    <div class="att">${boxes}</div>
-   <button type="button" class="btn wide" id="att-claim">오늘 출석하고 받기 · 令 +${ATT_AP}${bonus?` · 糧 +${ATT_BONUS_FOOD}`:''}</button></div>`;
+   <button type="button" class="btn wide" id="att-claim">오늘 출석하고 받기 · 角 +${ATT_AP}${bonus?` · 糧 +${ATT_BONUS_FOOD}`:''}</button></div>`;
 }
 function bindAtt(after){
   const b=$('#att-claim');if(!b)return;
@@ -1454,7 +1472,7 @@ function bindAtt(after){
     const streak=S.att.day===kstYesterday()?S.att.streak+1:1, bonus=(streak-1)%7+1===7;
     S.att={day:kstDay(),streak,total:(S.att.total||0)+1};
     tickAP();S.ap+=ATT_AP;if(bonus)S.food+=ATT_BONUS_FOOD;
-    save();renderTop();toast(`출석 ${streak}일째 · 군령 +${ATT_AP}${bonus?` · 군량 +${ATT_BONUS_FOOD}`:''}`);
+    save();renderTop();toast(`출석 ${streak}일째 · 나팔 +${ATT_AP}${bonus?` · 군량 +${ATT_BONUS_FOOD}`:''}`);
     after();
   };
 }
@@ -1581,7 +1599,7 @@ function renderView(){
 /* ---------------- 출정 ---------------- */
 function vStage(){
   const nf=foodRateAt(S.stage+1), ng=goldRateAt(S.stage+1);
-  let h=`<h2>출정</h2><p class="sub">도전마다 군령 ${AP_COST}개를 쓰고, 이기면 ${AP_WIN}개를 돌려받아요. 스테이지를 깰수록 보상과 시간당 생산량이 늘고, 장을 평정하면 크게 뛰어요. 진척 ${S.stage}/${NSTAGE}</p>
+  let h=`<h2>출정</h2><p class="sub">도전마다 나팔 ${AP_COST}개를 쓰고, 지면 돌려받아요. 3분마다 1개씩 채워져요(최대 ${AP_CAP}개). 스테이지를 깰수록 보상과 시간당 생산량이 늘고, 장을 평정하면 크게 뛰어요. 진척 ${S.stage}/${NSTAGE}</p>
   <div class="stats" style="grid-template-columns:1fr 1fr;margin-top:0"><div class="stat"><small>현재 시간당 생산</small><b>糧 ${foodRate()} · 金 ${goldRate()}</b></div><div class="stat"><small>다음 스테이지 평정 시</small><b>${S.stage>=NSTAGE?'최대치':`糧 ${nf} · 金 ${ng}`}</b></div></div>`;
   const cur=Math.min(CH.length-1,Math.floor(S.stage/5)), lockedN=CH.length-1-cur;
   if(S.stage>0)h+=`<button type="button" class="btn wide" data-stage="${S.stage-1}" style="margin:4px 0 12px">최근 평정 · ${esc(stageName(S.stage-1))} 소탕·재도전</button>`;
@@ -1609,21 +1627,21 @@ function openStage(n){
   openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${esc(stageName(n))}</h2><div class="sub" style="margin:0">적 레벨 ${stageLv(n)}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <h3>적 진형</h3><div class="reveal">${foe.map(s=>{const b=baseOf(s);return `<div class="rv" style="animation:none">${seal(b,'sm')}<div class="nm">${esc(b.name)}</div><div class="cls">${CLS[b.cls].g} ${CLS[b.cls].n}</div></div>`}).join('')}</div>
   <div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat"><small>적 전투력</small><b>${fmt(fp)}</b></div><div class="stat"><small>내 전투력</small><b style="color:${mp>=fp?'var(--jade)':'var(--cinnabar)'}">${fmt(mp)}</b></div></div>
-  <div class="row" style="margin-bottom:14px"><span class="sub" style="margin:0">${first?'첫 승리 보상':'반복 보상'}</span><span class="sp"></span><span class="coin"><b class="sl gold">金</b>${fmt(rw.gold)}</span><span class="coin"><b class="sl food">糧</b>${fmt(rw.food)}</span><span class="coin"><b class="sl ap">令</b>+${AP_WIN}</span></div>
+  <div class="row" style="margin-bottom:14px"><span class="sub" style="margin:0">${first?'첫 승리 보상':'반복 보상'}</span><span class="sp"></span><span class="coin"><b class="sl gold">金</b>${fmt(rw.gold)}</span><span class="coin"><b class="sl food">糧</b>${fmt(rw.food)}</span></div>
   ${n<S.stage?sweepHtml(n):''}
-  <button type="button" class="btn wide red" id="go" ${mine.some(Boolean)&&S.ap>=AP_COST?'':'disabled'}>출진 <b class="sl ap">令</b>${AP_COST}</button>
-  ${S.ap<AP_COST?`<p class="sub" style="margin-top:8px">군령이 부족해요 (${S.ap}/${AP_COST}). 5분마다 1개씩, 스테이지 승리 시 ${AP_WIN}개씩 채워져요.</p>`:''}
+  <button type="button" class="btn wide red" id="go" ${mine.some(Boolean)&&S.ap>=AP_COST?'':'disabled'}>출진 <b class="sl ap">角</b>${AP_COST}</button>
+  ${S.ap<AP_COST?`<p class="sub" style="margin-top:8px">나팔이 부족해요 (${S.ap}/${AP_COST}). 3분마다 1개씩 채워지고, 지면 돌려받아요.</p>`:''}
   ${mine.some(Boolean)?'':'<p class="sub" style="margin-top:8px">진형 탭에서 장수를 먼저 편성하세요.</p>'}`);
   if(n<S.stage)bindSweep(n);
   $('#go').onclick=()=>{
     closeSheet();
-    tickAP();if(S.ap<AP_COST){toast('군령이 부족해요');return}
+    tickAP();if(S.ap<AP_COST){toast('나팔이 부족해요');return}
     S.ap-=AP_COST;
     const res=simulate(mine,foe,(Math.random()*2**31)|0);
     let rwText=null;
-    if(res.win){const f=n>=S.stage;const r=stageReward(n,f);S.gold+=r.gold;S.food+=r.food;S.ap+=AP_WIN;r.ap=AP_WIN;if(f)S.stage=n+1;rwText=r}
+    if(res.win){const f=n>=S.stage;const r=stageReward(n,f);S.gold+=r.gold;S.food+=r.food;if(f)S.stage=n+1;rwText=r}else S.ap+=AP_COST;
     save();renderTop();
-    playBattle(res,stageName(n),'아군','적군',()=>res.win?rewardHtml(rwText):`<p class="sub">장수를 강화하거나 진형을 바꿔 다시 도전하세요.</p>`);
+    playBattle(res,stageName(n),'아군','적군',()=>res.win?rewardHtml(rwText):`<p class="sub">사용한 나팔 ${AP_COST}개는 돌려받았어요. 장수를 강화하거나 진형을 바꿔 다시 도전하세요.</p>`);
   };
 }
 
@@ -1632,20 +1650,20 @@ let swN=1;
 const swMax=()=>Math.floor(S.ap/AP_COST);
 function sweepHtml(n){
   const mx=swMax();swN=Math.max(1,Math.min(swN,mx||1));const r=stageReward(n,false);
-  return `<div class="sweep-box"><div class="row"><b>소탕</b><span class="sub" style="margin:0">전투 없이 반복 보상을 바로 받아요 · 1회 令 ${AP_COST}</span></div>
-   ${mx<1?`<p class="sub" style="margin:6px 0 0">군령이 부족해요 (${S.ap}/${AP_COST}).</p>`:`
+  return `<div class="sweep-box"><div class="row"><b>소탕</b><span class="sub" style="margin:0">전투 없이 반복 보상을 바로 받아요 · 1회 角 ${AP_COST}</span></div>
+   ${mx<1?`<p class="sub" style="margin:6px 0 0">나팔이 부족해요 (${S.ap}/${AP_COST}).</p>`:`
    <div class="row" style="margin-top:8px"><div class="stepper"><button type="button" data-sw="-1" aria-label="한 번 줄이기">−</button><b id="sw-n" class="num">${swN}</b><button type="button" data-sw="1" aria-label="한 번 늘리기">+</button></div>
     <button type="button" class="btn ghost sm" data-sw="max">최대 ${mx}회</button><span class="sp"></span><span class="sub num" id="sw-r" style="margin:0">金 +${fmt(r.gold*swN)} · 糧 +${fmt(r.food*swN)}</span></div>
-   <button type="button" class="btn wide" id="sw-go" style="margin-top:8px">소탕 ${swN}회 · 令 ${AP_COST*swN}</button>`}</div>`;
+   <button type="button" class="btn wide" id="sw-go" style="margin-top:8px">소탕 ${swN}회 · 角 ${AP_COST*swN}</button>`}</div>`;
 }
 function bindSweep(n){
   const box=document.querySelector('.sweep-box');if(!box)return;
   const r=stageReward(n,false);
-  const upd=()=>{const mx=swMax();swN=Math.max(1,Math.min(swN,mx));$('#sw-n').textContent=swN;$('#sw-r').textContent=`金 +${fmt(r.gold*swN)} · 糧 +${fmt(r.food*swN)}`;$('#sw-go').textContent=`소탕 ${swN}회 · 令 ${AP_COST*swN}`};
+  const upd=()=>{const mx=swMax();swN=Math.max(1,Math.min(swN,mx));$('#sw-n').textContent=swN;$('#sw-r').textContent=`金 +${fmt(r.gold*swN)} · 糧 +${fmt(r.food*swN)}`;$('#sw-go').textContent=`소탕 ${swN}회 · 角 ${AP_COST*swN}`};
   box.querySelectorAll('[data-sw]').forEach(b=>b.onclick=()=>{const v=b.dataset.sw;swN=v==='max'?swMax():swN+Number(v);upd()});
   const go=$('#sw-go');
   if(go)go.onclick=()=>{
-    tickAP();const k=Math.min(swN,swMax());if(k<1){toast('군령이 부족해요');return}
+    tickAP();const k=Math.min(swN,swMax());if(k<1){toast('나팔이 부족해요');return}
     S.ap-=AP_COST*k;S.gold+=r.gold*k;S.food+=r.food*k;save();renderTop();
     toast(`소탕 ${k}회 완료 · 金 +${fmt(r.gold*k)} · 糧 +${fmt(r.food*k)}`);openStage(n);
   };
@@ -1736,10 +1754,10 @@ async function pruneOld(){
     S.duel.pruned=kstDay();save();
   }catch(e){}
 }
-function rewardHtml(r){return `<div class="rw"><span class="coin"><b class="sl gold">金</b>+${fmt(r.gold)}</span><span class="coin"><b class="sl food">糧</b>+${fmt(r.food)}</span>${r.ap?`<span class="coin"><b class="sl ap">令</b>+${r.ap}</span>`:''}</div>`}
+function rewardHtml(r){return `<div class="rw"><span class="coin"><b class="sl gold">金</b>+${fmt(r.gold)}</span><span class="coin"><b class="sl food">糧</b>+${fmt(r.food)}</span>${r.ap?`<span class="coin"><b class="sl ap">角</b>+${r.ap}</span>`:''}</div>`}
 
 /* ---------------- 등용 ---------------- */
-// 돌파를 다 채운 장수의 중복: 금으로 환불 (군령 환불은 소탕과 맞물려 자원이 무한히 불어나서 v1.16.0에서 바꿈)
+// 돌파를 다 채운 장수의 중복: 금으로 환불 (나팔 환불은 소탕과 맞물려 자원이 무한히 불어나서 v1.16.0에서 바꿈)
 const DUP_GOLD={3:200,4:300,5:1000};
 const GCOST={1:100,10:900}, ICOST={1:80,10:720};
 function vGacha(){
@@ -2146,7 +2164,7 @@ function labBoxHtml(side){
 }
 function vLab(){
   const A=labCur('atk'), B=labCur('def'), ok=A.s.some(Boolean)&&B.s.some(Boolean);
-  return `<p class="sub">모든 장수(Lv ${MAXLV} · 돌파 최대, ★3은 10단계)와 모든 보물로 덱을 짜서 시험해 보는 곳이에요. 내 진형·결투장과는 따로 저장되고, 군령·보상·기록은 없어요. ★5는 덱마다 ${MAX5}명까지, 같은 보물은 덱 안에서 한 번만 쓸 수 있어요. 보물 도감 효과는 적용되지 않아요.</p>
+  return `<p class="sub">모든 장수(Lv ${MAXLV} · 돌파 최대, ★3은 10단계)와 모든 보물로 덱을 짜서 시험해 보는 곳이에요. 내 진형·결투장과는 따로 저장되고, 나팔·보상·기록은 없어요. ★5는 덱마다 ${MAX5}명까지, 같은 보물은 덱 안에서 한 번만 쓸 수 있어요. 보물 도감 효과는 적용되지 않아요.</p>
    ${labBoxHtml('atk')}
    <div class="row" style="gap:8px;margin:0 0 12px"><button type="button" class="btn red" style="flex:1" id="lab-go" ${ok?'':'disabled'}>전투 보기</button><button type="button" class="btn ghost" id="lab-sim" ${ok?'':'disabled'}>100판 승률</button></div>
    ${labSimOut?`<div class="stat" style="text-align:left;margin:-4px 0 12px" role="status">${labSimOut}</div>`:''}
@@ -2216,7 +2234,7 @@ document.addEventListener('click',e=>{
     else x.i=x.i.filter(z=>z!==cur);
     labSimOut='';save();renderView();openLabSlot(sd,i);return}
   if(t.closest('#lab-go')){const A=labCur('atk'),B=labCur('def'),a=labSpecs(A),b=labSpecs(B),seed=(Math.random()*2**31)|0,res=simulate(a,b,seed);
-    playBattle(res,'연습장',`${A.n} (+${A.p})`,`${B.n} (+${B.p})`,()=>`<p class="sub">연습장 전투는 군령·보상·기록이 없어요.</p>`,{share:{title:'연습장',seed,a,b,an:`${A.n} (+${A.p})`,bn:`${B.n} (+${B.p})`}});return}
+    playBattle(res,'연습장',`${A.n} (+${A.p})`,`${B.n} (+${B.p})`,()=>`<p class="sub">연습장 전투는 나팔·보상·기록이 없어요.</p>`,{share:{title:'연습장',seed,a,b,an:`${A.n} (+${A.p})`,bn:`${B.n} (+${B.p})`}});return}
   if(t.closest('#lab-sim')){const a=labSpecs(labCur('atk')),b=labSpecs(labCur('def'));let w=0;const N=100;for(let s=1;s<=N;s++)if(simulate(a,b,s*7919).win)w++;
     labSimOut=`<small style="font-size:12px">${esc(labCur('atk').n)} → ${esc(labCur('def').n)} · ${N}판 모의전</small><b class="num" style="font-size:22px">공격 승률 ${w}%</b><div class="bar"><i style="width:${w}%;background:var(--bronze)"></i></div>`;renderView();return}
 });
@@ -2444,7 +2462,7 @@ function openPeek(id){
   fillNames();
 }
 function resetBlock(){
-  return `<p class="sub">장수, 보물, 금과 군량, 군령, 스테이지 진척을 모두 지우고 처음 상태로 돌아가요. 군주 이름과 지난 대전 기록, 오늘 쓴 대전 횟수는 그대로 남아요.</p>
+  return `<p class="sub">장수, 보물, 금과 군량, 나팔, 스테이지 진척을 모두 지우고 처음 상태로 돌아가요. 군주 이름과 지난 대전 기록, 오늘 쓴 대전 횟수는 그대로 남아요.</p>
   <button type="button" class="btn ghost wide" id="reset-ask">처음부터 다시 시작</button>
   <div class="warn" id="reset-warn" hidden role="alert"><b>정말 처음부터 다시 시작할까요?</b><br>장수 ${Object.keys(S.gens).length}명, 보물 ${S.items.length}개, 스테이지 진척 ${S.stage}/${NSTAGE}이 모두 사라지고 되돌릴 수 없어요.
    <div class="row" style="margin-top:10px"><button type="button" class="btn ghost" id="reset-no">취소</button><button type="button" class="btn red" id="reset-yes" style="flex:1">네, 모두 지우고 다시 시작</button></div></div>`;
