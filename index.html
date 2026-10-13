@@ -235,6 +235,10 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .px{display:block;image-rendering:crisp-edges;image-rendering:pixelated}
 .itm{overflow:hidden}
 .itm .px{width:32px;height:32px}
+.itm{position:relative}.itm .idp{position:absolute;right:0;bottom:0;font-size:10px;line-height:13px;padding:0 3px;border-radius:5px 0 8px 0;background:var(--bronze);color:#1a1206;font-family:var(--body);font-weight:700}
+.idp{color:var(--bronze);font-weight:700}
+.itbtn{display:flex;align-items:center;gap:12px;flex:1;min-width:0;background:none;border:0;padding:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.li[disabled]{opacity:.45}
 .ig .px{display:inline-block;width:16px;height:16px;vertical-align:-3px}
 
 .brand-row{display:flex;align-items:center;gap:10px;min-width:0}
@@ -315,7 +319,7 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.11.0</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.12.0</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -540,29 +544,130 @@ function applyBonuses(us){
   return info;
 }
 
-// id, 이름, 종류 글자, 등급, 효과(%)/속도(+)
+// id, 이름, 종류 글자, 등급, 효과, [그림 틀, 색], [조건(병종·나라), 추가 효과]
+// 효과: atk·hp·def = %, spd = 수치, cr = 치명 확률 %p, cd = 치명 피해 %p, ls = 흡혈 %, dr = 받는 피해 감소 %, sk = 전법 피해 %
 const ITEMS_RAW=[
+ // ★5
  ['qinglong','청룡언월도','武',5,{atk:25}],
  ['fangtian','방천화극','武',5,{atk:22,spd:6}],
- ['chitu','적토마','寶',5,{spd:20,atk:6}],
+ ['qixing','칠성보도','武',5,{atk:16,cr:12},['sword','gold']],
+ ['cixiong','자웅일대검','武',5,{atk:18,ls:6},['sword','jade']],
+ ['guding','고정도','武',5,{atk:20,cd:20},['sword','red']],
+ ['kaishan','개산대부','武',5,{atk:22,cd:15},['axe','steel'],['inf',{def:6}]],
+ ['shoumian','수면탄두개','甲',5,{hp:20,def:15,dr:5},['armorM','purple']],
+ ['tengjia','등갑','甲',5,{hp:18,dr:10},['armor','wood']],
+ ['chitu','적토마','馬',5,{spd:20,atk:6}],
+ ['hanxue','한혈보마','馬',5,{spd:16,hp:10},['horse','red2']],
+ ['zhaoye','조야옥사자','馬',5,{spd:14,atk:8,dr:4},['horse','white'],['cav',{atk:6}]],
+ ['yuxi','전국옥새','寶',5,{atk:10,hp:10,def:10,spd:4},['seal','jade']],
+ ['heyu','학우선','寶',5,{sk:22,spd:6},['fan','white'],['tac',{atk:10}]],
  ['taiping','태평요술서','書',5,{atk:20,hp:8}],
+ ['sunzi','손자병법','書',5,{atk:14,sk:20},['scroll','gold']],
+ ['bagua','팔진도','書',5,{def:20,dr:8},['scroll','blue']],
+ // ★4
  ['yitian','의천검','武',4,{atk:15}],
  ['qinggang','청강검','武',4,{atk:13,spd:4}],
  ['zhangba','장팔사모','武',4,{atk:16}],
- ['jueying','절영','寶',4,{spd:12}],
- ['dilu','적로','寶',4,{spd:10,hp:5}],
+ ['sanjian','삼첨양인도','武',4,{atk:14,cr:6},['guandao','steel']],
+ ['liuye','유엽도','武',4,{atk:12,spd:5},['sword','blue']],
+ ['shuangtie','쌍철극','武',4,{atk:16,def:4},['halberd','black']],
+ ['dafu','대부','武',4,{atk:15,cd:12},['axe','bronze']],
+ ['yangyou','양유기궁','武',4,{atk:12,cr:8},['bow','red'],['arc',{spd:3}]],
+ ['liannu','제갈연노','武',4,{atk:10,spd:6},['bow','wood'],['arc',{atk:6}]],
+ ['hutou','호두금창','武',4,{atk:14,spd:3},['spear','gold'],['cav',{atk:4}]],
+ ['gangdao','백련강도','武',4,{atk:10,ls:5},['sword','steel']],
  ['mingguang','명광개','甲',4,{hp:18,def:10}],
+ ['yulin','어린갑','甲',4,{hp:14,def:8},['armor','jade']],
+ ['xuanjia','현갑','甲',4,{def:16,dr:3},['armorM','black']],
+ ['tiekui','철투구','甲',4,{hp:10,def:10},['helmet','steel']],
+ ['jinkui','금투구','甲',4,{hp:12,dr:4},['helmet','gold']],
+ ['tengpai','등패','甲',4,{def:14,hp:6},['shield','wood'],['inf',{def:6}]],
+ ['longlin','용린순','甲',4,{dr:8,hp:4},['shield','jade']],
+ ['jueying','절영','馬',4,{spd:12}],
+ ['dilu','적로','馬',4,{spd:10,hp:5}],
+ ['zhuahuang','조황비전','馬',4,{spd:12,atk:4},['horse','gold2']],
+ ['baima','백마의종','馬',4,{spd:10,def:6},['horse','white'],['cav',{atk:5}]],
+ ['dawan','대완마','馬',4,{spd:9,hp:8},['horse','bronze2']],
+ ['hufu','호부','寶',4,{atk:8,hp:8},['pendant','gold']],
+ ['jinyin','금인','寶',4,{def:8,hp:8,spd:2},['seal','gold']],
+ ['yupei','옥패','寶',4,{hp:10,ls:4},['pendant','jade']],
+ ['shuaiqi','수자기','寶',4,{atk:8,def:8},['flag','red']],
+ ['baiyu','백우선','寶',4,{sk:15,spd:4},['fan','paper'],['tac',{atk:5}]],
  ['mengde','맹덕신서','書',4,{atk:12,spd:4}],
+ ['qingnang','청낭서','書',4,{hp:12,ls:5},['book','jade']],
+ ['liutao','육도','書',4,{atk:10,sk:10},['scroll','paper']],
+ ['sanlue','삼략','書',4,{def:10,sk:10},['scroll','blue']],
+ ['chunqiu','춘추좌씨전','書',4,{atk:10,cr:6},['book','red']],
+ ['dajiang','대장기','寶',4,{atk:6,hp:6,def:6},['flag','gold']],
+ // ★3
  ['tieqiang','철창','武',3,{atk:8}],
  ['qianggong','강궁','武',3,{atk:7,spd:2}],
+ ['huandao','환수도','武',3,{atk:7,spd:2},['sword','steel']],
+ ['duandao','단도','武',3,{atk:5,cr:5},['sword','black']],
+ ['changqiang','장창','武',3,{atk:8},['spear','wood'],['inf',{def:3}]],
+ ['shemao','사모','武',3,{atk:7,cd:6},['snake','black']],
+ ['ji','극','武',3,{atk:6,def:4},['halberd','steel']],
+ ['zhanfu','전부','武',3,{atk:7,cd:6},['axe','black']],
+ ['dagong','대궁','武',3,{atk:8},['bow','wood'],['arc',{spd:2}]],
+ ['shuangdao','쌍도','武',3,{atk:6,ls:3},['sword','bronze']],
+ ['changjian','장검','武',3,{atk:6,hp:4},['sword','blue']],
+ ['mazhan','마참도','武',3,{atk:7},['guandao','bronze'],['cav',{atk:3}]],
+ ['nu','쇠뇌','武',3,{atk:6,cr:4},['bow','black']],
+ ['tiebian','철편','武',3,{atk:6,spd:3},['spear','black']],
  ['pijia','가죽갑옷','甲',3,{hp:10}],
  ['tiejia','철갑','甲',3,{hp:7,def:8}],
- ['junma','군마','寶',3,{spd:6}],
- ['bingfa','병법서','書',3,{atk:6,spd:3}]
+ ['mianjia','면갑','甲',3,{hp:8,def:3},['armor','paper']],
+ ['suozi','쇄자갑','甲',3,{def:8,hp:3},['armorM','steel']],
+ ['pikui','가죽투구','甲',3,{hp:6,def:4},['helmet','wood']],
+ ['tongkui','동투구','甲',3,{def:7,hp:3},['helmet','bronze']],
+ ['mudun','목순','甲',3,{def:6,dr:2},['shield','wood']],
+ ['yuandun','원순','甲',3,{hp:5,dr:3},['shield','steel']],
+ ['zhajia','찰갑','甲',3,{def:6,hp:5},['armor','bronze']],
+ ['yanxin','엄심경','甲',3,{def:5,dr:3},['armorM','bronze']],
+ ['qingjia','경갑','甲',3,{hp:5,spd:3},['armor','blue']],
+ ['junma','군마','馬',3,{spd:6}],
+ ['qingcong','청총마','馬',3,{spd:6,hp:3},['horse','black']],
+ ['wuzhui','오추마','馬',3,{spd:5,atk:3},['horse','black']],
+ ['huangbiao','황표마','馬',3,{spd:7},['horse','gold2']],
+ ['ziliu','자류마','馬',3,{spd:6,cr:3},['horse','red2']],
+ ['xiliang','서량마','馬',3,{spd:4},['horse','bronze2'],['cav',{atk:3}]],
+ ['tongyin','동인','寶',3,{def:5,hp:4},['seal','bronze']],
+ ['yuhuan','옥환','寶',3,{hp:7,ls:2},['pendant','jade']],
+ ['fulu','부적','寶',3,{dr:3,hp:3},['pendant','paper']],
+ ['junqi','군기','寶',3,{atk:5,def:3},['flag','blue']],
+ ['xiangnang','향낭','寶',3,{spd:3,hp:4},['pendant','purple']],
+ ['yushan','깃털부채','寶',3,{sk:8,spd:2},['fan','paper']],
+ ['tonghu','청동호부','寶',3,{atk:5,cr:3},['pendant','bronze']],
+ ['lingqi','영기','寶',3,{spd:3,atk:4},['flag','red']],
+ ['bingfa','병법서','書',3,{atk:6,spd:3}],
+ ['lunyu','논어','書',3,{def:4,hp:5},['book','blue']],
+ ['sunbin','손빈병법','書',3,{atk:5,sk:6},['scroll','paper']],
+ ['wuzi','오자','書',3,{atk:6,def:3},['scroll','bronze']],
+ ['shiji','사기','書',3,{cr:4,atk:4},['book','black']],
+ ['shijing','시경','書',3,{hp:6,ls:2},['book','paper']],
+ ['shanhai','산해경','書',3,{spd:3,sk:5},['book','purple']],
+ ['hanshu','한서','書',3,{atk:4,hp:4,def:2},['book','red']],
+ ['shangjun','상군서','書',3,{atk:7},['scroll','black']],
+ ['zhujian','죽간','書',3,{sk:6,def:3},['scroll','wood']],
+ ['tiechui','철퇴','武',3,{atk:6,cd:8},['axe','steel']]
 ];
-const ITEMS=ITEMS_RAW.map(r=>({id:r[0],name:r[1],g:r[2],rar:r[3],fx:r[4]}));
+const ITEMS=ITEMS_RAW.map(r=>({id:r[0],name:r[1],g:r[2],rar:r[3],fx:r[4],art:r[5]||null,on:r[6]||null}));
 const IMAP=Object.fromEntries(ITEMS.map(i=>[i.id,i]));
-const ITYPE={'武':'무기','甲':'갑옷','寶':'보물','書':'서책'};
+const ITYPE={'武':'무기','甲':'방어구','馬':'명마','寶':'장신구','書':'서책'};
+const ITEM_SLOTS=3, ITEM_MAXD=50, ITEM_DSTEP=.03;
+const ON_NAME={inf:'보병',cav:'기병',arc:'궁병',tac:'책사',wei:'위',shu:'촉',wu:'오',qun:'군웅'};
+// 장착 보물 문자열 "id:돌파" 배열을 [{it,d}]로 (예전 형식인 id 하나도 받아요)
+function itemsOf(x){
+  const a=typeof x==='string'?[x]:Array.isArray(x)?x:[];const o=[],seen=new Set();
+  for(const s of a){if(typeof s!=='string')continue;const[k,dd]=s.split(':');const it=IMAP[k];if(!it||seen.has(k))continue;seen.add(k);o.push({it,d:Math.min(ITEM_MAXD,Math.max(0,parseInt(dd)||0))});if(o.length>=ITEM_SLOTS)break}
+  return o;
+}
+function itemFx(it,d,wearer){
+  const m=1+ITEM_DSTEP*(d||0),o={};
+  const add=f=>{for(const[k,v]of Object.entries(f))o[k]=(o[k]||0)+v*m};
+  add(it.fx);if(it.on&&wearer&&(wearer.cls===it.on[0]||wearer.fac===it.on[0]))add(it.on[1]);
+  return o;
+}
 
 const TROOP_BASE={inf:[62,30,60,62],cav:[68,28,55,80],arc:[60,35,52,72],tac:[30,62,55,68]};
 // 장 이름, 한자, 일반 병사[이름, 글자, 세력], 보스전 이름, 등장 장수, 보스전 진형
@@ -670,6 +775,31 @@ const ISPR={
  book:['................','..kkkkkkkkkkk...','..kdaaaaaaaaak..','..kdaaaaaaaaak..','..kdaabbbbbaak..','..kdaabwwwbaak..','..kdaabbbbbaak..','..kdaaaaaaaaak..','..kdaaaaaaaaak..','..kdaaaaaaaaak..','..kdaaaaaaaaak..','..kdaaaaaaaaak..','..kdwwwwwwwwwk..','..kdkkkkkkkkkk..','...kk...........','................'],
  scroll:['................','................','.kkkkkkkkkkkkkk.','.kacacacacacack.','.kddddddddddddk.','.kacacacacacack.','.kacacacacacack.','.kacacacacacack.','.kacacacacacack.','.kacacacacacack.','.kddddddddddddk.','.kacacacacacack.','.kkkkkkkkkkkkkk.','................','................','................']
 };
+Object.assign(ISPR,{
+ shield:['................','.....kkkkkk.....','...kkaaaaaakk...','..kaabbaaaaaak..','..kabbaaaaaaak..','.kaabaaddddaaak.','.kaaaaddwwddaak.','.kaaaadwwwwdaak.','.kaaaadwwwwdaak.','.kaaaaddwwddaak.','.kaaaaaddddaack.','..kaaaaaaaacck..','..kcaaaaaaccck..','...kkcccccckk...','.....kkkkkk.....','................'],
+ helmet:['................','.......dd.......','......dddd......','.......dd.......','.....kkkkkk.....','....kaabbaak....','...kaabaaaaak...','..kaabaaaaaaak..','..kaaaaaaaaaak..','..kddddddddddk..','..kak.kkkk.kak..','..kak......kak..','..kaak....kaak..','...kkk....kkk...','................','................'],
+ axe:['................','.kkkk...........','kabbak..........','kabaaak.........','kaaaaaek........','.kaaacee........','..kkkk.ee.......','........ee......','.........ee.....','..........ee....','...........ee...','............ee..','.............ee.','..............ee','...............e','................'],
+ fan:['................','...ww.ww.ww.....','..wwwwwwwwww....','..wcwcwcwcwcw...','..wwwwwwwwwww...','...wcwcwcwcw....','...wwwwwwwww....','....wwwwwww.....','.....wwwww......','......ddd.......','......kdk.......','.......e........','.......e........','.......e........','.......d........','................'],
+ seal:['................','......dddd......','.....dbddbd.....','....dddddddd....','.....kddddk.....','..kkkkkkkkkkkk..','..kbbaaaaaaaak..','..kbaaaaaaaaak..','..kaaaaaaaaack..','..kaaaaaaaaack..','..kaaaaaaaacck..','..kcccccccccck..','..kkkkkkkkkkkk..','................','................','................'],
+ pendant:['......kkkk......','.....k....k.....','.....k....k.....','......k..k......','.......dd.......','......kkkk......','....kkaaaakk....','...kabbaaaaak...','...kabaaaaaak...','...kaaawwaaak...','...kaaawwaaak...','...kaaaaaaack...','....kaaaacck....','.....kkkkkk.....','.......dd.......','......d..d......'],
+ flag:['..e.............','..ekkkkkkkkkk...','..ekaaaaaaaaak..','..ekaabbbbaaak..','..ekaabwwbaaak..','..ekaabbbbaaak..','..ekaaaaaaaaak..','..ekccccccccck..','..ekkkkkkkkkk...','..e.............','..e.............','..e.............','..e.............','..e.............','.ddd............','................']
+});
+const IPRE={
+ steel:{a:'#c9d1d6',b:'#ffffff',c:'#8a949a',d:'#c84a36',e:'#6a4428',k:'#131313',w:'#ffffff'},
+ gold:{a:'#d6b85a',b:'#f4e29a',c:'#9a7a2a',d:'#c84a36',e:'#6a4428',k:'#2a1d08',w:'#fff6d0'},
+ jade:{a:'#7fb59c',b:'#d9f0e4',c:'#4a8a6a',d:'#e2b85a',e:'#6a4428',k:'#0d1a16',w:'#f0fff6'},
+ bronze:{a:'#b07a3a',b:'#e0b070',c:'#7a4a1a',d:'#5b8fd1',e:'#5a3a22',k:'#1a0e06',w:'#f4e0c0'},
+ red:{a:'#c8432f',b:'#f08a6a',c:'#8a2a1e',d:'#e2b85a',e:'#5a1a12',k:'#1a0d0a',w:'#ffe0d0'},
+ black:{a:'#4a4a5a',b:'#8a8aa0',c:'#2a2a36',d:'#c84a36',e:'#3a2a1e',k:'#050508',w:'#d0d0e0'},
+ white:{a:'#e6e2d6',b:'#ffffff',c:'#b8b2a2',d:'#6a6458',e:'#6a4428',k:'#1a1814',w:'#ffffff'},
+ wood:{a:'#8a5a2a',b:'#c8924a',c:'#6a4220',d:'#c84a36',e:'#4a2a12',k:'#1a0e06',w:'#e8e0c8'},
+ blue:{a:'#4a6fa8',b:'#9fc3dd',c:'#2a3f66',d:'#e2b85a',e:'#3a3a52',k:'#0e1626',w:'#d8e4f4'},
+ paper:{a:'#c8b27a',b:'#e8dcae',c:'#a8925a',d:'#7a2a24',e:'#6a4428',k:'#2a1d08',w:'#f5e9c0'},
+ purple:{a:'#7a5aa8',b:'#b49ad8',c:'#4a3a6a',d:'#e2b85a',e:'#3a2a4a',k:'#140e1e',w:'#efe6ff'},
+ red2:{a:'#a8402a',c:'#7a2a1a',d:'#e2b85a',k:'#1a0a06'},
+ gold2:{a:'#d0a050',c:'#a07830',d:'#5a3a12',k:'#1a1006'},
+ bronze2:{a:'#9a6a3a',c:'#6a4420',d:'#2a1a0e',k:'#120a04'}
+};
 const IPAL={
  qinglong:['guandao',{a:'#7fb59c',b:'#d9f0e4',e:'#6a4428',d:'#e2b85a',k:'#0d1a16'}],
  fangtian:['halberd',{a:'#c9d1d6',b:'#ffffff',e:'#8a3028',d:'#e04a3a',k:'#151515'}],
@@ -691,7 +821,7 @@ const IPAL={
 };
 function itemPx(id){
   if(PX['i'+id])return PX['i'+id];
-  const [tpl,pal]=IPAL[id], {c,p}=pxGrid(16,6);
+  const it=IMAP[id], [tpl,pal]=IPAL[id]||[it.art[0],IPRE[it.art[1]]], {c,p}=pxGrid(16,6);
   ISPR[tpl].forEach((r,j)=>{for(let i=0;i<16;i++){const ch=r[i]||'.';if(ch!=='.')p(pal[ch]||'#000',i,j)}});
   return PX['i'+id]=c.toDataURL();
 }
@@ -724,14 +854,16 @@ function mkUnit(spec,side,slot){
   let atk=((b.cls==='tac'?b.int:b.str)*1.6+b.lead*.3)*m;
   let def=(b.lead*.8+(b.cls==='inf'?20:0))*m;
   let spd=b.spd+lv*.3;
-  const it=spec.i&&IMAP[spec.i];
-  if(it){const f=it.fx;hp*=1+(f.hp||0)/100;atk*=1+(f.atk||0)/100;def*=1+(f.def||0)/100;spd+=f.spd||0}
+  const its=itemsOf(spec.i), f={};
+  its.forEach(({it,d})=>{const x=itemFx(it,d,b);for(const k in x)f[k]=(f[k]||0)+x[k]});
+  hp*=1+(f.hp||0)/100;atk*=1+(f.atk||0)/100;def*=1+(f.def||0)/100;spd+=f.spd||0;
+  const cr=Math.min(.6,.1+(f.cr||0)/100), cd=1.5+(f.cd||0)/100, ls=Math.min(.5,(f.ls||0)/100), dr=Math.min(.5,(f.dr||0)/100), skp=(f.sk||0)/100;
   const sk=skillOf(b);hp=Math.round(hp);
   return {id:b.id,name:b.name,hz:b.hz,fac:b.fac,rar:b.rar,cls:b.cls,skill:sk.n,sk,endure:!!sk.endure,
-    hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0,bf:[],burn:[],stun:0,taunt:0,endUsed:0,lv,item:spec.i||null};
+    hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0,bf:[],burn:[],stun:0,taunt:0,endUsed:0,lv,items:its.map(x=>({n:x.it.name,r:x.it.rar,d:x.d})),cr,cd,ls,dr,skp};
 }
 function buildTeam(specs,side){const us=specs.map((s,i)=>s?mkUnit(s,side,i):null).filter(Boolean);const info=applyBonuses(us);return {us,info}}
-function unitPower(u){return Math.round(u.atk*1.5+u.maxhp/6+u.def*1.2+u.spd)}
+function unitPower(u){return Math.round((u.atk*1.5+u.maxhp/6+u.def*1.2+u.spd)*(1+((u.cr||.1)-.1)*.5+((u.cd||1.5)-1.5)*.15+(u.ls||0)*.6+(u.dr||0)+(u.skp||0)*.25))}
 function specPower(s){return unitPower(mkUnit(s,0,0))}
 function deckPower(specs){return buildTeam(specs,0).us.reduce((a,u)=>a+unitPower(u),0)}
 const arr=x=>!x?[]:Array.isArray(x)?x:[x];
@@ -753,10 +885,11 @@ function simulate(As,Bs,seed){
       const atkV=u.atk*eff(u,'atk');
       const foes=()=>T[1-u.side].filter(x=>x.hp>0), allies=()=>T[u.side].filter(x=>x.hp>0);
       const hit=(t,mult,o)=>{
-        if(!t||t.hp<=0)return;const crit=(o&&o.crit)||rng()<.1;
-        const raw=atkV*mult*adv(u.cls,t.cls)*(.9+rng()*.2)*(crit?1.5:1);
+        if(!t||t.hp<=0)return;const crit=(o&&o.crit)||rng()<u.cr;
+        const raw=atkV*mult*adv(u.cls,t.cls)*(.9+rng()*.2)*(crit?u.cd:1)*(o?1+u.skp:1);
         let ed=t.def*eff(t,'def')*(1-((o&&o.ign)||0));if(u.cls==='tac')ed*=.6;
-        dmgTo(t,Math.max(1,Math.round(raw*120/(120+ed))),e,{c:crit});
+        const dd=Math.max(1,Math.round(raw*120/(120+ed)*(1-t.dr)));dmgTo(t,dd,e,{c:crit});
+        if(u.ls>0&&u.hp>0){const h=Math.min(u.maxhp-u.hp,Math.round(dd*u.ls));if(h>0){u.hp+=h;e.heals.push({s:u.side,i:u.slot,h,hp:u.hp})}}
       };
       if(!sk){
         const f=foes(), tz=f.find(x=>x.taunt>0);
@@ -825,16 +958,23 @@ let DB=null, USER=null, UID=null, MODE='boot';
 let PLAYERS=[], BATTLES=[];
 function newState(){
   return {v:1,gold:500,food:1000,last:Date.now(),stage:0,seq:1,
-    gens:{liaohua:{lv:1,d:0,it:null},lejin:{lv:1,d:0,it:null},lidian:{lv:1,d:0,it:null}},
-    items:[],deck:['liaohua','lejin','lidian',null,null],pvp:{day:'',used:0},duel:{done:[],pruned:''},ap:AP_CAP,apT:Date.now(),att:{day:'',streak:0,total:0},notice:{read:[],claimed:[]},created:Date.now()};
+    gens:{liaohua:{lv:1,d:0,its:[]},lejin:{lv:1,d:0,its:[]},lidian:{lv:1,d:0,its:[]}},
+    items:[],itk:0,deck:['liaohua','lejin','lidian',null,null],pvp:{day:'',used:0},duel:{done:[],pruned:''},ap:AP_CAP,apT:Date.now(),att:{day:'',streak:0,total:0},notice:{read:[],claimed:[]},created:Date.now()};
 }
 function sanitize(s){
   const n=newState();
   if(!s||typeof s!=='object')return n;
   const o={...n,...s};
-  o.gens={};for(const[k,v]of Object.entries(s.gens||{}))if(GMAP[k]&&v)o.gens[k]={lv:Math.min(MAXLV,Math.max(1,v.lv|0)),d:Math.min(5,Math.max(0,v.d|0)),it:v.it||null};
+  o.gens={};for(const[k,v]of Object.entries(s.gens||{}))if(GMAP[k]&&v)o.gens[k]={lv:Math.min(MAXLV,Math.max(1,v.lv|0)),d:Math.min(5,Math.max(0,v.d|0)),its:(Array.isArray(v.its)?v.its:v.it?[v.it]:[]).filter(x=>typeof x==='string').slice(0,ITEM_SLOTS)};
   if(!Object.keys(o.gens).length)o.gens=n.gens;
-  o.items=Array.isArray(s.items)?s.items.filter(x=>x&&IMAP[x.k]&&x.u):[];
+  // 같은 보물은 하나로 합치고, 합친 수만큼 돌파(최대 +50)
+  o.items=[];{const by={},worn=new Set();for(const g of Object.values(o.gens))g.its.forEach(u=>worn.add(u));
+   const raw=Array.isArray(s.items)?s.items.filter(x=>x&&IMAP[x.k]&&x.u):[];
+   raw.sort((a,b)=>(worn.has(b.u)?1:0)-(worn.has(a.u)?1:0)||(b.d|0)-(a.d|0));
+   for(const x of raw){const y=by[x.k];
+    if(!y){const n={u:String(x.u),k:x.k,d:Math.min(ITEM_MAXD,Math.max(0,x.d|0)),n:Math.max(0,x.n|0),g:Math.max(0,Number(x.g)||0)};if(x.lk)n.lk=true;by[x.k]=n;o.items.push(n)}
+    else{const k=Math.min(ITEM_MAXD-y.d,1+(x.d|0));y.d+=k;y.n+=k;y.g+=Math.max(0,Number(x.g)||0);if(x.lk)y.lk=true}}}
+  o.itk=Math.max(0,Math.min(9999,s.itk|0));
   o.deck=Array.from({length:5},(_,i)=>{const g=(s.deck||[])[i];return g&&o.gens[g]?g:null});
   o.pvp=s.pvp&&typeof s.pvp==='object'?{day:String(s.pvp.day||''),used:s.pvp.used|0}:n.pvp;
   for(const k of['gold','food','last','stage','seq'])o[k]=Number(o[k])||n[k];
@@ -844,10 +984,11 @@ function sanitize(s){
   const nt=s.notice&&typeof s.notice==='object'?s.notice:{};const strs=a=>Array.isArray(a)?a.filter(x=>typeof x==='string').slice(-60):[];o.notice={read:strs(nt.read),claimed:strs(nt.claimed)};
   const du=s.duel&&typeof s.duel==='object'?s.duel:{};o.duel={done:strs(du.done).slice(-30),pruned:String(du.pruned||'')};
   const ids=new Set(o.items.map(x=>x.u));
-  for(const g of Object.values(o.gens))if(g.it&&!ids.has(g.it))g.it=null;
+  const used=new Set(),kOf=u=>{const x=o.items.find(y=>y.u===u);return x?IMAP[x.k]:null};
+  for(const g of Object.values(o.gens)){let horse=false;g.its=g.its.filter(u=>{if(!ids.has(u)||used.has(u))return false;const it=kOf(u);if(it.g==='馬'){if(horse)return false;horse=true}used.add(u);return true})}
   return o;
 }
-function specOf(gid){const g=S.gens[gid];if(!g)return null;const it=g.it&&S.items.find(x=>x.u===g.it);return {g:gid,lv:g.lv,d:g.d,i:it?it.k:null}}
+function specOf(gid){const g=S.gens[gid];if(!g)return null;return {g:gid,lv:g.lv,d:g.d,i:g.its.map(u=>S.items.find(x=>x.u===u)).filter(Boolean).map(x=>x.k+':'+(x.d||0))}}
 function mySpecs(){return S.deck.map(g=>g?specOf(g):null)}
 function chaptersDone(){return Math.floor(S.stage/5)}
 function foodRateAt(st){return 60+4*st+25*Math.floor(st/5)}
@@ -860,7 +1001,7 @@ function useTicket(){const d=kstDay();if(S.pvp.day!==d)S.pvp={day:d,used:0};S.pv
 function tickAP(){const now=Date.now();if(S.apT>now)S.apT=now;if(S.ap>=AP_CAP){S.apT=now;return}const k=Math.floor((now-S.apT)/AP_MS);if(k>0){S.ap=Math.min(AP_CAP,S.ap+k);S.apT=S.ap>=AP_CAP?now:S.apT+k*AP_MS}}
 function apNextMs(){return S.ap>=AP_CAP?0:AP_MS-(Date.now()-S.apT)}
 function mmss(ms){const t=Math.max(0,Math.ceil(ms/1000));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')}
-function itemHolder(u){for(const[k,g]of Object.entries(S.gens))if(g.it===u)return k;return null}
+function itemHolder(u){for(const[k,g]of Object.entries(S.gens))if(g.its.includes(u))return k;return null}
 
 /* ================================================================
    Firebase 설정 — Firebase 콘솔에서 복사한 값으로 채워 주세요
@@ -970,7 +1111,7 @@ function duelTick(){
   const now=Date.now();if(now>=nextSettleCheck){nextSettleCheck=now+60000;checkSettlement()}
 }
 function cleanPlayer(d){
-  const deck=(Array.isArray(d&&d.deck)?d.deck:[]).slice(0,5).filter(s=>s&&GMAP[s.g]).map(s=>({g:s.g,lv:Math.min(MAXLV,Math.max(1,s.lv|0)),d:Math.min(5,Math.max(0,s.d|0)),i:IMAP[s.i]?s.i:null}));
+  const deck=(Array.isArray(d&&d.deck)?d.deck:[]).slice(0,5).filter(s=>s&&GMAP[s.g]).map(s=>({g:s.g,lv:Math.min(MAXLV,Math.max(1,s.lv|0)),d:Math.min(5,Math.max(0,s.d|0)),i:itemsOf(s.i).map(o=>o.it.id+':'+o.d)}));
   return {name:cleanName(d&&d.name),deck,stage:Math.min(NSTAGE,Math.max(0,(d&&d.stage)|0)),at:Number(d&&d.at)||0};
 }
 
@@ -1036,10 +1177,17 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.11.0';
+const GAME_VERSION='1.12.0';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.12.0',date:'2026-10-13',title:'보물 100종 · 3칸 장착 · 보물 돌파',reward:{ap:20,itk:100},items:[
+  '보물이 17종에서 100종으로 늘었어요. 방어구(투구·방패), 명마, 장신구(옥새·호부·군기·부채) 등 종류도 다섯 가지가 됐어요.',
+  '장수마다 보물을 3개까지 장착할 수 있어요. 명마는 한 장수에게 1개만 장착돼요.',
+  '보물 돌파: 같은 보물이 또 나오면 돌파 +1, 최대 +50. 1단계마다 그 보물의 모든 효과 +3%, +50이면 2.5배예요. 금으로 정련해서 올릴 수도 있어요.',
+  '새 특수 효과: 치명 확률·치명 피해·흡혈·피해 감소·전법 피해. 일부 보물은 특정 병종이 장착하면 추가 효과가 있어요.',
+  '같은 보물을 여러 개 갖고 있었다면 하나로 합쳐지고, 합친 개수만큼 돌파가 올라요. 여러 장수가 같은 보물을 끼고 있었다면 한 장수에게만 남아요.',
+  '업데이트 기념으로 보물 획득권 100장을 드려요(보물 100회). 이 공지에서 받아 가세요.']},
  {v:'1.11.0',date:'2026-10-13',title:'궁병의 기병 견제 · 타국 인연 강화',reward:{ap:20},items:[
   '궁병이 기병에게 주는 피해가 +25%에서 +50%로 올랐고, 기병이 궁병에게 주는 피해는 -25%예요. 궁병의 일반 공격은 기병을 먼저 노려요.',
   '기병은 2번째 행동마다 전법을 쓰는 만큼 전법 위력이 75%로 적용돼요.',
@@ -1099,7 +1247,7 @@ const NOTICES=[
 ];
 const kstYesterday=()=>new Date(Date.now()+9*3600e3-864e5).toISOString().slice(0,10);
 const attDue=()=>!!S&&S.att.day!==kstDay();
-function rewardText(r){const o=[];if(r.ap)o.push(`令 +${r.ap}`);if(r.food)o.push(`糧 +${fmt(r.food)}`);if(r.gold)o.push(`金 +${fmt(r.gold)}`);return o.join(' · ')}
+function rewardText(r){const o=[];if(r.ap)o.push(`令 +${r.ap}`);if(r.food)o.push(`糧 +${fmt(r.food)}`);if(r.gold)o.push(`金 +${fmt(r.gold)}`);if(r.itk)o.push(`보물 획득권 ${r.itk}장`);return o.join(' · ')}
 function updateDot(){const d=$('#notice-dot');if(!d)return;d.hidden=!(S&&((typeof PENDING!=='undefined'&&PENDING.length)||attDue()||NOTICES.some(n=>!S.notice.read.includes(n.v))||NOTICES.some(n=>n.reward&&!S.notice.claimed.includes(n.v))))}
 function attHtml(){
   const streak=S.att.day===kstYesterday()?S.att.streak+1:1, pos=(streak-1)%7+1, bonus=pos===7;
@@ -1146,7 +1294,7 @@ document.addEventListener('click',e=>{
   if(e.target.closest('#notice-btn')){openNotices();return}
   const c=e.target.closest('[data-nclaim]');
   if(c&&S){const n=NOTICES.find(x=>x.v===c.dataset.nclaim);if(!n||!n.reward||S.notice.claimed.includes(n.v))return;
-    const r=n.reward;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.notice.claimed.push(n.v);save();renderTop();updateDot();
+    const r=n.reward;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.notice.claimed.push(n.v);save();renderTop();updateDot();
     c.outerHTML=`<div class="sub" style="margin:0">보상 받음 · ${rewardText(r)}</div>`;toast(`공지 보상 ${rewardText(r)}`)}
 });
 
@@ -1185,14 +1333,14 @@ const HELP=[
   ['등급','★3은 기본, ★4는 능력치 ×1.08, ★5는 ×1.16이에요.'],
   ['레벨','1레벨 오를 때마다 능력치 +7%, 속도 +0.3. 최대 Lv '+MAXLV+'.'],
   ['돌파','같은 장수를 또 얻으면 한 단계 올라요. 단계마다 능력치 +6%, 최대 5단계(◆◆◆◆◆). 5단계 이후 중복은 ★4 이상이면 군령 30개, ★3이면 금 200으로 바뀌어요.'],
-  ['보물','장수마다 하나 장착해요. 공격·체력·방어는 퍼센트로, 속도는 수치로 더해져요.']]},
+  ['보물','장수마다 3개까지 장착해요. 공격·체력·방어는 퍼센트로, 속도는 수치로 더해져요. 아래 보물 항목에 자세히 있어요.']]},
  {t:'전투 규칙',rows:[
   ['병종','기병·보병은 맨 앞 적을, 궁병은 체력 비율이 가장 낮은 적을, 책사는 무작위 적을 공격해요.'],
   ['전법 주기','기병은 2번째, 보병·궁병은 3번째, 책사는 4번째 행동마다 전법을 써요.'],
   ['상성','기병 → 보병 → 궁병 → 기병. 유리하면 피해 +25%, 불리하면 -15%. 단, 궁병은 기병에게 +50%, 기병은 궁병에게 -25%예요.'],
   ['기병 사냥','궁병의 일반 공격은 기병을 먼저 노려요. 기병이 없으면 체력 비율이 가장 낮은 적을 노려요.'],
   ['기병 전법','기병은 전법을 자주 쓰는 대신 전법 위력이 75%로 적용돼요.'],
-  ['치명타','모든 공격에 10% 확률로 1.5배 피해. 피해는 매번 ±10% 범위에서 흔들려요.'],
+  ['치명타','모든 공격에 기본 10% 확률로 1.5배 피해. 보물로 확률(최대 60%)과 배율을 올릴 수 있어요. 피해는 매번 ±10% 범위에서 흔들려요.'],
   ['도발','도발 중인 장수가 있으면 상대의 단일 대상 공격이 그 장수에게 향해요.'],
   ['판정','25턴 안에 결판이 나지 않으면 남은 체력 비율이 높은 쪽이 이겨요.']]},
  {t:'진형 효과',rows:[
@@ -1200,8 +1348,21 @@ const HELP=[
   ['인연','함께 편성하면 해당 장수들의 능력치가 올라요. 진형 탭에서 발동 중인 인연을 볼 수 있어요.'],
   ['타국 인연','서로 다른 진영의 장수로 이루어진 인연은 효과가 '+CROSS_MUL+'배예요. 여러 나라 장수를 섞어 쓰도록 돕는 보너스예요.'],
   ['연합군','★3 이상 장수의 나라가 3개국이면 ★3 이상 전원 공격·체력·방어 +5%, 4개국이면 +8%. 진영 보너스·인연과 함께 적용돼요.'],
-  ['완성도','레벨 60%, 돌파 25%, 장비 등급 15%를 반영한 육성 정도예요.'],
-  ['사용률','진형을 갖춘 군주 중 그 장수를 진형에 넣은 비율이에요.']]}
+  ['완성도','레벨 45%, 돌파 20%, 보물 35%(3칸의 등급과 돌파)를 반영한 육성 정도예요.'],
+  ['사용률','진형을 갖춘 군주 중 그 장수를 진형에 넣은 비율이에요.']]},
+ {t:'보물',rows:[
+  ['장착','장수마다 3개. 한 보물은 한 장수에게만, 명마는 장수당 1개까지예요.'],
+  ['돌파','같은 보물이 또 나오면 돌파 +1, 최대 +'+ITEM_MAXD+'. 1단계마다 그 보물의 모든 효과 +3%, +50이면 2.5배예요.'],
+  ['정련','금으로 돌파를 올려요. 비용은 ★3 200 · ★4 600 · ★5 2,000금에 (1 + 현재 돌파÷5, 소수점 버림)을 곱해요. 판매하면 정련에 쓴 금을 모두 돌려받아요.'],
+  ['+50 이후','최대 돌파 뒤 같은 보물이 나오면 ★3 100 · ★4 300 · ★5 1,000금으로 바뀌어요.'],
+  ['치명','치명타 확률을 올려요. 기본 10%, 최대 60%.'],
+  ['치명 피해','치명타 배율(기본 1.5배)을 올려요.'],
+  ['흡혈','준 피해의 일부만큼 체력을 회복해요. 최대 50%.'],
+  ['피해 감소','받는 피해를 줄여요. 화상 피해에는 적용되지 않고, 최대 50%.'],
+  ['전법 피해','전법으로 주는 피해가 늘어요.'],
+  ['조건 효과','일부 보물은 특정 병종이 장착하면 추가 효과가 있어요. 장착 화면에 적용 여부가 표시돼요.'],
+  ['보물 획득권','보물 획득에 군량 대신 먼저 쓰여요. 1장이 1회예요.'],
+  ['전투력','치명·흡혈·피해 감소·전법 피해도 전투력에 반영돼요.']]}
 ];
 function openHelp(focus){
   openSheet(`<div class="sheet-h"><h2 style="margin:0">도움말</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
@@ -1381,16 +1542,16 @@ function vGacha(){
   return `<h2>등용</h2><p class="sub">시간마다 쌓이는 군량으로 장수와 보물을 얻어요. 10회 등용은 ★4 이상 하나를 보장합니다.</p>
   <div class="banner-card"><div class="big">募將</div><h2>장수 등용</h2><p class="sub" style="margin:0">같은 장수가 나오면 돌파 단계가 올라 능력치가 6%씩 오릅니다(최대 5단계). 5단계 이후 중복은 ★4 이상 군령 30개로 돌려드려요.</p>${rates}
    <div class="row"><button type="button" class="btn ghost" data-pull="g1" ${S.food<GCOST[1]?'disabled':''}>1회 <b class="sl food">糧</b>${GCOST[1]}</button><button type="button" class="btn" data-pull="g10" ${S.food<GCOST[10]?'disabled':''}>10회 <b class="sl food">糧</b>${GCOST[10]}</button></div></div>
-  <div class="banner-card"><div class="big">寶庫</div><h2>보물 획득</h2><p class="sub" style="margin:0">무기·갑옷·보물·서책을 장수에게 하나씩 장착할 수 있어요.</p>${rates}
-   <div class="row"><button type="button" class="btn ghost" data-pull="i1" ${S.food<ICOST[1]?'disabled':''}>1회 <b class="sl food">糧</b>${ICOST[1]}</button><button type="button" class="btn" data-pull="i10" ${S.food<ICOST[10]?'disabled':''}>10회 <b class="sl food">糧</b>${ICOST[10]}</button></div></div>`;
+  <div class="banner-card"><div class="big">寶庫</div><h2>보물 획득</h2><p class="sub" style="margin:0">보물 ${ITEMS.length}종. 장수마다 3개까지 장착해요(명마는 1개). 같은 보물이 또 나오면 돌파 +1, 최대 +${ITEM_MAXD}.</p>${rates}
+   ${S.itk?`<p class="sub" style="margin:0 0 8px"><b class="sl gold">券</b> 보물 획득권 <b class="num" style="color:var(--fg)">${S.itk}</b>장 · 군량보다 먼저 쓰여요</p>`:''}
+   <div class="row"><button type="button" class="btn ghost" data-pull="i1" ${S.food<ICOST[1]&&S.itk<1?'disabled':''}>1회 ${S.itk>=1?'<b class="sl gold">券</b>1':`<b class="sl food">糧</b>${ICOST[1]}`}</button><button type="button" class="btn" data-pull="i10" ${S.food<ICOST[10]&&S.itk<10?'disabled':''}>10회 ${S.itk>=10?'<b class="sl gold">券</b>10':`<b class="sl food">糧</b>${ICOST[10]}`}</button></div></div>`;
 }
 function rollRar(){const r=Math.random();return r<.03?5:r<.18?4:3}
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-pull]');if(!b||b.disabled)return;
   const kind=b.dataset.pull[0], n=+b.dataset.pull.slice(1);
-  const cost=(kind==='g'?GCOST:ICOST)[n];
-  if(S.food<cost){toast('군량이 부족해요');return}
-  S.food-=cost;
+  const tk=kind==='i'&&S.itk>=n, cost=(kind==='g'?GCOST:ICOST)[n];
+  if(tk)S.itk-=n;else{if(S.food<cost){toast('군량이 부족해요');return}S.food-=cost}
   const out=[];
   for(let i=0;i<n;i++){
     let r=rollRar();
@@ -1398,14 +1559,16 @@ document.addEventListener('click',e=>{
     if(kind==='g'){
       const g=pick(GENS.filter(x=>x.rar===r));
       const own=S.gens[g.id]; let tag='NEW';
-      if(!own){S.gens[g.id]={lv:1,d:0,it:null}}
+      if(!own){S.gens[g.id]={lv:1,d:0,its:[]}}
       else if(own.d<5){own.d++;tag=`돌파 ${own.d}`}
       else if(r>=4){tickAP();S.ap+=30;tag='令 +30'}else{S.gold+=200;tag='金 +200'}
       out.push({...g,tag});
     } else {
-      const it=pick(ITEMS.filter(x=>x.rar===r));
-      S.items.push({u:'i'+(S.seq++),k:it.id});
-      out.push({...it,tag:ITYPE[it.g]});
+      const it=pick(ITEMS.filter(x=>x.rar===r)), own=S.items.find(x=>x.k===it.id);let tag;
+      if(!own){S.items.push({u:'i'+(S.seq++),k:it.id,d:0,n:0,g:0});tag='NEW · '+ITYPE[it.g]}
+      else if(own.d<ITEM_MAXD){own.d++;own.n=(own.n||0)+1;tag=`돌파 +${own.d}`}
+      else{const gg=ITEM_OVER[r];S.gold+=gg;tag=`金 +${gg}`}
+      out.push({...it,tag});
     }
   }
   save();renderTop();renderView();
@@ -1423,7 +1586,7 @@ function vDeck(){
   S.deck.forEach((gid,i)=>{
     const pos=`<div class="pos">${i+1}<small>${POS[i]}</small></div>`;
     if(!gid){h+=`<div class="slot empty" role="button" tabindex="0" data-slot="${i}">${pos}<div class="info"><b>빈 자리</b><span>눌러서 장수 편성</span></div></div>`;return}
-    const g=GMAP[gid], s=specs[i], it=s.i?IMAP[s.i]:null;
+    const g=GMAP[gid], s=specs[i], its=itemsOf(s.i), it=its.length?{name:its.map(x=>x.it.name+(x.d?'+'+x.d:'')).join(', ')}:null;
     h+=`<div class="slot" role="button" tabindex="0" data-slot="${i}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${CLS[g.cls].g} ${CLS[g.cls].n} · Lv ${s.lv} · ${dupHtml(s.d)}${it?` · ${esc(it.name)}`:''} · 전투력 ${fmt(specPower(s))}</span></div>
     <div class="mv"><button type="button" data-mv="${i}:-1" aria-label="앞으로" ${i===0?'disabled':''}>▲</button><button type="button" data-mv="${i}:1" aria-label="뒤로" ${i===4?'disabled':''}>▼</button></div></div>`;
   });
@@ -1500,9 +1663,14 @@ function vGens(){
     h+=`<div class="grid">${list.map(({g,p,bn})=>{const b=GMAP[g],s=S.gens[g];return `<button type="button" class="gc ${S.deck.includes(g)?'in-deck':''}" data-gen="${g}">${seal(b)}<div class="nm">${esc(b.name)}</div><div class="stars r${b.rar}">${stars(b.rar)}</div>${dupHtml(s.d)}<div class="meta"><span class="cls">${CLS[b.cls].g}</span><span class="num">Lv ${s.lv}</span>${S.deck.includes(g)?'<span class="chip">출전</span>':''}</div>${gf.sort==='power'?`<div class="meta num">전투력 ${fmt(p)}</div>`:gf.sort==='bond'?`<div class="meta">인연 ${bn}개</div>`:''}</button>`}).join('')}</div>`;
   } else {
     if(!S.items.length)return h+`<div class="empty-state"><b>寶庫</b>아직 보물이 없어요. 등용 탭의 보물 획득에서 얻을 수 있어요.</div>`;
-    const items=[...S.items].sort((a,b)=>IMAP[b.k].rar-IMAP[a.k].rar||a.k.localeCompare(b.k));
-    h+=`<div class="row" style="margin-bottom:10px"><span class="sub" style="margin:0">잠근 보물과 장착 중인 보물은 판매되지 않아요.</span><span class="sp"></span><button type="button" class="btn ghost sm" id="bulk-sell">일괄 판매</button></div>`;
-    h+=`<div class="list">${items.map(x=>{const it=IMAP[x.k],hd=itemHolder(x.u);return `<div class="li"><div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${ITYPE[it.g]} · ${fxText(it)}${hd?` · ${esc(GMAP[hd].name)} 장착`:''}</span></div><div class="iact"><button type="button" class="lockb" data-lock="${x.u}" aria-pressed="${!!x.lk}">${x.lk?'잠김':'잠금'}</button>${hd||x.lk?'':`<button type="button" class="btn ghost sm" data-sell="${x.u}">판매 金${SELL[it.rar]}</button>`}</div></div>`}).join('')}</div>`;
+    const chipI=(k,v,lab)=>`<button type="button" data-if="${k}:${v}" aria-pressed="${String(itf[k])===String(v)}">${lab}</button>`;
+    h+=`<div class="chips" role="group" aria-label="종류"><span class="flab">종류</span>${chipI('g','','전체')}${Object.entries(ITYPE).map(([k,v])=>chipI('g',k,v)).join('')}</div>
+    <div class="chips" role="group" aria-label="등급"><span class="flab">등급</span>${chipI('rar',0,'전체')}${[5,4,3].map(r=>chipI('rar',r,stars(r))).join('')}</div>
+    <div class="chips" role="group" aria-label="정렬"><span class="flab">정렬</span>${chipI('sort','rar','등급순')}${chipI('sort','d','돌파순')}${chipI('sort','worn','장착 먼저')}</div>`;
+    const by={rar:(a,b)=>IMAP[b.k].rar-IMAP[a.k].rar||(b.d||0)-(a.d||0)||a.k.localeCompare(b.k),d:(a,b)=>(b.d||0)-(a.d||0)||IMAP[b.k].rar-IMAP[a.k].rar,worn:(a,b)=>(itemHolder(b.u)?1:0)-(itemHolder(a.u)?1:0)||IMAP[b.k].rar-IMAP[a.k].rar||(b.d||0)-(a.d||0)}[itf.sort]||((a,b)=>0);
+    const items=S.items.filter(x=>{const it=IMAP[x.k];return (!itf.g||it.g===itf.g)&&(!itf.rar||it.rar===+itf.rar)}).sort(by);
+    h+=`<div class="row" style="margin-bottom:10px"><span class="sub" style="margin:0">${items.length}/${ITEMS.length}종 · 보물을 누르면 정련·판매할 수 있어요.</span><span class="sp"></span><button type="button" class="btn ghost sm" id="bulk-sell">일괄 판매</button></div>`;
+    h+=`<div class="list">${items.map(x=>{const it=IMAP[x.k],hd=itemHolder(x.u);return `<div class="li"><button type="button" class="itbtn" data-item="${x.u}">${itemTile(it,x.d)}<div class="info"><b>${esc(it.name)}${x.d?` <span class="pc">+${x.d}</span>`:''} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${ITYPE[it.g]} · ${fxText(it,x.d)}${hd?` · ${esc(GMAP[hd].name)} 장착`:''}</span></div></button><div class="iact"><button type="button" class="lockb" data-lock="${x.u}" aria-pressed="${!!x.lk}">${x.lk?'잠김':'잠금'}</button>${hd||x.lk?'':`<button type="button" class="btn ghost sm" data-sell="${x.u}">판매 金${fmt(sellPrice(x))}</button>`}</div></div>`}).join('')}</div>`;
   }
   return h;
 }
@@ -1520,45 +1688,73 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-gf]');if(!
 const SELL={3:40,4:150,5:500};
 /* ---------------- 보물 잠금 · 일괄 판매 ---------------- */
 let bulkR={3:true,4:true,5:false};
-function bulkList(){return S.items.filter(x=>!x.lk&&!itemHolder(x.u)&&bulkR[IMAP[x.k].rar])}
+function bulkList(){return S.items.filter(x=>!x.lk&&!x.d&&!itemHolder(x.u)&&bulkR[IMAP[x.k].rar])}
 function openBulk(){
-  const L=bulkList(), g=L.reduce((a,x)=>a+SELL[IMAP[x.k].rar],0);
+  const L=bulkList(), g=L.reduce((a,x)=>a+sellPrice(x),0);
   openSheet(`<div class="sheet-h"><h2 style="margin:0">보물 일괄 판매</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   <p class="sub">잠그지 않았고 장착하지 않은 보물 중, 고른 등급만 판매해요.</p>
+   <p class="sub">잠그지 않았고, 장착하지 않았고, 돌파하지 않은(+0) 보물 중 고른 등급만 판매해요.</p>
    <div class="chips">${[3,4,5].map(r=>`<button type="button" data-bulkr="${r}" aria-pressed="${bulkR[r]}">${stars(r)}</button>`).join('')}</div>
    <div class="stat" style="margin:8px 0 12px"><small>판매 대상</small><b>${L.length}개 · 金 +${fmt(g)}</b></div>
    <button type="button" class="btn wide" id="bulk-ask" ${L.length?'':'disabled'}>${L.length}개 판매</button>
    <div class="warn" id="bulk-warn" hidden><b>보물 ${L.length}개를 판매할까요?</b><br>판매한 보물은 되돌릴 수 없어요.<div class="row" style="margin-top:10px"><button type="button" class="btn ghost" id="bulk-no">취소</button><button type="button" class="btn red" id="bulk-yes" style="flex:1">네, 판매하기</button></div></div>`);
   $('#bulk-ask').onclick=()=>{$('#bulk-warn').hidden=false;$('#bulk-ask').hidden=true};
   $('#bulk-no').onclick=()=>{$('#bulk-warn').hidden=true;$('#bulk-ask').hidden=false};
-  $('#bulk-yes').onclick=()=>{const L2=bulkList(),ids=new Set(L2.map(x=>x.u)),g2=L2.reduce((a,x)=>a+SELL[IMAP[x.k].rar],0);S.items=S.items.filter(x=>!ids.has(x.u));S.gold+=g2;save();closeSheet();renderTop();renderView();toast(`보물 ${L2.length}개 판매 · 金 +${fmt(g2)}`)};
+  $('#bulk-yes').onclick=()=>{const L2=bulkList(),ids=new Set(L2.map(x=>x.u)),g2=L2.reduce((a,x)=>a+sellPrice(x),0);S.items=S.items.filter(x=>!ids.has(x.u));S.gold+=g2;save();closeSheet();renderTop();renderView();toast(`보물 ${L2.length}개 판매 · 金 +${fmt(g2)}`)};
 }
 document.addEventListener('click',e=>{
-  const lk=e.target.closest('[data-lock]');if(lk){const x=S.items.find(i=>i.u===lk.dataset.lock);if(x){x.lk=!x.lk;if(!x.lk)delete x.lk;save();renderView()}return}
+  const lk=e.target.closest('[data-lock]');if(lk){const x=S.items.find(i=>i.u===lk.dataset.lock);if(x){x.lk=!x.lk;if(!x.lk)delete x.lk;save();renderView();if(lk.closest('#sheet'))openItem(x.u)}return}
   if(e.target.closest('#bulk-sell')){openBulk();return}
   const br=e.target.closest('[data-bulkr]');if(br){bulkR[br.dataset.bulkr]=!bulkR[br.dataset.bulkr];openBulk();return}
 });
 
-function fxText(it){const f=it.fx,o=[];if(f.atk)o.push(`공격 +${f.atk}%`);if(f.hp)o.push(`체력 +${f.hp}%`);if(f.def)o.push(`방어 +${f.def}%`);if(f.spd)o.push(`속도 +${f.spd}`);return o.join(' · ')}
+const FXL={atk:['공격','%'],hp:['체력','%'],def:['방어','%'],spd:['속도',''],cr:['치명','%'],cd:['치명 피해','%'],ls:['흡혈','%'],dr:['피해 감소','%'],sk:['전법 피해','%']};
+function fxList(f,m){return Object.entries(f).map(([k,v])=>`${FXL[k][0]} +${Math.round(v*m*10)/10}${FXL[k][1]}`).join(' · ')}
+function fxText(it,d,w){const m=1+ITEM_DSTEP*(d||0);let t=fxList(it.fx,m);
+  if(it.on){const ok=w&&(w.cls===it.on[0]||w.fac===it.on[0]);t+=` · ${ON_NAME[it.on[0]]} 장착 시 ${fxList(it.on[1],m)}${w?(ok?' (적용 중)':' (미적용)'):''}`}return t}
+function itemTile(it,d){return `<div class="itm r${it.rar}">${itemImg(it)}${d?`<b class="idp">+${d}</b>`:''}</div>`}
+const RF={3:200,4:600,5:2000}, ITEM_OVER={3:100,4:300,5:1000};
+const refineCost=(r,d)=>RF[r]*(1+Math.floor(d/5));
+function refineCostN(r,d,n){let t=0;for(let i=0;i<n&&d+i<ITEM_MAXD;i++)t+=refineCost(r,d+i);return t}
+function sellPrice(x){return SELL[IMAP[x.k].rar]*(1+(x.n||0))+(x.g||0)}
+let itf={g:'',rar:0,sort:'rar'}, eqType='';
+function openItem(u){
+  const x=S.items.find(i=>i.u===u);if(!x)return;const it=IMAP[x.k],hd=itemHolder(u),d=x.d||0,c1=refineCost(it.rar,d),n5=Math.min(5,ITEM_MAXD-d),c5=refineCostN(it.rar,d,5);
+  openSheet(`<div class="sheet-h">${itemTile(it,0)}<div style="min-width:0"><h2 style="margin:0">${esc(it.name)}${d?` <span class="pc">+${d}</span>`:''}</h2><div class="stars r${it.rar}">${stars(it.rar)}</div><div class="sub" style="margin:0">${ITYPE[it.g]}${hd?` · ${esc(GMAP[hd].name)} 장착 중`:''}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <div class="stat" style="text-align:left;margin:10px 0"><div class="row"><small style="font-size:12px">돌파</small><span class="sp"></span><b class="num">+${d} / ${ITEM_MAXD}</b></div><div class="bar"><i style="width:${d/ITEM_MAXD*100}%;background:var(--bronze)"></i></div></div>
+   <h3>효과 <span style="font-weight:400">· 돌파 1단계마다 +${Math.round(ITEM_DSTEP*100)}%</span></h3>
+   <dl class="help"><dt>현재</dt><dd>${fxText(it,d)}</dd>${d<ITEM_MAXD?`<dt>다음 단계</dt><dd>${fxText(it,d+1)}</dd>`:''}<dt>+${ITEM_MAXD}</dt><dd>${fxText(it,ITEM_MAXD)}</dd></dl>
+   <h3>정련</h3><p class="sub">같은 보물을 또 얻으면 돌파 +1. 금으로 정련해도 올라가고, 5단계마다 비용이 늘어요. 판매하면 정련에 쓴 금 ${fmt(x.g||0)}을 모두 돌려받아요.</p>
+   ${d>=ITEM_MAXD?'<p class="sub">최대 돌파에 도달했어요.</p>':`<div class="row"><button type="button" class="btn" style="flex:1" data-refine="${u}:1" ${S.gold<c1?'disabled':''}>+1 정련 · 金 ${fmt(c1)}</button>${n5>1?`<button type="button" class="btn ghost" data-refine="${u}:${n5}" ${S.gold<c5?'disabled':''}>+${n5} · 金 ${fmt(c5)}</button>`:''}</div>`}
+   <div class="row" style="margin-top:14px"><button type="button" class="lockb" data-lock="${u}" aria-pressed="${!!x.lk}">${x.lk?'잠김':'잠금'}</button><span class="sp"></span>${hd||x.lk?`<span class="sub" style="margin:0">${hd?'장착 중인 보물은 판매할 수 없어요':'잠근 보물은 판매할 수 없어요'}</span>`:`<button type="button" class="btn ghost sm" data-sell="${u}">판매 金${fmt(sellPrice(x))}</button>`}</div>`);
+}
+document.addEventListener('click',e=>{
+  const it=e.target.closest('[data-item]');if(it){openItem(it.dataset.item);return}
+  const rf=e.target.closest('[data-refine]');
+  if(rf&&!rf.disabled){const[u,ns]=rf.dataset.refine.split(':');const x=S.items.find(i=>i.u===u);if(!x)return;const r=IMAP[x.k].rar,n=Math.min(+ns,ITEM_MAXD-x.d),c=refineCostN(r,x.d,n);if(n<1||c>S.gold)return;
+    S.gold-=c;x.g=(x.g||0)+c;x.d+=n;save();renderTop();renderView();openItem(u);toast(`${IMAP[x.k].name} +${x.d} · 金 -${fmt(c)}`);return}
+  const f=e.target.closest('[data-if]');if(f){const[k,v]=f.dataset.if.split(':');itf[k]=k==='rar'?+v:v;renderView();return}
+  const q=e.target.closest('[data-eqt]');if(q){const[g,k,t]=q.dataset.eqt.split(':');eqType=t;openEquip(g,+k);return}
+  const dg=e.target.closest('[data-dig]');if(dg){dexIg=dg.dataset.dig;renderView();return}
+});
 let sellArm=null;
 document.addEventListener('click',e=>{
   const t=e.target.closest('[data-gt]');if(t){genTab=t.dataset.gt;renderView();return}
   const s=e.target.closest('[data-sell]');
   if(s){const u=s.dataset.sell;
     if(sellArm!==u){sellArm=u;s.textContent='한 번 더 누르면 판매';s.classList.add('red');setTimeout(()=>{if(sellArm===u){sellArm=null;renderView()}},2500);return}
-    const x=S.items.find(i=>i.u===u);if(!x)return;const g=SELL[IMAP[x.k].rar];S.items=S.items.filter(i=>i.u!==u);S.gold+=g;sellArm=null;save();renderTop();renderView();toast(`${IMAP[x.k].name} 판매 · 金 +${g}`);return}
+    const x=S.items.find(i=>i.u===u);if(!x)return;const g=sellPrice(x);S.items=S.items.filter(i=>i.u!==u);S.gold+=g;sellArm=null;save();renderTop();renderView();if(s.closest('#sheet'))closeSheet();toast(`${IMAP[x.k].name} 판매 · 金 +${g}`);return}
   const g=e.target.closest('[data-gen]');if(g){openGen(g.dataset.gen);return}
 });
 function openGen(gid){
-  const b=GMAP[gid], st=S.gens[gid], s=specOf(gid), u=mkUnit(s,0,0), it=s.i?IMAP[s.i]:null;
+  const b=GMAP[gid], st=S.gens[gid], s=specOf(gid), u=mkUnit(s,0,0);
   const cost=50*st.lv, inDeck=S.deck.includes(gid);
   openSheet(`<div class="sheet-h">${seal(b,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz)}</span></h2>
    <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${st.lv}/${MAXLV}</div>${dupHtml(st.d,1)}</div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <div class="row" style="margin-top:8px"><span class="sub" style="margin:0">능력치</span><button type="button" class="qh" data-help="1" aria-label="능력치 도움말">?</button></div><div class="stats" style="margin-top:4px"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
   ${usageHtml(gid)}<div class="row sub" style="margin:0 0 4px">무력 ${b.str} · 지력 ${b.int} · 통솔 ${b.lead}<span class="sp"></span>전투력 <b style="color:var(--bronze)">${fmt(unitPower(u))}</b></div>
   <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. ${cdText(b.cls)} 발동.</p>${bondsOfHtml(b.id)}
-  <h3>장비</h3>
-  <div class="li" style="margin-bottom:12px">${it?`<div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)}</b><span>${fxText(it)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>장착 없음</b><span>보물을 하나 장착할 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-equip="${gid}">${it?'변경':'장착'}</button></div>
+  <h3>보물 <span style="font-weight:400">· ${st.its.length}/${ITEM_SLOTS}칸 · 명마는 1개까지</span></h3>
+  <div class="list" style="margin-bottom:12px">${Array.from({length:ITEM_SLOTS},(_,k)=>{const x=st.its[k]&&S.items.find(i=>i.u===st.its[k]),iv=x&&IMAP[x.k];return `<div class="li">${iv?`${itemTile(iv,x.d)}<div class="info"><b>${esc(iv.name)}${x.d?` <span class="pc">+${x.d}</span>`:''}</b><span>${fxText(iv,x.d,b)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>빈 칸</b><span>보물을 장착할 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-equip="${gid}:${iv?k:st.its.length}">${iv?'변경':'장착'}</button></div>`}).join('')}</div>
   <h3>레벨</h3>${lvBoxHtml(gid)}
   <button type="button" class="btn ghost wide" data-deckt="${gid}" style="margin-top:10px">${inDeck?'진형에서 빼기':'진형에 넣기'}</button>`);
   bindLv(gid);
@@ -1597,20 +1793,25 @@ document.addEventListener('click',e=>{
   if(l&&!l.disabled){const g=l.dataset.lvup,st=S.gens[g],c=50*st.lv;if(S.gold<c||st.lv>=MAXLV)return;S.gold-=c;st.lv++;save();renderTop();openGen(g);renderView();return}
   const d=e.target.closest('[data-deckt]');
   if(d){const g=d.dataset.deckt,at=S.deck.indexOf(g);if(at>=0)S.deck[at]=null;else{const e2=S.deck.indexOf(null);if(e2<0){toast('진형이 가득 찼어요. 진형 탭에서 자리를 비워 주세요.');return}S.deck[e2]=g}save();openGen(g);renderView();return}
-  const q=e.target.closest('[data-equip]');if(q){openEquip(q.dataset.equip);return}
+  const q=e.target.closest('[data-equip]');if(q){const[g,k]=q.dataset.equip.split(':');openEquip(g,+k||0);return}
   const p=e.target.closest('[data-puton]');
-  if(p){const[g,u]=p.dataset.puton.split(':');if(u){const h=itemHolder(u);if(h)S.gens[h].it=null}S.gens[g].it=u||null;save();openGen(g);renderView();return}
+  if(p&&!p.disabled){const[g,ks,u]=p.dataset.puton.split(':'),k=+ks,st=S.gens[g],cur=st.its[k];
+    if(u){const h=itemHolder(u);if(h)S.gens[h].its=S.gens[h].its.filter(x=>x!==u)}
+    const a=st.its.slice(),at=cur?a.indexOf(cur):-1;if(u){if(at>=0)a[at]=u;else a.push(u)}else if(at>=0)a.splice(at,1);
+    st.its=a.filter(Boolean).slice(0,ITEM_SLOTS);save();openGen(g);renderView();return}
 });
-function openEquip(gid){
-  const cur=S.gens[gid].it;
-  const items=[...S.items].sort((a,b)=>IMAP[b.k].rar-IMAP[a.k].rar);
-  openSheet(`<div class="sheet-h"><h2 style="margin:0">${esc(GMAP[gid].name)} 장비</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-  ${cur?`<button type="button" class="btn ghost wide" data-puton="${gid}:" style="margin-bottom:10px">장비 해제</button>`:''}
-  ${items.length?`<div class="list">${items.filter(x=>x.u!==cur).map(x=>{const it=IMAP[x.k],h=itemHolder(x.u);return `<button type="button" class="li" style="text-align:left" data-puton="${gid}:${x.u}"><div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${fxText(it)}${h?` · ${esc(GMAP[h].name)}에게서 옮김`:''}</span></div></button>`}).join('')}</div>`:`<div class="empty-state"><b>寶庫</b>보물이 없어요. 등용 탭에서 얻을 수 있어요.</div>`}`);
+function openEquip(gid,k){
+  const st=S.gens[gid],b=GMAP[gid],cur=st.its[k]||null,kOf=u=>{const x=S.items.find(y=>y.u===u);return x?IMAP[x.k]:null};
+  const horseElse=st.its.some(u=>u!==cur&&(kOf(u)||{}).g==='馬');
+  const items=S.items.filter(x=>x.u!==cur&&!st.its.includes(x.u)&&(!eqType||IMAP[x.k].g===eqType)).sort((a,c)=>IMAP[c.k].rar-IMAP[a.k].rar||(c.d||0)-(a.d||0)||(itemHolder(a.u)?1:0)-(itemHolder(c.u)?1:0));
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">${esc(b.name)} · 보물 ${cur?'변경':'장착'}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+  ${cur?`<button type="button" class="btn ghost wide" data-puton="${gid}:${k}:" style="margin-bottom:10px">${esc(kOf(cur).name)} 해제</button>`:''}
+  <div class="chips" role="group" aria-label="종류">${[['','전체'],...Object.entries(ITYPE)].map(([t,n])=>`<button type="button" data-eqt="${gid}:${k}:${t}" aria-pressed="${eqType===t}">${n}</button>`).join('')}</div>
+  ${items.length?`<div class="list">${items.map(x=>{const it=IMAP[x.k],h=itemHolder(x.u),no=it.g==='馬'&&horseElse;return `<button type="button" class="li" style="text-align:left" data-puton="${gid}:${k}:${x.u}" ${no?'disabled':''}>${itemTile(it,x.d)}<div class="info"><b>${esc(it.name)}${x.d?` <span class="pc">+${x.d}</span>`:''} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${no?'명마는 한 장수에게 1개만 장착할 수 있어요':fxText(it,x.d,b)}${h?` · ${esc(GMAP[h].name)}에게서 옮김`:''}</span></div></button>`}).join('')}</div>`:`<div class="empty-state"><b>寶庫</b>장착할 수 있는 보물이 없어요. 등용 탭에서 얻을 수 있어요.</div>`}`);
 }
 
 /* ---------------- 도감 ---------------- */
-let dexTab='gens', dexFac='all', dexSort='rar';
+let dexTab='gens', dexFac='all', dexSort='rar', dexIg='';
 const DSORT={rar:'등급',str:'무력',int:'지력',lead:'통솔',spd:'속도'};
 function statCell(lab,v,max){return `<div class="dc"><small>${lab}</small><b class="num">${v}</b><span class="db"><i style="width:${Math.min(100,v/max*100)}%"></i></span></div>`}
 function vDex(){
@@ -1625,8 +1826,9 @@ function vDex(){
     h+=`<div class="list">${list.map(g=>{const own=S.gens[g.id];return `<button type="button" class="li dex ${own?'':'unown'}" data-dexg="${g.id}">${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${FAC[g.fac]} · ${CLS[g.cls].g} ${CLS[g.cls].n} · ${esc(g.skill)}${own?` · 보유 Lv ${own.lv}`:''}${MODE==='shared'&&usageOf(g.id)?` · 사용률 ${Math.round(usageOf(g.id).pct*100)}%`:''}</span>
       <div class="dst">${statCell('무력',g.str,100)}${statCell('지력',g.int,100)}${statCell('통솔',g.lead,100)}${statCell('속도',g.spd,100)}</div></div></button>`}).join('')}</div>`;
   } else {
-    const list=[...ITEMS].sort((a,b)=>b.rar-a.rar||a.g.localeCompare(b.g));
-    h+=`<div class="list">${list.map(it=>{const n=S.items.filter(x=>x.k===it.id).length;return `<div class="li ${n?'':'unown'}"><div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${ITYPE[it.g]} · ${fxText(it)}</span></div><span class="chip">${n?`보유 ${n}`:'미보유'}</span></div>`}).join('')}</div>`;
+    h+=`<div class="chips" role="group" aria-label="종류">${[['','전체'],...Object.entries(ITYPE)].map(([t,n])=>`<button type="button" data-dig="${t}" aria-pressed="${dexIg===t}">${n}</button>`).join('')}</div>`;
+    const list=ITEMS.filter(it=>!dexIg||it.g===dexIg).sort((a,b)=>b.rar-a.rar||a.g.localeCompare(b.g));
+    h+=`<div class="list">${list.map(it=>{const x=S.items.find(y=>y.k===it.id);return `<div class="li ${x?'':'unown'}">${itemTile(it,x&&x.d)}<div class="info"><b>${esc(it.name)} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${ITYPE[it.g]} · ${fxText(it,0)}</span><span>+${ITEM_MAXD}: ${fxText(it,ITEM_MAXD)}</span></div><span class="chip">${x?`+${x.d}`:'미보유'}</span></div>`}).join('')}</div>`;
   }
   return h;
 }
@@ -1741,7 +1943,7 @@ document.addEventListener('click',async e=>{
 
 /* ---------------- 다른 군주 진형 보기 · 초기화 ---------------- */
 const ITEM_COMP={3:.4,4:.7,5:1};
-function genComp(s){const it=s.i?IMAP[s.i]:null;return (s.lv/MAXLV)*.6+((s.d||0)/5)*.25+(it?ITEM_COMP[it.rar]:0)*.15}
+function genComp(s){let ic=0;itemsOf(s.i).forEach(({it,d})=>ic+=ITEM_COMP[it.rar]*(.4+.6*d/ITEM_MAXD));return (s.lv/MAXLV)*.45+((s.d||0)/5)*.2+(ic/ITEM_SLOTS)*.35}
 function deckComp(specs){const a=specs.filter(Boolean);let t=0;a.forEach(s=>t+=genComp(s));return t/5}
 const pct=x=>Math.round(x*100)+'%';
 function openPeek(id){
@@ -1749,16 +1951,16 @@ function openPeek(id){
   const p=mine?{id,deck:mySpecs().filter(Boolean)}:PLAYERS.find(x=>x.id===id);
   if(!p)return;
   const st=standings()[id]||{aw:0,al:0,dw:0,dl:0}, dc=deckComp(p.deck);
-  const rows=p.deck.map((s,k)=>{const b=GMAP[s.g],it=s.i?IMAP[s.i]:null,c=genComp(s);
+  const rows=p.deck.map((s,k)=>{const b=GMAP[s.g],its=itemsOf(s.i),c=genComp(s);
     return `<div class="li" style="align-items:flex-start">${seal(b,'sm')}<div class="info"><b>${k+1}. ${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span></b>
       <span>${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${s.lv}/${MAXLV} · ${dupHtml(s.d,1)} · 전투력 ${fmt(specPower(s))}</span>
-      <span>${it?`<span class="ig r${it.rar}">${itemImg(it)}</span> ${esc(it.name)} ${stars(it.rar)} · ${fxText(it)}`:'장비 없음'}</span>
+      ${its.length?its.map(({it,d})=>`<span><span class="ig r${it.rar}">${itemImg(it)}</span> ${esc(it.name)}${d?` <b class="idp">+${d}</b>`:''} <span class="stars r${it.rar}">${stars(it.rar)}</span></span>`).join(''):'<span>보물 없음</span>'}
       <div class="bar"><i style="width:${c*100}%;background:var(--bronze)"></i></div></div><span class="pc num">${pct(c)}</span></div>`}).join('');
   openSheet(`<div class="sheet-h"><div style="min-width:0"><h2 style="margin:0" data-uid="${esc(id)}">…</h2><div class="sub" style="margin:0">전투력 ${fmt(deckPower(p.deck))} · 공 ${st.aw}-${st.al} · 방 ${st.dw}-${st.dl} · ${score(st)}점</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <div class="stat" style="text-align:left;margin:8px 0 12px"><div class="row"><small style="font-size:12px">진형 완성도</small><span class="sp"></span><span class="pc num" style="font-size:22px">${pct(dc)}</span></div><div class="bar"><i style="width:${dc*100}%;background:var(--bronze)"></i></div></div>
    <h3>${mine?'내 방어 진형':'방어 진형'} (${p.deck.length}/5)</h3>
    ${p.deck.length?`<div class="list">${rows}</div>`:'<div class="empty-state">진형에 장수가 없어요.</div>'}
-   <p class="sub" style="margin-top:10px">완성도는 레벨 60%, 돌파 25%, 장비 등급 15%를 반영해요. 빈 자리는 0%로 계산돼요.</p>
+   <p class="sub" style="margin-top:10px">완성도는 레벨 45%, 돌파 20%, 보물 35%(3칸의 등급과 돌파)를 반영해요. 빈 자리는 0%로 계산돼요.</p>
    ${!mine&&MODE==='shared'?`<div class="row"><button type="button" class="btn red" style="flex:1" data-duel="${esc(id)}" ${ticketsLeft()<1||!mySpecs().some(Boolean)?'disabled':''}>도전 (오늘 ${ticketsLeft()}/${PVP_DAILY}회 남음)</button><button type="button" class="btn ghost" data-spar="${esc(id)}">연습 대전</button></div>`:''}`);
   fillNames();
 }
@@ -1806,14 +2008,14 @@ function mvpOf(res,st,side){
   let best=null;res.init[side].forEach(u=>{const r=st[u.side+'-'+u.slot],sc=r.dmg+r.heal*.6;if(!best||sc>best.sc)best={u,r,sc}});return best;
 }
 function mvpHtml(m){
-  if(!m)return '';const {u,r}=m;const it=u.item?IMAP[u.item]:null;
+  if(!m)return '';const {u,r}=m;const it=u.items&&u.items.length?{name:u.items.map(x=>x.n+(x.d?'+'+x.d:'')).join(', ')}:null;
   return `<div class="mvp"><div class="mvp-h"><span class="mvp-t">MVP</span>${seal(u,'lg')}<div style="text-align:left;min-width:0"><b style="font-size:17px">${esc(u.name)}</b> <span class="stars r${u.rar}">${stars(u.rar)}</span><div class="sub" style="margin:0">${FAC[u.fac]} · ${CLS[u.cls].g} ${CLS[u.cls].n}${u.lv?` · Lv ${u.lv}`:''}${it?` · ${esc(it.name)}`:''}</div><div class="sub" style="margin:0">전법 ${esc(u.skill)}</div></div></div>
    <div class="stats" style="grid-template-columns:repeat(4,1fr);margin:10px 0 6px"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
    <div class="stats" style="grid-template-columns:repeat(3,1fr);margin:0"><div class="stat"><small>총 피해</small><b>${fmt(r.dmg)}</b></div><div class="stat"><small>행동 · 전법</small><b>${r.acts} · ${r.sk}</b></div><div class="stat"><small>회당 피해</small><b>${fmt(r.acts?Math.round(r.dmg/r.acts):0)}</b></div><div class="stat"><small>치명타</small><b>${r.crit}</b></div><div class="stat"><small>처치</small><b>${r.kills}</b></div><div class="stat"><small>회복</small><b>${fmt(r.heal)}</b></div></div></div>`;
 }
 // 결과 링크: 진형과 시드를 담아 같은 전투를 다시 재생
-const packSpecs=a=>a.filter(Boolean).map(s=>[s.g,s.lv,s.d||0,s.i||0]);
-const unpackSpecs=a=>(Array.isArray(a)?a:[]).slice(0,5).filter(x=>Array.isArray(x)&&GMAP[x[0]]).map(x=>({g:x[0],lv:Math.min(MAXLV,Math.max(1,x[1]|0)),d:Math.min(5,Math.max(0,x[2]|0)),i:IMAP[x[3]]?x[3]:null}));
+const packSpecs=a=>a.filter(Boolean).map(s=>[s.g,s.lv,s.d||0,s.i&&s.i.length?s.i:0]);
+const unpackSpecs=a=>(Array.isArray(a)?a:[]).slice(0,5).filter(x=>Array.isArray(x)&&GMAP[x[0]]).map(x=>({g:x[0],lv:Math.min(MAXLV,Math.max(1,x[1]|0)),d:Math.min(5,Math.max(0,x[2]|0)),i:itemsOf(x[3]).map(o=>o.it.id+':'+o.d)}));
 const b64e=s=>btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const b64d=s=>decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/'))));
 function shareUrl(sh,win){
