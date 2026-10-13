@@ -259,13 +259,16 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;overflow:hidden}
 .stepper button{background:var(--panel);border:0;width:36px;height:34px;font-size:18px}
 .stepper b{min-width:40px;text-align:center}
+
+.daychips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
+.daychips button{flex:none}
 </style>
 </head>
 <body>
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.6.0</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.7.0</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -286,7 +289,7 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
     <button class="tab" type="button" data-v="gacha"><b>募</b><span>등용</span></button>
     <button class="tab" type="button" data-v="deck"><b>陣</b><span>진형</span></button>
     <button class="tab" type="button" data-v="gens"><b>將</b><span>무장</span></button>
-    <button class="tab" type="button" data-v="pvp"><b>戰</b><span>대전</span></button>
+    <button class="tab" type="button" data-v="pvp"><b>戰</b><span>결투장</span></button>
     <button class="tab" type="button" data-v="dex"><b>錄</b><span>도감</span></button>
   </nav>
 </div>
@@ -607,7 +610,7 @@ let PLAYERS=[], BATTLES=[];
 function newState(){
   return {v:1,gold:500,food:1000,last:Date.now(),stage:0,seq:1,
     gens:{liaohua:{lv:1,d:0,it:null},lejin:{lv:1,d:0,it:null},lidian:{lv:1,d:0,it:null}},
-    items:[],deck:['liaohua','lejin','lidian',null,null],pvp:{day:'',used:0},ap:AP_CAP,apT:Date.now(),att:{day:'',streak:0,total:0},notice:{read:[],claimed:[]},created:Date.now()};
+    items:[],deck:['liaohua','lejin','lidian',null,null],pvp:{day:'',used:0},duel:{done:[],pruned:''},ap:AP_CAP,apT:Date.now(),att:{day:'',streak:0,total:0},notice:{read:[],claimed:[]},created:Date.now()};
 }
 function sanitize(s){
   const n=newState();
@@ -623,6 +626,7 @@ function sanitize(s){
   o.ap=Number.isFinite(Number(s.ap))?Math.max(0,Math.min(999,Math.floor(Number(s.ap)))):AP_CAP;o.apT=Number(s.apT)||Date.now();
   const at=s.att&&typeof s.att==='object'?s.att:{};o.att={day:String(at.day||''),streak:Math.max(0,at.streak|0),total:Math.max(0,at.total|0)};
   const nt=s.notice&&typeof s.notice==='object'?s.notice:{};const strs=a=>Array.isArray(a)?a.filter(x=>typeof x==='string').slice(-60):[];o.notice={read:strs(nt.read),claimed:strs(nt.claimed)};
+  const du=s.duel&&typeof s.duel==='object'?s.duel:{};o.duel={done:strs(du.done).slice(-30),pruned:String(du.pruned||'')};
   const ids=new Set(o.items.map(x=>x.u));
   for(const g of Object.values(o.gens))if(g.it&&!ids.has(g.it))g.it=null;
   return o;
@@ -725,17 +729,29 @@ async function boot(){
   });
   setInterval(renderTop,1000);
 }
+let BAT_DAY='', unsubBat=null;
+function subBattles(){
+  if(unsubBat){try{unsubBat()}catch(e){}}
+  BAT_DAY=kstDay();
+  unsubBat=FS.collection('battles').where('at','>=',dayStart(BAT_DAY)).orderBy('at','desc').limit(1000).onSnapshot(snap=>{
+    BATTLES=snap.docs.map(d=>d.data()).filter(validBattle);refreshPvp();
+  },()=>{});
+}
 function subscribe(){
   unsubscribeAll();
-  UNSUB.push(FS.collection('players').limit(100).onSnapshot(snap=>{
+  UNSUB.push(FS.collection('players').limit(300).onSnapshot(snap=>{
     PLAYERS=snap.docs.map(d=>({id:d.id,...cleanPlayer(d.data())})).filter(p=>p.deck.length);refreshPvp();
   },()=>{}));
-  UNSUB.push(FS.collection('battles').orderBy('at','desc').limit(200).onSnapshot(snap=>{
-    BATTLES=snap.docs.map(d=>d.data()).filter(b=>b&&typeof b.att==='string'&&typeof b.def==='string'&&typeof b.win==='boolean');refreshPvp();
-  },()=>{}));
+  subBattles();
+  setTimeout(checkSettlement,1500);
 }
-function unsubscribeAll(){UNSUB.forEach(f=>{try{f()}catch(e){}});UNSUB=[]}
-function refreshPvp(){if(view==='pvp'&&$('#sheet').hidden&&$('#battle').hidden)renderView()}
+function unsubscribeAll(){UNSUB.forEach(f=>{try{f()}catch(e){}});UNSUB=[];if(unsubBat){try{unsubBat()}catch(e){}unsubBat=null}}
+function refreshPvp(){if(view==='pvp'&&duelTab==='today'&&$('#sheet').hidden&&$('#battle').hidden)renderView()}
+function duelTick(){
+  if(MODE!=='shared'||!FS)return;
+  if(BAT_DAY&&BAT_DAY!==kstDay()){subBattles();renderView()}
+  const now=Date.now();if(now>=nextSettleCheck){nextSettleCheck=now+60000;checkSettlement()}
+}
 function cleanPlayer(d){
   const deck=(Array.isArray(d&&d.deck)?d.deck:[]).slice(0,5).filter(s=>s&&GMAP[s.g]).map(s=>({g:s.g,lv:Math.min(MAXLV,Math.max(1,s.lv|0)),d:Math.min(5,Math.max(0,s.d|0)),i:IMAP[s.i]?s.i:null}));
   return {name:cleanName(d&&d.name),deck,stage:Math.min(NSTAGE,Math.max(0,(d&&d.stage)|0)),at:Number(d&&d.at)||0};
@@ -803,10 +819,15 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.6.0';
+const GAME_VERSION='1.7.0';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.7.0',date:'2026-10-13',title:'결투장 일일 정산과 장수 사용률',reward:{ap:20},items:[
+  '대전 탭 이름을 결투장으로 바꿨어요. 순위는 매일 자정까지의 결투로 정해지고, 다음 날 오전 9시에 정산 보상을 받아요.',
+  '정산 보상(군량): 1위 1,620(장수 10회 + 보물 10회 등용분), 2위 900(장수 10회), 3위 720(보물 10회), 그 외 참여자 300(장수 3회). 그날 한 번 이상 도전해야 순위에 올라요.',
+  '결투장의 일자별 순위 탭에서 최근 10일의 순위와 보상을 볼 수 있어요.',
+  '장수 정보와 도감에서 그 장수를 진형에 넣은 군주의 비율(사용률)을 볼 수 있어요.']},
  {v:'1.6.0',date:'2026-10-13',title:'60개 스테이지와 소탕 · 구글 연동',reward:{ap:30},items:[
   '스테이지를 12장 60개로 늘렸어요. 황건적의 난부터 오장원까지 이어지고, 적의 전체 난이도는 이전의 70% 수준으로 낮췄어요.',
   '이미 깬 스테이지는 소탕할 수 있어요. 가진 군령 안에서 횟수를 골라 전투 없이 반복 보상을 한 번에 받아요(1회 군령 6개).',
@@ -833,7 +854,7 @@ const NOTICES=[
 const kstYesterday=()=>new Date(Date.now()+9*3600e3-864e5).toISOString().slice(0,10);
 const attDue=()=>!!S&&S.att.day!==kstDay();
 function rewardText(r){const o=[];if(r.ap)o.push(`令 +${r.ap}`);if(r.food)o.push(`糧 +${fmt(r.food)}`);if(r.gold)o.push(`金 +${fmt(r.gold)}`);return o.join(' · ')}
-function updateDot(){const d=$('#notice-dot');if(!d)return;d.hidden=!(S&&(attDue()||NOTICES.some(n=>!S.notice.read.includes(n.v))||NOTICES.some(n=>n.reward&&!S.notice.claimed.includes(n.v))))}
+function updateDot(){const d=$('#notice-dot');if(!d)return;d.hidden=!(S&&((typeof PENDING!=='undefined'&&PENDING.length)||attDue()||NOTICES.some(n=>!S.notice.read.includes(n.v))||NOTICES.some(n=>n.reward&&!S.notice.claimed.includes(n.v))))}
 function attHtml(){
   const streak=S.att.day===kstYesterday()?S.att.streak+1:1, pos=(streak-1)%7+1, bonus=pos===7;
   let boxes='';for(let k=1;k<=7;k++)boxes+=`<div class="ad ${k<pos?'done':''} ${k===pos?'today':''}"><small>${k}일</small><b>${k===7?'糧':'令'}</b></div>`;
@@ -862,7 +883,7 @@ function markRead(list){if(!S)return;let ch=false;list.forEach(n=>{if(!S.notice.
 function openNotices(only){
   const list=only?NOTICES.filter(n=>n.v===only):NOTICES;
   openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${only?'새 소식':'공지'}</h2><div class="sub" style="margin:0">현재 버전 v${GAME_VERSION}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   ${S&&attDue()&&!only?attHtml():''}
+   ${S&&attDue()&&!only?attHtml():''}${S&&!only&&PENDING.length?duelRewardHtml():''}
    <div class="list">${list.map(noticeHtml).join('')}</div>
    ${only?`<button type="button" class="btn ghost wide" id="all-notices" style="margin-top:12px">지난 공지 모두 보기</button>`:''}`);
   markRead(list);
@@ -894,6 +915,7 @@ function renderTop(){
   $('#claim-bar').style.width=(p.h/CAP_H*100)+'%';
   $('#claim-btn').disabled=p.f<1&&p.g<1;
   updateDot();
+  duelTick();
 }
 $('#claim-btn').onclick=()=>{const p=pendingRes();if(p.f<1&&p.g<1)return;S.food+=p.f;S.gold+=p.g;S.last=Date.now();save();renderTop();toast(`군량 ${fmt(p.f)} · 금 ${fmt(p.g)} 징수`)};
 function focusNext(){const n=document.querySelector('.node.next');if(n)n.closest('.chap').scrollIntoView({block:'start'})}
@@ -904,7 +926,7 @@ function renderView(){
   if(!S)return;
   const v=$('#view');
   v.innerHTML=({stage:vStage,gacha:vGacha,deck:vDeck,gens:vGens,pvp:vPvp,dex:vDex})[view]();
-  if(view==='pvp')fillNames();
+  if(view==='pvp'){fillNames();if(duelTab==='hist')fillHistory()}
 }
 
 /* ---------------- 출정 ---------------- */
@@ -975,6 +997,92 @@ function bindSweep(n){
     S.ap-=AP_COST*k;S.gold+=r.gold*k;S.food+=r.food*k;save();renderTop();
     toast(`소탕 ${k}회 완료 · 金 +${fmt(r.gold*k)} · 糧 +${fmt(r.food*k)}`);openStage(n);
   };
+}
+
+/* ---------------- 장수 사용률 ---------------- */
+function usageOf(gid){const ps=PLAYERS.filter(p=>p.deck&&p.deck.length);if(!ps.length)return null;const n=ps.filter(p=>p.deck.some(s=>s.g===gid)).length;return {n,total:ps.length,pct:n/ps.length}}
+function usageHtml(gid){
+  if(MODE!=='shared')return '';const u=usageOf(gid);if(!u)return '';
+  return `<div class="stat" style="text-align:left;margin:0 0 10px"><div class="row"><small style="font-size:12px">군주 사용률</small><span class="sp"></span><b class="pc num" style="font-size:20px">${Math.round(u.pct*100)}%</b></div><div class="bar"><i style="width:${u.pct*100}%;background:var(--bronze)"></i></div><small style="margin-top:4px">진형을 갖춘 군주 ${u.total}명 중 ${u.n}명이 진형에 편성했어요</small></div>`;
+}
+
+/* ---------------- 결투장 일일 정산 ---------------- */
+const DUEL_REWARD=[1620,900,720], DUEL_REWARD_REST=300, DUEL_KEEP_DAYS=10, DUEL_SETTLE_HOUR=9, DUEL_START='2026-10-13';
+const DAY_MS=864e5;
+const dayStart=d=>Date.parse(d+'T00:00:00+09:00');
+const dayOf=ms=>new Date(ms+9*3600e3).toISOString().slice(0,10);
+const settleAt=d=>dayStart(d)+DAY_MS+DUEL_SETTLE_HOUR*3600e3;
+const pastDays=n=>Array.from({length:n},(_,i)=>dayOf(Date.now()-(i+1)*DAY_MS));
+const duelReward=rank=>rank<=3?DUEL_REWARD[rank-1]:DUEL_REWARD_REST;
+const validBattle=b=>b&&typeof b.att==='string'&&typeof b.def==='string'&&typeof b.win==='boolean'&&Number.isFinite(Number(b.at));
+function rankDay(bs){
+  const m={};const g=id=>m[id]||(m[id]={id,aw:0,al:0,dw:0,dl:0});
+  for(const b of bs){if(b.win){g(b.att).aw++;g(b.def).dl++}else{g(b.att).al++;g(b.def).dw++}}
+  return Object.values(m).filter(r=>r.aw+r.al>0).map(r=>({...r,score:r.aw*3+r.dw})).sort((a,b)=>b.score-a.score||b.aw-a.aw||(a.aw+a.al)-(b.aw+b.al)||(a.id<b.id?-1:1));
+}
+function cleanDaily(d){
+  const rank=(Array.isArray(d&&d.rank)?d.rank:[]).filter(r=>r&&typeof r.id==='string').slice(0,200).map(r=>({id:r.id,name:cleanName(r.name),score:r.score|0,aw:r.aw|0,al:r.al|0,dw:r.dw|0,dl:r.dl|0}));
+  return {day:String(d&&d.day||''),rank,final:true};
+}
+const DAILY={};
+async function loadDaily(d){
+  if(DAILY[d])return DAILY[d];
+  const ref=FS.collection('daily').doc(d);
+  const snap=await ref.get();
+  if(snap.exists)return DAILY[d]=cleanDaily(snap.data());
+  const q=await FS.collection('battles').where('at','>=',dayStart(d)).where('at','<',dayStart(d)+DAY_MS).limit(1000).get();
+  const rank=rankDay(q.docs.map(x=>x.data()).filter(validBattle)).map(r=>{const p=PLAYERS.find(x=>x.id===r.id);return {...r,name:r.id===UID?MYNAME:(p&&p.name)||''}});
+  const final=Date.now()>=settleAt(d), v={day:d,rank,final};
+  if(final){
+    if(rank.length){try{await ref.set({day:d,at:dayStart(d),final:true,rank})}catch(e){try{const s2=await ref.get();if(s2.exists)return DAILY[d]=cleanDaily(s2.data())}catch(_){}}}
+    DAILY[d]=v;
+  }
+  return v;
+}
+let PENDING=[], settleBusy=false, nextSettleCheck=0;
+async function checkSettlement(){
+  if(MODE!=='shared'||!FS||settleBusy||!S)return;settleBusy=true;
+  try{
+    const days=pastDays(DUEL_KEEP_DAYS).filter(d=>d>=DUEL_START&&Date.now()>=settleAt(d)&&!S.duel.done.includes(d)&&!PENDING.some(p=>p.d===d)).reverse();
+    for(const d of days){
+      const v=await loadDaily(d), i=v.rank.findIndex(r=>r.id===UID);
+      if(i<0){S.duel.done.push(d);continue}
+      PENDING.push({d,rank:i+1,total:v.rank.length,reward:duelReward(i+1)});
+    }
+    S.duel.done=S.duel.done.slice(-30);save();updateDot();
+    if(PENDING.length&&$('#sheet').hidden&&$('#battle').hidden)openDuelRewards();
+    pruneOld();
+  }catch(e){}
+  settleBusy=false;
+}
+function duelRewardHtml(){
+  return PENDING.map(p=>`<div class="att-card"><div class="row"><b>${Number(p.d.slice(5,7))}월 ${Number(p.d.slice(8))}일 결투장 정산</b><span class="sp"></span><span class="pc">${p.rank}위</span></div>
+   <span class="sub" style="margin:0">참여 ${p.total}명 중 ${p.rank}위 · ${p.rank===1?'장수 10회 + 보물 10회 등용분':p.rank===2?'장수 10회 등용분':p.rank===3?'보물 10회 등용분':'장수 3회 등용분'}</span>
+   <button type="button" class="btn wide" data-dclaim="${p.d}">보상 받기 · 糧 +${fmt(p.reward)}</button></div>`).join('');
+}
+function openDuelRewards(){
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">결투장 정산 보상</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${duelRewardHtml()}`);
+}
+document.addEventListener('click',e=>{
+  const c=e.target.closest('[data-dclaim]');
+  if(c&&S){const i=PENDING.findIndex(p=>p.d===c.dataset.dclaim);if(i<0)return;const p=PENDING[i];
+    if(S.duel.done.includes(p.d)){PENDING.splice(i,1);return}
+    S.food+=p.reward;S.duel.done.push(p.d);PENDING.splice(i,1);save();renderTop();updateDot();
+    toast(`${p.rank}위 보상 · 군량 +${fmt(p.reward)}`);
+    const card=c.closest('.att-card');if(card)card.remove();if(!PENDING.length&&!document.querySelector('.att-card'))closeSheet()}
+  const t=e.target.closest('[data-duelt]');if(t){duelTab=t.dataset.duelt;renderView();return}
+  const hd=e.target.closest('[data-hday]');if(hd){histDay=hd.dataset.hday;renderView();return}
+});
+async function pruneOld(){
+  if(S.duel.pruned===kstDay())return;
+  const cut=Date.now()-11*DAY_MS;
+  try{
+    const q=await FS.collection('battles').where('at','<',cut).limit(100).get();
+    for(const d of q.docs){try{await d.ref.delete()}catch(e){}}
+    const q2=await FS.collection('daily').where('at','<',cut).limit(20).get();
+    for(const d of q2.docs){try{await d.ref.delete()}catch(e){}}
+    S.duel.pruned=kstDay();save();
+  }catch(e){}
 }
 function rewardHtml(r){return `<div class="rw"><span class="coin"><b class="sl gold">金</b>+${fmt(r.gold)}</span><span class="coin"><b class="sl food">糧</b>+${fmt(r.food)}</span>${r.ap?`<span class="coin"><b class="sl ap">令</b>+${r.ap}</span>`:''}</div>`}
 
@@ -1092,7 +1200,7 @@ function openGen(gid){
   openSheet(`<div class="sheet-h">${seal(b,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz)}</span></h2>
    <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${st.lv}/${MAXLV} · 돌파 ${st.d}/5</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <div class="stats"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
-  <div class="row sub" style="margin:0 0 4px">무력 ${b.str} · 지력 ${b.int} · 통솔 ${b.lead}<span class="sp"></span>전투력 <b style="color:var(--bronze)">${fmt(unitPower(u))}</b></div>
+  ${usageHtml(gid)}<div class="row sub" style="margin:0 0 4px">무력 ${b.str} · 지력 ${b.int} · 통솔 ${b.lead}<span class="sp"></span>전투력 <b style="color:var(--bronze)">${fmt(unitPower(u))}</b></div>
   <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${SKILL_DESC[b.cls]}${b.rar===5?' (고유 전법: 위력 30% 증가)':''}. 세 번째 행동마다 발동.</p>
   <h3>장비</h3>
   <div class="li" style="margin-bottom:12px">${it?`<div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)}</b><span>${fxText(it)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>장착 없음</b><span>보물을 하나 장착할 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-equip="${gid}">${it?'변경':'장착'}</button></div>
@@ -1128,7 +1236,7 @@ function vDex(){
     h+=`<div class="chips" role="group" aria-label="세력">${[['all','전체'],...Object.entries(FAC)].map(([k,v])=>`<button type="button" data-dfac="${k}" aria-pressed="${dexFac===k}">${v}</button>`).join('')}</div>
     <div class="chips" role="group" aria-label="정렬"><span class="sub" style="margin:0;align-self:center">정렬</span>${Object.entries(DSORT).map(([k,v])=>`<button type="button" data-dsort="${k}" aria-pressed="${dexSort===k}">${v}</button>`).join('')}</div>`;
     const list=GENS.filter(g=>dexFac==='all'||g.fac===dexFac).sort((a,b)=>dexSort==='rar'?(b.rar-a.rar||(b.str+b.int+b.lead)-(a.str+a.int+a.lead)):(b[dexSort]-a[dexSort]||b.rar-a.rar));
-    h+=`<div class="list">${list.map(g=>{const own=S.gens[g.id];return `<button type="button" class="li dex ${own?'':'unown'}" data-dexg="${g.id}">${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${FAC[g.fac]} · ${CLS[g.cls].g} ${CLS[g.cls].n} · ${esc(g.skill)}${own?` · 보유 Lv ${own.lv}`:''}</span>
+    h+=`<div class="list">${list.map(g=>{const own=S.gens[g.id];return `<button type="button" class="li dex ${own?'':'unown'}" data-dexg="${g.id}">${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${FAC[g.fac]} · ${CLS[g.cls].g} ${CLS[g.cls].n} · ${esc(g.skill)}${own?` · 보유 Lv ${own.lv}`:''}${MODE==='shared'&&usageOf(g.id)?` · 사용률 ${Math.round(usageOf(g.id).pct*100)}%`:''}</span>
       <div class="dst">${statCell('무력',g.str,100)}${statCell('지력',g.int,100)}${statCell('통솔',g.lead,100)}${statCell('속도',g.spd,100)}</div></div></button>`}).join('')}</div>`;
   } else {
     const list=[...ITEMS].sort((a,b)=>b.rar-a.rar||a.g.localeCompare(b.g));
@@ -1143,7 +1251,7 @@ function openDex(id){
   openSheet(`<div class="sheet-h">${seal(b,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz)}</span></h2>
    <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · ${own?`보유 중 (Lv ${own.lv}, 돌파 ${own.d})`:'미보유'}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <div class="stats"><div class="stat"><small>무력</small><b>${b.str}</b></div><div class="stat"><small>지력</small><b>${b.int}</b></div><div class="stat"><small>통솔</small><b>${b.lead}</b></div><div class="stat"><small>속도</small><b>${b.spd}</b></div></div>
-  <h3>전투 능력치 (보물 미장착 기준)</h3>
+  ${usageHtml(id)}<h3>전투 능력치 (보물 미장착 기준)</h3>
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>Lv 1</th><th>Lv ${MAXLV} · 돌파 5</th></tr></thead><tbody>
   ${row('체력',fmt(a.maxhp),fmt(z.maxhp))}${row('공격',fmt(a.atk),fmt(z.atk))}${row('방어',fmt(a.def),fmt(z.def))}${row('속도',a.spd,z.spd)}${row('전투력',fmt(unitPower(a)),fmt(unitPower(z)))}</tbody></table></div>
   <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${SKILL_DESC[b.cls]}${b.rar===5?' (고유 전법: 위력 30% 증가)':''}. 세 번째 행동마다 발동.</p>
@@ -1163,35 +1271,57 @@ function standings(){
   return m;
 }
 const score=r=>r?r.aw*3+r.dw:0;
+let duelTab='today', histDay='';
+function rewardChip(rank){return `<span class="chip">糧 ${fmt(duelReward(rank))}</span>`}
 function vPvp(){
   const myP=deckPower(mySpecs());
-  let h=`<div class="row"><h2>대전</h2><span class="sp"></span>${MODE==='shared'?'<button type="button" class="btn ghost sm" id="settings">내 정보</button>':''}</div><p class="sub">다른 군주의 방어 진형에 도전하세요. 공격 승리 3점, 방어 성공 1점. 내 진형 탭의 덱이 그대로 방어 진형이 됩니다.</p>`;
+  let h=`<div class="row"><h2>결투장</h2><span class="sp"></span>${MODE==='shared'?'<button type="button" class="btn ghost sm" id="settings">내 정보</button>':''}</div>`;
   if(MODE!=='shared'){
-    return h+`<div class="empty-state"><b>對戰</b>서버 설정이 끝나면 친구들과 대전할 수 있어요. 지금은 연습전만 가능합니다.</div>
+    return h+`<p class="sub">다른 군주의 방어 진형에 도전하는 곳이에요.</p><div class="empty-state"><b>對戰</b>서버 설정이 끝나면 친구들과 겨룰 수 있어요. 지금은 연습전만 가능합니다.</div>
     <button type="button" class="btn ghost wide" id="practice" style="margin-top:12px">연습전 (보상 없음)</button>
     <button type="button" class="btn ghost wide" id="reset-open" style="margin-top:24px;color:var(--mute)">처음부터 다시 시작</button>`;
   }
+  h+=`<div class="seg" role="group"><button type="button" data-duelt="today" aria-pressed="${duelTab==='today'}">오늘 순위</button><button type="button" data-duelt="hist" aria-pressed="${duelTab==='hist'}">일자별 순위</button></div>`;
+  if(duelTab==='hist'){
+    const days=pastDays(DUEL_KEEP_DAYS).filter(d=>d>=DUEL_START);
+    if(!days.length)return h+`<div class="empty-state"><b>戰績</b>아직 정산된 날이 없어요. 오늘 순위는 내일 오전 9시에 정산돼요.</div>`;
+    if(!days.includes(histDay))histDay=days[0];
+    h+=`<div class="chips daychips">${days.map(d=>`<button type="button" data-hday="${d}" aria-pressed="${d===histDay}">${Number(d.slice(5,7))}/${Number(d.slice(8))}</button>`).join('')}</div>
+    <div id="hist"><div class="empty-state">순위를 불러오는 중…</div></div>
+    <p class="sub" style="margin-top:10px">최근 ${DUEL_KEEP_DAYS}일까지 볼 수 있어요. 그보다 오래된 기록은 저장 공간을 위해 자동으로 지워져요.</p>`;
+    return h;
+  }
   const st=standings(), me=st[UID]||{aw:0,al:0,dw:0,dl:0};
-  h+=`<div class="recbox"><div class="stat"><small>공격</small><b>${me.aw}승 ${me.al}패</b></div><div class="stat"><small>방어</small><b>${me.dw}승 ${me.dl}패</b></div><div class="stat"><small>오늘 도전</small><b>${ticketsLeft()}/${PVP_DAILY}</b></div></div>`;
-  const rows=PLAYERS.map(p=>({...p,power:deckPower(p.deck),sc:score(st[p.id]),r:st[p.id]||{aw:0,al:0,dw:0,dl:0}}));
-  if(!rows.some(p=>p.id===UID))rows.push({id:UID,deck:mySpecs().filter(Boolean),power:myP,sc:score(me),r:me});
-  rows.sort((a,b)=>b.sc-a.sc||b.power-a.power);
-  h+=`<h3>순위 <span style="font-weight:400">· 군주를 누르면 진형을 볼 수 있어요</span></h3><div class="list">`;
-  rows.forEach((p,i)=>{
-    const mine=p.id===UID;
-    h+=`<div class="li ${mine?'me':''}" data-peek="${esc(p.id)}" role="button" tabindex="0" aria-label="진형 보기"><span class="rank">${i+1}</span><div class="info"><b data-uid="${esc(p.id)}">…</b><span class="num">전투력 ${fmt(p.power)} · 완성도 ${pct(deckComp(p.deck))} · ${p.sc}점 · 공 ${p.r.aw}-${p.r.al} 방 ${p.r.dw}-${p.r.dl}</span></div>
+  h+=`<p class="sub">공격 승리 3점, 방어 성공 1점. 오늘(자정까지) 한 번 이상 도전한 군주가 순위에 오르고, 다음 날 오전 9시에 정산 보상을 받아요. 1위 糧 ${fmt(DUEL_REWARD[0])} · 2위 ${fmt(DUEL_REWARD[1])} · 3위 ${fmt(DUEL_REWARD[2])} · 그 외 ${fmt(DUEL_REWARD_REST)}</p>
+  <div class="recbox"><div class="stat"><small>오늘 공격</small><b>${me.aw}승 ${me.al}패</b></div><div class="stat"><small>오늘 방어</small><b>${me.dw}승 ${me.dl}패</b></div><div class="stat"><small>남은 도전</small><b>${ticketsLeft()}/${PVP_DAILY}</b></div></div>`;
+  const ranked=rankDay(BATTLES), rk={};ranked.forEach((r,i)=>rk[r.id]=i+1);
+  const rows=PLAYERS.map(p=>({...p,power:deckPower(p.deck),r:st[p.id]||{aw:0,al:0,dw:0,dl:0}}));
+  if(!rows.some(p=>p.id===UID))rows.push({id:UID,deck:mySpecs().filter(Boolean),power:myP,r:me});
+  rows.sort((a,b)=>(rk[a.id]||1e9)-(rk[b.id]||1e9)||b.power-a.power);
+  h+=`<h3>오늘 순위 <span style="font-weight:400">· 군주를 누르면 진형을 볼 수 있어요</span></h3><div class="list">`;
+  rows.forEach(p=>{
+    const mine=p.id===UID, r=rk[p.id];
+    h+=`<div class="li ${mine?'me':''}" data-peek="${esc(p.id)}" role="button" tabindex="0" aria-label="진형 보기"><span class="rank">${r||'–'}</span><div class="info"><b data-uid="${esc(p.id)}">…</b><span class="num">${r?`${score(p.r)}점 · `:'오늘 미참여 · '}공 ${p.r.aw}-${p.r.al} 방 ${p.r.dw}-${p.r.dl} · 전투력 ${fmt(p.power)} · 완성도 ${pct(deckComp(p.deck))}</span></div>
      ${mine?'<span class="chip">나</span>':`<button type="button" class="btn sm red" data-duel="${esc(p.id)}" ${ticketsLeft()<1||!mySpecs().some(Boolean)?'disabled':''}>도전</button>`}</div>`;
   });
   h+=`</div>`;
   if(rows.length<2)h+=`<div class="empty-state" style="margin-top:12px"><b>群雄</b>아직 다른 군주가 없어요. 게임 링크를 친구에게 보내 주세요. 친구가 로그인해 진형을 짠 순간부터 서로 도전할 수 있어요.</div>`;
   const mineB=BATTLES.filter(b=>b.att===UID||b.def===UID).slice(0,12);
   if(mineB.length){
-    h+=`<h3>최근 전투</h3><div class="list">${mineB.map(b=>{const atk=b.att===UID,other=atk?b.def:b.att,won=atk?b.win:!b.win;
-      return `<div class="li"><span class="rank" style="color:${won?'var(--cinnabar)':'var(--mute)'}">${won?'勝':'敗'}</span><div class="info"><b><span data-uid="${esc(other)}">…</span> ${atk?'공격':'방어'}</b><span>${new Date(Number(b.at)||0).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})}</span></div></div>`}).join('')}</div>`;
+    h+=`<h3>오늘 내 전투</h3><div class="list">${mineB.map(b=>{const atk=b.att===UID,other=atk?b.def:b.att,won=atk?b.win:!b.win;
+      return `<div class="li"><span class="rank" style="color:${won?'var(--cinnabar)':'var(--mute)'}">${won?'勝':'敗'}</span><div class="info"><b><span data-uid="${esc(other)}">…</span> ${atk?'공격':'방어'}</b><span>${new Date(Number(b.at)||0).toLocaleString('ko-KR',{hour:'2-digit',minute:'2-digit'})}</span></div></div>`}).join('')}</div>`;
   }
   h+=`<button type="button" class="btn ghost wide" id="practice" style="margin-top:16px">연습전 (보상 없음 · 도전 횟수 차감 없음)</button>
   <button type="button" class="btn ghost wide" id="reset-open" style="margin-top:24px;color:var(--mute)">처음부터 다시 시작</button>`;
   return h;
+}
+async function fillHistory(){
+  const box=$('#hist');if(!box||!histDay)return;const d=histDay;
+  let v;try{v=await loadDaily(d)}catch(e){box.innerHTML=`<div class="empty-state">순위를 불러오지 못했어요 (${esc(e.code||'오류')}).</div>`;return}
+  if(histDay!==d||!$('#hist'))return;
+  const head=v.final?`<p class="sub" style="margin:0 0 8px">${d} 정산 완료 · 참여 ${v.rank.length}명</p>`:`<p class="sub" style="margin:0 0 8px">${d} · 오늘 오전 9시 정산 예정 (잠정 순위)</p>`;
+  if(!v.rank.length){$('#hist').innerHTML=head+`<div class="empty-state">이날은 결투에 참여한 군주가 없었어요.</div>`;return}
+  $('#hist').innerHTML=head+`<div class="list">${v.rank.map((r,i)=>`<div class="li ${r.id===UID?'me':''}"><span class="rank">${i+1}</span><div class="info"><b>${esc(r.id===UID?(r.name||MYNAME||'나')+' (나)':(r.name||nameOf(r.id)))}</b><span class="num">${r.score}점 · 공 ${r.aw}-${r.al} 방 ${r.dw}-${r.dl}</span></div>${rewardChip(i+1)}</div>`).join('')}</div>`;
 }
 function nameOf(id){if(id===UID)return (MYNAME||'나')+' (나)';const p=PLAYERS.find(x=>x.id===id);return (p&&p.name)||'이름 모를 군주'}
 function fillNames(){document.querySelectorAll('[data-uid]').forEach(el=>{el.textContent=nameOf(el.dataset.uid)})}
