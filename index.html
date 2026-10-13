@@ -300,13 +300,22 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .gc .meta.num{font-size:11px}
 .iact{display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex:none}
 .iact .btn{white-space:nowrap}
+
+.dup{color:var(--bronze);font-size:10px;letter-spacing:1px;white-space:nowrap}
+.dup i{font-style:normal;color:var(--line)}
+.dup small{color:var(--mute);letter-spacing:0;margin-right:4px}
+.hb{width:34px;height:34px;flex:none;border-radius:50%;background:var(--panel);border:1px solid var(--line);color:var(--mute);font-weight:700;padding:0}
+.qh{background:none;border:1px solid var(--line);border-radius:50%;width:20px;height:20px;padding:0;font-size:11px;color:var(--mute);vertical-align:2px;margin-left:4px}
+dl.help{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:13px}
+dl.help dt{color:var(--bronze);font-weight:500;white-space:nowrap}
+dl.help dd{margin:0;color:var(--fg)}
 </style>
 </head>
 <body>
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.9.1</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.10.0</span></span></div><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -360,6 +369,7 @@ const GENS_RAW=[
  ['simayi','사마의','司馬懿','wei',5,'tac',63,96,98,76,'귀모신산'],
  ['zhouyu','주유','周瑜','wu',5,'tac',71,96,97,84,'적벽화공'],
  ['sunce','손책','孫策','wu',5,'cav',92,69,92,90,'소패왕'],
+ ['dengai','등애','鄧艾','wei',5,'inf',87,89,95,70],
  ['liubei','유비','劉備','shu',4,'inf',73,74,78,72],
  ['machao','마초','馬超','shu',4,'cav',97,44,88,92],
  ['huangzhong','황충','黃忠','shu',4,'arc',93,60,86,78],
@@ -374,6 +384,7 @@ const GENS_RAW=[
  ['ganning','감녕','甘寧','wu',4,'arc',92,60,86,86],
  ['taishici','태사자','太史慈','wu',4,'arc',93,66,82,84],
  ['luxun','육손','陸遜','wu',4,'tac',69,95,96,80],
+ ['xusheng','서성','徐盛','wu',4,'inf',82,76,86,72],
  ['zhangjiao','장각','張角','qun',4,'tac',20,87,90,72],
  ['dongzhuo','동탁','董卓','qun',4,'inf',87,69,84,62],
  ['yuanshao','원소','袁紹','qun',4,'cav',69,70,81,76],
@@ -446,6 +457,8 @@ const SK={
  yanliang:{n:'하북 제일검',d:'맨 앞 적에게 2.9배 피해',tg:'front',m:2.9},
  wenchou:{n:'연진 맹공',d:'무작위 적 2번 1.3배 피해',tg:'rand',h:2,m:1.3},
  jiling:{n:'삼첨도',d:'맨 앞 적을 3번 찔러 각 0.85배 피해',tg:'front',h:3,m:.85},
+ dengai:{n:'음평의 결의',d:'2턴 동안 적의 단일 대상 공격을 자신에게 끌어오고(도발) 자신 방어 2턴 +50%, 맨 뒤 적에게 1.4배 기습',tg:'back',m:1.4,taunt:2,buff:{to:'self',def:.5,dur:2}},
+ xusheng:{n:'의성의 계',d:'맨 앞 적 1.6배 피해, 적 전체 공격 2턴 -15%, 자신 방어 2턴 +30%',tg:'front',m:1.6,deb:{to:'all',atk:-.15,dur:2},buff:{to:'self',def:.3,dur:2}},
  yuanshu:{n:'옥새의 위세',d:'아군 전체 공격 2턴 +30%, 자신 방어 2턴 -20%',tg:'none',buff:[{to:'all',atk:.3,dur:2},{to:'self',def:-.2,dur:2}]}
 };
 const DEF_SK={
@@ -454,6 +467,9 @@ const DEF_SK={
  arc:{n:'연사',d:'무작위 적 2번 0.85배 피해',tg:'rand',h:2,m:.85},
  tac:{n:'화계',d:'적 전체 0.6배 피해',tg:'all',m:.6}
 };
+// 병종별 전법 발동 주기: n번째 행동마다
+const SK_CD={inf:3,cav:2,arc:3,tac:4};
+const cdText=c=>['','','두','세','네','다섯'][SK_CD[c]]+' 번째 행동마다';
 const skillOf=b=>(b&&b.id&&SK[b.id])||DEF_SK[b.cls];
 GENS.forEach(g=>{g.skill=skillOf(g).n});
 // 진영 보너스: 같은 진영(★3 이상) 3명 / 4명 / 5명
@@ -482,6 +498,8 @@ const BONDS=[
  {n:'하북의 쌍벽',ids:['yanliang','wenchou'],fx:{atk:.15},d:'원소군을 대표한 두 맹장'},
  {n:'의부자',ids:['dongzhuo','lubu'],fx:{hp:.15},d:'적토마로 맺어진 동탁과 여포'},
  {n:'원씨 형제',ids:['yuanshao','yuanshu'],fx:{atk:.08,hp:.08},d:'사세삼공 명문가의 두 형제'},
+ {n:'발탁의 은혜',ids:['simayi','dengai'],fx:{def:.15,atk:.10},d:'사마의가 발탁한 둔전의 장수 등애'},
+ {n:'건업의 수호',ids:['sunquan','xusheng'],fx:{def:.15,hp:.10},d:'가짜 성벽으로 위군을 물러나게 한 서성과 손권'},
  {n:'숙명의 라이벌',ids:['zhugeliang','simayi'],fx:{atk:.15},d:'오장원에서 맞선 두 지략가'}
 ];
 function fxStr(v){const o=[];if(v.atk)o.push(`공격 +${Math.round(v.atk*100)}%`);if(v.hp)o.push(`체력 +${Math.round(v.hp*100)}%`);if(v.def)o.push(`방어 +${Math.round(v.def*100)}%`);if(v.spd)o.push(`속도 +${v.spd}`);return o.join(' · ')}
@@ -576,7 +594,7 @@ const TRAIT={
  weiyan:TR('helm','bushy',{sk:'d',fierce:1}),guanping:TR('hood','none',{hood:'#2f7a4a'}),madai:TR('helm','goatee',{}),liaohua:TR('band','stubble',{}),yujin:TR('helm','goatee',{}),
  lejin:TR('helm','none',{}),lidian:TR('band','goatee',{}),chengpu:TR('helm','long',{old:1}),huanggai:TR('helm','bushy',{old:1}),zhoutai:TR('band','stubble',{sk:'d',fierce:1}),
  lingtong:TR('band','none',{}),gaoshun:TR('helm','goatee',{fierce:1}),chengong:TR('scholar','goatee',{robe:1}),huaxiong:TR('helm','bushy',{fierce:1}),yanliang:TR('helm','bushy',{sk:'d',fierce:1}),
- wenchou:TR('helm','goatee',{fierce:1}),jiling:TR('helm','bushy',{}),yuanshu:TR('crown','goatee',{gold:1})
+ dengai:TR('helm','goatee',{}),xusheng:TR('helm','goatee',{}),wenchou:TR('helm','goatee',{fierce:1}),jiling:TR('helm','bushy',{}),yuanshu:TR('crown','goatee',{gold:1})
 };
 function pxGrid(n,s){const c=document.createElement('canvas');c.width=c.height=n*s;const x=c.getContext('2d');return {c,p:(col,i,j,w=1,h=1)=>{if(!col||w<=0||h<=0)return;x.fillStyle=col;x.fillRect(i*s,j*s,w*s,h*s)}}}
 function portrait(b){
@@ -689,7 +707,7 @@ function mkUnit(spec,side,slot){
   if(it){const f=it.fx;hp*=1+(f.hp||0)/100;atk*=1+(f.atk||0)/100;def*=1+(f.def||0)/100;spd+=f.spd||0}
   const sk=skillOf(b);hp=Math.round(hp);
   return {id:b.id,name:b.name,hz:b.hz,fac:b.fac,rar:b.rar,cls:b.cls,skill:sk.n,sk,endure:!!sk.endure,
-    hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0,bf:[],burn:[],stun:0,endUsed:0,lv,item:spec.i||null};
+    hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0,bf:[],burn:[],stun:0,taunt:0,endUsed:0,lv,item:spec.i||null};
 }
 function buildTeam(specs,side){const us=specs.map((s,i)=>s?mkUnit(s,side,i):null).filter(Boolean);const info=applyBonuses(us);return {us,info}}
 function unitPower(u){return Math.round(u.atk*1.5+u.maxhp/6+u.def*1.2+u.spd)}
@@ -710,7 +728,7 @@ function simulate(As,Bs,seed){
       if(!alive(1-u.side))break;
       if(u.stun>0){u.stun--;ev.push({s:u.side,i:u.slot,skip:1,hits:[],heals:[],notes:[]});continue}
       u.acts++;
-      const sk=u.acts%3===0, S=u.sk, e={s:u.side,i:u.slot,sk:sk?S.n:null,hits:[],heals:[],stuns:[],notes:[]};
+      const sk=u.acts%SK_CD[u.cls]===0, S=u.sk, e={s:u.side,i:u.slot,sk:sk?S.n:null,hits:[],heals:[],stuns:[],notes:[]};
       const atkV=u.atk*eff(u,'atk');
       const foes=()=>T[1-u.side].filter(x=>x.hp>0), allies=()=>T[u.side].filter(x=>x.hp>0);
       const hit=(t,mult,o)=>{
@@ -720,13 +738,14 @@ function simulate(As,Bs,seed){
         dmgTo(t,Math.max(1,Math.round(raw*120/(120+ed))),e,{c:crit});
       };
       if(!sk){
-        const f=foes();
-        if(u.cls==='inf'||u.cls==='cav')hit(f[0],1);
+        const f=foes(), tz=f.find(x=>x.taunt>0);
+        if(tz)hit(tz,1);
+        else if(u.cls==='inf'||u.cls==='cav')hit(f[0],1);
         else if(u.cls==='arc')hit(f.reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a),1);
         else hit(f[Math.floor(rng()*f.length)],1);
       } else {
         if(S.cost){const c=Math.round(u.maxhp*S.cost);u.hp=Math.max(1,u.hp-c);e.hits.push({s:u.side,i:u.slot,d:c,hp:u.hp,self:1})}
-        const pick=()=>{const f=foes();if(!f.length)return null;
+        const pick=()=>{const f=foes();if(!f.length)return null;const tz=f.find(x=>x.taunt>0);if(tz)return tz;
           switch(S.tg){case 'front':return f[0];case 'back':return f[f.length-1];
             case 'low':return f.reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a);
             case 'hpmax':return f.reduce((a,b)=>b.hp/b.maxhp>a.hp/a.maxhp?b:a);
@@ -740,6 +759,7 @@ function simulate(As,Bs,seed){
             if(S.cond&&T[u.side].some(x=>x.id===S.cond.ally&&x.hp>0))m=S.cond.m;
             hit(t,m,S);if(!hitT.includes(t))hitT.push(t)}
         }
+        if(S.taunt){u.taunt=S.taunt;e.notes.push('도발')}
         if(S.stun)hitT.forEach(t=>{if(t.hp>0&&rng()<S.stun){t.stun=1;e.stuns.push({s:t.side,i:t.slot})}});
         if(S.burn)hitT.forEach(t=>{if(t.hp>0)t.burn.push({d:Math.max(1,Math.round(atkV*S.burn.p)),dur:S.burn.dur,by:[u.side,u.slot]})});
         if(S.heal){const H=S.heal, tg=H.to==='all'?allies():H.to==='low'?[allies().reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a)]:[u];
@@ -755,7 +775,7 @@ function simulate(As,Bs,seed){
     const tick={tick:1,hits:[],heals:[],notes:[]};
     [...T[0],...T[1]].forEach(u=>{
       for(const b of u.burn){if(u.hp>0)dmgTo(u,b.d,tick,{burn:1,by:b.by})}
-      u.burn=u.burn.filter(b=>--b.dur>0);u.bf=u.bf.filter(b=>--b.dur>0);
+      u.burn=u.burn.filter(b=>--b.dur>0);u.bf=u.bf.filter(b=>--b.dur>0);if(u.taunt>0)u.taunt--;
     });
     if(tick.hits.length)ev.push(tick);
   }
@@ -994,10 +1014,17 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.9.1';
+const GAME_VERSION='1.10.0';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.10.0',date:'2026-10-13',title:'새 장수 등애·서성 · 병종별 전법 주기',reward:{ap:20},items:[
+  '위에 ★5 보병 등애가 합류했어요. 전법 음평의 결의는 2턴 동안 적의 단일 공격을 자신에게 끌어오는 도발과 방어 강화, 기습 공격을 함께 해요.',
+  '오에 ★4 보병 서성이 합류했어요. 전법 의성의 계로 적 전체의 공격력을 낮추고 자신의 방어를 올려요.',
+  '새 인연: 발탁의 은혜(사마의·등애), 건업의 수호(손권·서성).',
+  '전법 발동 주기가 병종마다 달라졌어요. 기병은 2번째, 보병과 궁병은 3번째, 책사는 4번째 행동마다 전법을 써요.',
+  '장수의 돌파 단계가 ◆◇로 표시돼요. 무장 목록, 장수 정보, 진형, 다른 군주 진형에서 볼 수 있어요.',
+  '화면 위쪽 ? 버튼으로 능력치, 성장, 전투 규칙, 진형 효과를 설명하는 도움말을 볼 수 있어요.']},
  {v:'1.9.1',date:'2026-10-13',title:'군웅 진영 보너스 강화',items:['★3 장수가 많은 군웅 진영 보너스를 올렸어요. 3·4·5명일 때 방어 +15/25/35%, 공격 +5/10/14%, 체력 +5/10/14%예요.','군웅 진영 보너스가 발동하면 ★3 군웅 장수는 공격과 체력을 3명 +2%, 4명 +4%, 5명 +6% 더 받아요.']},
  {v:'1.9.0',date:'2026-10-13',title:'전투 기록 · 결과 공유 · 보물 잠금',reward:{ap:20},items:[
   '전투가 끝나면 장수별 피해량, 공격 횟수, 회당 피해를 막대그래프로 볼 수 있어요. 아군·적군을 바꿔 볼 수 있고, MVP 장수의 능력치와 전투 기록도 보여줘요.',
@@ -1111,6 +1138,44 @@ $('#claim-btn').onclick=()=>{const p=pendingRes();if(p.f<1&&p.g<1)return;S.food+
 function focusNext(){const n=document.querySelector('.node.next');if(n)n.closest('.chap').scrollIntoView({block:'start'})}
 $('#tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b||!S)return;view=b.dataset.v;render();$('#view').scrollTop=0;if(view==='stage')focusNext()};
 
+
+/* ---------------- 돌파 표시 · 도움말 ---------------- */
+function dupHtml(d,lab){d=d||0;return `<span class="dup" title="돌파 ${d}/5" aria-label="돌파 ${d}/5">${lab?'<small>돌파</small>':''}${'◆'.repeat(d)}<i>${'◇'.repeat(5-d)}</i></span>`}
+const HELP=[
+ {t:'기본 능력치',rows:[
+  ['무력','물리 공격과 체력의 바탕이 돼요. 보병·기병·궁병의 공격력은 무력으로 정해져요.'],
+  ['지력','책사의 공격력은 무력 대신 지력으로 정해져요. 다른 병종에는 영향이 없어요.'],
+  ['통솔','체력과 방어의 바탕이에요. 모든 병종의 공격력에도 조금 더해져요.'],
+  ['속도','한 턴 안에서 행동하는 순서예요. 빠른 장수부터 행동하고, 보물과 오 진영 보너스로 올릴 수 있어요.']]},
+ {t:'전투 능력치',rows:[
+  ['체력','(통솔×10 + 무력×3 + 200) × 성장 배율. 0이 되면 쓰러져요.'],
+  ['공격','(무력 또는 책사는 지력)×1.6 + 통솔×0.3, 여기에 성장 배율을 곱해요. 주는 피해의 기준이에요.'],
+  ['방어','통솔×0.8 × 성장 배율, 보병은 +20을 더 받아요. 받는 피해에 120 ÷ (120 + 방어)를 곱해 줄여요. 책사의 공격은 방어의 40%를 무시해요.'],
+  ['전투력','공격×1.5 + 체력÷6 + 방어×1.2 + 속도. 강함을 한눈에 비교하는 참고 수치이고, 진형 전투력에는 진영·인연 보너스가 포함돼요.']]},
+ {t:'성장',rows:[
+  ['등급','★3은 기본, ★4는 능력치 ×1.08, ★5는 ×1.16이에요.'],
+  ['레벨','1레벨 오를 때마다 능력치 +7%, 속도 +0.3. 최대 Lv '+MAXLV+'.'],
+  ['돌파','같은 장수를 또 얻으면 한 단계 올라요. 단계마다 능력치 +6%, 최대 5단계(◆◆◆◆◆). 5단계 이후 중복은 금으로 바뀌어요.'],
+  ['보물','장수마다 하나 장착해요. 공격·체력·방어는 퍼센트로, 속도는 수치로 더해져요.']]},
+ {t:'전투 규칙',rows:[
+  ['병종','기병·보병은 맨 앞 적을, 궁병은 체력 비율이 가장 낮은 적을, 책사는 무작위 적을 공격해요.'],
+  ['전법 주기','기병은 2번째, 보병·궁병은 3번째, 책사는 4번째 행동마다 전법을 써요.'],
+  ['상성','기병 → 보병 → 궁병 → 기병. 유리하면 피해 +25%, 불리하면 -15%.'],
+  ['치명타','모든 공격에 10% 확률로 1.5배 피해. 피해는 매번 ±10% 범위에서 흔들려요.'],
+  ['도발','도발 중인 장수가 있으면 상대의 단일 대상 공격이 그 장수에게 향해요.'],
+  ['판정','25턴 안에 결판이 나지 않으면 남은 체력 비율이 높은 쪽이 이겨요.']]},
+ {t:'진형 효과',rows:[
+  ['진영 보너스','같은 진영의 ★3 이상 장수가 3·4·5명이면 그 진영 장수가 강해져요. 도감의 인연 탭에 전체 표가 있어요.'],
+  ['인연','함께 편성하면 해당 장수들의 능력치가 올라요. 진형 탭에서 발동 중인 인연을 볼 수 있어요.'],
+  ['완성도','레벨 60%, 돌파 25%, 장비 등급 15%를 반영한 육성 정도예요.'],
+  ['사용률','진형을 갖춘 군주 중 그 장수를 진형에 넣은 비율이에요.']]}
+];
+function openHelp(focus){
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">도움말</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   ${HELP.map((g,i)=>`<h3 id="help-${i}">${g.t}</h3><dl class="help">${g.rows.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`).join('')}`);
+  if(focus!=null){const el=document.getElementById('help-'+focus);if(el)el.scrollIntoView({block:'start'})}
+}
+document.addEventListener('click',e=>{const h=e.target.closest('[data-help]');if(h){openHelp(h.dataset.help===''?null:+h.dataset.help)}});
 function seal(b,size=''){return `<div class="seal ${size} f-${b.fac} r${b.rar}" aria-hidden="true"><img class="px" src="${portrait(b)}" alt=""></div>`}
 function renderView(){
   if(!S)return;
@@ -1326,10 +1391,10 @@ function vDeck(){
     const pos=`<div class="pos">${i+1}<small>${POS[i]}</small></div>`;
     if(!gid){h+=`<div class="slot empty" role="button" tabindex="0" data-slot="${i}">${pos}<div class="info"><b>빈 자리</b><span>눌러서 장수 편성</span></div></div>`;return}
     const g=GMAP[gid], s=specs[i], it=s.i?IMAP[s.i]:null;
-    h+=`<div class="slot" role="button" tabindex="0" data-slot="${i}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${CLS[g.cls].g} ${CLS[g.cls].n} · Lv ${s.lv}${s.d?` · 돌파 ${s.d}`:''}${it?` · ${esc(it.name)}`:''} · 전투력 ${fmt(specPower(s))}</span></div>
+    h+=`<div class="slot" role="button" tabindex="0" data-slot="${i}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${CLS[g.cls].g} ${CLS[g.cls].n} · Lv ${s.lv} · ${dupHtml(s.d)}${it?` · ${esc(it.name)}`:''} · 전투력 ${fmt(specPower(s))}</span></div>
     <div class="mv"><button type="button" data-mv="${i}:-1" aria-label="앞으로" ${i===0?'disabled':''}>▲</button><button type="button" data-mv="${i}:1" aria-label="뒤로" ${i===4?'disabled':''}>▼</button></div></div>`;
   });
-  h+=`<div class="legend"><b>전투 규칙</b><br>보병·기병은 앞 번호의 적부터 공격하고, 궁병은 체력이 가장 낮은 적을, 책사는 무작위 적을 노립니다. 세 번째 행동마다 전법이 발동해요.<br><b>상성</b> 기병 → 보병 → 궁병 → 기병 (유리하면 피해 +25%)<br><b>진영·인연</b> 같은 진영 3명 이상, 또는 인연 있는 장수를 함께 넣으면 능력치가 올라요. 도감의 인연 탭에서 전체 목록을 볼 수 있어요.</div>`;
+  h+=`<div class="legend"><b>전투 규칙</b><br>보병·기병은 앞 번호의 적부터 공격하고, 궁병은 체력이 가장 낮은 적을, 책사는 무작위 적을 노립니다. 전법은 기병 2번째, 보병·궁병 3번째, 책사 4번째 행동마다 발동해요. 도발 중인 적이 있으면 단일 공격은 그 적에게 향해요.<br><b>상성</b> 기병 → 보병 → 궁병 → 기병 (유리하면 피해 +25%)<br><b>진영·인연</b> 같은 진영 3명 이상, 또는 인연 있는 장수를 함께 넣으면 능력치가 올라요. 도감의 인연 탭에서 전체 목록을 볼 수 있어요.<br><button type="button" class="btn ghost sm" data-help="3" style="margin-top:8px">전투 규칙 자세히 보기</button></div>`;
   return h;
 }
 document.addEventListener('click',e=>{
@@ -1395,7 +1460,7 @@ function vGens(){
     const list=filteredGens();
     h+=`<p class="sub" style="margin:4px 0 8px">${list.length}명 표시</p>`;
     if(!list.length)return h+`<div class="empty-state"><b>將</b>조건에 맞는 장수가 없어요. 필터를 바꿔 보세요.</div>`;
-    h+=`<div class="grid">${list.map(({g,p,bn})=>{const b=GMAP[g],s=S.gens[g];return `<button type="button" class="gc ${S.deck.includes(g)?'in-deck':''}" data-gen="${g}">${seal(b)}<div class="nm">${esc(b.name)}</div><div class="stars r${b.rar}">${stars(b.rar)}</div><div class="meta"><span class="cls">${CLS[b.cls].g}</span><span class="num">Lv ${s.lv}</span>${S.deck.includes(g)?'<span class="chip">출전</span>':''}</div>${gf.sort==='power'?`<div class="meta num">전투력 ${fmt(p)}</div>`:gf.sort==='bond'?`<div class="meta">인연 ${bn}개</div>`:''}</button>`}).join('')}</div>`;
+    h+=`<div class="grid">${list.map(({g,p,bn})=>{const b=GMAP[g],s=S.gens[g];return `<button type="button" class="gc ${S.deck.includes(g)?'in-deck':''}" data-gen="${g}">${seal(b)}<div class="nm">${esc(b.name)}</div><div class="stars r${b.rar}">${stars(b.rar)}</div>${dupHtml(s.d)}<div class="meta"><span class="cls">${CLS[b.cls].g}</span><span class="num">Lv ${s.lv}</span>${S.deck.includes(g)?'<span class="chip">출전</span>':''}</div>${gf.sort==='power'?`<div class="meta num">전투력 ${fmt(p)}</div>`:gf.sort==='bond'?`<div class="meta">인연 ${bn}개</div>`:''}</button>`}).join('')}</div>`;
   } else {
     if(!S.items.length)return h+`<div class="empty-state"><b>寶庫</b>아직 보물이 없어요. 등용 탭의 보물 획득에서 얻을 수 있어요.</div>`;
     const items=[...S.items].sort((a,b)=>IMAP[b.k].rar-IMAP[a.k].rar||a.k.localeCompare(b.k));
@@ -1451,10 +1516,10 @@ function openGen(gid){
   const b=GMAP[gid], st=S.gens[gid], s=specOf(gid), u=mkUnit(s,0,0), it=s.i?IMAP[s.i]:null;
   const cost=50*st.lv, inDeck=S.deck.includes(gid);
   openSheet(`<div class="sheet-h">${seal(b,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz)}</span></h2>
-   <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${st.lv}/${MAXLV} · 돌파 ${st.d}/5</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-  <div class="stats"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
+   <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${st.lv}/${MAXLV}</div>${dupHtml(st.d,1)}</div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+  <div class="row" style="margin-top:8px"><span class="sub" style="margin:0">능력치</span><button type="button" class="qh" data-help="1" aria-label="능력치 도움말">?</button></div><div class="stats" style="margin-top:4px"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
   ${usageHtml(gid)}<div class="row sub" style="margin:0 0 4px">무력 ${b.str} · 지력 ${b.int} · 통솔 ${b.lead}<span class="sp"></span>전투력 <b style="color:var(--bronze)">${fmt(unitPower(u))}</b></div>
-  <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. 세 번째 행동마다 발동.</p>${bondsOfHtml(b.id)}
+  <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. ${cdText(b.cls)} 발동.</p>${bondsOfHtml(b.id)}
   <h3>장비</h3>
   <div class="li" style="margin-bottom:12px">${it?`<div class="itm r${it.rar}">${itemImg(it)}</div><div class="info"><b>${esc(it.name)}</b><span>${fxText(it)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>장착 없음</b><span>보물을 하나 장착할 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-equip="${gid}">${it?'변경':'장착'}</button></div>
   <h3>레벨</h3>${lvBoxHtml(gid)}
@@ -1538,7 +1603,7 @@ function openDex(id){
   ${usageHtml(id)}<h3>전투 능력치 (보물 미장착 기준)</h3>
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>Lv 1</th><th>Lv ${MAXLV} · 돌파 5</th></tr></thead><tbody>
   ${row('체력',fmt(a.maxhp),fmt(z.maxhp))}${row('공격',fmt(a.atk),fmt(z.atk))}${row('방어',fmt(a.def),fmt(z.def))}${row('속도',a.spd,z.spd)}${row('전투력',fmt(unitPower(a)),fmt(unitPower(z)))}</tbody></table></div>
-  <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. 세 번째 행동마다 발동.</p>${bondsOfHtml(b.id)}
+  <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. ${cdText(b.cls)} 발동.</p>${bondsOfHtml(b.id)}
   ${own?`<button type="button" class="btn ghost wide" data-gen="${id}">내 장수 화면으로</button>`:`<p class="sub">등용 탭의 장수 등용에서 얻을 수 있어요.</p>`}`);
 }
 document.addEventListener('click',e=>{
@@ -1649,7 +1714,7 @@ function openPeek(id){
   const st=standings()[id]||{aw:0,al:0,dw:0,dl:0}, dc=deckComp(p.deck);
   const rows=p.deck.map((s,k)=>{const b=GMAP[s.g],it=s.i?IMAP[s.i]:null,c=genComp(s);
     return `<div class="li" style="align-items:flex-start">${seal(b,'sm')}<div class="info"><b>${k+1}. ${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span></b>
-      <span>${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${s.lv}/${MAXLV}${s.d?` · 돌파 ${s.d}`:''} · 전투력 ${fmt(specPower(s))}</span>
+      <span>${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${s.lv}/${MAXLV} · ${dupHtml(s.d,1)} · 전투력 ${fmt(specPower(s))}</span>
       <span>${it?`<span class="ig r${it.rar}">${itemImg(it)}</span> ${esc(it.name)} ${stars(it.rar)} · ${fxText(it)}`:'장비 없음'}</span>
       <div class="bar"><i style="width:${c*100}%;background:var(--bronze)"></i></div></div><span class="pc num">${pct(c)}</span></div>`}).join('');
   openSheet(`<div class="sheet-h"><div style="min-width:0"><h2 style="margin:0" data-uid="${esc(id)}">…</h2><div class="sub" style="margin:0">전투력 ${fmt(deckPower(p.deck))} · 공 ${st.aw}-${st.al} · 방 ${st.dw}-${st.dl} · ${score(st)}점</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
