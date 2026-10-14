@@ -26,6 +26,21 @@ html,body{height:100%}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.5;
   background-image:radial-gradient(120% 60% at 50% -10%,rgba(210,170,85,.10),transparent 60%);}
 button{font:inherit;color:inherit;cursor:pointer}
+.sc{display:none}
+/* 업무 모드: 픽셀아트·한자 장식을 숨기고 밝은 회색 화면으로 */
+html.work{--bg:#f5f5f5;--panel:#ffffff;--panel2:#efefef;--line:#dadada;--fg:#222222;--mute:#6e6e6e;--ink:#ffffff;--bronze:#555555;--bronze-d:#bdbdbd;--cinnabar:#555555;--jade:#8a8a8a;
+  --wei:#c9d3df;--shu:#c9d3df;--wu:#c9d3df;--qun:#c9d3df;--r2:#c3c8ce;--r3:#c3c8ce;--r4:#aab2bd;--r5:#8f99a6;--display:var(--body);color-scheme:light}
+html.work body{background-image:none;font-size:14px}
+html.work .px{display:none!important}
+html.work .sc{display:inline;font-family:var(--body);font-size:13px;font-weight:700;color:var(--fg);line-height:1}
+html.work .seal{background:var(--panel2)!important;box-shadow:0 0 0 1px var(--line)!important}
+html.work .itm{background:var(--panel2)!important;border-color:var(--line)!important}
+html.work .bk-deco,html.work .tab b,html.work .big,html.work .stamp,html.work .lg-hz,html.work .empty-state b{display:none!important}
+html.work .stars{color:var(--mute)!important}
+html.work .bu.hit,html.work .dmg{animation:none!important}
+html.work #work-btn{background:#555;color:#fff}
+/* 남은 색(고정 색 버튼·막대·뱃지)까지 흑백으로 */
+html.work #app,html.work #sheet,html.work #battle,html.work #toast{filter:grayscale(1)}
 button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--bronze);outline-offset:2px}
 .num{font-variant-numeric:tabular-nums}
 
@@ -355,7 +370,7 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.20.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v1.20.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -972,7 +987,7 @@ function itemPx(id){
   ISPR[tpl].forEach((r,j)=>{for(let i=0;i<16;i++){const ch=r[i]||'.';if(ch!=='.')p(pal[ch]||'#000',i,j)}});
   return PX['i'+id]=c.toDataURL();
 }
-const itemImg=it=>`<img class="px" src="${itemPx(it.id)}" alt="">`;
+const itemImg=it=>`<img class="px" src="${itemPx(it.id)}" alt=""><span class="sc">${esc(it.name.slice(0,1))}</span>`;
 
 /* ---------------- utils ---------------- */
 const $=s=>document.querySelector(s);
@@ -1422,10 +1437,19 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.20.0';
+const GAME_VERSION='1.20.1';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.20.1',date:'2026-10-14',title:'추천 편성 개선 · 나라·병종 · 업무 모드',reward:{ap:20},items:[
+  '추천 편성이 전투력 점수 대신 실제 전투 계산으로 진형을 골라요. 결투장용은 결투장 상위 군주들의 방어 진형과 대표 진형들을 상대로 모의전을 치러 승률이 가장 높은 조합과 자리 순서를 찾아요.',
+  '전투력 점수는 전법·속도·자리 효과를 반영하지 못해 ★3 군웅 진형을 너무 높게 쳤어요. 실제 전투에서는 그 진형이 ★4·★5 진형에게 거의 이기지 못했어요.',
+  '자리 순서도 모의전으로 정해요. 같은 장수라도 순서에 따라 승률이 크게 달라져요.',
+  '오른쪽 위 ◐ 버튼(PC는 ` 키)으로 업무 모드를 켜면 픽셀아트와 한자 장식이 사라지고 흰색·회색만 쓰는 화면으로 바뀌어요. 이 기기에만 기억돼요.',
+  '추천 편성에서 나라(여러 개 가능)와 병종(2종 이상)을 골라 그 안에서만 추천받을 수 있어요. 고정한 장수는 조건과 상관없이 그대로 남아요.',
+  '보물 배치도 모의전으로 한 번 더 다듬어요. 보물끼리 장수를 바꿔 보거나 남는 보물로 바꿔 보면서, 치명 확정 전법에 치명 피해, 전법이 강한 장수에 전법 피해처럼 장수와 잘 맞는 조합을 찾아요.',
+  '추천은 지금 가진 보물의 강화 단계와 병종·나라 전용 효과를 그대로 반영해요.'
+]},
  {v:'1.20.0',date:'2026-10-14',title:'추천 편성',reward:{ap:20},items:[
   '진형 탭의 \'추천 편성\'으로 가진 장수와 보물 중에서 진형과 보물 배치를 추천받을 수 있어요.',
   '남기고 싶은 장수는 \'고정\'을 누르고, 그 장수의 보물 중 그대로 둘 것도 눌러 고정하세요. 나머지 자리와 보물 칸만 추천으로 채워요.',
@@ -1729,7 +1753,7 @@ function openHelp(focus){
   if(focus!=null){const el=document.getElementById('help-'+focus);if(el)el.scrollIntoView({block:'start'})}
 }
 document.addEventListener('click',e=>{const h=e.target.closest('[data-help]');if(h){openHelp(h.dataset.help===''?null:+h.dataset.help)}});
-function seal(b,size=''){return `<div class="seal ${size} f-${b.fac} r${b.rar}" aria-hidden="true"><img class="px" src="${portrait(b)}" alt=""></div>`}
+function seal(b,size=''){return `<div class="seal ${size} f-${b.fac} r${b.rar}" aria-hidden="true"><img class="px" src="${portrait(b)}" alt=""><span class="sc">${esc(String(b.name||'').slice(0,1))}</span></div>`}
 function renderView(){
   if(!S)return;
   const v=$('#view');
@@ -2049,6 +2073,14 @@ document.addEventListener('click',e=>{
   if(g){const nd=S.deck.slice(),at=nd.indexOf(g);if(at>=0)nd[at]=nd[idx];nd[idx]=g;if(count5(nd)>MAX5){toast(`★5 장수는 진형에 ${MAX5}명까지 넣을 수 있어요`);return}S.deck=nd}else S.deck[idx]=null;
   save();closeSheet();renderView();
 });
+// 업무 모드(이 기기에만 저장): 버튼 또는 ` 키
+const WORK_K='yeonhap-work';
+function applyWork(on){document.documentElement.classList.toggle('work',on);const h=document.querySelector('.brand-hz');if(h)h.textContent=on?'업무 현황':'연합 삼국지';
+  document.title=on?'업무 현황':'연합 삼국지 · 창천토벌';const m=document.querySelector('meta[name=theme-color]');if(m)m.content=on?'#f4f5f7':'#0e1716';
+  const b=$('#work-btn');if(b)b.setAttribute('aria-pressed',String(on));try{localStorage.setItem(WORK_K,on?'1':'0')}catch(e){}}
+try{if(localStorage.getItem(WORK_K)==='1')applyWork(true)}catch(e){}
+document.addEventListener('click',e=>{if(e.target.closest('#work-btn'))applyWork(!document.documentElement.classList.contains('work'))});
+document.addEventListener('keydown',e=>{if(e.key==='`'&&!e.target.closest('input,textarea')&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();applyWork(!document.documentElement.classList.contains('work'))}});
 /* ---------------- 추천 편성 ----------------
    고정한 장수(자리 그대로)와 고정한 보물은 두고, 남은 자리와 보물 칸을 추천으로 채워요.
    1) 장수: 진영·연합군·인연 효과까지 넣은 진형 점수가 가장 높은 조합을 찾아요(여러 출발점 + 한 명씩 바꿔 보기)
@@ -2060,27 +2092,27 @@ function recUnitScore(u){const w=REC_W[u.cls]||REC_W.inf;return (u.atk*1.5*w.a+u
 function recScore(specs){return buildTeam(specs.filter(Boolean),0).us.reduce((a,u)=>a+recUnitScore(u),0)}
 const itemU=u=>S.items.find(x=>x.u===u);
 function recSpec(g,lv,uids,cb){return {g,lv,d:S.gens[g].d,i:(uids||[]).map(itemU).filter(Boolean).map(x=>x.k+':'+(x.d||0)),cb}}
-let recLock={g:new Set(),i:new Set()}, recMode='power', recPlan=null;
+let recLock={g:new Set(),i:new Set()}, recMode='duel', recPlan=null;
 function recLocked(){
   return S.deck.map((g,i)=>g&&recLock.g.has(i)?{slot:i,g,its:S.gens[g].its.filter(u=>recLock.i.has(u)&&itemU(u))}:null).filter(Boolean);
 }
 // 1) 장수 고르기 (아이템 없이, 같은 레벨로 비교)
-function recPickGens(locked,lv,cb){
+function recPickGens(locked,lv,cb,filt){
   const lockedG=new Set(locked.map(x=>x.g)), free=5-locked.length;
   const n5L=locked.filter(x=>GMAP[x.g].rar===5).length;
   const lockedSpecs=locked.map(x=>recSpec(x.g,lv,x.its,cb));
   const indiv={};Object.keys(S.gens).forEach(g=>indiv[g]=recUnitScore(mkUnit(recSpec(g,lv,[],cb),0,0)));
-  let pool=Object.keys(S.gens).filter(g=>!lockedG.has(g)).sort((a,b)=>indiv[b]-indiv[a]);
+  let pool=Object.keys(S.gens).filter(g=>!lockedG.has(g)&&(!filt||filt(g))).sort((a,b)=>indiv[b]-indiv[a]);
   // 후보를 줄이되, 인연 상대는 남겨 둬요
   const keep=new Set(pool.slice(0,30));
-  BONDS.forEach(B=>{const m=B.ids.filter(x=>S.gens[x]&&!lockedG.has(x));if(m.some(x=>keep.has(x)))m.forEach(x=>keep.add(x))});
+  BONDS.forEach(B=>{const m=B.ids.filter(x=>S.gens[x]&&!lockedG.has(x)&&(!filt||filt(x)));if(m.some(x=>keep.has(x)))m.forEach(x=>keep.add(x))});
   pool=pool.filter(g=>keep.has(g));
   if(free<=0)return [[]];
   const ok=set=>set.filter(g=>GMAP[g].rar===5).length+n5L<=MAX5;
   const score=set=>recScore([...lockedSpecs,...set.map(g=>recSpec(g,lv,[],cb))]);
   const fill=base=>{const s=base.slice();for(const g of pool){if(s.length>=free)break;if(s.includes(g))continue;s.push(g);if(!ok(s))s.pop()}return s};
   const seeds=[fill([])];
-  BONDS.forEach(B=>{const m=B.ids.filter(x=>S.gens[x]&&!lockedG.has(x)).sort((a,b)=>indiv[b]-indiv[a]);
+  BONDS.forEach(B=>{const m=B.ids.filter(x=>S.gens[x]&&!lockedG.has(x)&&(!filt||filt(x))).sort((a,b)=>indiv[b]-indiv[a]);
     const inLock=B.ids.filter(x=>lockedG.has(x)).length, need=(B.fullMin||B.min||B.ids.length)-inLock;
     if(need<=0||m.length<Math.min(need,(B.min||B.ids.length)-inLock))return;
     const take=m.slice(0,Math.min(free,Math.max(need,(B.min||B.ids.length)-inLock)));if(take.length>free||!ok(take))return;seeds.push(fill(take))});
@@ -2131,20 +2163,103 @@ function recPlace(locked,slots,cb){
   }
   return {deck:best?best.d:deck,its};
 }
-function recCompute(){
-  const cb=colBonus(), locked=recLocked();
-  const freeLv=[0,1,2,3,4].filter(i=>!locked.some(x=>x.slot===i)).map(slotLv), lv=freeLv.length?Math.round(freeLv.reduce((a,b)=>a+b,0)/freeLv.length):slotLv(0);
-  const cands=recPickGens(locked,lv,cb).slice(0,recMode==='raid'?6:3);
-  const plans=cands.map(c=>{const gens=[...locked.map(x=>x.g),...c.set];const slots=recAssignItems(locked,gens,lv,cb);return recPlace(locked,slots,cb)});
-  const specsOf=P=>P.deck.map((g,i)=>g?recSpec(g,slotLv(i),P.its[g],cb):null);
-  plans.forEach(P=>{P.specs=specsOf(P);P.power=deckPower(P.specs);P.score=recScore(P.specs)});
-  if(recMode==='raid'){
-    const c=raidCyc(),boss=raidBoss(c),seeds=[11,23,37,51];
-    const dmg=specs=>Math.round(seeds.reduce((a,sd)=>a+Math.min(RAID_HIT_MAX,raidDamage(simulate(specs,boss,sd,{rounds:RAID_ROUNDS}))),0)/seeds.length);
-    plans.forEach(P=>P.dmg=dmg(P.specs));plans.sort((a,b)=>b.dmg-a.dmg);
-    if(plans[0])plans[0].curDmg=dmg(mySpecs());
-  } else plans.sort((a,b)=>b.score-a.score);
-  return plans[0]||null;
+// 실제 전투 계산으로 후보를 고르기 (v1.20.1). 전투력 점수는 전법·속도·자리 효과를 모르기 때문에 후보를 만드는 데만 써요
+const recTick=()=>new Promise(r=>setTimeout(r,0));
+function recLvOf(locked){const f=[0,1,2,3,4].filter(i=>!locked.some(x=>x.slot===i)).map(slotLv);return f.length?Math.round(f.reduce((a,b)=>a+b,0)/f.length):slotLv(0)}
+function recBuild(locked,set,lv,cb){
+  const gens=[...locked.map(x=>x.g),...set],slots=recAssignItems(locked,gens,lv,cb),P=recPlace(locked,slots,cb);
+  P.set=set.slice();P.specs=P.deck.map((g,i)=>g?recSpec(g,slotLv(i),P.its[g],cb):null);return P;
+}
+// 결투장용 상대: 결투장 상위 군주들의 방어 진형 + 내 장수로 만든 대표 진형들
+function recGauntlet(locked,lv,cb){
+  const G=[];
+  if(MODE==='shared'&&PLAYERS.length)PLAYERS.filter(p=>p.id!==UID&&p.deck&&p.deck.length).sort((a,b)=>(b.power||0)-(a.power||0)).slice(0,6).forEach(p=>G.push(p.deck));
+  const own=[recPickGens([],lv,cb)[0],recPickGens([],lv,cb,g=>GMAP[g].rar>=4)[0]].filter(Boolean);
+  // 같은 장수라도 자리 순서에 따라 결과가 크게 달라지므로, 대표 진형마다 순서를 바꾼 3가지를 상대로 넣어요
+  own.forEach(c=>{const d=recBuild([],c.set,lv,cb).specs.filter(Boolean);G.push(d,d.slice().reverse(),[...d.slice(2),...d.slice(0,2)])});
+  const cur=mySpecs().filter(Boolean);if(cur.length)G.push(cur);
+  return G;
+}
+const REC_SEEDS_F=[101,202,303];
+const recSeeds=()=>recMode==='raid'?[101,202]:[101];
+function recEval(specs,G,seeds){
+  if(recMode==='raid'){const boss=raidBoss(raidCyc());return seeds.reduce((a,sd)=>a+Math.min(RAID_HIT_MAX,raidDamage(simulate(specs,boss,sd,{rounds:RAID_ROUNDS}))),0)/seeds.length}
+  let w=0,n=0;for(const d of G)for(const sd of seeds){const r=simulate(specs,d,sd);w+=(r.win?1:0)+.3*(recHpPct(r,0)-recHpPct(r,1));n++}return n?w/n:0;
+}
+function recHpPct(res,side){const hp={},mx={};res.init[side].forEach(u=>{hp[u.slot]=u.hp;mx[u.slot]=u.maxhp});
+  for(const e of res.ev){for(const h of e.hits||[])if(h.s===side)hp[h.i]=h.hp;for(const h of e.heals||[])if(h.s===side)hp[h.i]=h.hp}
+  const k=Object.keys(mx);return k.length?k.reduce((a,i)=>a+Math.max(0,hp[i])/mx[i],0)/k.length:0}
+function recWin(specs,G,seeds){let w=0,n=0;for(const d of G)for(const sd of seeds){if(simulate(specs,d,sd).win)w++;n++}return n?w/n:0}
+// 나라·병종 조건 (고정 장수에는 적용하지 않아요)
+let recFil={fac:new Set(),cls:new Set()};
+const recOkF=g=>(!recFil.fac.size||recFil.fac.has(GMAP[g].fac))&&(!recFil.cls.size||recFil.cls.has(GMAP[g].cls));
+async function recCompute(progress){
+  const cb=colBonus(), locked=recLocked(), lv=recLvOf(locked), free=5-locked.length;
+  progress(5);await recTick();
+  const G=recMode==='raid'?[]:recGauntlet(locked,lv,cb);
+  const heur=recPickGens(locked,lv,cb,recOkF), high=recPickGens(locked,lv,cb,g=>recOkF(g)&&GMAP[g].rar>=4);
+  const curFree=S.deck.filter((g,i)=>g&&!locked.some(x=>x.slot===i));
+  const seen=new Set(), sets=[];
+  const addSet=s=>{if(!s)return;const k=s.slice().sort().join(',');if(seen.has(k))return;seen.add(k);sets.push(s.slice())};
+  heur.slice(0,4).forEach(c=>addSet(c.set));high.slice(0,3).forEach(c=>addSet(c.set));if(curFree.length===free&&curFree.every(recOkF))addSet(curFree);
+  progress(15);await recTick();
+  let best=null;
+  for(const s of sets){const P=recBuild(locked,s,lv,cb);P.v=recEval(P.specs,G,recSeeds());if(!best||P.v>best.v)best=P}
+  progress(30);await recTick();
+  // 한 명씩 바꿔 보기(실제 전투 계산으로 비교)
+  if(free>0&&best){
+    const lockedG=new Set(locked.map(x=>x.g)), n5L=locked.filter(x=>GMAP[x.g].rar===5).length;
+    const indiv={};Object.keys(S.gens).forEach(g=>indiv[g]=recUnitScore(mkUnit(recSpec(g,lv,[],cb),0,0)));
+    const pool=Object.keys(S.gens).filter(g=>!lockedG.has(g)&&recOkF(g)).sort((a,b)=>indiv[b]-indiv[a]).slice(0,18);
+    const ok=t=>t.filter(g=>GMAP[g].rar===5).length+n5L<=MAX5;
+    for(let pass=0;pass<2;pass++){
+      let improved=false;
+      for(let p=0;p<best.set.length;p++){
+        for(const c of pool){if(best.set.includes(c))continue;const t=best.set.slice();t[p]=c;if(!ok(t)||seen.has(t.slice().sort().join(',')))continue;seen.add(t.slice().sort().join(','));
+          const P=recBuild(locked,t,lv,cb);P.v=recEval(P.specs,G,recSeeds());if(P.v>best.v+1e-9){best=P;improved=true}}
+        progress(30+Math.round(45*(pass*best.set.length+p+1)/(2*best.set.length)));await recTick();
+      }
+      if(!improved)break;
+    }
+  }
+  if(!best)return null;
+  // 자리 순서: 고정하지 않은 장수끼리 순서를 바꿔 가며 실제 전투로 비교
+  const freeSlots=[0,1,2,3,4].filter(i=>!locked.some(x=>x.slot===i)), freeG=freeSlots.map(i=>best.deck[i]).filter(Boolean);
+  const perms=a=>a.length<=1?[a]:a.flatMap((x,i)=>perms([...a.slice(0,i),...a.slice(i+1)]).map(r=>[x,...r]));
+  let bo=null;const ps=perms(freeG);
+  for(let k=0;k<ps.length;k++){const d=best.deck.slice();freeSlots.forEach(i=>d[i]=null);let j=0;freeSlots.forEach(i=>{if(j<ps[k].length)d[i]=ps[k][j++]});
+    const specs=d.map((g,i)=>g?recSpec(g,slotLv(i),best.its[g],cb):null), v=recEval(specs,G,REC_SEEDS_F);
+    if(!bo||v>bo.v)bo={d,specs,v};if(k%20===19){progress(75+Math.round(20*k/ps.length));await recTick()}}
+  progress(95);await recTick();
+  if(bo){best.deck=bo.d;best.specs=bo.specs}
+  // 보물 다듬기: 두 장수의 보물 맞바꾸기 / 남는 좋은 보물로 바꾸기를 모의전으로 비교 (고정 보물은 그대로)
+  {
+    const lockedU=new Set(locked.flatMap(x=>x.its)), its={};best.deck.forEach(g=>{if(g)its[g]=(best.its[g]||[]).slice()});
+    const horse=u=>{const x=itemU(u);return x&&IMAP[x.k].g==='馬'};
+    const okH=(g,arr)=>arr.filter(horse).length<=1;
+    const specsOf=I=>best.deck.map((g,i)=>g?recSpec(g,slotLv(i),I[g],cb):null);
+    let cur=recEval(specsOf(its),G,recSeeds());
+    const used=new Set(Object.values(its).flat());
+    const spare=S.items.filter(x=>!used.has(x.u)&&!lockedU.has(x.u)).sort((a,b)=>IMAP[b.k].rar-IMAP[a.k].rar||(b.d||0)-(a.d||0)).slice(0,10).map(x=>x.u);
+    const gs=Object.keys(its), moves=[];
+    gs.forEach((g1,a)=>its[g1].forEach((u1,p1)=>{if(lockedU.has(u1))return;
+      gs.forEach((g2,b)=>{if(b<=a)return;its[g2].forEach((u2,p2)=>{if(!lockedU.has(u2))moves.push(['sw',g1,p1,g2,p2])})});
+      spare.forEach(s=>moves.push(['sp',g1,p1,s]))}));
+    let k=0;
+    for(const m of moves){
+      const T={};gs.forEach(g=>T[g]=its[g].slice());
+      if(m[0]==='sw'){const[,g1,p1,g2,p2]=m;if(!T[g1][p1]||!T[g2][p2])continue;[T[g1][p1],T[g2][p2]]=[T[g2][p2],T[g1][p1]];if(!okH(g1,T[g1])||!okH(g2,T[g2]))continue}
+      else{const[,g1,p1,s]=m;if(!T[g1][p1]||Object.values(T).some(a=>a.includes(s)))continue;T[g1][p1]=s;if(!okH(g1,T[g1]))continue}
+      const v=recEval(specsOf(T),G,recSeeds());if(v>cur+1e-9){cur=v;gs.forEach(g=>its[g]=T[g])}
+      if(++k%40===0){progress(95+Math.min(4,Math.round(4*k/moves.length)));await recTick()}
+    }
+    best.its=its;best.specs=specsOf(its);
+  }
+  best.power=deckPower(best.specs);
+  const cur=mySpecs();
+  if(recMode==='raid'){best.dmg=Math.round(recEval(best.specs,G,REC_SEEDS_F));best.curDmg=cur.some(Boolean)?Math.round(recEval(cur,G,REC_SEEDS_F)):0}
+  else{best.wr=recWin(best.specs,G,REC_SEEDS_F);best.curWr=cur.some(Boolean)?recWin(cur,G,REC_SEEDS_F):0;best.gN=G.length}
+  progress(100);return best;
 }
 function openRec(){
   recLock.g=new Set([...recLock.g].filter(i=>S.deck[i]));
@@ -2157,10 +2272,13 @@ function openRec(){
       <button type="button" class="btn sm ${on?'':'ghost'}" data-rlg="${i}" aria-pressed="${on}">${on?'고정됨':'고정'}</button></div>`}).join('');
   openSheet(`<div class="sheet-h"><div><h2 style="margin:0">추천 편성</h2><div class="sub" style="margin:0">${esc(deckName(S.dk))}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <p class="sub" style="margin:0 0 8px">남길 장수는 <b>고정</b>을 누르고, 그 장수에게 그대로 둘 보물도 눌러 고정하세요. 나머지 자리와 보물 칸을 가진 장수·보물로 채워요. 아무것도 고정하지 않으면 전부 추천해요.</p>
-   <div class="seg" role="group" style="margin-bottom:8px"><button type="button" data-rmode="power" aria-pressed="${recMode==='power'}">전투력 기준</button><button type="button" data-rmode="raid" aria-pressed="${recMode==='raid'}">레이드용 (이번 보스)</button></div>
+   <div class="seg" role="group" style="margin-bottom:8px"><button type="button" data-rmode="duel" aria-pressed="${recMode!=='raid'}">결투장용</button><button type="button" data-rmode="raid" aria-pressed="${recMode==='raid'}">레이드용 (이번 보스)</button></div>
+   <div class="chips" role="group" aria-label="나라" style="margin:0 0 4px"><span class="flab">나라</span><button type="button" data-rfac="" aria-pressed="${!recFil.fac.size}">전체</button>${Object.entries(FAC).map(([k,n])=>`<button type="button" data-rfac="${k}" aria-pressed="${recFil.fac.has(k)}">${n}</button>`).join('')}</div>
+   <div class="chips" role="group" aria-label="병종" style="margin:0 0 4px"><span class="flab">병종</span><button type="button" data-rcls="" aria-pressed="${!recFil.cls.size}">전체</button>${Object.entries(CLS).map(([k,c])=>`<button type="button" data-rcls="${k}" aria-pressed="${recFil.cls.has(k)}">${c.n}</button>`).join('')}</div>
+   ${recFil.cls.size===1?'<p class="sub" style="margin:0 0 6px;color:var(--cinnabar);font-size:12px">병종은 2종 이상 골라 주세요.</p>':recFil.fac.size||recFil.cls.size?`<p class="sub" style="margin:0 0 6px;font-size:12px">고정하지 않은 자리는 ${[recFil.fac.size?[...recFil.fac].map(k=>FAC[k]).join('·'):'',recFil.cls.size?[...recFil.cls].map(k=>CLS[k].n).join('·'):''].filter(Boolean).join(' / ')} 장수로만 채워요. (가진 장수 ${Object.keys(S.gens).filter(recOkF).length}명)</p>`:''}
    ${rows}
-   <p class="sub" style="font-size:11px;margin:4px 0 10px">진영·인연·연합군 효과와 보물 도감까지 넣어 계산해요. 보병은 체력·방어, 기병·궁병은 공격, 책사는 공격·전법 피해를 더 높게 쳐요.${recMode==='raid'?' 레이드용은 후보 진형마다 이번 보스와 4번씩 싸워 보고 평균 피해가 가장 큰 진형을 골라요.':''}</p>
-   <button type="button" class="btn wide red" id="rec-go">추천 받기</button>`);
+   <p class="sub" style="font-size:11px;margin:4px 0 10px">후보 진형을 만든 뒤 실제 전투 계산으로 비교해요(진영·인연·연합군·보물 도감·전법·속도·자리 순서 모두 반영). ${recMode==='raid'?'레이드용은 이번 레이드 보스와 싸워 평균 피해가 가장 큰 진형을 골라요.':'결투장용은 결투장 상위 군주들의 방어 진형과 내 장수로 만든 대표 진형들을 상대로 모의전을 치러 승률이 가장 높은 진형을 골라요.'} 2~5초 걸릴 수 있어요.</p>
+   <button type="button" class="btn wide red" id="rec-go" ${recFil.cls.size===1?'disabled':''}>추천 받기</button>`);
 }
 function openRecResult(P){
   const cur=mySpecs(), curP=deckPower(cur);
@@ -2174,7 +2292,8 @@ function openRecResult(P){
      <div class="ichips" style="margin:6px 0 0 58px">${its||'<span class="sub" style="margin:0">보물 없음</span>'}</div></div>`}).join('');
   const st=(k,a,b2)=>`<div class="stat"><small>${k}</small><b>${a}</b><div class="sub" style="margin:0;font-size:11px">→ <b style="color:var(--fg)">${b2}</b></div></div>`;
   openSheet(`<div class="sheet-h"><h2 style="margin:0">추천 결과</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   <div class="stats" style="grid-template-columns:${P.dmg!=null?'1fr 1fr':'1fr'};margin:0 0 10px">${st('총 전투력',fmt(curP),fmt(P.power)+(P.power!==curP?` (${P.power>curP?'+':'−'}${fmt(Math.abs(P.power-curP))})`:''))}${P.dmg!=null?st('레이드 예상 피해(평균)',fmt(P.curDmg||0),fmt(P.dmg)):''}</div>
+   <div class="stats" style="grid-template-columns:1fr 1fr;margin:0 0 6px">${st('총 전투력',fmt(curP),fmt(P.power)+(P.power!==curP?` (${P.power>curP?'+':'−'}${fmt(Math.abs(P.power-curP))})`:''))}${P.dmg!=null?st('레이드 예상 피해(평균)',fmt(P.curDmg||0),fmt(P.dmg)):st('모의전 승률',Math.round((P.curWr||0)*100)+'%',Math.round((P.wr||0)*100)+'%')}</div>
+   ${P.wr!=null?`<p class="sub" style="font-size:11px;margin:0 0 10px">상대 ${P.gN}개 진형과 3판씩 치른 결과예요. 상대에는 결투장 상위 군주들의 방어 진형과 내 장수로 만든 대표 진형이 들어가요.</p>`:''}
    ${teamBoxHtml(P.specs)}
    ${rows}
    ${moved.length?`<p class="sub" style="font-size:12px;margin:6px 0 0">옮겨 오는 보물 ${moved.length}개 — 원래 끼고 있던 장수는 그 보물이 빠져요(다른 진형에도 반영돼요).</p>`:''}
@@ -2198,9 +2317,11 @@ document.addEventListener('click',e=>{
   const lg=e.target.closest('[data-rlg]');if(lg){const i=+lg.dataset.rlg;if(recLock.g.has(i)){recLock.g.delete(i);(S.gens[S.deck[i]]||{its:[]}).its.forEach(u=>recLock.i.delete(u))}else recLock.g.add(i);openRec();return}
   const li=e.target.closest('[data-rli]');if(li){const u=li.dataset.rli;recLock.i.has(u)?recLock.i.delete(u):recLock.i.add(u);openRec();return}
   const rm=e.target.closest('[data-rmode]');if(rm){recMode=rm.dataset.rmode;openRec();return}
-  if(e.target.closest('#rec-go')){const b=$('#rec-go');b.disabled=true;b.textContent='계산 중…';
-    setTimeout(()=>{const t0=performance.now();let P=null;try{P=recCompute()}catch(err){console.error(err)}
-      if(!P||!P.deck.some(Boolean)){toast('추천할 장수가 없어요');openRec();return}recPlan=P;openRecResult(P)},30);return}
+  const rf=e.target.closest('[data-rfac]');if(rf){const k=rf.dataset.rfac;if(!k)recFil.fac.clear();else recFil.fac.has(k)?recFil.fac.delete(k):recFil.fac.add(k);openRec();return}
+  const rc=e.target.closest('[data-rcls]');if(rc){const k=rc.dataset.rcls;if(!k)recFil.cls.clear();else recFil.cls.has(k)?recFil.cls.delete(k):recFil.cls.add(k);openRec();return}
+  if(e.target.closest('#rec-go')){const b=$('#rec-go');if(b.disabled)return;b.disabled=true;b.textContent='계산 중… 0%';
+    (async()=>{let P=null;try{P=await recCompute(p=>{const x=$('#rec-go');if(x)x.textContent=`계산 중… ${p}%`})}catch(err){console.error(err)}
+      if(!$('#rec-go'))return;if(!P||!P.deck.some(Boolean)){toast('추천할 장수가 없어요');openRec();return}recPlan=P;openRecResult(P)})();return}
 });
 /* ---------------- 진영·인연 화면 ---------------- */
 function teamBoxHtml(specs,all){
