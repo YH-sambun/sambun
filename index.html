@@ -353,6 +353,10 @@ button.sbar .sn{text-decoration:underline dotted;text-underline-offset:3px}
 button.sbar.on{background:var(--panel2);box-shadow:inset 3px 0 0 var(--bronze)}
 button.sbar.on .sn{color:var(--bronze);font-weight:700}
 .mvpb{display:inline-block;font-style:normal;font-family:var(--display);font-size:9px;color:var(--cinnabar);border:1px solid var(--cinnabar);border-radius:3px;padding:0 2px;margin-right:3px;line-height:1.3;vertical-align:1px;text-decoration:none}
+.brief{width:100%;text-align:left;background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--cinnabar);border-radius:10px;padding:8px 12px;font-size:13px}
+.brief h3{margin:0 0 4px;font-size:14px;color:var(--cinnabar)}
+.brief ul{margin:0;padding-left:18px}
+.brief li{margin:2px 0}
 .mvpline{width:100%;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;margin:4px 0 6px;text-align:left}
 .mvpline:empty{display:none}
 .ichips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
@@ -372,7 +376,7 @@ button.sbar.on .sn{color:var(--bronze);font-weight:700}
 .rowgrp small{font-size:12px;color:var(--mute)}
 .slot.swsel{border-color:var(--bronze);box-shadow:0 0 0 2px var(--bronze) inset}
 .slot.swtgt{border-color:var(--bronze-d)}
-.slot .info .skl{display:block;margin-top:2px;color:var(--fg);opacity:.8;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.slot .info .skl{display:block;margin-top:2px;color:var(--fg);opacity:.8;white-space:normal;overflow-wrap:anywhere}
 .res-top{display:flex;align-items:center;gap:12px;justify-content:center}
 .res-top .stamp{font-size:30px;width:56px;height:56px;border-width:3px;border-radius:10px;flex:none}
 .defmk{display:inline-block;font-family:var(--display);font-size:12px;color:var(--ink);background:var(--bronze);border-radius:4px;padding:0 3px;line-height:1.4;vertical-align:1px}
@@ -418,7 +422,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v3.2.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v3.2.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1629,6 +1633,12 @@ const GAME_VERSION='3.2.2';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.2.3',date:'2026-10-15',title:'전투 화면 편의 개선',reward:{ap:30},items:[
+  '진형 화면에서 장수의 전법 설명이 두 줄에서 잘리지 않고 끝까지 보여요. 모바일에서도 긴 전법 설명을 모두 읽을 수 있어요.',
+  '전투 배속 버튼을 누르면 4배속 → 8배속 → 1배속 → 2배속 순서로 바뀌어요. 마지막으로 고른 배속을 기억해서 다음 전투도 그 배속으로 시작해요(처음은 4배속).',
+  '전투에서 지면 결과 화면 위에 패배 원인이 최대 3줄로 나와요. 진형 상성, 판정패 여부, 피해를 가장 많이 낸 적, 가장 먼저 쓰러진 아군, 적 체력 대비 준 피해 중 해당하는 내용을 알려 줘요.',
+  '도움말에 \'전투 결과\' 항목을 추가해 MVP 선정 기준을 적었어요. 준 피해 + 회복량 × 0.6 점수가 가장 높은 장수가 MVP예요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'3.2.2',date:'2026-10-15',title:'진형 편성 화면 개선',reward:{ap:30},items:[
   '둔영 진형 화면의 자리가 선봉·중견·후위 묶음으로 나뉘어 보여요. 묶음 제목에 그 줄의 인원과 효과가 나오고, 배치를 바꾸면 바로 바뀌어요.',
   '▲▼ 대신 ⇄ 버튼으로 자리를 맞바꿔요. ⇄를 누른 뒤 다른 자리를 누르면 두 장수가 자리를 바꾸고, 빈 자리를 누르면 그 자리로 옮겨요.',
@@ -2037,6 +2047,9 @@ const HELP=[
   ['돌파','같은 장수를 또 얻으면 한 단계 올라요. 단계마다 능력치 +6%, 최대 5단계(◆◆◆◆◆). 5단계 이후 중복은 금으로 바뀌어요(★4 300 · ★5 1,000).'],
   ['한계돌파','★3 장수는 5단계 뒤에도 중복으로 6~10단계(✦)까지 더 오르고, 단계마다 똑같이 +6%예요. 10단계 이후 중복은 금 200으로 바뀌어요.'],
   ['보물','장수마다 3개까지 장착해요. 공격·체력·방어는 퍼센트로, 속도는 수치로 더해져요. 아래 보물 항목에 자세히 있어요.']]},
+ {t:'전투 결과',rows:[
+  ['MVP','아군·적군에서 각각 (준 피해 + 회복량 × 0.6) 점수가 가장 높은 장수예요. 준 피해에는 일반 공격, 전법, 화상 같은 지속 피해가 모두 들어가요. 회복은 피해보다 0.6배로 쳐요.'],
+  ['패배 원인','진 전투의 결과 화면 위에 진형 상성, 판정패 여부, 피해를 가장 많이 낸 적, 가장 먼저 쓰러진 아군, 적 체력 대비 준 피해 중 해당하는 내용을 최대 3줄로 보여 줘요.']]},
  {t:'전투 규칙',rows:[
   ['병종','기병·보병은 맨 앞 적을, 궁병은 체력 비율이 가장 낮은 적을, 책사는 무작위 적을 공격해요.'],
   ['전법 주기','기병은 2번째, 보병·궁병은 3번째, 책사는 4번째 행동마다 전법을 써요.'],
@@ -4021,6 +4034,27 @@ document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.tar
 
 /* ---------------- 전투 기록 · MVP · 결과 공유 ---------------- */
 const CAN_SHARE=typeof FIREBASE_CONFIG!=='undefined';
+// 전투 배속 (v3.2.3): 4→8→1→2 순서, 마지막 배속을 기억해요
+const BT_SPD=[4,8,1,2], BT_SPD_K='sg_bt_speed';
+function btSpeed(){try{const v=+localStorage.getItem(BT_SPD_K);if(BT_SPD.includes(v))return v}catch(e){}return 4}
+function btSpeedSave(v){try{localStorage.setItem(BT_SPD_K,String(v))}catch(e){}}
+// 패배 브리핑 (v3.2.3): 패배 원인을 최대 3줄로 요약해요
+const jIGa=w=>{const c=String(w||'').charCodeAt(String(w||'').length-1)-0xAC00;return c>=0&&c<=11171&&c%28?'이':'가'};
+function defeatBrief(res,st){
+  const A=res.init[0],B=res.init[1];if(!A||!B||!A.length||!B.length)return [];
+  const L=[],nm=u=>`${u.row!=null&&ROWN[u.row]?ROWN[u.row]+' ':''}${u.name}`;
+  if(B.some(u=>u.adv)&&!A.some(u=>u.adv))L.push('진형 상성 열세로 적 전원이 공격 +10%를 받았어요.');
+  const aliveA=A.filter(u=>(st[u.side+'-'+u.slot]||{}).hp>0);
+  if(aliveA.length)L.push(`제한 턴이 끝날 때 남은 체력 비율이 적보다 낮아 판정패했어요(아군 ${aliveA.length}명 생존).`);
+  const tot=B.reduce((a,u)=>a+(st[u.side+'-'+u.slot]||{dmg:0}).dmg,0);
+  if(tot>0){let b=null;B.forEach(u=>{const r=st[u.side+'-'+u.slot];if(r&&(!b||r.dmg>b.d))b={u,d:r.dmg}});
+    const p=Math.round(b.d/tot*100);if(p>=30)L.push(`적 ${b.u.name}${jIGa(b.u.name)} 아군이 받은 피해의 ${p}%를 냈어요.`)}
+  if(L.length<3){let f=null;for(const e of res.ev){for(const h of e.hits||[])if(h.s===0&&h.hp===0){f=A.find(u=>u.slot===h.i);break}if(f)break}
+    if(f)L.push(`${nm(f)}${jIGa(f.name)} 가장 먼저 쓰러졌어요.`)}
+  if(L.length<3){const hp=B.reduce((a,u)=>a+(u.maxhp||u.hp||0),0),dm=A.reduce((a,u)=>a+(st[u.side+'-'+u.slot]||{dmg:0}).dmg,0);
+    if(hp>0)L.push(`아군이 준 피해는 적 전체 체력의 ${Math.min(100,Math.round(dm/hp*100))}%였어요.`)}
+  return L.slice(0,3);
+}
 function battleStats(res){
   const st={};const K=(s,i)=>st[s+'-'+i]||(st[s+'-'+i]={acts:0,sk:0,dmg:0,nd:0,sd:0,mit:0,crit:0,kills:0,heal:0,taken:0,hp:0});
   res.init.forEach(t=>t.forEach(u=>{K(u.side,u.slot).hp=u.hp}));
@@ -4135,12 +4169,12 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
   const castleHtml=SG?`<div class="castle"><b>城</b><div class="cbar"><i id="castle-i" style="width:100%"></i></div><span class="num" id="castle-t">${fmt(SG.max)}</span><span class="chip" id="wave-t">제1파</span></div>`:'';
   const setCastle=v=>{if(!SG)return;const i=$('#castle-i'),t=$('#castle-t');if(i)i.style.width=Math.max(0,v/SG.max*100)+'%';if(t)t.textContent=fmt(Math.max(0,v))};
   const el=$('#battle');
-  el.innerHTML=`<div class="bt${SG?' siege':''}"><div class="bt-head"><span class="bt-title">${esc(title)}</span><button type="button" class="btn ghost sm" id="bt-speed">${SG?4:1}배속</button><button type="button" class="btn ghost sm" id="bt-skip">결과 보기</button>${opts&&opts.commit?'<button type="button" class="btn ghost sm red" id="bt-quit">중도포기</button>':''}</div>
+  el.innerHTML=`<div class="bt${SG?' siege':''}"><div class="bt-head"><span class="bt-title">${esc(title)}</span><button type="button" class="btn ghost sm" id="bt-speed">${btSpeed()}배속</button><button type="button" class="btn ghost sm" id="bt-skip">결과 보기</button>${opts&&opts.commit?'<button type="button" class="btn ghost sm red" id="bt-quit">중도포기</button>':''}</div>
   <div class="bt-side">${esc(SG?allyLab:foeLab)}${sideForm(topK)}</div><div class="bt-row bt-top ${SG?'bt-ally':'bt-foe'}" id="bt-s${topK}">${sideHtml(topK)}</div>${castleHtml}
   <div class="bt-log"><div class="sk" id="bt-sk"></div><div class="ln" id="bt-ln">${esc(bonusLine(res.bonus&&res.bonus[0])?'아군 효과 · '+bonusLine(res.bonus[0]):'전투 개시')}</div></div>
   <div class="bt-row bt-bot ${SG?'bt-foe':'bt-ally'}" id="bt-s${botK}">${sideHtml(botK)}</div><div class="bt-side" style="text-align:right">${esc(SG?foeLab:allyLab)}${sideForm(botK)}</div></div>`;
   el.hidden=false;
-  let speed=SG?4:1, idx=0, timer=null;
+  let speed=btSpeed(), idx=0, timer=null;
   const U=(s,i)=>units[s].find(x=>x.slot===i);
   const paint=(s,i)=>{const u=U(s,i),n=$(`#bu-${s}-${i}`);if(!u||!n)return;n.querySelector('.hp i').style.width=(u.hp/u.maxhp*100)+'%';n.classList.toggle('dead',u.hp<=0)};
   const float=(s,i,txt,cls)=>{const n=$(`#bu-${s}-${i}`);if(!n)return;const f=document.createElement('span');f.className='dmg '+cls;f.textContent=txt;n.appendChild(f);setTimeout(()=>f.remove(),800)};
@@ -4177,7 +4211,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     const stt=battleStats(res), sh=opts&&opts.share, rp=opts&&opts.replay;
     rsSide=SG?0:rp?(res.win?0:1):0;{const m0=mvpOf(res,stt,rsSide);rsSel=m0?m0.u.side+'-'+m0.u.slot:''}
     const vd=opts&&opts.verdict, winLab=vd?vd.lab:rp?`${res.win?allyLab:foeLab} 승리`:(res.win?'승리':'패배');
-    box.innerHTML=`<div class="res-card" id="res-card"><div class="res-top"><div class="stamp ${res.win||rp||vd?'w':'l'}">${vd?vd.stamp:rp?'戰':res.win?'勝':'敗'}</div><h2 style="margin:0">${esc(winLab)}</h2></div>${resultHtml()}
+    box.innerHTML=`<div class="res-card" id="res-card"><div class="res-top"><div class="stamp ${res.win||rp||vd?'w':'l'}">${vd?vd.stamp:rp?'戰':res.win?'勝':'敗'}</div><h2 style="margin:0">${esc(winLab)}</h2></div>${!res.win&&!rp&&!vd&&!SG?(()=>{const L=defeatBrief(res,stt);return L.length?`<div class="brief"><h3>패배 원인</h3><ul>${L.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''})():''}${resultHtml()}
      <div class="res-sec"><h3>전투 기록</h3>
       <div class="chips no-cap" role="group">${SG?'':`<button type="button" data-rss="0" aria-pressed="${rsSide===0}">${esc(allyLab)}</button><button type="button" data-rss="1" aria-pressed="${rsSide===1}">${esc(foeLab)}</button>`}<span class="sp"></span>${Object.entries(RS_M).map(([k,v])=>`<button type="button" data-rsm="${k}" aria-pressed="${rsMetric===k}">${v}</button>`).join('')}</div>
       <div class="sub" id="rs-cap" style="margin:0 0 4px">${esc(rsSide?foeLab:allyLab)} · ${RS_M[rsMetric]}</div><div class="sub no-cap" style="margin:0 0 4px;font-size:12px">장수 이름을 누르면 아래 기록 창이 그 장수로 바뀌어요.</div><div id="rs-chart">${statChart(res,stt,rsSel)}</div></div>
@@ -4202,7 +4236,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     $('#bt-close').focus();
   };
   const step=()=>{if(tok!==btToken)return;if(idx>=res.ev.length){timer=setTimeout(finish,500);return}apply(res.ev[idx++],true);timer=setTimeout(step,560/speed)};
-  $('#bt-speed').onclick=()=>{speed=speed===1?2:speed===2?4:speed===4?8:1;$('#bt-speed').textContent=speed+'배속'};
+  $('#bt-speed').onclick=()=>{speed=BT_SPD[(BT_SPD.indexOf(speed)+1)%BT_SPD.length];btSpeedSave(speed);$('#bt-speed').textContent=speed+'배속'};
   $('#bt-skip').onclick=finish;
   const qb=$('#bt-quit');let qArm=0;
   if(qb)qb.onclick=()=>{if(fin)return;
