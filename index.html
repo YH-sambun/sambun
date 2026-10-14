@@ -305,12 +305,24 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 button.sbar{width:100%;background:none;border:0;padding:2px 0;color:inherit;font:inherit;font-size:12px;text-align:left;cursor:pointer;border-radius:6px}
 button.sbar:hover,button.sbar:focus-visible{background:var(--panel2)}
 button.sbar .sn{text-decoration:underline dotted;text-underline-offset:3px}
+button.sbar.on{background:var(--panel2);box-shadow:inset 3px 0 0 var(--bronze)}
+button.sbar.on .sn{color:var(--bronze);font-weight:700}
+.mvpb{display:inline-block;font-style:normal;font-family:var(--display);font-size:9px;color:var(--cinnabar);border:1px solid var(--cinnabar);border-radius:3px;padding:0 2px;margin-right:3px;line-height:1.3;vertical-align:1px;text-decoration:none}
+.mvpline{width:100%;display:flex;align-items:center;gap:6px;flex-wrap:wrap;font-size:13px;margin:4px 0 6px;text-align:left}
+.mvpline:empty{display:none}
+.ichips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.ichip{background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;color:var(--fg);cursor:pointer}
+.ichip b{color:var(--bronze)}
+.ichip.r5{border-color:var(--r5)}.ichip.r4{border-color:var(--r4)}
+.ichip.sk{border-color:var(--bronze-d);color:var(--bronze)}
 .rs-pop{position:fixed;inset:0;z-index:40;background:rgba(4,8,8,.65);display:flex;align-items:center;justify-content:center;padding:16px}
 .rs-pop-b{width:100%;max-width:440px;max-height:100%;overflow-y:auto}
 .rs-pop .stats small{font-size:10px}
 .slot .pos .slv{display:block;margin:4px auto 0;width:46px;padding:2px 0;font:600 11px var(--body);background:var(--panel2);border:1px solid var(--bronze-d);color:var(--bronze);border-radius:6px;cursor:pointer}
 .slot .pos{width:48px}
 .mv button.clr{color:var(--cinnabar)}
+.defmk{display:inline-block;font-family:var(--display);font-size:11px;color:var(--ink);background:var(--bronze);border-radius:4px;padding:0 3px;line-height:1.4;vertical-align:1px}
+.deckbar button{max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .savest{display:block;margin:1px 0 0;text-align:left;cursor:pointer;font-size:inherit;color:var(--mute);white-space:nowrap;background:none;border:0;padding:0;font-family:var(--body)}
 .savest[data-st=err],.savest[data-st=conflict]{color:var(--cinnabar);text-decoration:underline}
 .res-sec .chips{margin-bottom:4px}
@@ -343,7 +355,7 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.19.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.19.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -997,7 +1009,7 @@ function mkUnit(spec,side,slot){
   if(spec.hpx)hp*=spec.hpx;
   const sk=skillOf(b);hp=Math.round(hp);
   return {id:b.id,name:b.name,hz:b.hz,fac:b.fac,rar:b.rar,cls:b.cls,skill:sk.n,sk,endure:!!sk.endure,
-    hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0,bf:[],burn:[],stun:0,taunt:0,endUsed:0,lv,items:its.map(x=>({n:x.it.name,r:x.it.rar,d:x.d})),cr,cd,ls,dr,skp};
+    hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0,bf:[],burn:[],stun:0,taunt:0,endUsed:0,lv,items:its.map(x=>({k:x.it.id,n:x.it.name,r:x.it.rar,d:x.d})),cr,cd,ls,dr,skp};
 }
 function buildTeam(specs,side){const us=specs.map((s,i)=>s?mkUnit(s,side,i):null).filter(Boolean);const info=applyBonuses(us);return {us,info}}
 function unitPower(u){return Math.round((u.atk*1.5+u.maxhp/6+u.def*1.2+u.spd)*(1+((u.cr||.1)-.1)*.5+((u.cd||1.5)-1.5)*.15+(u.ls||0)*.6+(u.dr||0)+(u.skp||0)*.25))}
@@ -1099,7 +1111,7 @@ let PLAYERS=[], BATTLES=[];
 function newState(){
   return {v:1,gold:500,food:1000,last:Date.now(),stage:0,seq:1,
     gens:{liaohua:{lv:1,d:0,its:[]},lejin:{lv:1,d:0,its:[]},lidian:{lv:1,d:0,its:[]}},
-    slv:[1,1,1,1,1],items:[],itk:0,cpn:[],rl:{day:'',n:0},lab:labDefault(),colMax:{},raid:{day:'',n:0,claimed:[]},deck:['liaohua','lejin','lidian',null,null],pvp:{day:'',used:0},duel:{done:[],pruned:''},ap:AP_CAP,apT:Date.now(),att:{day:'',streak:0,total:0},notice:{read:[],claimed:[]},created:Date.now()};
+    slv:[1,1,1,1,1],items:[],itk:0,cpn:[],rl:{day:'',n:0},lab:labDefault(),colMax:{},raid:{day:'',n:0,claimed:[]},deck:['liaohua','lejin','lidian',null,null],decks:[{n:'진형 1',g:['liaohua','lejin','lidian',null,null]}],dk:0,defDk:0,pvp:{day:'',used:0},duel:{done:[],pruned:''},ap:AP_CAP,apT:Date.now(),att:{day:'',streak:0,total:0},notice:{read:[],claimed:[]},created:Date.now()};
 }
 function sanitize(s){
   const n=newState();
@@ -1121,7 +1133,12 @@ function sanitize(s){
   o.colMax={};if(s.colMax&&typeof s.colMax==='object')for(const[k,v]of Object.entries(s.colMax))if(IMAP[k])o.colMax[k]=Math.min(ITEM_MAXD,Math.max(0,v|0));
   for(const x of o.items)if(o.colMax[x.k]==null||x.d>o.colMax[x.k])o.colMax[x.k]=x.d;
   {const rl=s.rl&&typeof s.rl==='object'?s.rl:{};o.rl={day:String(rl.day||''),n:Math.max(0,rl.n|0)}}
-  o.deck=Array.from({length:5},(_,i)=>{const g=(s.deck||[])[i];return g&&o.gens[g]?g:null});{let n5=0;o.deck=o.deck.map(g=>g&&GMAP[g].rar===5&&++n5>MAX5?null:g)}
+  // 진형 여러 개(최대 5): decks[k]={n:이름,g:[5자리]}, dk=지금 고른 진형, defDk=결투장 방어 진형. deck은 지금 고른 진형의 사본
+  const cleanDeck=a=>{let n5=0;const seen=new Set();return Array.from({length:5},(_,i)=>{const g=(Array.isArray(a)?a:[])[i];if(!g||!o.gens[g]||seen.has(g)||(GMAP[g].rar===5&&++n5>MAX5))return null;seen.add(g);return g})};
+  o.decks=(Array.isArray(s.decks)&&s.decks.length?s.decks.slice(0,DECK_MAX):[{n:'진형 1',g:s.deck}]).map((d,k)=>({n:cleanName(d&&d.n)||'진형 '+(k+1),g:cleanDeck(d&&d.g)}));
+  const ck=v=>Math.min(o.decks.length-1,Math.max(0,v|0));o.dk=ck(s.dk);o.defDk=ck(s.defDk);
+  if(Array.isArray(s.deck))o.decks[o.dk].g=cleanDeck(s.deck);
+  o.deck=o.decks[o.dk].g.slice();
   o.pvp=s.pvp&&typeof s.pvp==='object'?{day:String(s.pvp.day||''),used:s.pvp.used|0}:n.pvp;
   for(const k of['gold','food','last','stage','seq'])o[k]=Number(o[k])||n[k];
   o.stage=Math.min(NSTAGE,Math.max(0,o.stage|0));
@@ -1151,6 +1168,17 @@ const slotLv=i=>(S.slv&&S.slv[i])||1;
 function defLv(gid){const at=S.deck.indexOf(gid);return at>=0?slotLv(at):Math.max(...S.slv)}
 function specOf(gid,lv){const g=S.gens[gid];if(!g)return null;return {g:gid,lv:lv||defLv(gid),d:g.d,i:g.its.map(u=>S.items.find(x=>x.u===u)).filter(Boolean).map(x=>x.k+':'+(x.d||0)),cb:colBonus()}}
 function mySpecs(){return S.deck.map((g,i)=>g?specOf(g,slotLv(i)):null)}
+const DECK_MAX=5;
+const deckName=k=>(S&&S.decks&&S.decks[k]&&S.decks[k].n)||('진형 '+(k+1));
+function syncDeck(){if(S&&S.decks&&S.decks[S.dk])S.decks[S.dk].g=S.deck.slice()}
+function defDeckArr(){return S.defDk===S.dk?S.deck:(S.decks[S.defDk]||{g:S.deck}).g}
+function defSpecs(){return defDeckArr().map((g,i)=>g&&S.gens[g]?specOf(g,slotLv(i)):null)}
+function switchDeck(k){if(!S.decks[k]||k===S.dk)return;syncDeck();S.dk=k;S.deck=S.decks[k].g.slice();save()}
+// 출진 창·레이드·결투장에서 쓸 진형을 바로 고르는 칩
+let deckQuickCb=null;
+function deckQuickHtml(lab,cb){deckQuickCb=cb||null;if(!S.decks||S.decks.length<2)return '';
+  return `<div class="chips" role="group" aria-label="${lab}" style="margin:6px 0"><span class="flab">${lab}</span>${S.decks.map((d,k)=>`<button type="button" data-dkq="${k}" aria-pressed="${k===S.dk}">${esc(deckName(k))}${k===S.defDk?' <small class="defmk">防</small>':''}</button>`).join('')}</div>`}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-dkq]');if(!b)return;e.stopPropagation();switchDeck(+b.dataset.dkq);const cb=deckQuickCb;if(cb)cb();else renderView()});
 function chaptersDone(){return Math.floor(S.stage/5)}
 function foodRateAt(st){return 60+4*st+25*Math.floor(st/5)}
 function goldRateAt(st){return 30+3*st+15*Math.floor(st/5)}
@@ -1183,8 +1211,8 @@ let AUTH=null, FS=null, MYNAME='', UNSUB=[];
 let saveT=null, saving=false, dirty=false, lastPub='';
 function lsLoad(){try{return JSON.parse(localStorage.getItem(LSK)||'null')}catch(e){return null}}
 function lsSave(){try{localStorage.setItem(LSK,JSON.stringify(S))}catch(e){}}
-function save(){dirty=true;clearTimeout(saveT);saveT=setTimeout(flush,600)}
-function publicDoc(){const specs=mySpecs().filter(Boolean);return {name:MYNAME,deck:specs,power:deckPower(specs),stage:S.stage}}
+function save(){syncDeck();dirty=true;clearTimeout(saveT);saveT=setTimeout(flush,600)}
+function publicDoc(){const specs=defSpecs().filter(Boolean);return {name:MYNAME,deck:specs,power:deckPower(specs),stage:S.stage}}
 /* 기기 간 동기화: 저장할 때마다 번호(rev)를 1씩 올려요. 서버 번호가 내가 아는 번호보다 크면
    다른 기기(탭)가 먼저 저장한 것이므로 덮어쓰지 않고 어느 기록을 쓸지 물어봐요. */
 let baseRev=0, conflictData=null, saveSt='', saveAt=0, lastCheck=0;
@@ -1394,10 +1422,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.19.0';
+const GAME_VERSION='1.19.1';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.19.1',date:'2026-10-14',title:'진형 5개 · 전투 기록 상세',reward:{ap:20},items:[
+  '진형을 5개까지 만들고 이름을 붙일 수 있어요. 진형 탭 위쪽에서 고르고, 고른 진형으로 출정·레이드·결투 공격을 해요.',
+  '防 표시가 붙은 진형이 결투장 방어 진형이에요. 진형 탭에서 \'방어 진형으로 지정\'으로 바꿀 수 있어요.',
+  '자리 레벨(Lv)과 장수의 보물은 모든 진형이 함께 써요.',
+  '스테이지 출진 창, 레이드, 결투장에서도 쓸 진형을 바로 바꿀 수 있어요.',
+  '전투 결과에서 장수 이름을 누르면 아래 기록 창이 그 장수로 바뀌어요. MVP는 이름 옆과 창에 따로 표시돼요.',
+  '기록 창의 보물이나 전법을 누르면 설명이 떠요. 보물은 강화 단계별(+0·+10·+25·+50) 수치도 보여 줘요.',
+  '연습장 방어 진형에도 \'내 진형에 적용\' 버튼이 생겼어요.']},
  {v:'1.19.0',date:'2026-10-14',title:'자리별 레벨 · 장수별 전투 기록 · 기기 동기화',reward:{ap:20},items:[
   '레벨이 장수가 아니라 진형의 자리(1~5번)에 붙어요. 어떤 장수를 넣어도 그 자리의 레벨로 싸워요. 진형 탭의 각 자리에 있는 Lv 버튼으로 올리거나 초기화할 수 있어요.',
   '바뀌면서 지금 진형 장수의 레벨은 그 자리의 레벨이 되고(빈 자리는 다음으로 높은 장수 레벨), 나머지 장수에 쓴 금은 모두 돌려받았어요.',
@@ -1725,7 +1761,7 @@ function openStage(n){
   const fp=deckPower(foe), mp=deckPower(mine);
   openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${esc(stageName(n))}</h2><div class="sub" style="margin:0">적 레벨 ${stageLv(n)}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <h3>적 진형</h3><div class="reveal">${foe.map(s=>{const b=baseOf(s);return `<div class="rv" style="animation:none">${seal(b,'sm')}<div class="nm">${esc(b.name)}</div><div class="cls">${CLS[b.cls].g} ${CLS[b.cls].n}</div></div>`}).join('')}</div>
-  <div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat"><small>적 전투력</small><b>${fmt(fp)}</b></div><div class="stat"><small>내 전투력</small><b style="color:${mp>=fp?'var(--jade)':'var(--cinnabar)'}">${fmt(mp)}</b></div></div>
+  ${deckQuickHtml('출전 진형',()=>openStage(n))}<div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat"><small>적 전투력</small><b>${fmt(fp)}</b></div><div class="stat"><small>내 전투력</small><b style="color:${mp>=fp?'var(--jade)':'var(--cinnabar)'}">${fmt(mp)}</b></div></div>
   <div class="row" style="margin-bottom:14px"><span class="sub" style="margin:0">${first?'첫 승리 보상':'반복 보상'}</span><span class="sp"></span><span class="coin"><b class="sl gold">金</b>${fmt(rw.gold)}</span><span class="coin"><b class="sl food">糧</b>${fmt(rw.food)}</span></div>
   ${n<S.stage?sweepHtml(n):''}
   <button type="button" class="btn wide red" id="go" ${mine.some(Boolean)&&S.ap>=AP_COST?'':'disabled'}>출진 <b class="sl ap">角</b>${AP_COST}</button>
@@ -1936,7 +1972,10 @@ document.addEventListener('click',e=>{
 /* ---------------- 진형 ---------------- */
 function vDeck(){
   const specs=mySpecs();
-  let h=`<div class="row"><div><h2>진형</h2><p class="sub" style="margin:0">이 진형으로 출정하고, 대전에서는 방어 진형으로도 쓰여요. ★5 장수는 ${MAX5}명까지(지금 ${count5(S.deck)}명). 레벨은 자리마다 정해요(Lv 버튼).</p></div></div>
+  const isDef=S.defDk===S.dk;
+  let h=`<div class="row"><div><h2>진형</h2><p class="sub" style="margin:0">고른 진형으로 출정·레이드·결투 공격을 하고, <span class="defmk">防</span> 진형이 결투장 방어에 쓰여요. ★5 장수는 진형마다 ${MAX5}명까지(지금 ${count5(S.deck)}명). 자리 레벨(Lv)과 보물은 모든 진형이 함께 써요.</p></div></div>
+  <div class="chips deckbar" role="group" aria-label="진형 선택" style="margin:10px 0 6px">${S.decks.map((d,k)=>`<button type="button" data-dk="${k}" aria-pressed="${k===S.dk}">${esc(deckName(k))}${k===S.defDk?' <small class="defmk">防</small>':''}</button>`).join('')}${S.decks.length<DECK_MAX?'<button type="button" data-dkadd>＋ 새 진형</button>':''}</div>
+  <div class="row" style="gap:6px"><button type="button" class="btn ghost sm" data-dkname>이름 바꾸기</button>${isDef?'<span class="chip" style="border-color:var(--bronze);color:var(--bronze)">결투장 방어 진형</span>':'<button type="button" class="btn ghost sm" data-dkdef>방어 진형으로 지정</button>'}${S.decks.length<DECK_MAX?'<button type="button" class="btn ghost sm" data-dkcopy>복제</button>':''}${S.decks.length>1?'<button type="button" class="btn ghost sm" data-dkdel>삭제</button>':''}</div>
   <div class="row" style="margin:12px 0"><div><div class="sub" style="margin:0">총 전투력</div><div class="power num">${fmt(deckPower(specs))}</div></div><span class="sp"></span><button type="button" class="btn ghost sm" id="auto">자동 편성</button></div>${teamBoxHtml(specs)}`;
   S.deck.forEach((gid,i)=>{
     const pos=`<div class="pos">${i+1}<small>${POS[i]}</small></div>`;
@@ -1957,7 +1996,31 @@ document.addEventListener('click',e=>{
   const cl=e.target.closest('[data-clr]');if(cl){e.stopPropagation();const k=+cl.dataset.clr,g=S.deck[k];S.deck[k]=null;save();renderView();if(g)toast(`${GMAP[g].name}을(를) 진형에서 뺐어요`);return}
   const sl=e.target.closest('[data-slot]');if(sl){openSlotPicker(+sl.dataset.slot);return}
   if(e.target.closest('#auto')){autoDeck();return}
+  const dkb=e.target.closest('[data-dk]');if(dkb){switchDeck(+dkb.dataset.dk);renderView();return}
+  if(e.target.closest('[data-dkadd]')||e.target.closest('[data-dkcopy]')){if(S.decks.length>=DECK_MAX)return;syncDeck();const cp=!!e.target.closest('[data-dkcopy]');
+    S.decks.push({n:cp?(deckName(S.dk)+' 사본').slice(0,12):'진형 '+(S.decks.length+1),g:cp?S.deck.slice():[null,null,null,null,null]});S.dk=S.decks.length-1;S.deck=S.decks[S.dk].g.slice();save();renderView();toast(cp?'진형을 복제했어요':'새 진형을 만들었어요');return}
+  if(e.target.closest('[data-dkdef]')){S.defDk=S.dk;save();renderView();toast(`${deckName(S.dk)}을(를) 결투장 방어 진형으로 정했어요`);return}
+  if(e.target.closest('[data-dkname]')){openDeckName();return}
+  if(e.target.closest('[data-dkdel]')){openDeckDel();return}
 });
+function openDeckName(){
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">진형 이름</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <input id="dk-name" type="text" maxlength="12" value="${esc(deckName(S.dk))}" aria-label="진형 이름" style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--fg);font:inherit;font-size:16px">
+   <p class="sub" style="margin:6px 0 12px">12자까지. 예: 화공덕, 방어용, 레이드</p>
+   <button type="button" class="btn wide" id="dk-name-ok">저장</button>`);
+  const i=$('#dk-name');i.focus();i.select();
+  const ok=()=>{const v=cleanName(i.value);if(!v){toast('이름을 입력해 주세요');return}S.decks[S.dk].n=v;save();closeSheet();renderView()};
+  $('#dk-name-ok').onclick=ok;i.onkeydown=e=>{if(e.key==='Enter')ok()};
+}
+function openDeckDel(){
+  if(S.decks.length<2)return;
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">진형 삭제</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub"><b style="color:var(--fg)">${esc(deckName(S.dk))}</b>을(를) 지울까요? 장수와 보물, 자리 레벨은 그대로 남아요.${S.defDk===S.dk?' 방어 진형이었으므로 첫 번째 진형이 방어 진형이 돼요.':''}</p>
+   <div class="row" style="gap:8px;margin-top:12px"><button type="button" class="btn ghost" data-close>취소</button><button type="button" class="btn red" style="flex:1" id="dk-del-ok">삭제</button></div>`);
+  $('#dk-del-ok').onclick=()=>{const k=S.dk,nm=deckName(k);S.decks.splice(k,1);
+    if(S.defDk===k)S.defDk=0;else if(S.defDk>k)S.defDk--;
+    S.dk=Math.max(0,k-1);S.deck=S.decks[S.dk].g.slice();save();closeSheet();renderView();toast(`${nm}을(를) 지웠어요`)};
+}
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.slot[data-slot]')){e.preventDefault();openSlotPicker(+e.target.dataset.slot)}});
 function autoDeck(){
   const order={inf:0,cav:1,arc:2,tac:3};
@@ -2268,7 +2331,7 @@ function labBoxHtml(side){
    <div class="chips" role="group" aria-label="보물 강화"><span class="flab">보물 강화</span>${LAB_PLUS.map(p=>`<button type="button" data-labp="${side}:${p}" aria-pressed="${D.p===p}">+${p}</button>`).join('')}</div>
    ${teamBoxHtml(specs,1)}
    ${D.s.map((_,i)=>labSlotHtml(side,D,specs,i)).join('')}
-   <div class="row" style="gap:6px;flex-wrap:wrap"><button type="button" class="btn ghost sm" data-labfill="${side}">무작위 편성</button><button type="button" class="btn ghost sm" data-labcopy="${side}">내 진형 복사</button>${side==='atk'?`<button type="button" class="btn ghost sm" data-labapply>내 진형에 적용</button>`:''}<span class="sp"></span><button type="button" class="btn ghost sm" data-labclear="${side}">비우기</button></div></div>`;
+   <div class="row" style="gap:6px;flex-wrap:wrap"><button type="button" class="btn ghost sm" data-labfill="${side}">무작위 편성</button><button type="button" class="btn ghost sm" data-labcopy="${side}">내 진형 복사</button><button type="button" class="btn ghost sm" data-labapply="${side}">내 진형에 적용</button><span class="sp"></span><button type="button" class="btn ghost sm" data-labclear="${side}">비우기</button></div></div>`;
 }
 function vLab(){
   const A=labCur('atk'), B=labCur('def'), ok=A.s.some(Boolean)&&B.s.some(Boolean);
@@ -2398,7 +2461,7 @@ function vRaid(){
   const ms=raidEndMs(c)-Date.now(), hh=Math.max(0,Math.floor(ms/3.6e6)), dd=Math.floor(hh/24);
   const bu=buildTeam(boss,1).us;
   let h=`<div class="banner-card"><div class="big">討伐</div><div class="row"><h2 style="margin:0">레이드 · 제${c+1}회</h2><span class="sp"></span><span class="chip">${dd?dd+'일 ':''}${hh%24}시간 남음</span></div>
-   <p class="sub" style="margin:4px 0 10px">${RAID_DAYS}일마다 새 적이 나타나요. 내 진형으로 ${RAID_ROUNDS}턴 동안 싸워 준 피해가 모두의 게이지에 쌓여요. 적을 이길 필요는 없어요. 하루 ${RAID_DAILY}회.</p>
+   <p class="sub" style="margin:4px 0 10px">${RAID_DAYS}일마다 새 적이 나타나요. 내 진형으로 ${RAID_ROUNDS}턴 동안 싸워 준 피해가 모두의 게이지에 쌓여요. 적을 이길 필요는 없어요. 하루 ${RAID_DAILY}회.</p>${deckQuickHtml('출전 진형')}
    <div class="list">${bu.map(u=>{const s=boss.find(x=>x.g===u.id);return `<div class="li">${seal(GMAP[u.id],'sm')}<div class="info"><b>${esc(u.name)} <span class="stars r${u.rar}">${stars(u.rar)}</span></b><span>${CLS[u.cls].g} ${CLS[u.cls].n} · Lv ${MAXLV} · 체력 ${fmt(u.maxhp)}</span><span class="labits">${itemsOf(s.i).map(({it})=>`<span class="ig r${it.rar}" title="${esc(it.name)} +${ITEM_MAXD}">${itemImg(it)}</span>`).join('')}</span></div></div>`}).join('')}</div>
    ${bonusLine(buildTeam(boss,1).info)?`<p class="sub" style="margin:6px 0 0">적 효과 · ${esc(bonusLine(buildTeam(boss,1).info))}</p>`:''}</div>
    <div class="stat" style="text-align:left;margin-bottom:12px"><div class="row"><small style="font-size:12px">공동 게이지</small><span class="sp"></span><b class="num">${(pct*100).toFixed(1)}%</b></div>
@@ -2440,15 +2503,15 @@ document.addEventListener('click',async e=>{
   playBattle(res,`레이드 제${c+1}회`,'내 진형','레이드 보스',()=>`<div class="stats" style="grid-template-columns:1fr 1fr;margin:8px 0"><div class="stat"><small>이번에 준 피해</small><b>${fmt(dmg)}</b></div><div class="stat"><small>공동 게이지</small><b>${(Math.min(1,nst.tot/RAID_HP)*100).toFixed(1)}%</b></div></div><p class="sub">오늘 남은 도전 ${raidLeft(nst)}/${RAID_DAILY}회</p>`,{verdict:{stamp:'討',lab:'토벌 종료'}});
 });
 // 연습장 공격덱 → 내 진형(스테이지·결투장): 보유한 장수와 보물만 같은 자리·같은 배치로 옮겨요
-function labApplyPlan(){
-  const D=labCur('atk');
+function labApplyPlan(side){
+  const D=labCur(side||'atk');
   return D.s.map((x,i)=>{if(!x)return {i};const own=!!S.gens[x.g];return {i,x,own,its:x.i.map(k=>{const it=S.items.find(y=>y.k===k);return {k,it,h:it?itemHolder(it.u):null}})}});
 }
-function openLabApply(){
-  const P=labApplyPlan(), ok=P.some(r=>r.x&&r.own);
+function openLabApply(side){
+  side=side==='def'?'def':'atk';const P=labApplyPlan(side), ok=P.some(r=>r.x&&r.own);
   const miss=P.filter(r=>r.x&&!r.own).length+P.reduce((a,r)=>a+(r.own?r.its.filter(o=>!o.it).length:0),0);
   openSheet(`<div class="sheet-h"><h2 style="margin:0">내 진형에 적용</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   <p class="sub" style="margin:0 0 10px">${esc(labCur('atk').n)}의 장수 자리와 보물 배치를 내 진형(스테이지·결투장 방어)에 옮겨요. 자리 레벨·돌파·보물 강화 수치는 내 것 그대로이고, 다른 장수가 끼고 있던 보물은 옮겨 와요.${miss?' 보유하지 않은 장수·보물은 빠져요.':''}</p>
+   <p class="sub" style="margin:0 0 10px">${esc(labCur(side).n)}의 장수 자리와 보물 배치를 지금 고른 내 진형 <b>${esc(deckName(S.dk))}</b>에 옮겨요. 자리 레벨·돌파·보물 강화 수치는 내 것 그대로이고, 다른 장수가 끼고 있던 보물은 옮겨 와요.${miss?' 보유하지 않은 장수·보물은 빠져요.':''}</p>
    <div class="list">${P.map(r=>{const pos=`<div class="pos">${r.i+1}<small>${POS[r.i]}</small></div>`;
      if(!r.x)return `<div class="slot empty">${pos}<div class="info"><b>빈 자리</b></div></div>`;
      const g=GMAP[r.x.g];
@@ -2457,18 +2520,19 @@ function openLabApply(){
    <div class="row" style="margin-top:14px;gap:8px"><button type="button" class="btn ghost" data-close>취소</button><button type="button" class="btn red" style="flex:1" id="lab-apply-yes" ${ok?'':'disabled'}>${ok?'내 진형에 적용':'보유한 장수가 없어요'}</button></div>`);
   const y=$('#lab-apply-yes');if(y)y.onclick=()=>{
     const nd=[null,null,null,null,null];let moved=0;
-    for(const r of labApplyPlan()){if(!r.x||!r.own)continue;nd[r.i]=r.x.g;const us=[];
+    for(const r of labApplyPlan(side)){if(!r.x||!r.own)continue;nd[r.i]=r.x.g;const us=[];
       for(const o of r.its){if(!o.it)continue;const h=itemHolder(o.it.u);if(h&&h!==r.x.g){S.gens[h].its=S.gens[h].its.filter(u=>u!==o.it.u);moved++}us.push(o.it.u)}
       S.gens[r.x.g].its=us.slice(0,ITEM_SLOTS)}
-    S.deck=nd;save();closeSheet();renderTop();renderView();toast(`내 진형에 적용했어요 · 장수 ${nd.filter(Boolean).length}명${moved?` · 보물 ${moved}개 옮김`:''}`);
+    S.deck=nd;save();closeSheet();renderTop();renderView();toast(`${deckName(S.dk)}에 적용했어요 · 장수 ${nd.filter(Boolean).length}명${moved?` · 보물 ${moved}개 옮김`:''}`);
   };
 }
-document.addEventListener('click',e=>{if(e.target.closest('[data-labapply]'))openLabApply()});
+document.addEventListener('click',e=>{const a=e.target.closest('[data-labapply]');if(a)openLabApply(a.dataset.labapply)});
 function pvpSegHtml(){return `<div class="seg" role="group" aria-label="결투장 메뉴"><button type="button" data-pvpm="duel" aria-pressed="${pvpMode==='duel'}">결투장</button><button type="button" data-pvpm="raid" aria-pressed="${pvpMode==='raid'}">레이드</button><button type="button" data-pvpm="lab" aria-pressed="${pvpMode==='lab'}">연습장</button></div>`}
 function vPvp(){
-  const myP=deckPower(mySpecs());
+  const myP=deckPower(defSpecs());
   let h=`<div class="row"><h2>결투장</h2><span class="sp"></span>${MODE==='shared'?'<button type="button" class="btn ghost sm" id="settings">내 정보</button>':''}</div>`;
   h+=pvpSegHtml();if(pvpMode==='lab')return h+vLab();if(pvpMode==='raid')return h+vRaid();
+  h+=deckQuickHtml('공격 진형');
   if(MODE!=='shared'){
     return h+`<p class="sub">다른 군주의 방어 진형에 도전하는 곳이에요.</p><div class="empty-state"><b>對戰</b>서버 설정이 끝나면 친구들과 겨룰 수 있어요. 지금은 연습전만 가능합니다.</div>
     <button type="button" class="btn ghost wide" id="practice" style="margin-top:12px">연습전 (보상 없음)</button>
@@ -2489,7 +2553,7 @@ function vPvp(){
   <div class="recbox"><div class="stat"><small>오늘 공격</small><b>${me.aw}승 ${me.al}패</b></div><div class="stat"><small>오늘 방어</small><b>${me.dw}승 ${me.dl}패</b></div><div class="stat"><small>남은 도전</small><b>${ticketsLeft()}/${PVP_DAILY}</b></div></div>`;
   const ranked=rankDay(BATTLES), rk={};ranked.forEach((r,i)=>rk[r.id]=i+1);
   const rows=PLAYERS.map(p=>({...p,power:deckPower(p.deck),r:st[p.id]||{aw:0,al:0,dw:0,dl:0}}));
-  if(!rows.some(p=>p.id===UID))rows.push({id:UID,deck:mySpecs().filter(Boolean),power:myP,r:me});
+  if(!rows.some(p=>p.id===UID))rows.push({id:UID,deck:defSpecs().filter(Boolean),power:myP,r:me});
   rows.sort((a,b)=>(rk[a.id]||1e9)-(rk[b.id]||1e9)||b.power-a.power);
   h+=`<h3>오늘 순위 <span style="font-weight:400">· 군주를 누르면 진형을 볼 수 있어요</span></h3><div class="list">`;
   rows.forEach(p=>{
@@ -2553,7 +2617,7 @@ function deckComp(specs){const a=specs.filter(Boolean);let t=0;a.forEach(s=>t+=g
 const pct=x=>Math.round(x*100)+'%';
 function openPeek(id){
   const mine=id===UID;
-  const p=mine?{id,deck:mySpecs().filter(Boolean)}:PLAYERS.find(x=>x.id===id);
+  const p=mine?{id,deck:defSpecs().filter(Boolean)}:PLAYERS.find(x=>x.id===id);
   if(!p)return;
   const st=standings()[id]||{aw:0,al:0,dw:0,dl:0}, dc=deckComp(p.deck);
   const rows=p.deck.map((s,k)=>{const b=GMAP[s.g],its=itemsOf(s.i),c=genComp(s);
@@ -2603,32 +2667,49 @@ function battleStats(res){
   }
   return st;
 }
-let rsSide=0, rsMetric='dmg';
+let rsSide=0, rsMetric='dmg', rsSel='';
 const RS_M={dmg:'피해량',taken:'받은 피해',mit:'경감한 피해',acts:'공격 횟수',dps:'회당 피해'};
-function statChart(res,st){
+function statChart(res,st,sel){
   const us=res.init[rsSide].map(u=>{const r=st[u.side+'-'+u.slot];return {u,r,v:rsMetric==='dps'?(r.acts?Math.round(r.dmg/r.acts):0):r[rsMetric]}}).sort((a,b)=>b.v-a.v);
-  const mx=Math.max(1,...us.map(x=>x.v));
-  return us.map(({u,r,v})=>`<button type="button" class="sbar" data-rsu="${u.side}-${u.slot}" aria-label="${esc(u.name)} 전투 기록 보기"><span class="sn">${esc(u.name)}</span><span class="st"><i style="width:${v/mx*100}%"></i></span><b class="num">${fmt(v)}</b></button>`).join('');
+  const mx=Math.max(1,...us.map(x=>x.v)), mv=mvpOf(res,st,rsSide);
+  return us.map(({u,r,v})=>{const k=u.side+'-'+u.slot;return `<button type="button" class="sbar${k===sel?' on':''}" data-rsu="${k}" aria-pressed="${k===sel}" aria-label="${esc(u.name)} 전투 기록 보기"><span class="sn">${mv&&mv.u===u?'<i class="mvpb">MVP</i>':''}${esc(u.name)}</span><span class="st"><i style="width:${v/mx*100}%"></i></span><b class="num">${fmt(v)}</b></button>`}).join('');
 }
 function mvpOf(res,st,side){
   let best=null;res.init[side].forEach(u=>{const r=st[u.side+'-'+u.slot],sc=r.dmg+r.heal*.6;if(!best||sc>best.sc)best={u,r,sc}});return best;
 }
 function mvpHtml(m,tag){
-  if(!m)return '';const {u,r}=m;const it=u.items&&u.items.length?{name:u.items.map(x=>x.n+(x.d?'+'+x.d:'')).join(', ')}:null;
+  if(!m)return '';const {u,r}=m, key=u.side+'-'+u.slot;
   const c=(k,v)=>`<div class="stat"><small>${k}</small><b>${v}</b></div>`;
-  return `<div class="mvp"><div class="mvp-h">${tag===''?'':`<span class="mvp-t">${tag||'MVP'}</span>`}${seal(u,'lg')}<div style="text-align:left;min-width:0"><b style="font-size:17px">${esc(u.name)}</b> <span class="stars r${u.rar}">${stars(u.rar)}</span><div class="sub" style="margin:0">${FAC[u.fac]} · ${CLS[u.cls].g} ${CLS[u.cls].n}${u.lv?` · Lv ${u.lv}`:''}${it?` · ${esc(it.name)}`:''}</div><div class="sub" style="margin:0">전법 ${esc(u.skill)}</div></div></div>
+  const its=(u.items||[]).map((x,j)=>`<button type="button" class="ichip r${x.r}" data-rsi="${key}:${j}">${esc(x.n)}${x.d?` <b>+${x.d}</b>`:''}</button>`).join('');
+  return `<div class="mvp"><div class="mvp-h">${tag?`<span class="mvp-t">${tag}</span>`:''}${seal(u,'lg')}<div style="text-align:left;min-width:0"><b style="font-size:17px">${esc(u.name)}</b> <span class="stars r${u.rar}">${stars(u.rar)}</span><div class="sub" style="margin:0">${FAC[u.fac]} · ${CLS[u.cls].g} ${CLS[u.cls].n}${u.lv?` · Lv ${u.lv}`:''}</div>
+   <div style="margin-top:4px"><button type="button" class="ichip sk" data-rssk="${key}">전법 · ${esc(u.skill)}</button></div></div></div>
+   ${its?`<div class="ichips">${its}</div>`:''}
    <div class="stats" style="grid-template-columns:repeat(4,1fr);margin:10px 0 0">${c('총 피해',fmt(r.dmg))}${c('일반 공격 피해',fmt(r.nd))}${c('전법 피해',fmt(r.sd))}${c('처치',r.kills)}${c('받은 피해',fmt(r.taken))}${c('경감한 피해',fmt(r.mit))}${c('남은 체력',fmt(Math.max(0,r.hp)))}${c('회복',fmt(r.heal))}${c('행동 · 전법',r.acts+' · '+r.sk)}${c('회당 피해',fmt(r.acts?Math.round(r.dmg/r.acts):0))}${c('치명타',r.crit)}${c('생존',r.hp>0?'○':'✕')}</div>
-   <p class="sub" style="margin:6px 0 0;font-size:11px">경감한 피해: 방어력과 피해 감소로 막아 낸 양이에요. 화상 피해는 전법 피해에 포함돼요.</p></div>`;
+   <p class="sub no-cap" style="margin:6px 0 0;font-size:11px">보물·전법을 누르면 설명이 나와요. 경감한 피해는 방어력과 피해 감소로 막아 낸 양이고, 화상 피해는 전법 피해에 포함돼요.</p></div>`;
 }
-function openUnitPop(res,st,key){
-  const[s,i]=key.split('-').map(Number), u=res.init[s].find(x=>x.slot===i), r=st[key];if(!u||!r)return;
-  const best=mvpOf(res,st,s), tag=best&&best.u===u?'MVP':'';
+function unitByKey(res,key){const[s,i]=key.split('-').map(Number);return res.init[s].find(x=>x.slot===i)}
+function openInfoPop(html){
   const host=document.querySelector('.bt');if(!host)return;
   const old=document.querySelector('.rs-pop');if(old)old.remove();
   const p=document.createElement('div');p.className='rs-pop';p.setAttribute('role','dialog');p.setAttribute('aria-modal','true');
-  p.innerHTML=`<div class="rs-pop-b">${mvpHtml({u,r},tag)}<button type="button" class="btn wide" data-rsclose style="margin-top:10px">닫기</button></div>`;
+  p.innerHTML=`<div class="rs-pop-b"><div class="mvp">${html}</div><button type="button" class="btn wide" data-rsclose style="margin-top:10px">닫기</button></div>`;
   p.addEventListener('click',e=>{if(e.target===p||e.target.closest('[data-rsclose]'))p.remove()});
   host.appendChild(p);p.querySelector('[data-rsclose]').focus({preventScroll:true});
+}
+function itemInfoHtml(it,d,w){
+  const steps=[0,10,25,50];if(!steps.includes(d))steps.push(d);steps.sort((a,b)=>a-b);
+  return `<div class="mvp-h">${itemTile(it,d)}<div style="min-width:0"><b style="font-size:17px">${esc(it.name)}${d?` <span class="pc">+${d}</span>`:''}</b> <span class="stars r${it.rar}">${stars(it.rar)}</span><div class="sub" style="margin:0">${ITYPE[it.g]}${it.on?` · ${ON_NAME[it.on[0]]} 장착 시 추가 효과`:''}</div></div></div>
+   <h3 style="margin:12px 0 4px">지금 효과 (+${d})</h3><p style="margin:0;font-size:13px">${fxText(it,d,w)}</p>
+   <h3 style="margin:12px 0 4px">강화 단계별 효과</h3>
+   ${steps.map(s=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line);flex-wrap:nowrap;${s===d?'color:var(--bronze)':''}"><b class="num" style="width:40px;flex:none">+${s}</b><span style="flex:1;font-size:12px">${fxText(it,s)}${s===d?' ◀ 지금':''}</span></div>`).join('')}
+   <p class="sub" style="margin:8px 0 0;font-size:11px">강화 1단계마다 기본 효과가 +3%씩 올라요(최대 +${ITEM_MAXD}, +50이면 2.5배).</p>`;
+}
+function skillInfoHtml(u){
+  const S2=u.sk||{}, b=GMAP[u.id];
+  return `<div class="mvp-h">${seal(u,'lg')}<div style="min-width:0"><b style="font-size:17px">${esc(S2.n||u.skill)}</b><div class="sub" style="margin:0">${esc(u.name)}의 전법 · ${CLS[u.cls].g} ${CLS[u.cls].n}</div></div></div>
+   <p style="margin:12px 0 6px;font-size:14px">${esc(S2.d||'')}</p>
+   <div class="sub" style="margin:0">${cdText(u.cls)} 발동${u.cls==='cav'&&typeof CAV_SK_MUL!=='undefined'&&CAV_SK_MUL!==1?` · 기병 전법 피해 ×${CAV_SK_MUL}`:''}${u.skp?` · 보물·도감 전법 피해 +${Math.round(u.skp*1000)/10}%`:''}</div>
+   ${b?'':'<p class="sub" style="margin:6px 0 0">일반 병사의 기본 전법이에요.</p>'}`;
 }
 // 결과 링크: 진형과 시드를 담아 같은 전투를 다시 재생
 const packSpecs=a=>a.filter(Boolean).map(s=>[s.g,s.lv,s.d||0,s.i&&s.i.length?s.i:0,s.cb||0]);
@@ -2710,19 +2791,28 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     document.querySelectorAll('.bu.act').forEach(n=>n.classList.remove('act'));
     const box=document.createElement('div');box.className='bt-res';
     const stt=battleStats(res), sh=opts&&opts.share, rp=opts&&opts.replay;
+    rsSide=rp?(res.win?0:1):0;{const m0=mvpOf(res,stt,rsSide);rsSel=m0?m0.u.side+'-'+m0.u.slot:''}
     const vd=opts&&opts.verdict, winLab=vd?vd.lab:rp?`${res.win?allyLab:foeLab} 승리`:(res.win?'승리':'패배');
     box.innerHTML=`<div class="res-card" id="res-card"><div class="stamp ${res.win||rp||vd?'w':'l'}">${vd?vd.stamp:rp?'戰':res.win?'勝':'敗'}</div><h2 style="margin:0">${esc(winLab)}</h2>${resultHtml()}
      <div class="res-sec"><h3>전투 기록</h3>
       <div class="chips no-cap" role="group"><button type="button" data-rss="0" aria-pressed="${rsSide===0}">${esc(allyLab)}</button><button type="button" data-rss="1" aria-pressed="${rsSide===1}">${esc(foeLab)}</button><span class="sp"></span>${Object.entries(RS_M).map(([k,v])=>`<button type="button" data-rsm="${k}" aria-pressed="${rsMetric===k}">${v}</button>`).join('')}</div>
-      <div class="sub" id="rs-cap" style="margin:0 0 4px">${esc(rsSide?foeLab:allyLab)} · ${RS_M[rsMetric]}</div><div class="sub no-cap" style="margin:0 0 4px;font-size:11px">장수 이름을 누르면 장수별 전투 기록을 볼 수 있어요.</div><div id="rs-chart">${statChart(res,stt)}</div></div>
-     ${mvpHtml(mvpOf(res,stt,rp?(res.win?0:1):0))}</div>
+      <div class="sub" id="rs-cap" style="margin:0 0 4px">${esc(rsSide?foeLab:allyLab)} · ${RS_M[rsMetric]}</div><div class="sub no-cap" style="margin:0 0 4px;font-size:11px">장수 이름을 누르면 아래 기록 창이 그 장수로 바뀌어요.</div><div id="rs-chart">${statChart(res,stt,rsSel)}</div></div>
+     <div class="mvpline" id="rs-mvpl"></div><div id="rs-unit">${mvpHtml(mvpOf(res,stt,rsSide),'MVP')}</div></div>
      ${sh&&CAN_SHARE?`<div class="share-row"><button type="button" class="btn ghost" id="sh-link">결과 링크 공유</button><button type="button" class="btn ghost" id="sh-img">이미지로 공유</button></div><div id="share-fallback" hidden style="width:100%;max-width:440px"><p class="sub" style="margin:0 0 4px">아래 내용을 길게 눌러 복사한 뒤 카카오톡에 붙여넣으세요.</p><textarea readonly></textarea></div>`:''}
      <button type="button" class="btn" id="bt-close" style="min-width:160px">${rp?'게임 하러 가기':'확인'}</button>`;
     $('.bt').appendChild(box);
-    const redraw=()=>{$('#rs-chart').innerHTML=statChart(res,stt);$('#rs-cap').textContent=`${rsSide?foeLab:allyLab} · ${RS_M[rsMetric]}`;box.querySelectorAll('[data-rss]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.rss===rsSide)));box.querySelectorAll('[data-rsm]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.rsm===rsMetric)))};
-    box.querySelectorAll('[data-rss]').forEach(b=>b.onclick=()=>{rsSide=+b.dataset.rss;redraw()});
+    const showUnit=key=>{const u=unitByKey(res,key);if(!u)return;rsSel=key;const m=mvpOf(res,stt,u.side);$('#rs-unit').innerHTML=mvpHtml({u,r:stt[key]},m&&m.u===u?'MVP':'');
+      const mm=mvpOf(res,stt,rsSide);$('#rs-mvpl').innerHTML=mm?`<span class="mvpb">MVP</span> <b>${esc(mm.u.name)}</b> · 총 피해 ${fmt(mm.r.dmg)}${mm.u.side+'-'+mm.u.slot!==key?` <button type="button" class="btn ghost sm" data-rsu="${mm.u.side}-${mm.u.slot}">MVP 보기</button>`:''}`:'';
+      $('#rs-chart').innerHTML=statChart(res,stt,rsSel)};
+    const redraw=()=>{$('#rs-chart').innerHTML=statChart(res,stt,rsSel);$('#rs-cap').textContent=`${rsSide?foeLab:allyLab} · ${RS_M[rsMetric]}`;box.querySelectorAll('[data-rss]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.rss===rsSide)));box.querySelectorAll('[data-rsm]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.rsm===rsMetric)))};
+    box.querySelectorAll('[data-rss]').forEach(b=>b.onclick=()=>{rsSide=+b.dataset.rss;const m=mvpOf(res,stt,rsSide);redraw();if(m)showUnit(m.u.side+'-'+m.u.slot)});
     box.querySelectorAll('[data-rsm]').forEach(b=>b.onclick=()=>{rsMetric=b.dataset.rsm;redraw()});
-    box.addEventListener('click',e=>{const b=e.target.closest('[data-rsu]');if(b)openUnitPop(res,stt,b.dataset.rsu)});
+    showUnit(rsSel);
+    box.addEventListener('click',e=>{
+      const b=e.target.closest('[data-rsu]');if(b){showUnit(b.dataset.rsu);return}
+      const it=e.target.closest('[data-rsi]');if(it){const[k,j]=it.dataset.rsi.split(':'),u=unitByKey(res,k),x=u&&u.items[+j];if(x&&IMAP[x.k])openInfoPop(itemInfoHtml(IMAP[x.k],x.d||0,u));return}
+      const sk=e.target.closest('[data-rssk]');if(sk){const u=unitByKey(res,sk.dataset.rssk);if(u)openInfoPop(skillInfoHtml(u))}
+    });
     if(sh&&CAN_SHARE){$('#sh-link').onclick=()=>shareLink(sh,res.win);$('#sh-img').onclick=()=>shareImage($('#res-card'),sh)}
     $('#bt-close').onclick=()=>{el.hidden=true;el.innerHTML='';if(rp){history.replaceState(null,'',location.pathname+location.search);if(typeof showLogin==='function'&&!S&&MODE!=='local')showLogin()}renderTop();renderView()};
     $('#bt-close').focus();
