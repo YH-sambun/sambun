@@ -48,7 +48,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--bronze);ou
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px 8px}
 .brand{display:flex;flex-direction:column;line-height:1.1}
 .brand-hz{font-family:var(--display);font-size:22px;color:var(--bronze);letter-spacing:.04em;white-space:nowrap}
-.brand-ko{font-size:11px;color:var(--mute);letter-spacing:.2em}
+.brand-ko{font-size:12px;color:var(--mute);letter-spacing:.2em}
 .res{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
 .coin{display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:3px 10px 3px 3px;font-weight:700;font-variant-numeric:tabular-nums}
 .sl{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;font-family:var(--display);font-size:13px;color:var(--ink);font-weight:400}
@@ -63,9 +63,9 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--bronze);ou
 
 main#view{flex:1;min-height:0;overflow-y:auto;padding:8px 16px 24px}
 .tabs{display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid var(--line);background:var(--panel)}
-.tab{background:none;border:0;padding:8px 0 10px;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--mute)}
+.tab{background:none;border:0;padding:8px 0 10px;min-height:56px;justify-content:center;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--mute)}
 .tab b{font-family:var(--display);font-weight:400;font-size:20px;line-height:1}
-.tab span{font-size:11px}
+.tab span{font-size:12px}
 .tab[aria-current="true"]{color:var(--bronze)}
 
 h2{font-family:var(--display);font-weight:400;font-size:22px;margin:8px 0 4px;text-wrap:balance}
@@ -88,21 +88,21 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 .f-wei{--fac:var(--wei)} .f-shu{--fac:var(--shu)} .f-wu{--fac:var(--wu)} .f-qun{--fac:var(--qun)}
 .r2{--rc:var(--r2)} .r3{--rc:var(--r3)} .r4{--rc:var(--r4)} .r5{--rc:var(--r5)}
 .seal.r5{box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--r5),0 0 14px rgba(233,198,108,.45)}
-.stars{color:var(--rc);font-size:11px;letter-spacing:-1px}
+.stars{color:var(--rc);font-size:12px;letter-spacing:-1px}
 .cls{font-family:var(--display);font-size:13px;color:var(--mute)}
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
 .gc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:0}
 .gc .nm{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.gc .meta{font-size:11px;color:var(--mute);display:flex;gap:6px;align-items:center}
+.gc .meta{font-size:12px;color:var(--mute);display:flex;gap:6px;align-items:center}
 .gc.in-deck{border-color:var(--bronze-d)}
-.chip{font-size:10px;border:1px solid var(--bronze-d);color:var(--bronze);border-radius:999px;padding:0 6px}
+.chip{font-size:11px;border:1px solid var(--bronze-d);color:var(--bronze);border-radius:999px;padding:0 6px}
 
 .exmap{display:flex;flex-direction:column;gap:6px;margin:6px 0 2px}
 .exrow{display:flex;gap:6px;align-items:stretch}
-.exrn{width:16px;flex:none;align-self:center;color:var(--mute);font-size:11px;text-align:center}
+.exrn{width:16px;flex:none;align-self:center;color:var(--mute);font-size:12px;text-align:center}
 .exn{flex:1;position:relative;display:flex;flex-direction:column;align-items:center;gap:1px;padding:7px 2px 9px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;color:var(--mute);opacity:.45;font:inherit}
-.exn b{font-size:17px;line-height:1.1;color:var(--ec)}.exn small{font-size:11px}
+.exn b{font-size:17px;line-height:1.1;color:var(--ec)}.exn small{font-size:12px}
 .exn .exto{position:absolute;bottom:0;left:0;right:0;font-style:normal;font-size:9px;line-height:1;color:var(--mute);letter-spacing:2px}
 .exn.can{opacity:1;border:2px solid var(--ec);color:var(--fg);cursor:pointer;animation:exp 1.6s ease-in-out infinite}
 @keyframes exp{50%{box-shadow:0 0 10px -2px var(--ec)}}
@@ -130,7 +130,7 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 /* deck */
 .slot{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
 .slot .pos{width:40px;flex:none;text-align:center;font-family:var(--display);color:var(--bronze);font-size:15px;line-height:1.1}
-.slot .pos small{display:block;font-family:var(--body);font-size:10px;color:var(--mute)}
+.slot .pos small{display:block;font-family:var(--body);font-size:11px;color:var(--mute)}
 .slot .info{flex:1;min-width:0}
 .slot .info b{display:block}
 .slot .info span{font-size:12px;color:var(--mute)}
@@ -148,10 +148,11 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 .rates{display:flex;gap:12px;font-size:12px;margin:6px 0 14px;flex-wrap:wrap}
 .rates span{color:var(--rc)}
 .reveal{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+@media (min-width:768px){#app,.sheet-body,.bt{max-width:680px}body{font-size:16px}}
 @media (max-width:380px){.reveal{grid-template-columns:repeat(4,1fr)}}
-.rv{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;font-size:11px;animation:pop .45s both;min-width:0}
+.rv{display:flex;flex-direction:column;align-items:center;gap:4px;text-align:center;font-size:12px;animation:pop .45s both;min-width:0}
 .rv .nm{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
-.rv .tag{font-size:10px;color:var(--bronze)}
+.rv .tag{font-size:11px;color:var(--bronze)}
 @keyframes pop{from{transform:scale(.4) rotate(-12deg);opacity:0}to{transform:none;opacity:1}}
 
 /* lists */
@@ -166,7 +167,7 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 .itm{width:40px;height:40px;flex:none;border-radius:10px;display:grid;place-items:center;font-family:var(--display);font-size:22px;background:var(--panel2);border:1.5px solid var(--rc);color:var(--rc)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
 .stat{background:var(--panel2);border-radius:10px;padding:8px;text-align:center}
-.stat small{display:block;font-size:11px;color:var(--mute)}
+.stat small{display:block;font-size:12px;color:var(--mute)}
 .stat b{font-variant-numeric:tabular-nums}
 .recbox{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
 .empty-state{text-align:center;color:var(--mute);border:1px dashed var(--line);border-radius:12px;padding:20px 16px;font-size:13px}
@@ -177,7 +178,7 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 .sheet-body{width:100%;max-width:540px;max-height:86%;overflow-y:auto;background:var(--panel);border-top:1px solid var(--line);border-radius:18px 18px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom,0px));animation:up .22s ease-out}
 @keyframes up{from{transform:translateY(30px);opacity:.4}}
 .sheet-h{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-.sheet-h .x{margin-left:auto;background:var(--panel2);border:1px solid var(--line);border-radius:50%;width:32px;height:32px;padding:0}
+.sheet-h .x{margin-left:auto;background:var(--panel2);border:1px solid var(--line);border-radius:50%;width:40px;height:40px;padding:0;font-size:16px;flex:none}
 
 /* battle */
 #battle{position:fixed;inset:0;z-index:30;background:var(--bg);display:flex;justify-content:center;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
@@ -185,10 +186,10 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
   background-image:radial-gradient(90% 40% at 50% 50%,rgba(208,80,58,.08),transparent 70%)}
 .bt-head{display:flex;align-items:center;gap:8px}
 .bt-title{font-family:var(--display);font-size:20px;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bt-side{font-size:11px;color:var(--mute);letter-spacing:.2em}
+.bt-side{font-size:12px;color:var(--mute);letter-spacing:.2em}
 .bt-row{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .bu{position:relative;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 4px 6px;display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;transition:opacity .3s,transform .15s}
-.bu .bn{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.bu .bn{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .bu .hp{width:100%;height:5px;background:var(--panel2);border-radius:3px;overflow:hidden}
 .bu .hp i{display:block;height:100%;background:var(--jade);transition:width .25s}
 .bt-foe .bu .hp i{background:var(--cinnabar)}
@@ -202,8 +203,8 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 .bt-row{display:flex;flex-direction:column;gap:5px}
 .bt-line{display:flex;justify-content:center;gap:8px;position:relative}
 .bt-line .bu{width:30%;max-width:118px;padding:5px 4px 4px;gap:2px}
-.bt-rl{position:absolute;left:0;top:50%;transform:translateY(-50%);font-size:10px;color:var(--mute)}
-.bu .rk{position:absolute;left:5px;top:3px;font-style:normal;font-size:10px;color:var(--r5);line-height:1}
+.bt-rl{position:absolute;left:0;top:50%;transform:translateY(-50%);font-size:11px;color:var(--mute)}
+.bu .rk{position:absolute;left:5px;top:3px;font-style:normal;font-size:11px;color:var(--r5);line-height:1}
 .bu .rk.up{color:var(--cinnabar)}.bu .rk.dn{color:var(--jade)}
 .bt-top .bu.act{transform:translateY(4px)}.bt-bot .bu.act{transform:translateY(-4px)}
 .bt-log{min-height:56px}
@@ -238,7 +239,7 @@ img{max-width:100%}
 input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 
 .sl.ap{background:var(--cinnabar);color:#fff}
-.apt{font-size:11px;color:var(--mute);font-weight:500}
+.apt{font-size:12px;color:var(--mute);font-weight:500}
 .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
 .chips button{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 11px;font-size:12px;color:var(--mute)}
 .chips button[aria-pressed="true"]{border-color:var(--bronze);color:var(--bronze)}
@@ -250,7 +251,7 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .li.unown .seal,.li.unown .itm{filter:grayscale(.85)}
 .dst{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:6px}
 .dc{display:grid;grid-template-columns:auto 1fr;column-gap:4px;align-items:baseline;min-width:0}
-.dc small{font-size:10px;color:var(--mute)}
+.dc small{font-size:11px;color:var(--mute)}
 .dc b{font-size:12px;text-align:right}
 .db{grid-column:1/-1;height:3px;background:var(--panel2);border-radius:2px;overflow:hidden;margin-top:2px}
 .db i{display:block;height:100%;background:var(--bronze)}
@@ -278,7 +279,7 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .itm .px{width:32px;height:32px}
 .dup2{margin-left:3px;color:#c9a6ff}.dup2 i{color:var(--mute);font-style:normal}
 .rgauge{position:relative;height:14px;border-radius:7px;background:var(--panel2);border:1px solid var(--line);overflow:hidden;margin:8px 0 6px}.rgauge i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#a8402f,var(--bronze))}.rgauge s{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.35)}
-.cpips{display:inline-flex;gap:4px;margin:3px 0;flex-wrap:wrap}.cpips i{font-style:normal;font-size:11px;line-height:16px;padding:0 5px;border:1px solid var(--line);border-radius:6px;color:var(--mute)}.cpips i.on{border-color:var(--bronze);color:var(--bronze)}
+.cpips{display:inline-flex;gap:4px;margin:3px 0;flex-wrap:wrap}.cpips i{font-style:normal;font-size:12px;line-height:16px;padding:0 5px;border:1px solid var(--line);border-radius:6px;color:var(--mute)}.cpips i.on{border-color:var(--bronze);color:var(--bronze)}
 .colreq{display:flex;flex-wrap:wrap;gap:6px}.colreq .unown{opacity:.35}
 .labbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}.labbox .slot{background:var(--panel2)}
 .labits{display:flex;gap:4px;margin-top:3px;align-items:center}.labits .ig .px{width:18px;height:18px}
@@ -289,7 +290,7 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .wheel-pin{position:absolute;left:50%;top:-8px;margin-left:-9px;width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-top:18px solid var(--bronze);filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
 .wheel-hub{position:absolute;left:50%;top:50%;width:42px;height:42px;margin:-21px 0 0 -21px;border-radius:50%;background:var(--bronze);color:#1a1206;display:grid;place-items:center;font-family:var(--display);font-size:18px}
 .li[disabled]{opacity:.45}
-.itm{position:relative}.itm .idp{position:absolute;right:0;bottom:0;font-size:10px;line-height:13px;padding:0 3px;border-radius:5px 0 8px 0;background:var(--bronze);color:#1a1206;font-family:var(--body);font-weight:700}
+.itm{position:relative}.itm .idp{position:absolute;right:0;bottom:0;font-size:11px;line-height:13px;padding:0 3px;border-radius:5px 0 8px 0;background:var(--bronze);color:#1a1206;font-family:var(--body);font-weight:700}
 .idp{color:var(--bronze);font-weight:700}
 .itbtn{display:flex;align-items:center;gap:12px;flex:1;min-width:0;background:none;border:0;padding:0;color:inherit;font:inherit;text-align:left;cursor:pointer}
 .li[disabled]{opacity:.45}
@@ -301,7 +302,7 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .att-card{background:var(--panel2);border:1px solid var(--bronze-d);border-radius:12px;padding:12px;margin-bottom:12px;display:flex;flex-direction:column;gap:10px}
 .att{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}
 .ad{border:1px solid var(--line);border-radius:8px;padding:5px 0;text-align:center;display:flex;flex-direction:column;align-items:center}
-.ad small{font-size:10px;color:var(--mute)}
+.ad small{font-size:11px;color:var(--mute)}
 .ad b{font-family:var(--display);font-weight:400;font-size:16px;color:var(--mute)}
 .ad.done{background:var(--bronze-d);border-color:var(--bronze)}
 .ad.done b{color:var(--fg)}
@@ -309,7 +310,7 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .ad.today b{color:var(--cinnabar)}
 .nt{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}
 .nt-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-.nt-h small{color:var(--mute);font-size:11px}
+.nt-h small{color:var(--mute);font-size:12px}
 .ver{font-family:var(--display);color:var(--bronze);font-size:15px}
 .nt ul{margin:8px 0 10px;padding-left:18px;font-size:13px;color:var(--fg);display:flex;flex-direction:column;gap:4px}
 
@@ -331,7 +332,7 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .li.bond{align-items:flex-start}
 .bfx{color:var(--bronze)!important}
 .bmem{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
-.bmem>span{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10px;color:var(--mute)}
+.bmem>span{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--mute)}
 .bmem .unown{opacity:.45;filter:grayscale(.8)}
 
 .bt-res{justify-content:flex-start!important;overflow-y:auto;padding-top:20px!important}
@@ -358,11 +359,11 @@ button.sbar.on .sn{color:var(--bronze);font-weight:700}
 .ichip.sk{border-color:var(--bronze-d);color:var(--bronze)}
 .rs-pop{position:fixed;inset:0;z-index:40;background:rgba(4,8,8,.65);display:flex;align-items:center;justify-content:center;padding:16px}
 .rs-pop-b{width:100%;max-width:440px;max-height:100%;overflow-y:auto}
-.rs-pop .stats small{font-size:10px}
+.rs-pop .stats small{font-size:11px}
 .slot .pos .slv{display:block;margin:4px auto 0;width:46px;padding:2px 0;font:600 11px var(--body);background:var(--panel2);border:1px solid var(--bronze-d);color:var(--bronze);border-radius:6px;cursor:pointer}
 .slot .pos{width:48px}
 .mv button.clr{color:var(--cinnabar)}
-.defmk{display:inline-block;font-family:var(--display);font-size:11px;color:var(--ink);background:var(--bronze);border-radius:4px;padding:0 3px;line-height:1.4;vertical-align:1px}
+.defmk{display:inline-block;font-family:var(--display);font-size:12px;color:var(--ink);background:var(--bronze);border-radius:4px;padding:0 3px;line-height:1.4;vertical-align:1px}
 .deckbar button{max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:none}
 .deckbar{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:thin;padding-bottom:4px;-webkit-overflow-scrolling:touch}
 .savest{display:block;margin:1px 0 0;text-align:left;cursor:pointer;font-size:inherit;color:var(--mute);white-space:nowrap;background:none;border:0;padding:0;font-family:var(--body)}
@@ -376,18 +377,18 @@ button.sbar.on .sn{color:var(--bronze);font-weight:700}
 .lockb{background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:5px 8px;font-size:12px;color:var(--mute)}
 .lockb[aria-pressed="true"]{border-color:var(--bronze);color:var(--bronze)}
 
-.flab{font-size:11px;color:var(--mute);align-self:center;min-width:28px}
+.flab{font-size:12px;color:var(--mute);align-self:center;min-width:28px}
 .lvbox{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}
 .lvbox input[type=range]{width:100%;accent-color:var(--bronze);margin:8px 0 2px;height:28px}
-.gc .meta.num{font-size:11px}
+.gc .meta.num{font-size:12px}
 .iact{display:flex;flex-direction:column;gap:6px;align-items:flex-end;flex:none}
 .iact .btn{white-space:nowrap}
 
-.dup{color:var(--bronze);font-size:10px;letter-spacing:1px;white-space:nowrap}
+.dup{color:var(--bronze);font-size:11px;letter-spacing:1px;white-space:nowrap}
 .dup i{font-style:normal;color:var(--line)}
 .dup small{color:var(--mute);letter-spacing:0;margin-right:4px}
 .hb{width:34px;height:34px;flex:none;border-radius:50%;background:var(--panel);border:1px solid var(--line);color:var(--mute);font-weight:700;padding:0}
-.qh{background:none;border:1px solid var(--line);border-radius:50%;width:20px;height:20px;padding:0;font-size:11px;color:var(--mute);vertical-align:2px;margin-left:4px}
+.qh{background:none;border:1px solid var(--line);border-radius:50%;width:20px;height:20px;padding:0;font-size:12px;color:var(--mute);vertical-align:2px;margin-left:4px}
 dl.help{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:13px}
 dl.help dt{color:var(--bronze);font-weight:500;white-space:nowrap}
 dl.help dd{margin:0;color:var(--fg)}
@@ -397,7 +398,7 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v2.1.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v2.1.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -418,7 +419,7 @@ dl.help dd{margin:0;color:var(--fg)}
     <button class="tab" type="button" data-v="gacha"><b>募</b><span>등용</span></button>
     <button class="tab" type="button" data-v="deck"><b>營</b><span>둔영</span></button>
     <button class="tab" type="button" data-v="gens"><b>將</b><span>무장</span></button>
-    <button class="tab" type="button" data-v="pvp"><b>戰</b><span>야전</span></button>
+    <button class="tab" type="button" data-v="pvp"><b>戰</b><span>전장</span></button>
     <button class="tab" type="button" data-v="dex"><b>錄</b><span>도감</span></button>
   </nav>
 </div>
@@ -537,10 +538,10 @@ const SK={
  xuchu:{n:'나의투마초',d:'갑옷을 벗고 맨 앞 적에게 3.4배 피해, 자신 방어 2턴 -30%',tg:'front',m:3.4,buff:{to:'self',def:-.3,dur:2}},
  dianwei:{n:'악래의 호위',d:'맨 앞 적에게 1.8배 피해, 아군 전체 방어 2턴 +20%, 자신 체력 15% 회복. 특성: 전투마다 2번(조조가 있으면 3번), 아군이 쓰러질 피해를 대신 맞고 그 피해를 30% 줄여 받음',tg:'front',m:1.8,buff:{to:'all',def:.2,dur:2},heal:{to:'self',p:.15},pguard:{n:2,pref:'caocao',red:.3}},
  guojia:{n:'귀재의 간파',d:'체력 비율이 가장 높은 적에게 2.6배 피해, 1턴 기절',tg:'hpmax',m:2.6,stun:1},
- sunquan:{n:'강동 수성',d:'아군 전체 체력 20% 회복, 아군 전체 방어 2턴 +20%',tg:'none',heal:{to:'all',p:.2},buff:{to:'all',def:.2,dur:2}},
+ sunquan:{n:'강동 수성',d:'아군 전체 체력 12% 회복, 아군 전체 방어 2턴 +20%',tg:'none',heal:{to:'all',p:.12},buff:{to:'all',def:.2,dur:2}},
  ganning:{n:'백기겁영',d:'적 전체 0.55배 피해, 자신 공격 2턴 +25%',tg:'all',m:.55,buff:{to:'self',atk:.25,dur:2}},
  taishici:{n:'신정의 신궁',d:'공격력이 가장 높은 적에게 2.7배 피해, 50% 확률로 1턴 기절',tg:'high',m:2.7,stun:.5},
- luxun:{n:'화소연영',d:'적 전체 0.45배 피해, 3턴 동안 화상(매 턴 공격의 12%, 방어 무시)',tg:'all',m:.45,burn:{p:.12,dur:3}},
+ luxun:{n:'화소연영',d:'적 전체 0.45배 피해, 3턴 동안 화상(매 턴 공격의 9%, 방어 무시)',tg:'all',m:.45,burn:{p:.09,dur:3}},
  zhangjiao:{n:'태평도',d:'적 전체 0.4배 피해, 각 20% 확률로 1턴 기절, 아군 전체 체력 10% 회복',tg:'all',m:.4,stun:.2,heal:{to:'all',p:.1}},
  dongzhuo:{n:'주지육림',d:'적 전체 방어 2턴 -25%, 자신 체력 20% 회복',tg:'none',deb:{to:'all',def:-.25,dur:2},heal:{to:'self',p:.2}},
  yuanshao:{n:'사세삼공',d:'아군 전체 공격과 방어 2턴 +25%',tg:'none',buff:{to:'all',atk:.25,def:.25,dur:2}},
@@ -1077,6 +1078,7 @@ const fmt=n=>Math.floor(n).toLocaleString('ko-KR');
 const stars=n=>'★'.repeat(n);
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+const seedOf=(...a)=>{let h=2166136261;for(const c of a.join('|'))h=Math.imul(h^c.charCodeAt(0),16777619);return (h>>>0)%2147483647};
 const kstDay=()=>new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
 let toastT;
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2200)}
@@ -1393,7 +1395,7 @@ function openConflict(){
    <div style="margin-bottom:12px">${row('','다른 기기','이 기기')}${row('스테이지',o.stage,S.stage)}${row('장수',Object.keys(o.gens).length,Object.keys(S.gens).length)}${row('보물',o.items.length,S.items.length)}${row('금',fmt(o.gold),fmt(S.gold))}${row('군량',fmt(o.food),fmt(S.food))}</div>
    <button type="button" class="btn wide" id="cf-load">다른 기기 기록 불러오기 (추천)</button>
    <button type="button" class="btn ghost wide" id="cf-keep" style="margin-top:8px">이 기기 기록으로 덮어쓰기</button>
-   <p class="sub" style="margin:8px 0 0;font-size:11px">덮어쓰면 다른 기기에서 한 진행은 사라져요.</p>`);
+   <p class="sub" style="margin:8px 0 0;font-size:12px">덮어쓰면 다른 기기에서 한 진행은 사라져요.</p>`);
   $('#cf-load').onclick=()=>adoptServer(conflictData);
   $('#cf-keep').onclick=()=>{baseRev=Number(conflictData.rev)||0;conflictData=null;dirty=true;closeSheet();flush()};
 }
@@ -1546,10 +1548,19 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='2.1.1';
+const GAME_VERSION='2.1.2';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'2.1.2',date:'2026-10-15',title:'메뉴 정리 · 화면 개선',reward:{ap:20},items:[
+  '야전 탭 이름이 \'전장\'으로 바뀌었어요. 전장 안에 야전·토벌전·수성전·천명탑·원정군이 있어요.',
+  '연무장이 둔영 탭으로 옮겨졌어요. 둔영 위쪽에서 진영(내 진형 편성)과 연무장을 오가며 쓸 수 있어요. 기능과 저장된 덱은 그대로예요.',
+  '작은 글씨를 한 단계씩 키워 읽기 쉽게 했어요.',
+  '태블릿·PC처럼 넓은 화면에서는 화면 폭을 넓혀 보여 줘요.',
+  '창 닫기(✕) 버튼과 아래쪽 탭 버튼을 누르기 쉽게 키웠어요.',
+  '야전·토벌전·수성전 전투 화면에 \'중도포기\' 버튼이 생겼어요. 결과가 나오기 전에 그만두면 도전 횟수와 보상, 기록이 남지 않아요. 같은 날 같은 차례의 도전은 다시 해도 같은 진형이면 같은 결과가 나와요.',
+  '육손의 전법 \'화소연영\' 화상 피해를 매 턴 공격의 12%에서 9%로 낮췄어요. ★5 주유(10%)보다 화상이 강했던 점을 바로잡았어요.',
+  '손권의 전법 \'강동 수성\' 회복량을 아군 전체 20%에서 12%로 낮췄어요. 방어 +20%(2턴)는 그대로예요. ★5 순욱(15%)보다 많이 회복해 책사 중 승률이 가장 높았어요.']},
  {v:'2.1.1',date:'2026-10-15',title:'새 장수 5명 · 해제 · 전법 피해 감소',reward:{ap:20},items:[
   '새 장수 5명이 등용에 추가됐어요: ★5 순욱(위·책사), ★4 법정(촉·책사), ★4 한수(군웅·보병), ★3 간옹(촉·책사), ★3 우번(오·책사). 법정·한수·간옹·우번은 원정군의 시작 장수와 모병 후보로도 나와요.',
   '순욱 \'왕좌지재\': 아군 전체 체력 15% 회복, 아군 전체의 해로운 효과(공격·방어 감소, 화상, 기절)를 해제해요. 해제는 새 전법 효과예요.',
@@ -1901,7 +1912,7 @@ const HELP=[
   ['도발','도발 중인 장수가 있으면 상대의 단일 대상 공격이 그 장수에게 향해요.'],
   ['행동 순서','속도가 빠른 장수부터 행동해요. 속도가 같으면 매 턴 무작위로 순서를 정해요.'],
   ['판정','25턴 안에 결판이 나지 않으면 남은 체력 비율이 높은 쪽이 이겨요.'],
-  ['연무장','야전 탭의 연무장에서 모든 장수(Lv'+MAXLV+' · 돌파 최대)와 모든 보물(+1·+25·+50)로 공격덱·NPC 방어덱을 3개씩 저장해 시험할 수 있어요. 보상·기록은 없고 보물 도감 효과는 빠져요. 공격덱의 [내 진형에 적용]으로 보유한 장수·보물을 같은 배치로 내 진형에 옮길 수 있어요.']]},
+  ['연무장','둔영 탭의 연무장에서 모든 장수(Lv'+MAXLV+' · 돌파 최대)와 모든 보물(+1·+25·+50)로 공격덱·NPC 방어덱을 3개씩 저장해 시험할 수 있어요. 보상·기록은 없고 보물 도감 효과는 빠져요. 공격덱의 [내 진형에 적용]으로 보유한 장수·보물을 같은 배치로 내 진형에 옮길 수 있어요.']]},
  {t:'진형 효과',rows:[
   ['진영 보너스','같은 진영의 ★3 이상 장수가 3·4·5명이면 그 진영 장수가 강해져요. 도감의 인연 탭에 전체 표가 있어요.'],
   ['인연','함께 편성하면 발동하고, 진형의 모든 장수 능력치가 올라요. 둔영 탭에서 발동 중인 인연을 볼 수 있어요.'],
@@ -1925,11 +1936,11 @@ const HELP=[
   ['보물 도감','보물마다 +0(보유)·+10·+25·+50에 처음 도달하면 영구 등록돼 모든 장수가 강해져요. 팔아도 등록은 남아요. 세트를 완성하면 추가 효과가 있고, 야전에도 적용돼요. 연무장에는 적용되지 않아요.'],
   ['보물 획득권','보물 획득에 군량 대신 먼저 쓰여요. 1장이 1회예요.'],
   ['장수 등용권','장수 등용에 군량 대신 먼저 쓰여요. 1장이 1회예요. 금화 룰렛에서 얻어요.'],
-  ['원정군','야전 탭의 원정군. 무작위 ★3 장수 3명(레벨 고정 · 돌파·보물 없음)으로 3막을 돌파해요. 갈래길에서 전투·정예·주막·모병을 골라 가고 체력은 전투 사이에 이어져요. 하루 2회. 진행한 칸에 비례해 금, 정복 시 보물 선택권 1장.'],
-  ['천명의 탑','야전 탭의 천명탑. 내 진형으로 30층까지 올라가요. 층을 깨면 천명 3개 중 하나를 골라 쌓고, 지면 끝나요. 하루 3회. 깬 층에 비례해 금, 30층 돌파 시 장수 등용권 10장.'],
+  ['원정군','전장 탭의 원정군. 무작위 ★3 장수 3명(레벨 고정 · 돌파·보물 없음)으로 3막을 돌파해요. 갈래길에서 전투·정예·주막·모병을 골라 가고 체력은 전투 사이에 이어져요. 하루 2회. 진행한 칸에 비례해 금, 정복 시 보물 선택권 1장.'],
+  ['천명의 탑','전장 탭의 천명탑. 내 진형으로 30층까지 올라가요. 층을 깨면 천명 3개 중 하나를 골라 쌓고, 지면 끝나요. 하루 3회. 깬 층에 비례해 금, 30층 돌파 시 장수 등용권 10장.'],
   ['금화 룰렛','등용 탭 아래. 금 1,000으로 돌려 금·군량·나팔·보물 획득권·장수 등용권·장수 선택권·보물 선택권 중 하나를 받아요. 하루 20회, 매일 0시(한국 시간)에 다시 채워져요.'],
   ['쿠폰','화면 위 券 버튼에서 쿠폰 목록(이름·보상·기한)을 보고 바로 받거나, 쿠폰 번호를 직접 입력할 수 있어요. 계정마다 한 번씩 받을 수 있어요.'],
-  ['토벌전','야전 탭의 토벌전. 3일마다 새 적 3명(Lv'+MAXLV+' · 돌파 최대 · 보물 +50, 체력 20배)이 나와요. 내 진형으로 10턴 싸워 준 피해가 모두의 게이지에 쌓이고, 25·50·75·100%마다 그 회차에 1번 이상 도전한 군주 모두가 보상을 받아요. 하루 3회. 기여 1~3위는 회차가 끝난 뒤 추가 보상. 보상은 다음 회차가 끝날 때까지 받을 수 있어요.'],
+  ['토벌전','전장 탭의 토벌전. 3일마다 새 적 3명(Lv'+MAXLV+' · 돌파 최대 · 보물 +50, 체력 20배)이 나와요. 내 진형으로 10턴 싸워 준 피해가 모두의 게이지에 쌓이고, 25·50·75·100%마다 그 회차에 1번 이상 도전한 군주 모두가 보상을 받아요. 하루 3회. 기여 1~3위는 회차가 끝난 뒤 추가 보상. 보상은 다음 회차가 끝날 때까지 받을 수 있어요.'],
   ['전투력','치명·흡혈·피해 감소·전법 피해도 전투력에 반영돼요.']]}
 ];
 function openHelp(focus){
@@ -2214,13 +2225,14 @@ document.addEventListener('click',e=>{
 
 /* ---------------- 진형 ---------------- */
 function vDeck(){
+  if(deckMode==='lab')return `<div class="row"><h2>둔영</h2></div>`+deckSegHtml()+vLab();
   const specs=mySpecs();
   const isDef=S.defDk===S.dk;
-  let h=`<div class="row"><div><h2>둔영</h2><p class="sub" style="margin:0">고른 진형으로 출정·토벌전·야전 공격을 하고, <span class="defmk">防</span> 진형이 야전 방어에 쓰여요. ★5 장수는 진형마다 ${MAX5}명까지(지금 ${count5(S.deck)}명). 자리 레벨(Lv)과 보물은 모든 진형이 함께 써요.</p></div></div>
+  let h=`<div class="row"><div><h2>둔영</h2><p class="sub" style="margin:0">고른 진형으로 출정·토벌전·야전 공격을 하고, <span class="defmk">防</span> 진형이 야전 방어에 쓰여요. ★5 장수는 진형마다 ${MAX5}명까지(지금 ${count5(S.deck)}명). 자리 레벨(Lv)과 보물은 모든 진형이 함께 써요.</p></div></div>${deckSegHtml()}
   <div class="chips deckbar" role="group" aria-label="진형 선택" style="margin:10px 0 6px">${S.decks.map((d,k)=>`<button type="button" data-dk="${k}" aria-pressed="${k===S.dk}">${esc(deckName(k))}${k===S.defDk?' <small class="defmk">防</small>':''}</button>`).join('')}${S.decks.length<DECK_MAX?'<button type="button" data-dkadd>＋ 새 진형</button>':''}</div>
   <div class="chips" role="group" aria-label="배치" style="margin:4px 0 2px"><span class="flab">배치</span>${Object.entries(FORM).map(([k,F2])=>`<button type="button" data-form="${k}" aria-pressed="${curForm()===k}">${F2.n} <small>${F2.r.join('-')}</small></button>`).join('')}</div>
   <p class="sub" style="font-size:12px;margin:0 0 8px">${FORM[curForm()].d}</p>
-  <div class="row" style="gap:6px"><button type="button" class="btn ghost sm" data-dkname>이름 바꾸기</button>${isDef?'<span class="chip" style="border-color:var(--bronze);color:var(--bronze)">야전 방어 진형</span>':'<button type="button" class="btn ghost sm" data-dkdef>방어 진형으로 지정</button>'}${S.decks.length<DECK_MAX?'<button type="button" class="btn ghost sm" data-dkcopy>복제</button>':''}${S.decks.length>1?'<button type="button" class="btn ghost sm" data-dkdel>삭제</button>':''}<button type="button" class="btn ghost sm" data-tolab>연무장으로</button></div>
+  <div class="row" style="gap:6px"><button type="button" class="btn ghost sm" data-dkname>이름 바꾸기</button>${isDef?'<span class="chip" style="border-color:var(--bronze);color:var(--bronze)">야전 방어 진형</span>':'<button type="button" class="btn ghost sm" data-dkdef>방어 진형으로 지정</button>'}${S.decks.length<DECK_MAX?'<button type="button" class="btn ghost sm" data-dkcopy>복제</button>':''}${S.decks.length>1?'<button type="button" class="btn ghost sm" data-dkdel>삭제</button>':''}<button type="button" class="btn ghost sm" data-tolab>연무장 공격덱으로 보내기</button></div>
   <div class="row" style="margin:12px 0"><div><div class="sub" style="margin:0">총 전투력</div><div class="power num">${fmt(deckPower(specs))}</div></div><span class="sp"></span><button type="button" class="btn sm" id="rec-open">추천 편성</button></div>${teamBoxHtml(specs)}`;
   S.deck.forEach((gid,i)=>{
     const pos=`<div class="pos">${i+1}<small>${posOf(i)}</small></div>`;
@@ -2247,7 +2259,7 @@ document.addEventListener('click',e=>{
   const fmb=e.target.closest('[data-form]');if(fmb){S.decks[S.dk].f=cleanForm(fmb.dataset.form);save();renderView();toast(`${FORM[curForm()].n}으로 바꿨어요`);return}
   if(e.target.closest('[data-dkdef]')){S.defDk=S.dk;save();renderView();toast(`${deckName(S.dk)}을(를) 야전 방어 진형으로 정했어요`);return}
   if(e.target.closest('[data-dkname]')){openDeckName();return}
-  if(e.target.closest('[data-tolab]')){copyMyDeckToLab('atk');save();view='pvp';pvpMode='lab';render();toast('연무장 공격덱으로 보냈어요');return}
+  if(e.target.closest('[data-tolab]')){copyMyDeckToLab('atk');save();view='deck';deckMode='lab';render();$('#view').scrollTop=0;toast('연무장 공격덱으로 보냈어요');return}
   if(e.target.closest('[data-dkdel]')){openDeckDel();return}
 });
 function openDeckName(){
@@ -2362,7 +2374,7 @@ function attRateHtml(){
 }
 const attPub=()=>{const a=S&&S.sat;return a?{k:a.k,n:a.n,f:a.from}:null};
 const awayDays=p=>p&&p.at?Math.floor((Date.now()-p.at)/864e5):-1;
-function awayChip(p){const d=awayDays(p);return d>=3?`<span class="chip" style="margin-left:4px;border-color:var(--cinnabar);color:var(--cinnabar);font-size:11px">${d}일 미접속</span>`:''}
+function awayChip(p){const d=awayDays(p);return d>=3?`<span class="chip" style="margin-left:4px;border-color:var(--cinnabar);color:var(--cinnabar);font-size:12px">${d}일 미접속</span>`:''}
 function peekSeen(p,mine){if(mine)return '';const o=[];const a=p.sg&&p.sg.a,st=a?attStats({k:a.k,n:a.n,from:a.f}):null;if(st)o.push(`출석 ${st.pct}% (${st.n}/${st.el}일)`);
   const d=awayDays(p);if(d>=0)o.push(d>=3?`<b style="color:var(--cinnabar)">${d}일 미접속</b>`:d>=1?`${d}일 전 접속`:'오늘 접속');return o.length?o.join(' · ')+' · ':''}
 /* ---------------- 장수·보물 선택권 (v2.0.2) ---------------- */
@@ -2514,17 +2526,17 @@ function siegeGo(key){
   if((st.n[key]||0)>=SIEGE_DAILY){toast('오늘 도전을 모두 했어요');return}
   if((st.cd[key]||0)>Date.now()){toast('아직 재도전 대기 중이에요');return}
   const P=siegeParams(key);if(!P.mine.some(Boolean)){toast('진형을 먼저 편성하세요');return}
-  const seed=(Math.random()*2**31)|0, wave=siegeWave(key,seed,P.lv,P.itd,W.tend[key]);
+  const seed=seedOf('siege',UID,weekIdx(),key,kstDay(),st.n[key]||0), wave=siegeWave(key,seed,P.lv,P.itd,W.tend[key]);
   const res=simulate(P.mine,wave(1),seed,{rounds:SIEGE_MAXR,siege:{hp:P.hp,wave}});
   const t=res.turns, hpPct=Math.round(Math.max(0,res.castle)/res.castleMax*100), rw=siegeReward(key,t), cdm=siegeCdMin(t);
-  if(rw.gold)S.gold+=rw.gold;if(rw.food)S.food+=rw.food;if(rw.itk)S.itk=Math.min(9999,(S.itk||0)+rw.itk);
-  st.n[key]=(st.n[key]||0)+1;st.cd[key]=Date.now()+Math.round(cdm*60000);
   const old=st.wb[key], better=!old||t>old.t||(t===old.t&&hpPct>old.hp);
-  if(better)st.wb[key]={t,hp:hpPct,d:cleanSpecs(P.mine.filter(Boolean))};
-  save();renderTop();
+  const commit=()=>{if(rw.gold)S.gold+=rw.gold;if(rw.food)S.food+=rw.food;if(rw.itk)S.itk=Math.min(9999,(S.itk||0)+rw.itk);
+    st.n[key]=(st.n[key]||0)+1;st.cd[key]=Date.now()+Math.round(cdm*60000);
+    if(better)st.wb[key]={t,hp:hpPct,d:cleanSpecs(P.mine.filter(Boolean))};
+    save();renderTop()};
   playBattle(res,`${C.n} 수성전`,'수비군 (내 진형)',`공격군 · ${GMAP[C.boss].name}`,()=>`<p class="sub">${t}턴 동안 버텼어요 · 제${res.waves}파까지${res.win?' · 끝까지 지켜 냈어요':''}${P.hero?' · 수성 명장 효과':''}</p>
      <div class="row" style="justify-content:center;gap:6px">${rwText(rw)}</div>
-     <p class="sub">${better?'<b style="color:var(--bronze)">이번 주 최고 기록!</b> · ':''}다음 도전까지 ${Math.round(cdm)}분 · 오늘 ${st.n[key]}/${SIEGE_DAILY}</p>`,{siege:{max:P.hp},verdict:{stamp:'守',lab:`${t}턴 수성`}});
+     <p class="sub">${better?'<b style="color:var(--bronze)">이번 주 최고 기록!</b> · ':''}다음 도전까지 ${Math.round(cdm)}분 · 오늘 ${st.n[key]}/${SIEGE_DAILY}</p>`,{siege:{max:P.hp},verdict:{stamp:'守',lab:`${t}턴 수성`},commit});
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-siege]');if(b&&!b.disabled){siegeGo(b.dataset.siege);return}
@@ -2769,7 +2781,7 @@ function openRec(ctx){
    <div class="chips" role="group" aria-label="병종" style="margin:0 0 4px"><span class="flab">병종</span><button type="button" data-rcls="" aria-pressed="${!recFil.cls.size}">전체</button>${Object.entries(CLS).map(([k,c])=>`<button type="button" data-rcls="${k}" aria-pressed="${recFil.cls.has(k)}">${c.n}</button>`).join('')}</div>
    ${recFil.cls.size===1?'<p class="sub" style="margin:0 0 6px;color:var(--cinnabar);font-size:12px">병종은 2종 이상 골라 주세요.</p>':recFil.fac.size||recFil.cls.size?`<p class="sub" style="margin:0 0 6px;font-size:12px">고정하지 않은 자리는 ${[recFil.fac.size?[...recFil.fac].map(k=>FAC[k]).join('·'):'',recFil.cls.size?[...recFil.cls].map(k=>CLS[k].n).join('·'):''].filter(Boolean).join(' / ')} 장수로만 채워요. (${V.lab?'고를 수 있는':'가진'} 장수 ${nOk}명)</p>`:''}
    ${rows}
-   <p class="sub" style="font-size:11px;margin:4px 0 10px">후보 진형을 만든 뒤 실제 전투 계산으로 비교해요(진영·인연·연합군·${V.lab?'':'보물 도감·'}전법·속도·자리 순서·배치 모두 반영). ${modeTxt} 2~5초 걸릴 수 있어요.</p>
+   <p class="sub" style="font-size:12px;margin:4px 0 10px">후보 진형을 만든 뒤 실제 전투 계산으로 비교해요(진영·인연·연합군·${V.lab?'':'보물 도감·'}전법·속도·자리 순서·배치 모두 반영). ${modeTxt} 2~5초 걸릴 수 있어요.</p>
    <button type="button" class="btn wide red" id="rec-go" ${recFil.cls.size===1?'disabled':''}>추천 받기</button>`);
 }
 function openRecResult(P){
@@ -2782,12 +2794,12 @@ function openRecResult(P){
       return `<span class="ichip r${it.rar}" style="cursor:default">${lk?'📌 ':''}${esc(it.name)}${x.d?` <b>+${x.d}</b>`:''}${h&&h!==g?` <small style="color:var(--mute)">← ${esc(GMAP[h].name)}</small>`:!V.lab&&!h?' <small style="color:var(--jade)">새로</small>':''}</span>`}).join('');
     return `<div class="slot" style="display:block">${`<div class="row" style="flex-wrap:nowrap;gap:10px">${pos}${seal(b,'sm')}<div class="info"><b>${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span> ${lockG?'<span class="chip">고정</span>':was<0?'<span class="chip" style="border-color:var(--jade);color:var(--jade)">새로</span>':was!==i?`<span class="chip">${was+1}번에서</span>`:''}</b><span>${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${V.lv(i)} · 전투력 ${fmt(specPower(P.specs[i]))}</span></div></div>`}
      <div class="ichips" style="margin:6px 0 0 58px">${its||'<span class="sub" style="margin:0">보물 없음</span>'}</div></div>`}).join('');
-  const st=(k,a,b2)=>`<div class="stat"><small>${k}</small><b>${a}</b><div class="sub" style="margin:0;font-size:11px">→ <b style="color:var(--fg)">${b2}</b></div></div>`;
+  const st=(k,a,b2)=>`<div class="stat"><small>${k}</small><b>${a}</b><div class="sub" style="margin:0;font-size:12px">→ <b style="color:var(--fg)">${b2}</b></div></div>`;
   const wrLab=recMode==='vs'?(recDefSide()?'막아 낸 비율':'상대 덱 승률'):'모의전 승률';
   const gTxt=recMode==='vs'?`상대 덱 1개와 ${recSeedsF().length}판씩 치른 결과예요.`:`상대 ${P.gN}개 진형과 ${recSeedsF().length}판씩 치른 결과예요. 상대에는 야전 상위 군주들의 방어 진형과 대표 진형이 들어가요.`;
   openSheet(`<div class="sheet-h"><h2 style="margin:0">추천 결과</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <div class="stats" style="grid-template-columns:1fr 1fr;margin:0 0 6px">${st('총 전투력',fmt(curP),fmt(P.power)+(P.power!==curP?` (${P.power>curP?'+':'−'}${fmt(Math.abs(P.power-curP))})`:''))}${P.dmg!=null?st('토벌전 예상 피해(평균)',fmt(P.curDmg||0),fmt(P.dmg)):st(wrLab,Math.round((P.curWr||0)*100)+'%',Math.round((P.wr||0)*100)+'%')}</div>
-   ${P.wr!=null?`<p class="sub" style="font-size:11px;margin:0 0 10px">${gTxt}</p>`:''}
+   ${P.wr!=null?`<p class="sub" style="font-size:12px;margin:0 0 10px">${gTxt}</p>`:''}
    <p class="sub" style="margin:0 0 6px">배치: <b style="color:var(--fg)">${FORM[P.f||'basic'].n}</b> · ${FORM[P.f||'basic'].d}</p>
    ${P.fcmp?`<p class="sub" style="margin:0 0 6px;font-size:12px">배치 비교(배치마다 가장 좋은 자리 순서 기준): ${Object.entries(P.fcmp).map(([f,v])=>`${f===P.f?'<b style="color:var(--fg)">':''}${FORM[f].n} ${recMode==='raid'?fmt(v):v+'%'}${f===P.f?'</b>':''}`).join(' · ')}${P.kept?` — 차이가 작아(${recMode==='raid'?'1% 이하':'2%p 이하'}) 지금 배치를 그대로 뒀어요`:''}</p>`:''}
    ${teamBoxHtml(P.specs,V.lab?1:undefined)}
@@ -2795,7 +2807,7 @@ function openRecResult(P){
    ${moved.length?`<p class="sub" style="font-size:12px;margin:6px 0 0">옮겨 오는 보물 ${moved.length}개 — 원래 끼고 있던 장수는 그 보물이 빠져요(다른 진형에도 반영돼요).</p>`:''}
    <div class="row" style="gap:8px;margin-top:12px"><button type="button" class="btn ghost" id="rec-back">다시 고르기</button><button type="button" class="btn red" style="flex:1" id="rec-apply">${V.lab?esc(V.D.n):esc(deckName(S.dk))}에 적용</button></div>
    ${!V.lab&&S.decks.length<DECK_MAX?'<button type="button" class="btn ghost wide" id="rec-new" style="margin-top:8px">새 진형으로 저장</button>':''}
-   <p class="sub" style="font-size:11px;margin:8px 0 0">전투력은 어림값이에요. 전법·속도·상성에 따라 실제 결과는 달라질 수 있어요.</p>`);
+   <p class="sub" style="font-size:12px;margin:8px 0 0">전투력은 어림값이에요. 전법·속도·상성에 따라 실제 결과는 달라질 수 있어요.</p>`);
   $('#rec-back').onclick=()=>openRec();
   $('#rec-apply').onclick=()=>recApply(P,false);
   const n=$('#rec-new');if(n)n.onclick=()=>recApply(P,true);
@@ -3085,6 +3097,8 @@ let duelTab='today', histDay='';
 function rewardChip(rank){return `<span class="chip">糧 ${fmt(duelReward(rank))}</span>`}
 /* ---------------- 연무장 (NPC 방어덱 · 별도 공격덱) ---------------- */
 const LAB_N=3, LAB_PLUS=[1,25,50], LAB_ORD={inf:0,cav:1,arc:2,tac:3};
+let deckMode='camp';
+function deckSegHtml(){return `<div class="seg" role="group" aria-label="둔영 메뉴"><button type="button" data-deckm="camp" aria-pressed="${deckMode==='camp'}">진영</button><button type="button" data-deckm="lab" aria-pressed="${deckMode==='lab'}">연무장</button></div>`}
 let pvpMode='duel', labFac='', labIty='', labSimOut='';
 function labNew(n){return {n,p:50,s:[null,null,null,null,null]}}
 function labDefault(){return {atk:[1,2,3].map(i=>labNew('공격 '+i)),def:[1,2,3].map(i=>labNew('방어 '+i)),ai:0,di:0}}
@@ -3188,6 +3202,7 @@ function openLabItem(side,i,k){
 let labClearArm=null;
 document.addEventListener('click',e=>{
   const t=e.target;
+  const dm=t.closest('[data-deckm]');if(dm){deckMode=dm.dataset.deckm;renderView();$('#view').scrollTop=0;return}
   const pm=t.closest('[data-pvpm]');if(pm){pvpMode=pm.dataset.pvpm;renderView();return}
   const lk=t.closest('[data-labk]');if(lk){const[sd,k]=lk.dataset.labk.split(':');S.lab[sd==='atk'?'ai':'di']=+k;labSimOut='';save();renderView();return}
   const lp=t.closest('[data-labp]');if(lp){const[sd,p]=lp.dataset.labp.split(':');labCur(sd).p=+p;labSimOut='';save();renderView();return}
@@ -3302,13 +3317,14 @@ document.addEventListener('click',async e=>{
   const mine=mySpecs();if(!mine.some(Boolean)){toast('진형을 먼저 편성하세요');return}
   const db=RDB();if(!db||MODE!=='shared'){toast('서버에 연결되어 있지 않아요');return}
   raidBusy=true;renderView();
-  const seed=(Math.random()*2**31)|0, boss=raidBoss(c), res=simulate(mine,boss,seed,{rounds:RAID_ROUNDS}), dmg=Math.min(RAID_HIT_MAX,raidDamage(res)), day=kstDay();
-  try{await writeRetry(()=>db.collection('raids').add({att:UID,cyc:c,day,dmg,at:Date.now()}))}
-  catch(err){raidBusy=false;renderView();toast('기록하지 못했어요. 도전 횟수는 쓰지 않았으니 다시 시도해 주세요');return}
-  if(S.raid.day!==day)S.raid={...S.raid,day,n:0};S.raid.n++;save();raidBusy=false;
-  if(!RAIDS.some(r=>r.att===UID&&r.at>Date.now()-5000))RAIDS.unshift({att:UID,cyc:c,day,dmg,at:Date.now()});
-  const nst=raidStats(c);
-  playBattle(res,`토벌전 제${c+1}회`,'내 진형','토벌전 보스',()=>`<div class="stats" style="grid-template-columns:1fr 1fr;margin:8px 0"><div class="stat"><small>이번에 준 피해</small><b>${fmt(dmg)}</b></div><div class="stat"><small>공동 게이지</small><b>${(Math.min(1,nst.tot/RAID_HP)*100).toFixed(1)}%</b></div></div><p class="sub">오늘 남은 도전 ${raidLeft(nst)}/${RAID_DAILY}회</p>`,{verdict:{stamp:'討',lab:'토벌 종료'}});
+  const day=kstDay(), seed=seedOf('raid',UID,c,day,S.raid.day===day?S.raid.n:0), boss=raidBoss(c), res=simulate(mine,boss,seed,{rounds:RAID_ROUNDS}), dmg=Math.min(RAID_HIT_MAX,raidDamage(res));
+  let wrote=true;
+  const commit=async()=>{
+    try{await writeRetry(()=>db.collection('raids').add({att:UID,cyc:c,day,dmg,at:Date.now()}))}
+    catch(err){wrote=false;raidBusy=false;return}
+    if(S.raid.day!==day)S.raid={...S.raid,day,n:0};S.raid.n++;save();raidBusy=false;
+    if(!RAIDS.some(r=>r.att===UID&&r.at>Date.now()-5000))RAIDS.unshift({att:UID,cyc:c,day,dmg,at:Date.now()})};
+  playBattle(res,`토벌전 제${c+1}회`,'내 진형','토벌전 보스',()=>{const nst=raidStats(c);return (wrote?'':'<p class="sub" style="color:var(--cinnabar)">기록하지 못했어요. 도전 횟수는 쓰지 않았으니 다시 시도해 주세요.</p>')+`<div class="stats" style="grid-template-columns:1fr 1fr;margin:8px 0"><div class="stat"><small>이번에 준 피해</small><b>${fmt(dmg)}</b></div><div class="stat"><small>공동 게이지</small><b>${(Math.min(1,nst.tot/RAID_HP)*100).toFixed(1)}%</b></div></div><p class="sub">오늘 남은 도전 ${raidLeft(nst)}/${RAID_DAILY}회</p>`},{verdict:{stamp:'討',lab:'토벌 종료'},commit,onQuit:()=>{raidBusy=false}});
 });
 // 연무장 공격덱 → 내 진형(스테이지·야전): 보유한 장수와 보물만 같은 자리·같은 배치로 옮겨요
 function labApplyPlan(side){
@@ -3592,11 +3608,11 @@ document.addEventListener('click',e=>{
   const n=e.target.closest('[data-exnode]');if(n&&!n.disabled){exNode(+n.dataset.exnode);return}
   const p=e.target.closest('[data-expick]');if(p){exPick(p.dataset.expick);return}
 });
-function pvpSegHtml(){return `<div class="seg" role="group" aria-label="야전 메뉴"><button type="button" data-pvpm="duel" aria-pressed="${pvpMode==='duel'}">야전</button><button type="button" data-pvpm="raid" aria-pressed="${pvpMode==='raid'}">토벌전</button><button type="button" data-pvpm="lab" aria-pressed="${pvpMode==='lab'}">연무장</button><button type="button" data-pvpm="siege" aria-pressed="${pvpMode==='siege'}">수성전</button><button type="button" data-pvpm="tower" aria-pressed="${pvpMode==='tower'}">천명탑</button><button type="button" data-pvpm="ex" aria-pressed="${pvpMode==='ex'}">원정군</button></div>`}
+function pvpSegHtml(){return `<div class="seg" role="group" aria-label="전장 메뉴"><button type="button" data-pvpm="duel" aria-pressed="${pvpMode==='duel'}">야전</button><button type="button" data-pvpm="raid" aria-pressed="${pvpMode==='raid'}">토벌전</button><button type="button" data-pvpm="siege" aria-pressed="${pvpMode==='siege'}">수성전</button><button type="button" data-pvpm="tower" aria-pressed="${pvpMode==='tower'}">천명탑</button><button type="button" data-pvpm="ex" aria-pressed="${pvpMode==='ex'}">원정군</button></div>`}
 function vPvp(){
   const myP=deckPower(defSpecs());
-  let h=`<div class="row"><h2>야전</h2><span class="sp"></span>${MODE==='shared'?'<button type="button" class="btn ghost sm" id="settings">내 정보</button>':''}</div>`;
-  h+=pvpSegHtml();if(pvpMode==='lab')return h+vLab();if(pvpMode==='raid')return h+vRaid();if(pvpMode==='siege')return h+vSiege();if(pvpMode==='tower')return h+vTower();if(pvpMode==='ex')return h+vExpedition();
+  let h=`<div class="row"><h2>전장</h2><span class="sp"></span>${MODE==='shared'?'<button type="button" class="btn ghost sm" id="settings">내 정보</button>':''}</div>`;
+  if(pvpMode==='lab')pvpMode='duel';h+=pvpSegHtml();if(pvpMode==='raid')return h+vRaid();if(pvpMode==='siege')return h+vSiege();if(pvpMode==='tower')return h+vTower();if(pvpMode==='ex')return h+vExpedition();
   h+=deckQuickHtml('공격 진형');
   if(MODE!=='shared'){
     return h+`<p class="sub">다른 군주의 방어 진형에 도전하는 곳이에요.</p><div class="empty-state"><b>對戰</b>서버 설정이 끝나면 친구들과 겨룰 수 있어요. 지금은 연습전만 가능합니다.</div>
@@ -3665,14 +3681,13 @@ document.addEventListener('click',async e=>{
   const opp=PLAYERS.find(p=>p.id===d.dataset.duel);if(!opp)return;
   if(ticketsLeft()<1){toast('오늘 도전 횟수를 모두 썼어요');return}
   const mine=mySpecs();
-  const seed=(Math.random()*2**31)|0, res=simulate(mine,opp.deck,seed);
-  useTicket();
+  const seed=seedOf('duel',UID,kstDay(),opp.id,S.pvp.day===kstDay()?S.pvp.used:0), res=simulate(mine,opp.deck,seed);
   const rw=res.win?{gold:100,food:60}:{gold:30,food:0};
-  S.gold+=rw.gold;S.food+=rw.food;save();
   let wrote=true;
-  try{await writeRetry(()=>FS.collection('battles').add({att:UID,def:opp.id,win:res.win,at:Date.now(),ap:deckPower(mine),dp:deckPower(opp.deck)}))}catch(err){wrote=false}
+  const commit=async()=>{useTicket();S.gold+=rw.gold;S.food+=rw.food;save();renderTop();
+    try{await writeRetry(()=>FS.collection('battles').add({att:UID,def:opp.id,win:res.win,at:Date.now(),ap:deckPower(mine),dp:deckPower(opp.deck)}))}catch(err){wrote=false}};
   const me=typeof MYNAME!=='undefined'&&MYNAME?MYNAME:'나', on=typeof nameOf==='function'?nameOf(opp.id):'상대';
-  playBattle(res,'야전',me,on,()=>rewardHtml(rw)+(wrote?'':'<p class="sub">전투 기록 저장에 실패해 순위에는 반영되지 않았어요.</p>'),{share:{title:'야전',seed,a:mine,b:opp.deck,an:me,bn:on}});
+  playBattle(res,'야전',me,on,()=>rewardHtml(rw)+(wrote?'':'<p class="sub">전투 기록 저장에 실패해 순위에는 반영되지 않았어요.</p>'),{share:{title:'야전',seed,a:mine,b:opp.deck,an:me,bn:on},commit});
 });
 
 /* ---------------- 다른 군주 진형 보기 · 초기화 ---------------- */
@@ -3750,7 +3765,7 @@ function mvpHtml(m,tag){
    <div style="margin-top:4px"><button type="button" class="ichip sk" data-rssk="${key}">전법 · ${esc(u.skill)}</button></div></div></div>
    ${its?`<div class="ichips">${its}</div>`:''}
    <div class="stats" style="grid-template-columns:repeat(4,1fr);margin:10px 0 0">${c('총 피해',fmt(r.dmg))}${c('일반 공격 피해',fmt(r.nd))}${c('전법 피해',fmt(r.sd))}${c('처치',r.kills)}${c('받은 피해',fmt(r.taken))}${c('경감한 피해',fmt(r.mit))}${c('남은 체력',fmt(Math.max(0,r.hp)))}${c('회복',fmt(r.heal))}${c('행동 · 전법',r.acts+' · '+r.sk)}${c('회당 피해',fmt(r.acts?Math.round(r.dmg/r.acts):0))}${c('치명타',r.crit)}${c('생존',r.hp>0?'○':'✕')}</div>
-   <p class="sub no-cap" style="margin:6px 0 0;font-size:11px">보물·전법을 누르면 설명이 나와요. 경감한 피해는 방어력과 피해 감소로 막아 낸 양이고, 화상 피해는 전법 피해에 포함돼요.</p></div>`;
+   <p class="sub no-cap" style="margin:6px 0 0;font-size:12px">보물·전법을 누르면 설명이 나와요. 경감한 피해는 방어력과 피해 감소로 막아 낸 양이고, 화상 피해는 전법 피해에 포함돼요.</p></div>`;
 }
 function unitByKey(res,key){const[s,i]=key.split('-').map(Number);return res.init[s].find(x=>x.slot===i)}
 function openInfoPop(html){
@@ -3767,7 +3782,7 @@ function itemInfoHtml(it,d,w){
    <h3 style="margin:12px 0 4px">지금 효과 (+${d})</h3><p style="margin:0;font-size:13px">${fxText(it,d,w)}</p>
    <h3 style="margin:12px 0 4px">강화 단계별 효과</h3>
    ${steps.map(s=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line);flex-wrap:nowrap;${s===d?'color:var(--bronze)':''}"><b class="num" style="width:40px;flex:none">+${s}</b><span style="flex:1;font-size:12px">${fxText(it,s)}${s===d?' ◀ 지금':''}</span></div>`).join('')}
-   <p class="sub" style="margin:8px 0 0;font-size:11px">강화 1단계마다 기본 효과가 +3%씩 올라요(최대 +${ITEM_MAXD}, +50이면 2.5배).</p>`;
+   <p class="sub" style="margin:8px 0 0;font-size:12px">강화 1단계마다 기본 효과가 +3%씩 올라요(최대 +${ITEM_MAXD}, +50이면 2.5배).</p>`;
 }
 function skillInfoHtml(u){
   const S2=u.sk||{}, b=GMAP[u.id];
@@ -3829,7 +3844,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
   const castleHtml=SG?`<div class="castle"><b>城</b><div class="cbar"><i id="castle-i" style="width:100%"></i></div><span class="num" id="castle-t">${fmt(SG.max)}</span><span class="chip" id="wave-t">제1파</span></div>`:'';
   const setCastle=v=>{if(!SG)return;const i=$('#castle-i'),t=$('#castle-t');if(i)i.style.width=Math.max(0,v/SG.max*100)+'%';if(t)t.textContent=fmt(Math.max(0,v))};
   const el=$('#battle');
-  el.innerHTML=`<div class="bt${SG?' siege':''}"><div class="bt-head"><span class="bt-title">${esc(title)}</span><button type="button" class="btn ghost sm" id="bt-speed">${SG?4:1}배속</button><button type="button" class="btn ghost sm" id="bt-skip">결과 보기</button></div>
+  el.innerHTML=`<div class="bt${SG?' siege':''}"><div class="bt-head"><span class="bt-title">${esc(title)}</span><button type="button" class="btn ghost sm" id="bt-speed">${SG?4:1}배속</button><button type="button" class="btn ghost sm" id="bt-skip">결과 보기</button>${opts&&opts.commit?'<button type="button" class="btn ghost sm red" id="bt-quit">중도포기</button>':''}</div>
   <div class="bt-side">${esc(SG?allyLab:foeLab)}</div><div class="bt-row bt-top ${SG?'bt-ally':'bt-foe'}" id="bt-s${topK}">${sideHtml(topK)}</div>${castleHtml}
   <div class="bt-log"><div class="sk" id="bt-sk"></div><div class="ln" id="bt-ln">${esc(bonusLine(res.bonus&&res.bonus[0])?'아군 효과 · '+bonusLine(res.bonus[0]):'전투 개시')}</div></div>
   <div class="bt-row bt-bot ${SG?'bt-foe':'bt-ally'}" id="bt-s${botK}">${sideHtml(botK)}</div><div class="bt-side" style="text-align:right">${esc(SG?foeLab:allyLab)}</div></div>`;
@@ -3859,8 +3874,12 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
       $('#bt-ln').textContent=ln;
     }
   };
-  const finish=()=>{
+  let fin=0;
+  const finish=async()=>{
+    if(fin||tok!==btToken)return;fin=1;
     clearTimeout(timer);
+    const q=$('#bt-quit');if(q)q.remove();
+    if(opts&&opts.commit){try{await opts.commit()}catch(err){}if(tok!==btToken)return}
     while(idx<res.ev.length)apply(res.ev[idx++],false);
     document.querySelectorAll('.bu.act').forEach(n=>n.classList.remove('act'));
     const box=document.createElement('div');box.className='bt-res';
@@ -3870,7 +3889,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     box.innerHTML=`<div class="res-card" id="res-card"><div class="stamp ${res.win||rp||vd?'w':'l'}">${vd?vd.stamp:rp?'戰':res.win?'勝':'敗'}</div><h2 style="margin:0">${esc(winLab)}</h2>${resultHtml()}
      <div class="res-sec"><h3>전투 기록</h3>
       <div class="chips no-cap" role="group">${SG?'':`<button type="button" data-rss="0" aria-pressed="${rsSide===0}">${esc(allyLab)}</button><button type="button" data-rss="1" aria-pressed="${rsSide===1}">${esc(foeLab)}</button>`}<span class="sp"></span>${Object.entries(RS_M).map(([k,v])=>`<button type="button" data-rsm="${k}" aria-pressed="${rsMetric===k}">${v}</button>`).join('')}</div>
-      <div class="sub" id="rs-cap" style="margin:0 0 4px">${esc(rsSide?foeLab:allyLab)} · ${RS_M[rsMetric]}</div><div class="sub no-cap" style="margin:0 0 4px;font-size:11px">장수 이름을 누르면 아래 기록 창이 그 장수로 바뀌어요.</div><div id="rs-chart">${statChart(res,stt,rsSel)}</div></div>
+      <div class="sub" id="rs-cap" style="margin:0 0 4px">${esc(rsSide?foeLab:allyLab)} · ${RS_M[rsMetric]}</div><div class="sub no-cap" style="margin:0 0 4px;font-size:12px">장수 이름을 누르면 아래 기록 창이 그 장수로 바뀌어요.</div><div id="rs-chart">${statChart(res,stt,rsSel)}</div></div>
      <div class="mvpline" id="rs-mvpl"></div><div id="rs-unit">${mvpHtml(mvpOf(res,stt,rsSide),'MVP')}</div></div>
      ${sh&&CAN_SHARE?`<div class="share-row"><button type="button" class="btn ghost" id="sh-link">결과 링크 공유</button><button type="button" class="btn ghost" id="sh-img">이미지로 공유</button></div><div id="share-fallback" hidden style="width:100%;max-width:440px"><p class="sub" style="margin:0 0 4px">아래 내용을 길게 눌러 복사한 뒤 카카오톡에 붙여넣으세요.</p><textarea readonly></textarea></div>`:''}
      <button type="button" class="btn" id="bt-close" style="min-width:160px">${rp?'게임 하러 가기':'확인'}</button>`;
@@ -3894,6 +3913,10 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
   const step=()=>{if(tok!==btToken)return;if(idx>=res.ev.length){timer=setTimeout(finish,500);return}apply(res.ev[idx++],true);timer=setTimeout(step,560/speed)};
   $('#bt-speed').onclick=()=>{speed=speed===1?2:speed===2?4:speed===4?8:1;$('#bt-speed').textContent=speed+'배속'};
   $('#bt-skip').onclick=finish;
+  const qb=$('#bt-quit');let qArm=0;
+  if(qb)qb.onclick=()=>{if(fin)return;
+    if(!qArm){qArm=1;qb.textContent='한 번 더 누르면 포기';setTimeout(()=>{if(qb.isConnected){qArm=0;qb.textContent='중도포기'}},2500);return}
+    btToken++;clearTimeout(timer);el.hidden=true;el.innerHTML='';if(opts.onQuit)opts.onQuit();renderTop();renderView();toast('전투를 그만뒀어요. 도전 횟수는 그대로예요')};
   timer=setTimeout(step,500);
 }
 
