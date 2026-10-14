@@ -407,7 +407,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v3.0.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v3.0.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1592,10 +1592,12 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='3.0.1';
+const GAME_VERSION='3.0.2';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.0.2',date:'2026-10-15',title:'선택권 보유 필터',items:[
+  '장수 선택권 · 보물 선택권 고르기 화면에 보유 필터(전체 · 미보유 · 보유)가 생겼어요. 아직 없는 장수나 보물만 골라 볼 수 있어요.']},
  {v:'3.0.1',date:'2026-10-15',title:'등급 조정 · 밸런스 패치',reward:{gtk:5,itk:20},items:[
   '★5로 승급: 동탁 · 장각 · 황충 · 태사자. ★5는 17명이 되고, 처음으로 궁병 ★5가 생겼어요. ★5 등용 확률(3%)은 그대로예요.',
   '★4로 승급: 위연 · 엄안 · 고순 · 진궁 · 주태. 한계돌파(6~10단계)였다면 5단계로 맞추고 넘친 단계마다 금 200을 돌려드려요.',
@@ -2447,7 +2449,7 @@ function awayChip(p){const d=awayDays(p);return d>=3?`<span class="chip" style="
 function peekSeen(p,mine){if(mine)return '';const o=[];const a=p.sg&&p.sg.a,st=a?attStats({k:a.k,n:a.n,from:a.f}):null;if(st)o.push(`출석 ${st.pct}% (${st.n}/${st.el}일)`);
   const d=awayDays(p);if(d>=0)o.push(d>=3?`<b style="color:var(--cinnabar)">${d}일 미접속</b>`:d>=1?`${d}일 전 접속`:'오늘 접속');return o.length?o.join(' · ')+' · ':''}
 /* ---------------- 장수·보물 선택권 (v2.0.2) ---------------- */
-let tkF={k:'g',rar:0,fac:'',g:''};
+let tkF={k:'g',rar:0,fac:'',g:'',own:''};
 function useTicketOn(kind,id){
   if(kind==='g'){if((S.gtk||0)<1)return null;const g=GMAP[id];if(!g)return null;S.gtk--;
     const own=S.gens[id];let tag='NEW';
@@ -2461,14 +2463,16 @@ function useTicketOn(kind,id){
 }
 function openTicket(k){
   if(k)tkF.k=k;const G=tkF.k==='g', left=G?(S.gtk||0):(S.isk||0);
-  const list=(G?GENS:ITEMS).filter(x=>(!tkF.rar||x.rar===tkF.rar)&&(G?(!tkF.fac||x.fac===tkF.fac):(!tkF.g||x.g===tkF.g))).sort((a,b)=>b.rar-a.rar);
+  const has=x=>G?!!S.gens[x.id]:S.items.some(y=>y.k===x.id);
+  const list=(G?GENS:ITEMS).filter(x=>(!tkF.rar||x.rar===tkF.rar)&&(G?(!tkF.fac||x.fac===tkF.fac):(!tkF.g||x.g===tkF.g))&&(!tkF.own||(tkF.own==='y')===has(x))).sort((a,b)=>b.rar-a.rar);
   const st=x=>{if(G){const o=S.gens[x.id];return o?(o.d>=maxD(x.rar)?`돌파 끝 → 金 ${fmt(DUP_GOLD[x.rar])}`:`보유 · 돌파 ${o.d}/${maxD(x.rar)}`):'미보유'}
     const o=S.items.find(y=>y.k===x.id);return o?(o.d>=ITEM_MAXD?`강화 끝 → 金 ${fmt(ITEM_OVER[x.rar])}`:`보유 · +${o.d}`):'미보유'};
   openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${G?'장수 선택권':'보물 선택권'}</h2><div class="sub" style="margin:0">남은 ${left}장 · 원하는 ${G?'장수':'보물'}를 골라요 (이미 있으면 ${G?'돌파':'강화'} +1)</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <div class="chips" role="group"><span class="flab">등급</span>${[0,5,4,3].map(r=>`<button type="button" data-tkf="rar:${r}" aria-pressed="${tkF.rar===r}">${r?stars(r):'전체'}</button>`).join('')}</div>
    ${G?`<div class="chips" role="group"><span class="flab">나라</span><button type="button" data-tkf="fac:" aria-pressed="${!tkF.fac}">전체</button>${Object.entries(FAC).map(([k2,n])=>`<button type="button" data-tkf="fac:${k2}" aria-pressed="${tkF.fac===k2}">${n}</button>`).join('')}</div>`
      :`<div class="chips" role="group"><span class="flab">종류</span><button type="button" data-tkf="g:" aria-pressed="${!tkF.g}">전체</button>${Object.entries(ITYPE).map(([k2,n])=>`<button type="button" data-tkf="g:${k2}" aria-pressed="${tkF.g===k2}">${n}</button>`).join('')}</div>`}
-   <div class="list">${list.map(x=>`<button type="button" class="li" data-tkuse="${x.id}" ${left<1?'disabled':''} style="text-align:left">${G?seal(x,'sm'):itemTile(x,0)}<div class="info"><b>${esc(x.name)} <span class="stars r${x.rar}">${stars(x.rar)}</span></b><span>${G?`${FAC[x.fac]} · ${CLS[x.cls].g} ${CLS[x.cls].n}`:ITYPE[x.g]} · ${st(x)}</span></div></button>`).join('')}</div>`);
+   <div class="chips" role="group"><span class="flab">보유</span>${[['','전체'],['n','미보유'],['y','보유']].map(([v,n])=>`<button type="button" data-tkf="own:${v}" aria-pressed="${tkF.own===v}">${n}</button>`).join('')}</div>
+   <div class="list">${list.length?'':`<div class="empty-state">조건에 맞는 ${G?'장수':'보물'}가 없어요.</div>`}${list.map(x=>`<button type="button" class="li" data-tkuse="${x.id}" ${left<1?'disabled':''} style="text-align:left">${G?seal(x,'sm'):itemTile(x,0)}<div class="info"><b>${esc(x.name)} <span class="stars r${x.rar}">${stars(x.rar)}</span></b><span>${G?`${FAC[x.fac]} · ${CLS[x.cls].g} ${CLS[x.cls].n}`:ITYPE[x.g]} · ${st(x)}</span></div></button>`).join('')}</div>`);
 }
 document.addEventListener('click',e=>{
   const o=e.target.closest('[data-tkopen]');if(o){openTicket(o.dataset.tkopen);return}
