@@ -188,6 +188,19 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 .bu.hit{animation:shake .25s}
 @keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 .bu.void{visibility:hidden}
+/* 줄 배치 (v1.20.2) */
+.bt-row{display:flex;flex-direction:column;gap:5px}
+.bt-line{display:flex;justify-content:center;gap:8px;position:relative}
+.bt-line .bu{width:30%;max-width:118px;padding:5px 4px 4px;gap:2px}
+.bt-rl{position:absolute;left:0;top:50%;transform:translateY(-50%);font-size:10px;color:var(--mute)}
+.bu .rk{position:absolute;left:5px;top:3px;font-style:normal;font-size:10px;color:var(--r5);line-height:1}
+.bu .rk.up{color:var(--cinnabar)}.bu .rk.dn{color:var(--jade)}
+.bt-top .bu.act{transform:translateY(4px)}.bt-bot .bu.act{transform:translateY(-4px)}
+.bt-log{min-height:56px}
+.castle{display:flex;align-items:center;gap:8px;padding:6px 10px;border-radius:4px;background:repeating-linear-gradient(90deg,var(--panel2) 0 18px,var(--panel) 18px 22px);border:1px solid var(--line);border-top:5px solid var(--line)}
+.castle b{font-family:var(--display);color:var(--bronze);font-weight:400;font-size:18px}
+.cbar{flex:1;height:9px;background:var(--bg);border-radius:4px;overflow:hidden}.cbar i{display:block;height:100%;background:var(--bronze);transition:width .2s}
+.siege .bt-ally .hp{display:none}
 .dmg{position:absolute;left:50%;top:10px;transform:translateX(-50%);font-weight:700;font-size:14px;color:#fff;text-shadow:0 1px 2px #000;pointer-events:none;animation:float .8s forwards;white-space:nowrap}
 .dmg.c{color:var(--r5);font-size:16px}
 .dmg.h{color:var(--jade)}
@@ -370,7 +383,7 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v1.20.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v1.20.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -857,7 +870,19 @@ const AP_CAP=240, AP_MS=3*60*1000, AP_COST=3, AP_WIN=0;  // 나팔: 3분에 1개
 const MAX5=2;
 const count5=(deck,skip)=>deck.filter((g,i)=>g&&i!==skip&&GMAP[g]&&GMAP[g].rar===5).length;
 const capFive=a=>{let n=0;return a.filter(s=>!(s&&s.g&&GMAP[s.g]&&GMAP[s.g].rar===5&&++n>MAX5))};
-const POS=['선봉','선봉','중군','후위','후위'];
+const POS=['선봉','선봉','중견','후위','후위'];
+// 진형 배치: 선봉·중견·후위 인원과 줄 효과 (v1.20.2)
+const FORM={assault:{n:'돌격진',r:[2,2,1],d:'선봉 2 · 중견 2 · 후위 1 — 선봉 속도 +12, 후위가 받는 피해 +15%'},
+  basic:{n:'기본진',r:[2,1,2],d:'선봉 2 · 중견 1 · 후위 2 — 줄 효과 없음'},
+  guard:{n:'수비진',r:[1,2,2],d:'선봉 1 · 중견 2 · 후위 2 — 선봉이 받는 피해 +15%, 후위가 받는 피해 −10%'}};
+const FORM_FX={spd:12,rearUp:.15,frontUp:.15,rearDown:.10};
+const ROWN=['선봉','중견','후위'];
+const cleanForm=f=>FORM[f]?f:'basic';
+const rowOf=(slot,f)=>{const r=FORM[cleanForm(f)].r;return slot<r[0]?0:slot<r[0]+r[1]?1:2};
+const posOf=(i,f)=>ROWN[rowOf(i,f===undefined?curForm():f)];
+function curForm(){return cleanForm(S&&S.decks&&S.decks[S.dk]&&S.decks[S.dk].f)}
+function defForm(){return cleanForm(S&&S.decks&&S.decks[S.defDk]&&S.decks[S.defDk].f)}
+function formOfSpecs(specs){const s=(specs||[]).find(x=>x&&x.f);return cleanForm(s&&s.f)}
 
 /* ---------------- pixel art (코드로 그리는 초상화·아이콘) ---------------- */
 const PX={};
@@ -1026,19 +1051,23 @@ function mkUnit(spec,side,slot){
   return {id:b.id,name:b.name,hz:b.hz,fac:b.fac,rar:b.rar,cls:b.cls,skill:sk.n,sk,endure:!!sk.endure,
     hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0,bf:[],burn:[],stun:0,taunt:0,endUsed:0,lv,items:its.map(x=>({k:x.it.id,n:x.it.name,r:x.it.rar,d:x.d})),cr,cd,ls,dr,skp};
 }
-function buildTeam(specs,side){const us=specs.map((s,i)=>s?mkUnit(s,side,i):null).filter(Boolean);const info=applyBonuses(us);return {us,info}}
+function buildTeam(specs,side){const fm=formOfSpecs(specs);const us=specs.map((s,i)=>s?mkUnit(s,side,s.p!=null&&s.p>=0&&s.p<5?s.p:i):null).filter(Boolean);const info=applyBonuses(us);
+  us.forEach(u=>{u.row=rowOf(u.slot,fm);u.form=fm;u.rd=1;
+    if(fm==='assault'){if(u.row===0)u.spd=Math.round((u.spd+FORM_FX.spd)*10)/10;if(u.row===2)u.rd=1+FORM_FX.rearUp}
+    if(fm==='guard'){if(u.row===0)u.rd=1+FORM_FX.frontUp;if(u.row===2)u.rd=1-FORM_FX.rearDown}});
+  return {us,info}}
 function unitPower(u){return Math.round((u.atk*1.5+u.maxhp/6+u.def*1.2+u.spd)*(1+((u.cr||.1)-.1)*.5+((u.cd||1.5)-1.5)*.15+(u.ls||0)*.6+(u.dr||0)+(u.skp||0)*.25))}
 function specPower(s){return unitPower(mkUnit(s,0,0))}
 function deckPower(specs){return buildTeam(specs,0).us.reduce((a,u)=>a+unitPower(u),0)}
 const arr=x=>!x?[]:Array.isArray(x)?x:[x];
 function eff(u,k){let v=1;for(const b of u.bf)v+=b[k]||0;return Math.max(.3,v)}
-function simulate(As,Bs,seed,opt){
+function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:opt.siege.hp}:null;let RR=0,waves=1;
   const rng=mulberry(seed);
   const A=buildTeam(As,0), B=buildTeam(Bs,1), T=[A.us,B.us];
   const init=[T[0].map(u=>({...u})),T[1].map(u=>({...u}))];
-  const ev=[], alive=k=>T[k].some(x=>x.hp>0);
-  const dmgTo=(t,d,e,extra)=>{t.hp-=d;if(t.hp<=0){if(t.endure&&!t.endUsed){t.hp=1;t.endUsed=1;e.notes.push(`${t.name} 불굴`)}else t.hp=0}e.hits.push({s:t.side,i:t.slot,d,hp:t.hp,...extra})};
-  for(let r=1;r<=((opt&&opt.rounds)||25)&&alive(0)&&alive(1);r++){
+  const ev=[], alive=k=>k===0&&C?C.hp>0:T[k].some(x=>x.hp>0);
+  const dmgTo=(t,d,e,extra)=>{if(C&&t.side===0){C.hp=Math.max(0,C.hp-d);e.hits.push({s:0,i:t.slot,d,hp:t.hp,ch:C.hp,...extra});return}t.hp-=d;if(t.hp<=0){if(t.endure&&!t.endUsed){t.hp=1;t.endUsed=1;e.notes.push(`${t.name} 불굴`)}else t.hp=0}e.hits.push({s:t.side,i:t.slot,d,hp:t.hp,...extra})};
+  for(let r=1;r<=((opt&&opt.rounds)||25)&&alive(0)&&alive(1);r++){RR=r;
     // 속도가 같으면 매 턴 무작위(시드 고정)로 순서를 정해요
     const order=[...T[0],...T[1]].filter(u=>u.hp>0);order.forEach(u=>u.tb=rng());order.sort((a,b)=>b.spd-a.spd||a.tb-b.tb);
     for(const u of order){
@@ -1053,19 +1082,20 @@ function simulate(As,Bs,seed,opt){
         if(!t||t.hp<=0)return;const crit=(o&&o.crit)||rng()<u.cr;
         const raw=atkV*mult*adv(u.cls,t.cls)*(.9+rng()*.2)*(crit?u.cd:1)*(o?1+u.skp:1);
         let ed=t.def*eff(t,'def')*(1-((o&&o.ign)||0));if(u.cls==='tac')ed*=.6;
-        const dd=Math.max(1,Math.round(raw*120/(120+ed)*(1-t.dr)));dmgTo(t,dd,e,{c:crit,m:Math.max(0,Math.round(raw)-dd)});
-        if(u.ls>0&&u.hp>0){const h=Math.min(u.maxhp-u.hp,Math.round(dd*u.ls));if(h>0){u.hp+=h;e.heals.push({s:u.side,i:u.slot,h,hp:u.hp})}}
+        const dd=Math.max(1,Math.round(raw*120/(120+ed)*(1-t.dr)*(t.rd||1)));dmgTo(t,dd,e,{c:crit,m:Math.max(0,Math.round(raw)-dd)});
+        if(C&&u.side===0){if(u.ls>0){const h=Math.min(C.max-C.hp,Math.round(dd*u.ls*SIEGE_HEAL));if(h>0){C.hp+=h;e.heals.push({s:0,i:u.slot,h,hp:u.hp,ch:C.hp})}}}
+        else if(u.ls>0&&u.hp>0){const h=Math.min(u.maxhp-u.hp,Math.round(dd*u.ls));if(h>0){u.hp+=h;e.heals.push({s:u.side,i:u.slot,h,hp:u.hp})}}
       };
       if(!sk){
         const f=foes(), tz=f.find(x=>x.taunt>0);
         if(tz)hit(tz,1);
-        else if(u.cls==='inf'||u.cls==='cav')hit(f[0],1);
+        else if(u.cls==='inf'||u.cls==='cav'){const m=Math.min(...f.map(x=>x.row||0)),fr=f.filter(x=>(x.row||0)===m);hit(fr[Math.floor(rng()*fr.length)],1)}
         else if(u.cls==='arc'){const cv=f.filter(x=>x.cls==='cav'),pool=tz?[tz]:cv.length?cv:f;hit(pool.reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a),1)}
         else hit(f[Math.floor(rng()*f.length)],1);
       } else {
         if(S.cost){const c=Math.round(u.maxhp*S.cost);u.hp=Math.max(1,u.hp-c);e.hits.push({s:u.side,i:u.slot,d:c,hp:u.hp,self:1})}
         const pick=()=>{const f=foes();if(!f.length)return null;const tz=f.find(x=>x.taunt>0);if(tz)return tz;
-          switch(S.tg){case 'front':return f[0];case 'back':return f[f.length-1];
+          switch(S.tg){case 'front':{const m=Math.min(...f.map(x=>x.row||0)),fr=f.filter(x=>(x.row||0)===m);return fr[Math.floor(rng()*fr.length)]}case 'back':{const m=Math.max(...f.map(x=>x.row||0)),fr=f.filter(x=>(x.row||0)===m);return fr[Math.floor(rng()*fr.length)]}
             case 'low':return f.reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a);
             case 'hpmax':return f.reduce((a,b)=>b.hp/b.maxhp>a.hp/a.maxhp?b:a);
             case 'high':return f.reduce((a,b)=>b.atk*eff(b,'atk')>a.atk*eff(a,'atk')?b:a);
@@ -1083,7 +1113,7 @@ function simulate(As,Bs,seed,opt){
         if(S.stun)hitT.forEach(t=>{if(t.hp>0&&rng()<S.stun){t.stun=1;e.stuns.push({s:t.side,i:t.slot})}});
         if(S.burn)hitT.forEach(t=>{if(t.hp>0)t.burn.push({d:Math.max(1,Math.round(atkV*S.burn.p)),dur:S.burn.dur,by:[u.side,u.slot]})});
         if(S.heal){const H=S.heal, tg=H.to==='all'?allies():H.to==='low'?[allies().reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a)]:[u];
-          tg.forEach(t=>{const h=Math.min(t.maxhp-t.hp,Math.round(t.maxhp*H.p));t.hp+=h;e.heals.push({s:t.side,i:t.slot,h,hp:t.hp})})}
+          tg.forEach(t=>{if(C&&t.side===0){const h=Math.min(C.max-C.hp,Math.round(t.maxhp*H.p*SIEGE_HEAL));C.hp+=h;e.heals.push({s:0,i:t.slot,h,hp:t.hp,ch:C.hp});return}const h=Math.min(t.maxhp-t.hp,Math.round(t.maxhp*H.p));t.hp+=h;e.heals.push({s:t.side,i:t.slot,h,hp:t.hp})})}
         arr(S.buff).forEach(b=>{(b.to==='all'?allies():[u]).forEach(t=>t.bf.push({atk:b.atk||0,def:b.def||0,dur:b.dur}));const x=fxStr({atk:b.atk>0?b.atk:0,def:b.def>0?b.def:0});const y=[b.atk<0?`공격 ${Math.round(b.atk*100)}%`:'',b.def<0?`방어 ${Math.round(b.def*100)}%`:''].filter(Boolean).join(' · ');e.notes.push(`${b.to==='all'?'아군':'자신'} ${[x,y].filter(Boolean).join(' · ')}`)});
         arr(S.deb).forEach(b=>{(b.to==='all'?foes():hitT.filter(t=>t.hp>0)).forEach(t=>t.bf.push({atk:b.atk||0,def:b.def||0,dur:b.dur}));e.notes.push(`적 ${[b.atk?`공격 ${Math.round(b.atk*100)}%`:'',b.def?`방어 ${Math.round(b.def*100)}%`:''].filter(Boolean).join(' · ')}`)});
         if(S.burn&&hitT.length)e.notes.push('화상');
@@ -1098,7 +1128,9 @@ function simulate(As,Bs,seed,opt){
       u.burn=u.burn.filter(b=>--b.dur>0);u.bf=u.bf.filter(b=>--b.dur>0);if(u.taunt>0)u.taunt--;
     });
     if(tick.hits.length)ev.push(tick);
+    if(C&&C.hp>0&&!T[1].some(x=>x.hp>0)){waves++;const nb=buildTeam(opt.siege.wave(waves),1);T[1]=nb.us;ev.push({spawn:waves,units:nb.us.map(u=>({...u})),hits:[],heals:[],notes:[]})}
   }
+  if(C)return {win:C.hp>0,siege:1,turns:RR,waves,castle:C.hp,castleMax:C.max,ev,init,bonus:[A.info,B.info]};
   let win;
   if(alive(0)&&!alive(1))win=true;
   else if(!alive(0))win=false;
@@ -1150,7 +1182,7 @@ function sanitize(s){
   {const rl=s.rl&&typeof s.rl==='object'?s.rl:{};o.rl={day:String(rl.day||''),n:Math.max(0,rl.n|0)}}
   // 진형 여러 개(최대 5): decks[k]={n:이름,g:[5자리]}, dk=지금 고른 진형, defDk=결투장 방어 진형. deck은 지금 고른 진형의 사본
   const cleanDeck=a=>{let n5=0;const seen=new Set();return Array.from({length:5},(_,i)=>{const g=(Array.isArray(a)?a:[])[i];if(!g||!o.gens[g]||seen.has(g)||(GMAP[g].rar===5&&++n5>MAX5))return null;seen.add(g);return g})};
-  o.decks=(Array.isArray(s.decks)&&s.decks.length?s.decks.slice(0,DECK_MAX):[{n:'진형 1',g:s.deck}]).map((d,k)=>({n:cleanName(d&&d.n)||'진형 '+(k+1),g:cleanDeck(d&&d.g)}));
+  o.decks=(Array.isArray(s.decks)&&s.decks.length?s.decks.slice(0,DECK_MAX):[{n:'진형 1',g:s.deck}]).map((d,k)=>({n:cleanName(d&&d.n)||'진형 '+(k+1),g:cleanDeck(d&&d.g),f:cleanForm(d&&d.f)}));
   const ck=v=>Math.min(o.decks.length-1,Math.max(0,v|0));o.dk=ck(s.dk);o.defDk=ck(s.defDk);
   if(Array.isArray(s.deck))o.decks[o.dk].g=cleanDeck(s.deck);
   o.deck=o.decks[o.dk].g.slice();
@@ -1176,18 +1208,19 @@ function sanitize(s){
     if(s.gens&&Object.keys(s.gens).length)MIG_LV={ref,slv:o.slv.slice()};
   }
   for(const g of Object.values(o.gens))g.lv=1;
+  o.siege=cleanSiege(s.siege);
   return o;
 }
 // 레벨은 진형의 자리(1~5번)에 붙어요. 진형 밖 장수는 가장 높은 자리 레벨 기준으로 보여 줘요
 const slotLv=i=>(S.slv&&S.slv[i])||1;
 function defLv(gid){const at=S.deck.indexOf(gid);return at>=0?slotLv(at):Math.max(...S.slv)}
 function specOf(gid,lv){const g=S.gens[gid];if(!g)return null;return {g:gid,lv:lv||defLv(gid),d:g.d,i:g.its.map(u=>S.items.find(x=>x.u===u)).filter(Boolean).map(x=>x.k+':'+(x.d||0)),cb:colBonus()}}
-function mySpecs(){return S.deck.map((g,i)=>g?specOf(g,slotLv(i)):null)}
+function mySpecs(){const f=curForm();return S.deck.map((g,i)=>g?{...specOf(g,slotLv(i)),p:i,f}:null)}
 const DECK_MAX=5;
 const deckName=k=>(S&&S.decks&&S.decks[k]&&S.decks[k].n)||('진형 '+(k+1));
 function syncDeck(){if(S&&S.decks&&S.decks[S.dk])S.decks[S.dk].g=S.deck.slice()}
 function defDeckArr(){return S.defDk===S.dk?S.deck:(S.decks[S.defDk]||{g:S.deck}).g}
-function defSpecs(){return defDeckArr().map((g,i)=>g&&S.gens[g]?specOf(g,slotLv(i)):null)}
+function defSpecs(){const f=defForm();return defDeckArr().map((g,i)=>g&&S.gens[g]?{...specOf(g,slotLv(i)),p:i,f}:null)}
 function switchDeck(k){if(!S.decks[k]||k===S.dk)return;syncDeck();S.dk=k;S.deck=S.decks[k].g.slice();save()}
 // 출진 창·레이드·결투장에서 쓸 진형을 바로 고르는 칩
 let deckQuickCb=null;
@@ -1371,7 +1404,7 @@ function duelTick(){
   const now=Date.now();if(now>=nextSettleCheck){nextSettleCheck=now+60000;checkSettlement()}
 }
 function cleanPlayer(d){
-  const deck=capFive((Array.isArray(d&&d.deck)?d.deck:[]).slice(0,5).filter(s=>s&&GMAP[s.g]).map(s=>({g:s.g,lv:Math.min(MAXLV,Math.max(1,s.lv|0)),d:Math.min(maxD(GMAP[s.g].rar),Math.max(0,s.d|0)),i:itemsOf(s.i).map(o=>o.it.id+':'+o.d),cb:cleanCb(s.cb)})));
+  const deck=capFive((Array.isArray(d&&d.deck)?d.deck:[]).slice(0,5).filter(s=>s&&GMAP[s.g]).map(s=>({g:s.g,lv:Math.min(MAXLV,Math.max(1,s.lv|0)),d:Math.min(maxD(GMAP[s.g].rar),Math.max(0,s.d|0)),i:itemsOf(s.i).map(o=>o.it.id+':'+o.d),cb:cleanCb(s.cb),p:Number.isInteger(s.p)&&s.p>=0&&s.p<5?s.p:undefined,f:FORM[s.f]?s.f:undefined})));
   return {name:cleanName(d&&d.name),deck,stage:Math.min(NSTAGE,Math.max(0,(d&&d.stage)|0)),at:Number(d&&d.at)||0};
 }
 
@@ -1437,10 +1470,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.20.1';
+const GAME_VERSION='1.20.2';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.20.2',date:'2026-10-14',title:'수성전 · 진형 배치(돌격진·기본진·수비진)',reward:{ap:20},items:[
+  '결투장 탭에 수성전이 생겼어요. 합비(손권)와 소패(여포)를 지켜요. 적이 내 장수를 때린 피해는 성 체력(내 진형 전투력 × 4)에서 빠지고, 내 장수는 쓰러지지 않아요.',
+  '적 무리를 모두 물리치면 다음 무리가 1.35배 강해져서 몰려와요. 성이 무너질 때까지 버틴 턴만큼 합비는 금, 소패는 군량을 받아요(최대 150턴).',
+  '재도전 대기는 버틴 턴에 비례해요(1턴 10분 ~ 100턴 이상 2시간). 성마다 하루 8판까지예요.',
+  '진형마다 배치를 고를 수 있어요. 돌격진(선봉 2·중견 2·후위 1): 선봉 속도 +12, 후위가 받는 피해 +15%. 기본진(2·1·2): 효과 없음. 수비진(1·2·2): 선봉이 받는 피해 +15%, 후위가 받는 피해 −10%.',
+  '보병·기병의 일반 공격과 \'맨 앞 적\' 전법은 이제 가장 앞줄 장수 중 한 명을 노리고, \'맨 뒤 적\' 전법은 가장 뒷줄 장수 중 한 명을 노려요.',
+  '전투 화면에서 선봉·중견·후위가 줄로 나뉘어 보여요. ⚡는 속도가 오른 선봉, ▲는 받는 피해가 늘어난 장수, ▼는 줄어든 장수예요.',
+  '결투장 방어 진형, 연습장, 레이드, 결과 공유 링크, 추천 편성(배치까지 추천)에도 적용돼요.']},
  {v:'1.20.1',date:'2026-10-14',title:'추천 편성 개선 · 나라·병종 · 업무 모드',reward:{ap:20},items:[
   '추천 편성이 전투력 점수 대신 실제 전투 계산으로 진형을 골라요. 결투장용은 결투장 상위 군주들의 방어 진형과 대표 진형들을 상대로 모의전을 치러 승률이 가장 높은 조합과 자리 순서를 찾아요.',
   '전투력 점수는 전법·속도·자리 효과를 반영하지 못해 ★3 군웅 진형을 너무 높게 쳤어요. 실제 전투에서는 그 진형이 ★4·★5 진형에게 거의 이기지 못했어요.',
@@ -1683,6 +1724,7 @@ function renderTop(){
   $('#claim-bar').style.width=(p.h/CAP_H*100)+'%';
   $('#claim-btn').disabled=p.f<1&&p.g<1;
   updateDot();
+  document.querySelectorAll('[data-scd]').forEach(n=>{const ms=+n.dataset.scd-Date.now();if(ms>0)n.textContent=hms(ms);else if(!n.dataset.done){n.dataset.done='1';if(view==='pvp'&&pvpMode==='siege'&&$('#sheet').hidden&&$('#battle').hidden)renderView()}});
   duelTick();
 }
 $('#claim-btn').onclick=()=>{const p=pendingRes();if(p.f<1&&p.g<1)return;S.food+=p.f;S.gold+=p.g;S.last=Date.now();save();renderTop();toast(`군량 ${fmt(p.f)} · 금 ${fmt(p.g)} 징수`)};
@@ -2005,18 +2047,20 @@ function vDeck(){
   const isDef=S.defDk===S.dk;
   let h=`<div class="row"><div><h2>진형</h2><p class="sub" style="margin:0">고른 진형으로 출정·레이드·결투 공격을 하고, <span class="defmk">防</span> 진형이 결투장 방어에 쓰여요. ★5 장수는 진형마다 ${MAX5}명까지(지금 ${count5(S.deck)}명). 자리 레벨(Lv)과 보물은 모든 진형이 함께 써요.</p></div></div>
   <div class="chips deckbar" role="group" aria-label="진형 선택" style="margin:10px 0 6px">${S.decks.map((d,k)=>`<button type="button" data-dk="${k}" aria-pressed="${k===S.dk}">${esc(deckName(k))}${k===S.defDk?' <small class="defmk">防</small>':''}</button>`).join('')}${S.decks.length<DECK_MAX?'<button type="button" data-dkadd>＋ 새 진형</button>':''}</div>
+  <div class="chips" role="group" aria-label="배치" style="margin:4px 0 2px"><span class="flab">배치</span>${Object.entries(FORM).map(([k,F2])=>`<button type="button" data-form="${k}" aria-pressed="${curForm()===k}">${F2.n} <small>${F2.r.join('-')}</small></button>`).join('')}</div>
+  <p class="sub" style="font-size:12px;margin:0 0 8px">${FORM[curForm()].d}</p>
   <div class="row" style="gap:6px"><button type="button" class="btn ghost sm" data-dkname>이름 바꾸기</button>${isDef?'<span class="chip" style="border-color:var(--bronze);color:var(--bronze)">결투장 방어 진형</span>':'<button type="button" class="btn ghost sm" data-dkdef>방어 진형으로 지정</button>'}${S.decks.length<DECK_MAX?'<button type="button" class="btn ghost sm" data-dkcopy>복제</button>':''}${S.decks.length>1?'<button type="button" class="btn ghost sm" data-dkdel>삭제</button>':''}</div>
   <div class="row" style="margin:12px 0"><div><div class="sub" style="margin:0">총 전투력</div><div class="power num">${fmt(deckPower(specs))}</div></div><span class="sp"></span><button type="button" class="btn sm" id="rec-open">추천 편성</button></div>${teamBoxHtml(specs)}`;
   S.deck.forEach((gid,i)=>{
-    const pos=`<div class="pos">${i+1}<small>${POS[i]}</small></div>`;
+    const pos=`<div class="pos">${i+1}<small>${posOf(i)}</small></div>`;
     const lvb=`<button type="button" class="slv" data-slv="${i}" aria-label="${i+1}번 자리 레벨">Lv ${slotLv(i)}</button>`;
-    const pos2=`<div class="pos">${i+1}<small>${POS[i]}</small>${lvb}</div>`;
+    const pos2=`<div class="pos">${i+1}<small>${posOf(i)}</small>${lvb}</div>`;
     if(!gid){h+=`<div class="slot empty" role="button" tabindex="0" data-slot="${i}">${pos2}<div class="info"><b>빈 자리</b><span>눌러서 장수 편성</span></div></div>`;return}
     const g=GMAP[gid], s=specs[i], its=itemsOf(s.i), it=its.length?{name:its.map(x=>x.it.name+(x.d?'+'+x.d:'')).join(', ')}:null;
     h+=`<div class="slot" role="button" tabindex="0" data-slot="${i}">${pos2}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${CLS[g.cls].g} ${CLS[g.cls].n} · ${dupHtml(s.d,0,maxD(g.rar))}${it?` · ${esc(it.name)}`:''} · 전투력 ${fmt(specPower(s))}</span></div>
     <div class="mv"><button type="button" data-mv="${i}:-1" aria-label="앞으로" ${i===0?'disabled':''}>▲</button><button type="button" data-mv="${i}:1" aria-label="뒤로" ${i===4?'disabled':''}>▼</button><button type="button" class="clr" data-clr="${i}" aria-label="${esc(g.name)} 빼기">✕</button></div></div>`;
   });
-  h+=`<div class="legend"><b>전투 규칙</b><br>보병·기병은 앞 번호의 적부터 공격하고, 궁병은 체력이 가장 낮은 적을, 책사는 무작위 적을 노립니다. 전법은 기병 2번째, 보병·궁병 3번째, 책사 4번째 행동마다 발동해요. 도발 중인 적이 있으면 단일 공격은 그 적에게 향해요.<br><b>상성</b> 기병 → 보병 → 궁병 → 기병 (유리하면 피해 +25%, 궁병은 기병에게 +50%). 궁병은 기병을 먼저 노려요.<br><b>진영·인연</b> 같은 진영 3명 이상, 또는 인연 있는 장수를 함께 넣으면 능력치가 올라요(인연은 진형 전원에게 적용). 다른 나라 장수끼리의 타국 인연은 효과가 2배이고, 3개국 이상 섞으면 연합군 보너스를 받아요. 도감의 인연 탭에서 전체 목록을 볼 수 있어요.<br><button type="button" class="btn ghost sm" data-help="3" style="margin-top:8px">전투 규칙 자세히 보기</button></div>`;
+  h+=`<div class="legend"><b>전투 규칙</b><br>보병·기병은 가장 앞줄(선봉) 적 중 한 명을 공격하고, 궁병은 체력이 가장 낮은 적을, 책사는 무작위 적을 노립니다. 전법은 기병 2번째, 보병·궁병 3번째, 책사 4번째 행동마다 발동해요. 도발 중인 적이 있으면 단일 공격은 그 적에게 향해요.<br><b>상성</b> 기병 → 보병 → 궁병 → 기병 (유리하면 피해 +25%, 궁병은 기병에게 +50%). 궁병은 기병을 먼저 노려요.<br><b>진영·인연</b> 같은 진영 3명 이상, 또는 인연 있는 장수를 함께 넣으면 능력치가 올라요(인연은 진형 전원에게 적용). 다른 나라 장수끼리의 타국 인연은 효과가 2배이고, 3개국 이상 섞으면 연합군 보너스를 받아요. 도감의 인연 탭에서 전체 목록을 볼 수 있어요.<br><button type="button" class="btn ghost sm" data-help="3" style="margin-top:8px">전투 규칙 자세히 보기</button></div>`;
   return h;
 }
 document.addEventListener('click',e=>{
@@ -2028,7 +2072,8 @@ document.addEventListener('click',e=>{
   if(e.target.closest('#auto')){autoDeck();return}
   const dkb=e.target.closest('[data-dk]');if(dkb){switchDeck(+dkb.dataset.dk);renderView();return}
   if(e.target.closest('[data-dkadd]')||e.target.closest('[data-dkcopy]')){if(S.decks.length>=DECK_MAX)return;syncDeck();const cp=!!e.target.closest('[data-dkcopy]');
-    S.decks.push({n:cp?(deckName(S.dk)+' 사본').slice(0,12):'진형 '+(S.decks.length+1),g:cp?S.deck.slice():[null,null,null,null,null]});S.dk=S.decks.length-1;S.deck=S.decks[S.dk].g.slice();save();renderView();toast(cp?'진형을 복제했어요':'새 진형을 만들었어요');return}
+    S.decks.push({n:cp?(deckName(S.dk)+' 사본').slice(0,12):'진형 '+(S.decks.length+1),g:cp?S.deck.slice():[null,null,null,null,null],f:cp?curForm():'basic'});S.dk=S.decks.length-1;S.deck=S.decks[S.dk].g.slice();save();renderView();toast(cp?'진형을 복제했어요':'새 진형을 만들었어요');return}
+  const fmb=e.target.closest('[data-form]');if(fmb){S.decks[S.dk].f=cleanForm(fmb.dataset.form);save();renderView();toast(`${FORM[curForm()].n}으로 바꿨어요`);return}
   if(e.target.closest('[data-dkdef]')){S.defDk=S.dk;save();renderView();toast(`${deckName(S.dk)}을(를) 결투장 방어 진형으로 정했어요`);return}
   if(e.target.closest('[data-dkname]')){openDeckName();return}
   if(e.target.closest('[data-dkdel]')){openDeckDel();return}
@@ -2062,7 +2107,7 @@ function sortedOwned(lv){return Object.keys(S.gens).sort((a,b)=>GMAP[b].rar-GMAP
 function openSlotPicker(i){
   const cur=S.deck[i];
   const list=sortedOwned(slotLv(i)).filter(g=>g!==cur);
-  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${i+1}번 ${POS[i]} 편성</h2><div class="sub" style="margin:0">이 자리 Lv ${slotLv(i)}로 싸워요</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${i+1}번 ${posOf(i)} 편성</h2><div class="sub" style="margin:0">이 자리 Lv ${slotLv(i)}로 싸워요</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   ${cur?`<button type="button" class="btn ghost wide" data-setslot="${i}:" style="margin-bottom:10px">${esc(GMAP[cur].name)} 빼기</button>`:''}
   <p class="sub" style="margin:0 0 8px">★5 장수는 진형에 ${MAX5}명까지 넣을 수 있어요 (지금 ${count5(S.deck)}명)</p>
   <div class="list">${list.map(g=>{const b=GMAP[g],s=specOf(g,slotLv(i)),at=S.deck.indexOf(g);return `<button type="button" class="li" data-setslot="${i}:${g}" ${b.rar===5&&at<0&&count5(S.deck,i)>=MAX5?'disabled':''} style="text-align:left">${seal(b,'sm')}<div class="info"><b>${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span></b><span>${CLS[b.cls].g} ${CLS[b.cls].n} · 전투력 ${fmt(specPower(s))}${at>=0?` · 현재 ${at+1}번`:''}</span></div></button>`}).join('')}</div>`);
@@ -2081,6 +2126,63 @@ function applyWork(on){document.documentElement.classList.toggle('work',on);cons
 try{if(localStorage.getItem(WORK_K)==='1')applyWork(true)}catch(e){}
 document.addEventListener('click',e=>{if(e.target.closest('#work-btn'))applyWork(!document.documentElement.classList.contains('work'))});
 document.addEventListener('keydown',e=>{if(e.key==='`'&&!e.target.closest('input,textarea')&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();applyWork(!document.documentElement.classList.contains('work'))}});
+
+/* ---------------- 수성전 (v1.20.2) ----------------
+   내 진형이 성을 지켜요. 적이 내 장수를 때린 피해는 성 체력에서 빠지고, 내 장수는 쓰러지지 않아요(회복·흡혈은 30% 효율로 성 체력 회복).
+   적 무리를 모두 쓰러뜨리면 다음 무리가 1.35배 강해져서 들어와요. 성이 무너질 때까지 버틴 턴만큼 보상. */
+const SIEGE={
+  hefei:{n:'합비',hz:'合肥',boss:'sunquan',res:'gold',k:.06,d:'장료가 손권의 대군을 막아 낸 성. 손권과 장수들이 몰려와요.'},
+  xiaopei:{n:'소패',hz:'小沛',boss:'lubu',res:'food',k:.015,d:'유비가 여포의 공격을 막아 낸 성. 여포와 장수들이 몰려와요.'}};
+const SIEGE_K=4, SIEGE_DAILY=8, SIEGE_MAXR=150, SIEGE_HEAL=.3, SIEGE_BASE=.8, SIEGE_GROW=1.35;
+const siegeCdMin=t=>Math.min(120,10+Math.max(0,t-1)*110/99);
+function siegeState(){const d=kstDay();if(!S.siege||typeof S.siege!=='object')S.siege={};const s=S.siege;
+  if(s.day!==d){s.day=d;s.n={hefei:0,xiaopei:0}}if(!s.n)s.n={hefei:0,xiaopei:0};if(!s.cd)s.cd={};if(!s.best)s.best={};return s}
+function cleanSiege(x){if(!x||typeof x!=='object')return {};const o={day:typeof x.day==='string'?x.day:'',n:{},cd:{},best:{}};
+  for(const k of Object.keys(SIEGE)){o.n[k]=Math.min(SIEGE_DAILY,Math.max(0,(x.n&&x.n[k])|0));const c=Number(x.cd&&x.cd[k])||0;o.cd[k]=Math.min(c,Date.now()+121*60000);o.best[k]=Math.min(SIEGE_MAXR,Math.max(0,(x.best&&x.best[k])|0))}return o}
+function siegeWave(key,seed,lv,itd){
+  const C=SIEGE[key];
+  return n=>{const r=mulberry(seed*977+n*131);const pool=Object.keys(GMAP).filter(g=>g!==C.boss);const pick=[C.boss];let n5=GMAP[C.boss].rar===5?1:0,guard=0;
+    while(pick.length<5&&guard++<500){const g=pool[Math.floor(r()*pool.length)];if(pick.includes(g))continue;if(GMAP[g].rar===5){if(n5>=MAX5)continue;n5++}pick.push(g)}
+    const sc=SIEGE_BASE*Math.pow(SIEGE_GROW,n-1);
+    return pick.map((g,i)=>({g,lv,d:Math.floor(r()*(maxD(GMAP[g].rar)+1)),i:Array.from({length:3},()=>ITEMS[Math.floor(r()*ITEMS.length)].id+':'+Math.floor(r()*(itd+1))),sc,p:i,f:'basic'}))};
+}
+function siegeParams(){
+  const mine=mySpecs(), f=mine.filter(Boolean), pw=deckPower(mine);
+  const lv=f.length?Math.round(f.reduce((a,s)=>a+s.lv,0)/f.length):1;
+  const ds=f.flatMap(s=>itemsOf(s.i).map(o=>o.d)), itd=ds.length?Math.round(ds.reduce((a,b)=>a+b,0)/ds.length):0;
+  return {mine,pw,hp:Math.round(pw*SIEGE_K),lv,itd};
+}
+const siegeRate=key=>SIEGE[key].res==='gold'?goldRate()*SIEGE[key].k:foodRate()*SIEGE[key].k;
+function hms(ms){const t=Math.max(0,Math.ceil(ms/1000)),h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(s).padStart(2,'0')}
+function vSiege(){
+  const st=siegeState(), P=siegeParams();
+  let h=`<p class="sub">성을 지키는 싸움이에요. 적이 내 장수를 때린 피해는 <b style="color:var(--fg)">성 체력</b>에서 빠지고 내 장수는 쓰러지지 않아요. 적 무리를 모두 물리치면 다음 무리가 ${SIEGE_GROW}배 강해져서 몰려와요. 성이 무너질 때까지 버틴 턴만큼 보상을 받아요(최대 ${SIEGE_MAXR}턴).</p>
+   ${deckQuickHtml('수비 진형')}
+   <div class="stats" style="grid-template-columns:1fr 1fr;margin:6px 0 12px"><div class="stat"><small>성 체력 (전투력 × ${SIEGE_K})</small><b>${fmt(P.hp)}</b></div><div class="stat"><small>배치</small><b>${FORM[curForm()].n}</b></div></div>`;
+  for(const [key,C] of Object.entries(SIEGE)){
+    const cd=(st.cd[key]||0)-Date.now(), left=SIEGE_DAILY-st.n[key], boss=GMAP[C.boss], rate=siegeRate(key);
+    h+=`<div class="banner-card" style="margin-bottom:12px"><div class="big">${C.hz}</div><div class="row">${seal(boss,'sm')}<div><h2 style="margin:0">${C.n} 수성전</h2><div class="sub" style="margin:0">${esc(C.d)}</div></div></div>
+     <div class="stats" style="grid-template-columns:repeat(3,1fr);margin:10px 0"><div class="stat"><small>1턴 보상</small><b>${C.res==='gold'?'金':'糧'} ${fmt(Math.round(rate*10)/10)}</b></div><div class="stat"><small>오늘</small><b>${st.n[key]}/${SIEGE_DAILY}</b></div><div class="stat"><small>최고 기록</small><b>${st.best[key]?st.best[key]+'턴':'-'}</b></div></div>
+     ${left<=0?`<button type="button" class="btn wide" disabled>오늘 도전을 모두 했어요</button>`:cd>0?`<button type="button" class="btn wide" disabled>다시 도전까지 <span data-scd="${st.cd[key]}">${hms(cd)}</span></button>`:`<button type="button" class="btn wide red" data-siege="${key}" ${P.mine.some(Boolean)?'':'disabled'}>${C.n} 지키기</button>`}</div>`;
+  }
+  h+=`<p class="sub" style="font-size:12px">재도전 대기: 버틴 턴에 비례해 1턴 10분 ~ 100턴 이상 2시간. 성마다 하루 ${SIEGE_DAILY}판. 적은 손권·여포 고정에 무작위 장수 4명이고, 레벨은 내 진형 평균, 보물은 무작위(강화는 내 보물 평균까지)예요.</p>`;
+  return h;
+}
+function siegeGo(key){
+  const C=SIEGE[key], st=siegeState();
+  if(st.n[key]>=SIEGE_DAILY){toast('오늘 도전을 모두 했어요');return}
+  if((st.cd[key]||0)>Date.now()){toast('아직 재도전 대기 중이에요');return}
+  const P=siegeParams();if(!P.mine.some(Boolean)){toast('진형을 먼저 편성하세요');return}
+  const seed=(Math.random()*2**31)|0, wave=siegeWave(key,seed,P.lv,P.itd);
+  const res=simulate(P.mine,wave(1),seed,{rounds:SIEGE_MAXR,siege:{hp:P.hp,wave}});
+  const t=res.turns, amt=Math.round(t*siegeRate(key)), cdm=siegeCdMin(t);
+  if(C.res==='gold')S.gold+=amt;else S.food+=amt;
+  st.n[key]++;st.cd[key]=Date.now()+Math.round(cdm*60000);st.best[key]=Math.max(st.best[key]||0,t);save();renderTop();
+  playBattle(res,`${C.n} 수성전`,'수비군 (내 진형)',`공격군 · ${GMAP[C.boss].name}`,()=>`<p class="sub">${t}턴 동안 버텼어요 · 제${res.waves}파까지${res.win?' · 끝까지 지켜 냈어요':''}</p>
+     <div class="row" style="justify-content:center"><span class="coin"><b class="sl ${C.res}">${C.res==='gold'?'金':'糧'}</b>+${fmt(amt)}</span></div>
+     <p class="sub">다음 도전까지 ${Math.round(cdm)}분 · 오늘 ${st.n[key]}/${SIEGE_DAILY}</p>`,{siege:{max:P.hp},verdict:{stamp:'守',lab:`${t}턴 수성`}});
+}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-siege]');if(b&&!b.disabled)siegeGo(b.dataset.siege)});
 /* ---------------- 추천 편성 ----------------
    고정한 장수(자리 그대로)와 고정한 보물은 두고, 남은 자리와 보물 칸을 추천으로 채워요.
    1) 장수: 진영·연합군·인연 효과까지 넣은 진형 점수가 가장 높은 조합을 찾아요(여러 출발점 + 한 명씩 바꿔 보기)
@@ -2168,7 +2270,7 @@ const recTick=()=>new Promise(r=>setTimeout(r,0));
 function recLvOf(locked){const f=[0,1,2,3,4].filter(i=>!locked.some(x=>x.slot===i)).map(slotLv);return f.length?Math.round(f.reduce((a,b)=>a+b,0)/f.length):slotLv(0)}
 function recBuild(locked,set,lv,cb){
   const gens=[...locked.map(x=>x.g),...set],slots=recAssignItems(locked,gens,lv,cb),P=recPlace(locked,slots,cb);
-  P.set=set.slice();P.specs=P.deck.map((g,i)=>g?recSpec(g,slotLv(i),P.its[g],cb):null);return P;
+  P.set=set.slice();P.f=curForm();P.specs=P.deck.map((g,i)=>g?{...recSpec(g,slotLv(i),P.its[g],cb),f:P.f}:null);return P;
 }
 // 결투장용 상대: 결투장 상위 군주들의 방어 진형 + 내 장수로 만든 대표 진형들
 function recGauntlet(locked,lv,cb){
@@ -2226,18 +2328,21 @@ async function recCompute(progress){
   // 자리 순서: 고정하지 않은 장수끼리 순서를 바꿔 가며 실제 전투로 비교
   const freeSlots=[0,1,2,3,4].filter(i=>!locked.some(x=>x.slot===i)), freeG=freeSlots.map(i=>best.deck[i]).filter(Boolean);
   const perms=a=>a.length<=1?[a]:a.flatMap((x,i)=>perms([...a.slice(0,i),...a.slice(i+1)]).map(r=>[x,...r]));
-  let bo=null;const ps=perms(freeG);
-  for(let k=0;k<ps.length;k++){const d=best.deck.slice();freeSlots.forEach(i=>d[i]=null);let j=0;freeSlots.forEach(i=>{if(j<ps[k].length)d[i]=ps[k][j++]});
-    const specs=d.map((g,i)=>g?recSpec(g,slotLv(i),best.its[g],cb):null), v=recEval(specs,G,REC_SEEDS_F);
-    if(!bo||v>bo.v)bo={d,specs,v};if(k%20===19){progress(75+Math.round(20*k/ps.length));await recTick()}}
+  // 배치(돌격진·기본진·수비진)까지 함께 비교: 먼저 1판씩으로 추리고, 상위 6개를 3판씩 다시 비교
+  const ps=perms(freeG), FK=Object.keys(FORM), cand=[];let k=0;
+  for(const fk of FK)for(const p of ps){const d=best.deck.slice();freeSlots.forEach(i=>d[i]=null);let j=0;freeSlots.forEach(i=>{if(j<p.length)d[i]=p[j++]});
+    const specs=d.map((g,i)=>g?{...recSpec(g,slotLv(i),best.its[g],cb),f:fk}:null);cand.push({d,specs,f:fk,v:recEval(specs,G,recSeeds())});
+    if(++k%30===0){progress(75+Math.round(18*k/(ps.length*FK.length)));await recTick()}}
+  cand.sort((a,b)=>b.v-a.v);let bo=null;
+  for(const c of cand.slice(0,6)){c.v2=recEval(c.specs,G,REC_SEEDS_F);if(!bo||c.v2>bo.v2)bo=c}
   progress(95);await recTick();
-  if(bo){best.deck=bo.d;best.specs=bo.specs}
+  if(bo){best.deck=bo.d;best.specs=bo.specs;best.f=bo.f}
   // 보물 다듬기: 두 장수의 보물 맞바꾸기 / 남는 좋은 보물로 바꾸기를 모의전으로 비교 (고정 보물은 그대로)
   {
     const lockedU=new Set(locked.flatMap(x=>x.its)), its={};best.deck.forEach(g=>{if(g)its[g]=(best.its[g]||[]).slice()});
     const horse=u=>{const x=itemU(u);return x&&IMAP[x.k].g==='馬'};
     const okH=(g,arr)=>arr.filter(horse).length<=1;
-    const specsOf=I=>best.deck.map((g,i)=>g?recSpec(g,slotLv(i),I[g],cb):null);
+    const specsOf=I=>best.deck.map((g,i)=>g?{...recSpec(g,slotLv(i),I[g],cb),f:best.f}:null);
     let cur=recEval(specsOf(its),G,recSeeds());
     const used=new Set(Object.values(its).flat());
     const spare=S.items.filter(x=>!used.has(x.u)&&!lockedU.has(x.u)).sort((a,b)=>IMAP[b.k].rar-IMAP[a.k].rar||(b.d||0)-(a.d||0)).slice(0,10).map(x=>x.u);
@@ -2263,7 +2368,7 @@ async function recCompute(progress){
 }
 function openRec(){
   recLock.g=new Set([...recLock.g].filter(i=>S.deck[i]));
-  const rows=S.deck.map((g,i)=>{const pos=`<div class="pos">${i+1}<small>${POS[i]}</small></div>`;
+  const rows=S.deck.map((g,i)=>{const pos=`<div class="pos">${i+1}<small>${posOf(i)}</small></div>`;
     if(!g)return `<div class="slot empty">${pos}<div class="info"><b>빈 자리</b><span>추천으로 채워요</span></div></div>`;
     const b=GMAP[g],on=recLock.g.has(i),st=S.gens[g];
     return `<div class="slot" style="${on?'border-color:var(--bronze)':''}">${pos}${seal(b,'sm')}<div class="info"><b>${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span></b>
@@ -2283,7 +2388,7 @@ function openRec(){
 function openRecResult(P){
   const cur=mySpecs(), curP=deckPower(cur);
   const moved=[];
-  const rows=P.deck.map((g,i)=>{const pos=`<div class="pos">${i+1}<small>${POS[i]}</small></div>`;
+  const rows=P.deck.map((g,i)=>{const pos=`<div class="pos">${i+1}<small>${posOf(i,P.f)}</small></div>`;
     if(!g)return `<div class="slot empty">${pos}<div class="info"><b>빈 자리</b><span>넣을 장수가 없어요</span></div></div>`;
     const b=GMAP[g],lockG=recLock.g.has(i)&&S.deck[i]===g,was=S.deck.indexOf(g);
     const its=(P.its[g]||[]).map(u=>{const x=itemU(u),it=IMAP[x.k],h=itemHolder(u),lk=recLock.i.has(u)&&lockG;if(h&&h!==g)moved.push(`${it.name}: ${GMAP[h].name} → ${b.name}`);
@@ -2294,6 +2399,7 @@ function openRecResult(P){
   openSheet(`<div class="sheet-h"><h2 style="margin:0">추천 결과</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <div class="stats" style="grid-template-columns:1fr 1fr;margin:0 0 6px">${st('총 전투력',fmt(curP),fmt(P.power)+(P.power!==curP?` (${P.power>curP?'+':'−'}${fmt(Math.abs(P.power-curP))})`:''))}${P.dmg!=null?st('레이드 예상 피해(평균)',fmt(P.curDmg||0),fmt(P.dmg)):st('모의전 승률',Math.round((P.curWr||0)*100)+'%',Math.round((P.wr||0)*100)+'%')}</div>
    ${P.wr!=null?`<p class="sub" style="font-size:11px;margin:0 0 10px">상대 ${P.gN}개 진형과 3판씩 치른 결과예요. 상대에는 결투장 상위 군주들의 방어 진형과 내 장수로 만든 대표 진형이 들어가요.</p>`:''}
+   <p class="sub" style="margin:0 0 6px">배치: <b style="color:var(--fg)">${FORM[P.f||'basic'].n}</b> · ${FORM[P.f||'basic'].d}</p>
    ${teamBoxHtml(P.specs)}
    ${rows}
    ${moved.length?`<p class="sub" style="font-size:12px;margin:6px 0 0">옮겨 오는 보물 ${moved.length}개 — 원래 끼고 있던 장수는 그 보물이 빠져요(다른 진형에도 반영돼요).</p>`:''}
@@ -2308,8 +2414,8 @@ function recApply(P,asNew){
   const all=new Set(Object.values(P.its).flat());let moved=0;
   for(const[g,st]of Object.entries(S.gens)){if(P.its[g])continue;const before=st.its.length;st.its=st.its.filter(u=>!all.has(u));moved+=before-st.its.length}
   for(const[g,us]of Object.entries(P.its))if(S.gens[g])S.gens[g].its=us.slice(0,ITEM_SLOTS);
-  if(asNew){syncDeck();S.decks.push({n:('추천 '+(S.decks.length+1)).slice(0,12),g:P.deck.slice()});S.dk=S.decks.length-1}
-  S.deck=P.deck.slice();save();closeSheet();renderTop();renderView();
+  if(asNew){syncDeck();S.decks.push({n:('추천 '+(S.decks.length+1)).slice(0,12),g:P.deck.slice(),f:cleanForm(P.f)});S.dk=S.decks.length-1}
+  S.deck=P.deck.slice();S.decks[S.dk].f=cleanForm(P.f);save();closeSheet();renderTop();renderView();
   toast(`${asNew?'새 진형으로 저장했어요':'추천 진형을 적용했어요'}${moved?` · 다른 장수에게서 보물 ${moved}개 옮김`:''}`);
 }
 document.addEventListener('click',e=>{
@@ -2496,7 +2602,7 @@ function bindLv(get,set,reopen,label){
 }
 function openSlotLv(i){
   const gid=S.deck[i];
-  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${i+1}번 ${POS[i]} 자리 레벨</h2><div class="sub" style="margin:0">${gid?esc(GMAP[gid].name)+' 편성 중':'빈 자리'} · Lv ${slotLv(i)}/${MAXLV}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${i+1}번 ${posOf(i)} 자리 레벨</h2><div class="sub" style="margin:0">${gid?esc(GMAP[gid].name)+' 편성 중':'빈 자리'} · Lv ${slotLv(i)}/${MAXLV}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <p class="sub" style="margin:0 0 10px">레벨은 장수가 아니라 자리에 붙어요. 이 자리에 어떤 장수를 넣어도 Lv ${slotLv(i)}로 싸워요.</p>${lvBoxHtml(slotLv(i))}
    <div class="row" style="margin-top:12px;gap:6px">${[0,1,2,3,4].map(k=>`<button type="button" class="btn ghost sm" data-slv="${k}" aria-pressed="${k===i}" style="flex:1${k===i?';border-color:var(--bronze);color:var(--bronze)':''}">${k+1}번 Lv ${slotLv(k)}</button>`).join('')}</div>`);
   bindLv(()=>slotLv(i),v=>{S.slv[i]=v},()=>openSlotLv(i),`${i+1}번 자리`);
@@ -2580,7 +2686,7 @@ function labDefault(){return {atk:[1,2,3].map(i=>labNew('공격 '+i)),def:[1,2,3
 function labClean(L){
   const d=labDefault();if(!L||typeof L!=='object')return d;
   const one=(src,dflt)=>{
-    const o={n:dflt.n,p:LAB_PLUS.includes(src&&src.p)?src.p:50,s:[]},used=new Set();let n5=0;
+    const o={n:dflt.n,p:LAB_PLUS.includes(src&&src.p)?src.p:50,f:cleanForm(src&&src.f),s:[]},used=new Set();let n5=0;
     for(let i=0;i<5;i++){
       const x=src&&Array.isArray(src.s)?src.s[i]:null;
       if(!x||!GMAP[x.g]||o.s.some(y=>y&&y.g===x.g)||(GMAP[x.g].rar===5&&n5>=MAX5)){o.s.push(null);continue}
@@ -2594,10 +2700,10 @@ function labClean(L){
   return {atk:d.atk.map((x,i)=>one((L.atk||[])[i],x)),def:d.def.map((x,i)=>one((L.def||[])[i],x)),ai:Math.min(LAB_N-1,Math.max(0,L.ai|0)),di:Math.min(LAB_N-1,Math.max(0,L.di|0))};
 }
 const labCur=side=>S.lab[side][side==='atk'?S.lab.ai:S.lab.di];
-const labSpecs=D=>D.s.map(x=>x?{g:x.g,lv:MAXLV,d:maxD(GMAP[x.g].rar),i:x.i.map(k=>k+':'+D.p)}:null);
+const labSpecs=D=>D.s.map((x,i)=>x?{g:x.g,lv:MAXLV,d:maxD(GMAP[x.g].rar),i:x.i.map(k=>k+':'+D.p),p:i,f:cleanForm(D.f)}:null);
 const labN5=(D,skip)=>D.s.filter((x,j)=>x&&j!==skip&&GMAP[x.g].rar===5).length;
 function labSlotHtml(side,D,specs,i){
-  const pos=`<div class="pos">${i+1}<small>${POS[i]}</small></div>`, x=D.s[i];
+  const pos=`<div class="pos">${i+1}<small>${posOf(i,D.f)}</small></div>`, x=D.s[i];
   if(!x)return `<div class="slot empty" role="button" tabindex="0" data-labslot="${side}:${i}">${pos}<div class="info"><b>빈 자리</b><span>눌러서 장수 편성</span></div></div>`;
   const g=GMAP[x.g];
   return `<div class="slot" role="button" tabindex="0" data-labslot="${side}:${i}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${CLS[g.cls].g} ${CLS[g.cls].n} · ${FAC[g.fac]} · 전투력 ${fmt(specPower(specs[i]))}</span>
@@ -2609,6 +2715,7 @@ function labBoxHtml(side){
   return `<div class="labbox"><div class="row"><h3 style="margin:0">${side==='atk'?'공격덱':'방어덱 (NPC)'}</h3><span class="sp"></span><span class="sub num" style="margin:0">전투력 <b style="color:var(--bronze)">${fmt(deckPower(specs))}</b></span></div>
    <div class="chips" role="group" aria-label="저장 슬롯">${arr.map((x,i)=>`<button type="button" data-labk="${side}:${i}" aria-pressed="${i===k}">${esc(x.n)}${x.s.some(Boolean)?'':' (빈 덱)'}</button>`).join('')}</div>
    <div class="chips" role="group" aria-label="보물 강화"><span class="flab">보물 강화</span>${LAB_PLUS.map(p=>`<button type="button" data-labp="${side}:${p}" aria-pressed="${D.p===p}">+${p}</button>`).join('')}</div>
+   <div class="chips" role="group" aria-label="배치"><span class="flab">배치</span>${Object.entries(FORM).map(([k,F2])=>`<button type="button" data-labf="${side}:${k}" aria-pressed="${cleanForm(D.f)===k}">${F2.n}</button>`).join('')}</div>
    ${teamBoxHtml(specs,1)}
    ${D.s.map((_,i)=>labSlotHtml(side,D,specs,i)).join('')}
    <div class="row" style="gap:6px;flex-wrap:wrap"><button type="button" class="btn ghost sm" data-labfill="${side}">무작위 편성</button><button type="button" class="btn ghost sm" data-labcopy="${side}">내 진형 복사</button><button type="button" class="btn ghost sm" data-labapply="${side}">내 진형에 적용</button><span class="sp"></span><button type="button" class="btn ghost sm" data-labclear="${side}">비우기</button></div></div>`;
@@ -2643,7 +2750,7 @@ function openLabSlot(side,i){
 function openLabGen(side,i){
   const D=labCur(side), cur=D.s[i]&&D.s[i].g, full5=labN5(D,i)>=MAX5;
   const list=GENS.filter(g=>g.id!==cur&&(!labFac||g.fac===labFac)).map(g=>({g,p:specPower({g:g.id,lv:MAXLV,d:maxD(g.rar)})})).sort((a,b)=>b.g.rar-a.g.rar||b.p-a.p);
-  openSheet(`<div class="sheet-h"><h2 style="margin:0">${side==='atk'?'공격덱':'방어덱'} ${i+1}번 ${POS[i]}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">${side==='atk'?'공격덱':'방어덱'} ${i+1}번 ${posOf(i,D.f)}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <p class="sub" style="margin:0 0 8px">★5는 ${MAX5}명까지 (지금 ${labN5(D)}명) · 이미 덱에 있는 장수를 고르면 자리를 바꿔요.</p>
    <div class="chips" role="group" aria-label="나라">${[['','전체'],...Object.entries(FAC)].map(([k,v])=>`<button type="button" data-labfac="${side}:${i}:${k}" aria-pressed="${labFac===k}">${v}</button>`).join('')}</div>
    <div class="list">${list.map(({g,p})=>{const at=D.s.findIndex(y=>y&&y.g===g.id),no=g.rar===5&&at<0&&full5;
@@ -2667,7 +2774,8 @@ document.addEventListener('click',e=>{
   const lk=t.closest('[data-labk]');if(lk){const[sd,k]=lk.dataset.labk.split(':');S.lab[sd==='atk'?'ai':'di']=+k;labSimOut='';save();renderView();return}
   const lp=t.closest('[data-labp]');if(lp){const[sd,p]=lp.dataset.labp.split(':');labCur(sd).p=+p;labSimOut='';save();renderView();return}
   const lf=t.closest('[data-labfill]');if(lf){labCur(lf.dataset.labfill).s=labRandom();labSimOut='';save();renderView();return}
-  const lc=t.closest('[data-labcopy]');if(lc){const D=labCur(lc.dataset.labcopy);D.s=S.deck.map(g=>g?{g,i:S.gens[g].its.map(u=>(S.items.find(y=>y.u===u)||{}).k).filter(Boolean)}:null);Object.assign(D,labClean({atk:[D]}).atk[0],{n:D.n});labSimOut='';save();renderView();toast('내 진형의 장수와 보물 종류를 복사했어요');return}
+  const lfm=t.closest('[data-labf]');if(lfm){const[sd,k]=lfm.dataset.labf.split(':');labCur(sd).f=cleanForm(k);labSimOut='';save();renderView();return}
+  const lc=t.closest('[data-labcopy]');if(lc){const D=labCur(lc.dataset.labcopy);D.f=curForm();D.s=S.deck.map(g=>g?{g,i:S.gens[g].its.map(u=>(S.items.find(y=>y.u===u)||{}).k).filter(Boolean)}:null);Object.assign(D,labClean({atk:[D]}).atk[0],{n:D.n});labSimOut='';save();renderView();toast('내 진형의 장수와 보물 종류를 복사했어요');return}
   const lx=t.closest('[data-labclear]');if(lx){const sd=lx.dataset.labclear;if(labClearArm!==sd){labClearArm=sd;lx.textContent='한 번 더 누르면 비워요';lx.classList.add('red');setTimeout(()=>{if(labClearArm===sd){labClearArm=null;if(view==='pvp')renderView()}},2500);return}
     labClearArm=null;labCur(sd).s=[null,null,null,null,null];labSimOut='';save();renderView();return}
   const mv=t.closest('[data-labmv]');if(mv){e.stopPropagation();const[sd,a,d]=mv.dataset.labmv.split(':');const i=+a,j=i+ +d;if(j<0||j>4)return;const s=labCur(sd).s;[s[i],s[j]]=[s[j],s[i]];save();renderView();return}
@@ -2792,7 +2900,7 @@ function openLabApply(side){
   const miss=P.filter(r=>r.x&&!r.own).length+P.reduce((a,r)=>a+(r.own?r.its.filter(o=>!o.it).length:0),0);
   openSheet(`<div class="sheet-h"><h2 style="margin:0">내 진형에 적용</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <p class="sub" style="margin:0 0 10px">${esc(labCur(side).n)}의 장수 자리와 보물 배치를 지금 고른 내 진형 <b>${esc(deckName(S.dk))}</b>에 옮겨요. 자리 레벨·돌파·보물 강화 수치는 내 것 그대로이고, 다른 장수가 끼고 있던 보물은 옮겨 와요.${miss?' 보유하지 않은 장수·보물은 빠져요.':''}</p>
-   <div class="list">${P.map(r=>{const pos=`<div class="pos">${r.i+1}<small>${POS[r.i]}</small></div>`;
+   <div class="list">${P.map(r=>{const pos=`<div class="pos">${r.i+1}<small>${posOf(r.i,labCur(side).f)}</small></div>`;
      if(!r.x)return `<div class="slot empty">${pos}<div class="info"><b>빈 자리</b></div></div>`;
      const g=GMAP[r.x.g];
      return `<div class="slot" style="${r.own?'':'opacity:.5'}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)}${r.own?` <span class="sub" style="font-size:12px">자리 Lv ${slotLv(r.i)}</span>`:' · 미보유 (빈 자리)'}</b>
@@ -2803,15 +2911,15 @@ function openLabApply(side){
     for(const r of labApplyPlan(side)){if(!r.x||!r.own)continue;nd[r.i]=r.x.g;const us=[];
       for(const o of r.its){if(!o.it)continue;const h=itemHolder(o.it.u);if(h&&h!==r.x.g){S.gens[h].its=S.gens[h].its.filter(u=>u!==o.it.u);moved++}us.push(o.it.u)}
       S.gens[r.x.g].its=us.slice(0,ITEM_SLOTS)}
-    S.deck=nd;save();closeSheet();renderTop();renderView();toast(`${deckName(S.dk)}에 적용했어요 · 장수 ${nd.filter(Boolean).length}명${moved?` · 보물 ${moved}개 옮김`:''}`);
+    S.deck=nd;S.decks[S.dk].f=cleanForm(labCur(side).f);save();closeSheet();renderTop();renderView();toast(`${deckName(S.dk)}에 적용했어요 · 장수 ${nd.filter(Boolean).length}명${moved?` · 보물 ${moved}개 옮김`:''}`);
   };
 }
 document.addEventListener('click',e=>{const a=e.target.closest('[data-labapply]');if(a)openLabApply(a.dataset.labapply)});
-function pvpSegHtml(){return `<div class="seg" role="group" aria-label="결투장 메뉴"><button type="button" data-pvpm="duel" aria-pressed="${pvpMode==='duel'}">결투장</button><button type="button" data-pvpm="raid" aria-pressed="${pvpMode==='raid'}">레이드</button><button type="button" data-pvpm="lab" aria-pressed="${pvpMode==='lab'}">연습장</button></div>`}
+function pvpSegHtml(){return `<div class="seg" role="group" aria-label="결투장 메뉴"><button type="button" data-pvpm="duel" aria-pressed="${pvpMode==='duel'}">결투장</button><button type="button" data-pvpm="raid" aria-pressed="${pvpMode==='raid'}">레이드</button><button type="button" data-pvpm="lab" aria-pressed="${pvpMode==='lab'}">연습장</button><button type="button" data-pvpm="siege" aria-pressed="${pvpMode==='siege'}">수성전</button></div>`}
 function vPvp(){
   const myP=deckPower(defSpecs());
   let h=`<div class="row"><h2>결투장</h2><span class="sp"></span>${MODE==='shared'?'<button type="button" class="btn ghost sm" id="settings">내 정보</button>':''}</div>`;
-  h+=pvpSegHtml();if(pvpMode==='lab')return h+vLab();if(pvpMode==='raid')return h+vRaid();
+  h+=pvpSegHtml();if(pvpMode==='lab')return h+vLab();if(pvpMode==='raid')return h+vRaid();if(pvpMode==='siege')return h+vSiege();
   h+=deckQuickHtml('공격 진형');
   if(MODE!=='shared'){
     return h+`<p class="sub">다른 군주의 방어 진형에 도전하는 곳이에요.</p><div class="empty-state"><b>對戰</b>서버 설정이 끝나면 친구들과 겨룰 수 있어요. 지금은 연습전만 가능합니다.</div>
@@ -2992,8 +3100,8 @@ function skillInfoHtml(u){
    ${b?'':'<p class="sub" style="margin:6px 0 0">일반 병사의 기본 전법이에요.</p>'}`;
 }
 // 결과 링크: 진형과 시드를 담아 같은 전투를 다시 재생
-const packSpecs=a=>a.filter(Boolean).map(s=>[s.g,s.lv,s.d||0,s.i&&s.i.length?s.i:0,s.cb||0]);
-const unpackSpecs=a=>(Array.isArray(a)?a:[]).slice(0,5).filter(x=>Array.isArray(x)&&GMAP[x[0]]).map(x=>({g:x[0],lv:Math.min(MAXLV,Math.max(1,x[1]|0)),d:Math.min(maxD(GMAP[x[0]].rar),Math.max(0,x[2]|0)),i:itemsOf(x[3]).map(o=>o.it.id+':'+o.d),cb:cleanCb(x[4])}));
+const packSpecs=a=>a.filter(Boolean).map(s=>[s.g,s.lv,s.d||0,s.i&&s.i.length?s.i:0,s.cb||0,s.p!=null?s.p:-1,s.f||0]);
+const unpackSpecs=a=>(Array.isArray(a)?a:[]).slice(0,5).filter(x=>Array.isArray(x)&&GMAP[x[0]]).map(x=>({g:x[0],lv:Math.min(MAXLV,Math.max(1,x[1]|0)),d:Math.min(maxD(GMAP[x[0]].rar),Math.max(0,x[2]|0)),i:itemsOf(x[3]).map(o=>o.it.id+':'+o.d),cb:cleanCb(x[4]),p:Number.isInteger(x[5])&&x[5]>=0&&x[5]<5?x[5]:undefined,f:FORM[x[6]]?x[6]:undefined}));
 const b64e=s=>btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 const b64d=s=>decodeURIComponent(escape(atob(s.replace(/-/g,'+').replace(/_/g,'/'))));
 function shareUrl(sh,win){
@@ -3035,18 +3143,27 @@ let btToken=0;
 function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
   const tok=++btToken;
   const units=[res.init[0].map(u=>({...u})),res.init[1].map(u=>({...u}))];
-  const row=(k)=>{let h='';for(let i=0;i<5;i++){const u=units[k].find(x=>x.slot===i);h+=u?`<div class="bu" id="bu-${k}-${i}">${seal(u,'sm')}<div class="bn">${esc(u.name)}</div><div class="hp"><i style="width:100%"></i></div></div>`:`<div class="bu void"></div>`}return h};
+  const SG=opts&&opts.siege, topK=SG?0:1, botK=1-topK;let waveNo=1;
+  const buHtml=(k,u)=>{const mk=u.form==='assault'&&u.row===0?'<i class="rk" title="선봉 속도 +12">⚡</i>':u.rd>1?'<i class="rk up" title="받는 피해 증가">▲</i>':u.rd<1?'<i class="rk dn" title="받는 피해 감소">▼</i>':'';
+    return `<div class="bu${u.hp<=0?' dead':''}" id="bu-${k}-${u.slot}">${mk}${seal(u,'sm')}<div class="bn">${esc(u.name)}</div><div class="hp"><i style="width:${Math.max(0,u.hp/u.maxhp*100)}%"></i></div></div>`};
+  const sideHtml=k=>{const top=k===topK;return (top?[2,1,0]:[0,1,2]).map(r=>{const rs=units[k].filter(u=>(u.row!=null?u.row:Math.min(2,Math.floor(u.slot/2)))===r).sort((a,b)=>a.slot-b.slot);
+    return rs.length?`<div class="bt-line"><span class="bt-rl">${ROWN[r]}</span>${rs.map(u=>buHtml(k,u)).join('')}</div>`:''}).join('')};
+  const renderSide=k=>{const n=$('#bt-s'+k);if(n)n.innerHTML=sideHtml(k)};
+  const castleHtml=SG?`<div class="castle"><b>城</b><div class="cbar"><i id="castle-i" style="width:100%"></i></div><span class="num" id="castle-t">${fmt(SG.max)}</span><span class="chip" id="wave-t">제1파</span></div>`:'';
+  const setCastle=v=>{if(!SG)return;const i=$('#castle-i'),t=$('#castle-t');if(i)i.style.width=Math.max(0,v/SG.max*100)+'%';if(t)t.textContent=fmt(Math.max(0,v))};
   const el=$('#battle');
-  el.innerHTML=`<div class="bt"><div class="bt-head"><span class="bt-title">${esc(title)}</span><button type="button" class="btn ghost sm" id="bt-speed">1배속</button><button type="button" class="btn ghost sm" id="bt-skip">결과 보기</button></div>
-  <div class="bt-side">${esc(foeLab)}</div><div class="bt-row bt-foe">${row(1)}</div>
+  el.innerHTML=`<div class="bt${SG?' siege':''}"><div class="bt-head"><span class="bt-title">${esc(title)}</span><button type="button" class="btn ghost sm" id="bt-speed">${SG?4:1}배속</button><button type="button" class="btn ghost sm" id="bt-skip">결과 보기</button></div>
+  <div class="bt-side">${esc(SG?allyLab:foeLab)}</div><div class="bt-row bt-top ${SG?'bt-ally':'bt-foe'}" id="bt-s${topK}">${sideHtml(topK)}</div>${castleHtml}
   <div class="bt-log"><div class="sk" id="bt-sk"></div><div class="ln" id="bt-ln">${esc(bonusLine(res.bonus&&res.bonus[0])?'아군 효과 · '+bonusLine(res.bonus[0]):'전투 개시')}</div></div>
-  <div class="bt-row bt-ally">${row(0)}</div><div class="bt-side" style="text-align:right">${esc(allyLab)}</div></div>`;
+  <div class="bt-row bt-bot ${SG?'bt-foe':'bt-ally'}" id="bt-s${botK}">${sideHtml(botK)}</div><div class="bt-side" style="text-align:right">${esc(SG?foeLab:allyLab)}</div></div>`;
   el.hidden=false;
-  let speed=1, idx=0, timer=null;
+  let speed=SG?4:1, idx=0, timer=null;
   const U=(s,i)=>units[s].find(x=>x.slot===i);
   const paint=(s,i)=>{const u=U(s,i),n=$(`#bu-${s}-${i}`);if(!u||!n)return;n.querySelector('.hp i').style.width=(u.hp/u.maxhp*100)+'%';n.classList.toggle('dead',u.hp<=0)};
   const float=(s,i,txt,cls)=>{const n=$(`#bu-${s}-${i}`);if(!n)return;const f=document.createElement('span');f.className='dmg '+cls;f.textContent=txt;n.appendChild(f);setTimeout(()=>f.remove(),800)};
   const apply=(e,anim)=>{
+    if(e.spawn){units[1]=e.units.map(u=>({...u}));renderSide(1);waveNo=e.spawn;const w=$('#wave-t');if(w)w.textContent=`제${waveNo}파`;if(anim){$('#bt-sk').textContent=`제${waveNo}파`;$('#bt-ln').textContent='적의 새 무리가 몰려와요 (더 강해졌어요)'}return}
+    {const lc=[...(e.hits||[]),...(e.heals||[])].filter(h=>h.ch!=null).pop();if(lc)setCastle(lc.ch)}
     const a=e.tick?null:U(e.s,e.i);
     for(const h of e.hits||[]){const t=U(h.s,h.i);if(!t)continue;t.hp=h.hp;paint(h.s,h.i);if(anim){float(h.s,h.i,'-'+h.d,h.c?'c':(h.self||h.burn)?'b':'');const n=$(`#bu-${h.s}-${h.i}`);if(n){n.classList.remove('hit');void n.offsetWidth;n.classList.add('hit')}}}
     for(const h of e.heals||[]){const t=U(h.s,h.i);if(!t)continue;t.hp=h.hp;paint(h.s,h.i);if(anim&&h.h>0)float(h.s,h.i,'+'+h.h,'h')}
@@ -3071,11 +3188,11 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     document.querySelectorAll('.bu.act').forEach(n=>n.classList.remove('act'));
     const box=document.createElement('div');box.className='bt-res';
     const stt=battleStats(res), sh=opts&&opts.share, rp=opts&&opts.replay;
-    rsSide=rp?(res.win?0:1):0;{const m0=mvpOf(res,stt,rsSide);rsSel=m0?m0.u.side+'-'+m0.u.slot:''}
+    rsSide=SG?0:rp?(res.win?0:1):0;{const m0=mvpOf(res,stt,rsSide);rsSel=m0?m0.u.side+'-'+m0.u.slot:''}
     const vd=opts&&opts.verdict, winLab=vd?vd.lab:rp?`${res.win?allyLab:foeLab} 승리`:(res.win?'승리':'패배');
     box.innerHTML=`<div class="res-card" id="res-card"><div class="stamp ${res.win||rp||vd?'w':'l'}">${vd?vd.stamp:rp?'戰':res.win?'勝':'敗'}</div><h2 style="margin:0">${esc(winLab)}</h2>${resultHtml()}
      <div class="res-sec"><h3>전투 기록</h3>
-      <div class="chips no-cap" role="group"><button type="button" data-rss="0" aria-pressed="${rsSide===0}">${esc(allyLab)}</button><button type="button" data-rss="1" aria-pressed="${rsSide===1}">${esc(foeLab)}</button><span class="sp"></span>${Object.entries(RS_M).map(([k,v])=>`<button type="button" data-rsm="${k}" aria-pressed="${rsMetric===k}">${v}</button>`).join('')}</div>
+      <div class="chips no-cap" role="group">${SG?'':`<button type="button" data-rss="0" aria-pressed="${rsSide===0}">${esc(allyLab)}</button><button type="button" data-rss="1" aria-pressed="${rsSide===1}">${esc(foeLab)}</button>`}<span class="sp"></span>${Object.entries(RS_M).map(([k,v])=>`<button type="button" data-rsm="${k}" aria-pressed="${rsMetric===k}">${v}</button>`).join('')}</div>
       <div class="sub" id="rs-cap" style="margin:0 0 4px">${esc(rsSide?foeLab:allyLab)} · ${RS_M[rsMetric]}</div><div class="sub no-cap" style="margin:0 0 4px;font-size:11px">장수 이름을 누르면 아래 기록 창이 그 장수로 바뀌어요.</div><div id="rs-chart">${statChart(res,stt,rsSel)}</div></div>
      <div class="mvpline" id="rs-mvpl"></div><div id="rs-unit">${mvpHtml(mvpOf(res,stt,rsSide),'MVP')}</div></div>
      ${sh&&CAN_SHARE?`<div class="share-row"><button type="button" class="btn ghost" id="sh-link">결과 링크 공유</button><button type="button" class="btn ghost" id="sh-img">이미지로 공유</button></div><div id="share-fallback" hidden style="width:100%;max-width:440px"><p class="sub" style="margin:0 0 4px">아래 내용을 길게 눌러 복사한 뒤 카카오톡에 붙여넣으세요.</p><textarea readonly></textarea></div>`:''}
@@ -3098,7 +3215,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     $('#bt-close').focus();
   };
   const step=()=>{if(tok!==btToken)return;if(idx>=res.ev.length){timer=setTimeout(finish,500);return}apply(res.ev[idx++],true);timer=setTimeout(step,560/speed)};
-  $('#bt-speed').onclick=()=>{speed=speed===1?2:speed===2?4:1;$('#bt-speed').textContent=speed+'배속'};
+  $('#bt-speed').onclick=()=>{speed=speed===1?2:speed===2?4:speed===4?8:1;$('#bt-speed').textContent=speed+'배속'};
   $('#bt-skip').onclick=finish;
   timer=setTimeout(step,500);
 }
