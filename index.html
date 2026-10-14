@@ -383,7 +383,7 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v2.0.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v2.0.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1200,6 +1200,7 @@ function sanitize(s){
     if(!y){const n={u:String(x.u),k:x.k,d:Math.min(ITEM_MAXD,Math.max(0,x.d|0)),n:Math.max(0,x.n|0),g:Math.max(0,Number(x.g)||0)};if(x.lk)n.lk=true;by[x.k]=n;o.items.push(n)}
     else{const k=Math.min(ITEM_MAXD-y.d,1+(x.d|0));y.d+=k;y.n+=k;y.g+=Math.max(0,Number(x.g)||0);if(x.lk)y.lk=true}}}
   o.itk=Math.max(0,Math.min(9999,s.itk|0));
+  o.gtk=Math.max(0,Math.min(999,s.gtk|0));o.isk=Math.max(0,Math.min(999,s.isk|0));o.sat=cleanSat(s.sat);
   o.cpn=Array.isArray(s.cpn)?s.cpn.filter(x=>typeof x==='string'&&x.length===64).slice(-300):[];
   o.lab=labClean(s.lab);
   {const r=s.raid&&typeof s.raid==='object'?s.raid:{};o.raid={day:String(r.day||''),n:Math.max(0,Math.min(RAID_DAILY,r.n|0)),claimed:Array.isArray(r.claimed)?r.claimed.filter(x=>typeof x==='string').slice(-40):[]}}
@@ -1285,11 +1286,11 @@ let AUTH=null, FS=null, MYNAME='', UNSUB=[];
 let saveT=null, saving=false, dirty=false, lastPub='';
 function lsLoad(){try{return JSON.parse(localStorage.getItem(LSK)||'null')}catch(e){return null}}
 function lsSave(){try{localStorage.setItem(LSK,JSON.stringify(S))}catch(e){}}
-function save(){syncDeck();dirty=true;clearTimeout(saveT);saveT=setTimeout(flush,600)}
+function save(){if(typeof REC_SANDBOX!=='undefined'&&REC_SANDBOX)return;syncDeck();dirty=true;clearTimeout(saveT);saveT=setTimeout(flush,600)}
 function publicDoc(){const specs=defSpecs().filter(Boolean);return {name:MYNAME,deck:specs,power:deckPower(specs),stage:S.stage,sg:siegePub()}}
 /* 기기 간 동기화: 저장할 때마다 번호(rev)를 1씩 올려요. 서버 번호가 내가 아는 번호보다 크면
    다른 기기(탭)가 먼저 저장한 것이므로 덮어쓰지 않고 어느 기록을 쓸지 물어봐요. */
-let baseRev=0, conflictData=null, saveSt='', saveAt=0, lastCheck=0;
+let lastPubAt=0, baseRev=0, conflictData=null, saveSt='', saveAt=0, lastCheck=0;
 function setSaveSt(st){saveSt=st;if(st==='ok')saveAt=Date.now();paintSaveSt()}
 function paintSaveSt(){const n=$('#save-st');if(!n)return;
   n.textContent=MODE!=='shared'?'':saveSt==='saving'?'저장 중…':saveSt==='err'?'저장 재시도 중':saveSt==='conflict'?'⚠ 다른 기기 기록 확인 (누르기)':saveAt?'저장됨 '+new Date(saveAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false}):'';
@@ -1311,7 +1312,7 @@ async function flush(){
           nr=sr+1;snap.rev=nr;snap.sv=Date.now();tx.set(ref,snap)}));
         baseRev=nr;S.rev=nr;setSaveSt('ok');
         const pub=publicDoc(), key=JSON.stringify(pub);
-        if(key!==lastPub){await writeRetry(()=>FS.collection('players').doc(UID).set({...pub,at:Date.now()}));lastPub=key}
+        if(key!==lastPub){await writeRetry(()=>FS.collection('players').doc(UID).set({...pub,at:Date.now()}));lastPub=key;lastPubAt=Date.now()}
       } else lsSave();
     }
   }catch(e){
@@ -1330,6 +1331,7 @@ function adoptServer(d,quiet){
 }
 // 다른 기기(탭)에서 더 최신 기록이 저장됐을 때: 이 기기에 저장 안 된 변경이 없으면 조용히 불러오고, 있으면 물어봐요
 function remoteNewer(d){
+  if(typeof REC_SANDBOX!=='undefined'&&REC_SANDBOX)return;
   if(saving||!d)return;
   if((Number(d.rev)||0)<=baseRev)return;
   if(dirty||saveT){conflictData=d;setSaveSt('conflict');openConflict()}
@@ -1353,7 +1355,7 @@ async function checkRemote(){
   try{const d=await FS.collection('saves').doc(UID).get({source:'server'});if(d.exists)remoteNewer(d.data())}catch(e){}
 }
 // 화면을 닫거나 다른 앱으로 넘어갈 때 기다리지 않고 바로 저장, 돌아오면 최신 기록 확인
-document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){if(dirty||saveT)flush()}else checkRemote()});
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){if(dirty||saveT)flush()}else{checkRemote();if(MODE==='shared'&&S&&Date.now()-lastPubAt>6*3600e3){lastPub='';save()}}});
 window.addEventListener('pagehide',()=>{if(dirty||saveT)flush()});
 window.addEventListener('pageshow',e=>{if(e.persisted)checkRemote()});
 document.addEventListener('click',e=>{if(e.target.closest('#save-st')){if(conflictData)openConflict();else checkRemote()}});
@@ -1481,6 +1483,7 @@ function openSettings(first){
    ${first?'':`<p class="sub">${anon?'게스트로 플레이 중이에요. 로그아웃하면 이 기록으로 다시 돌아올 수 없어요.':'구글 계정으로 로그인되어 있어요.'}</p>
    ${anon?(isInApp()?`<div class="warn" style="margin:0 0 12px"><b>구글 연동</b><br>지금은 카카오톡 같은 앱 안 브라우저라 구글 연동이 막혀 있어요. 게스트 기록은 처음 시작한 브라우저에만 남아 있어서, 다른 브라우저로 옮기면 새 게스트가 돼요.</div>`:`<button type="button" class="btn wide" id="link-google" style="margin-bottom:6px">구글 계정 연동하기</button><p class="sub">연동하면 지금 기록이 그대로 구글 계정에 묶여서, 다른 기기에서도 구글로 로그인해 이어서 할 수 있어요.</p>`):''}<button type="button" class="btn ghost wide" id="logout">로그아웃</button><h3>처음부터 다시 시작</h3>${resetBlock()}`}`);
   logoutArm=false;bindReset();
+  {const nf=$('#name-form');if(nf&&!first)nf.insertAdjacentHTML('afterend',attRateHtml())}
   const lg=$('#link-google');if(lg)lg.onclick=linkGoogle;
   $('#name-form').onsubmit=ev=>{ev.preventDefault();const v=cleanName($('#name-input').value);if(!v){toast('이름을 입력해 주세요');return}MYNAME=v;save();closeSheet();renderView();toast('이름을 저장했어요');if(first)setTimeout(runPopups,300)};
   const lo=$('#logout');
@@ -1496,10 +1499,30 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='2.0.0';
+const GAME_VERSION='2.0.2';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'2.0.2',date:'2026-10-15',title:'시즌제 운영 안내 (11월 1일 시즌 1 시작)',reward:{ap:20},items:[
+  '10월 31일 23:59까지는 테스트 기간이에요.',
+  '11월 1일 새 빌드와 함께 시즌 1이 시작돼요. 시즌은 3개월 단위예요(시즌 1: 11월~1월, 시즌 2: 2월~4월 …).',
+  '11월 1일에 한 번 초기화해요. 초기화: 장수 · 보물 · 자리 레벨 · 스테이지 · 재화. 그대로 남는 것: 진형 이름·배치, 연습장 덱, 계정 연동, 출석 일수.',
+  '시즌 1 시작 재화는 쿠폰으로 넉넉히 드려요. 시즌 중에도 쿠폰을 주기적으로 배포할게요.',
+  '시즌이 끝나면 그 시즌 동안 얻은 금 · 군량 · 보물 획득권의 70%를 돌려드려요. 약 4주면 원래 수준을 되찾을 수 있는 양이에요.',
+  '명예의 전당: 최고 전투력, 레이드 누적 기여, 결투장 승수, 수성전 주간 1위 횟수, 보물 진척도는 시즌이 바뀌어도 기록으로 남아요.',
+  '시즌 출석률 70% 이상인 군주에게는 시즌이 끝나면 장수 선택권 5장과 보물 선택권 10장을 드려요.',
+  '새 아이템: 장수 선택권(원하는 장수 1명, 이미 있으면 돌파 +1) · 보물 선택권(원하는 보물 1개, 이미 있으면 강화 +1). 쿠폰으로 받고 등용 탭에서 써요.',
+  '열심히 한 군주는 운영자 판단으로 회식에 초대해요. 안 오면 손해예요!',
+  '출석률은 지금부터 기록돼요. 공지·출석 창과 내 정보에서 이번 기간 출석률을 볼 수 있어요(테스트 기간은 오늘부터 계산).',
+  '3일 이상 접속하지 않은 군주는 결투장 군주 목록에 \'○일 미접속\'으로 표시돼요. 군주를 누르면 출석률과 마지막 접속도 보여요.',
+  '명예의 전당과 시즌 환불은 11월 1일 시즌 빌드에서 시작돼요.']},
+ {v:'2.0.1',date:'2026-10-15',title:'연습장 추천 편성 · 내 진형과 기능 공유',reward:{ap:20},items:[
+  '연습장 공격덱·방어덱에도 \'추천 편성\'이 생겼어요. 모든 장수와 모든 보물(덱의 강화 단계) 중에서 고르고, 고정 장수·보물, 나라·병종 조건, 배치 추천까지 내 진형과 똑같이 써요.',
+  '연습장 추천의 기본은 \'상대 덱 맞춤\'이에요. 공격덱은 반대편 방어덱을 가장 잘 이기는 덱을, 방어덱은 공격덱을 가장 잘 막아 내는 덱을 찾아요. 결투장용·레이드용도 고를 수 있어요.',
+  '내 진형의 추천 편성에도 \'연습장 방어덱 상대\'가 생겼어요. 연습장에 상대 덱을 꾸며 두면 그 덱을 이기는 내 진형을 추천받을 수 있어요.',
+  '연습장 덱마다 레벨(Lv 10~50)을 고를 수 있고, 덱 이름도 바꿀 수 있어요.',
+  '진형 탭의 \'연습장으로\' 버튼으로 지금 진형을 연습장 공격덱에 보내요. 배치와 함께 레벨·보물 강화도 가장 가까운 연습장 단계로 맞춰요.',
+  '진형 자리에 장수를 넣을 때 나라·병종으로 거를 수 있어요.']},
  {v:'2.0.0',date:'2026-10-15',title:'v2.0 · 수성전 9곳 · 주간 순위 · 새 장수 4명',reward:{ap:30,food:1000},items:[
   '수성전 성이 9곳으로 늘었어요: 합비·소패·진창·번성·강릉·사수관·낙성·하비·역경. 매주 월요일 0시에 3곳이 열리고, 같은 성은 2주 연속 나오지 않아요.',
   '성마다 그 주의 적 성향(무작위·보병·기병·궁병·책사 위주)이 정해져요. 수성전 화면에서 다음 주에 열릴 성과 적 성향을 미리 볼 수 있어요.',
@@ -1661,12 +1684,12 @@ async function redeemCoupon(raw){
   let cp=COUPONS[h];
   if(!cp&&typeof FS!=='undefined'&&FS&&MODE==='shared'){
     try{const d=await FS.collection('coupons').doc(code).get();
-      if(d.exists){const v=d.data()||{},n=(k,mx)=>Math.max(0,Math.min(mx,Math.floor(Number(v[k])||0)));cp={t:String(v.title||'쿠폰').slice(0,40),r:{food:n('food',100000),gold:n('gold',1000000),ap:n('ap',500),itk:n('itk',500)},until:String(v.until||'')}}}
+      if(d.exists){const v=d.data()||{},n=(k,mx)=>Math.max(0,Math.min(mx,Math.floor(Number(v[k])||0)));cp={t:String(v.title||'쿠폰').slice(0,40),r:{food:n('food',100000),gold:n('gold',1000000),ap:n('ap',500),itk:n('itk',500),gtk:n('gtk',100),isk:n('isk',100)},until:String(v.until||'')}}}
     catch(e){return {err:'쿠폰을 확인하지 못했어요. 잠시 후 다시 시도해 주세요'}}}
   if(!cp)return {err:'없는 쿠폰 번호예요'};
   if(cp.until&&kstDay()>cp.until)return {err:`기간이 끝난 쿠폰이에요 (${cp.until}까지)`};
   if(S.cpn.includes(h))return {err:'이미 사용한 쿠폰이에요'};
-  const r=cp.r;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.cpn.push(h);save();renderTop();renderView();
+  const r=cp.r;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.gtk=(S.gtk||0)+(r.gtk||0);S.isk=(S.isk||0)+(r.isk||0);S.cpn.push(h);save();renderTop();renderView();
   return {ok:`${cp.t} · ${rewardText(r)}`};
 }
 function couponHtml(){return `<div class="stat" style="text-align:left;margin:0 0 12px"><small style="font-size:12px">쿠폰 입력</small><form id="cpn-form" class="row" style="margin-top:6px"><input id="cpn-input" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="쿠폰 번호" aria-label="쿠폰 번호" style="flex:1;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--fg);font:inherit"><button class="btn" type="submit">사용</button></form><div id="cpn-msg" class="sub" style="margin:6px 0 0" role="status"></div></div>`}
@@ -1676,7 +1699,7 @@ async function couponList(){
   if(typeof FS!=='undefined'&&FS&&MODE==='shared'){try{const q=await FS.collection('coupons').get();
     for(const d of q.docs){const v=d.data()||{};if(v.hidden)continue;const code=String(d.id).toUpperCase();if(L.some(x=>x.code===code))continue;
       const n=(k,mx)=>Math.max(0,Math.min(mx,Math.floor(Number(v[k])||0)));
-      L.push({code,t:String(v.title||'쿠폰').slice(0,40),r:{food:n('food',100000),gold:n('gold',1000000),ap:n('ap',500),itk:n('itk',500)},until:String(v.until||''),h:await sha256hex('cc:'+code)})}}catch(e){}}
+      L.push({code,t:String(v.title||'쿠폰').slice(0,40),r:{food:n('food',100000),gold:n('gold',1000000),ap:n('ap',500),itk:n('itk',500),gtk:n('gtk',100),isk:n('isk',100)},until:String(v.until||''),h:await sha256hex('cc:'+code)})}}catch(e){}}
   return L;
 }
 async function fillCouponList(){
@@ -1696,7 +1719,7 @@ document.addEventListener('click',async e=>{
   const g=e.target.closest('[data-cpnget]');if(g&&!g.disabled){g.disabled=true;const r=await redeemCoupon(g.dataset.cpnget);toast(r.ok?'쿠폰 보상 '+r.ok:r.err);fillCouponList()}
 });
 function bindCoupon(){const f=$('#cpn-form');if(!f)return;f.onsubmit=async ev=>{ev.preventDefault();const b=f.querySelector('button');b.disabled=true;const r=await redeemCoupon($('#cpn-input').value);b.disabled=false;const m=$('#cpn-msg');if(!m)return;m.textContent=r.ok?'받았어요 · '+r.ok:r.err;m.style.color=r.ok?'var(--bronze)':'var(--cinnabar)';if(r.ok){$('#cpn-input').value='';toast('쿠폰 보상 '+r.ok);fillCouponList()}}}
-function rewardText(r){const o=[];if(r.ap)o.push(`角 +${r.ap}`);if(r.food)o.push(`糧 +${fmt(r.food)}`);if(r.gold)o.push(`金 +${fmt(r.gold)}`);if(r.itk)o.push(`보물 획득권 ${r.itk}장`);return o.join(' · ')}
+function rewardText(r){const o=[];if(r.ap)o.push(`角 +${r.ap}`);if(r.food)o.push(`糧 +${fmt(r.food)}`);if(r.gold)o.push(`金 +${fmt(r.gold)}`);if(r.itk)o.push(`보물 획득권 ${r.itk}장`);if(r.gtk)o.push(`장수 선택권 ${r.gtk}장`);if(r.isk)o.push(`보물 선택권 ${r.isk}장`);return o.join(' · ')}
 function updateDot(){const d=$('#notice-dot');if(!d)return;d.hidden=!(S&&((typeof PENDING!=='undefined'&&PENDING.length)||attDue()||NOTICES.some(n=>!S.notice.read.includes(n.v))||NOTICES.some(n=>n.reward&&!S.notice.claimed.includes(n.v))))}
 function attHtml(){
   const streak=S.att.day===kstYesterday()?S.att.streak+1:1, pos=(streak-1)%7+1, bonus=pos===7;
@@ -1710,7 +1733,7 @@ function bindAtt(after){
   b.onclick=()=>{
     if(!attDue())return;
     const streak=S.att.day===kstYesterday()?S.att.streak+1:1, bonus=(streak-1)%7+1===7;
-    S.att={day:kstDay(),streak,total:(S.att.total||0)+1};
+    attSeason();S.att={day:kstDay(),streak,total:(S.att.total||0)+1};S.sat.n++;
     tickAP();S.ap+=ATT_AP;if(bonus)S.food+=ATT_BONUS_FOOD;
     save();renderTop();toast(`출석 ${streak}일째 · 나팔 +${ATT_AP}${bonus?` · 군량 +${ATT_BONUS_FOOD}`:''}`);
     after();
@@ -1726,7 +1749,7 @@ function markRead(list){if(!S)return;let ch=false;list.forEach(n=>{if(!S.notice.
 function openNotices(only){
   const list=only?NOTICES.filter(n=>n.v===only):NOTICES;
   openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${only?'새 소식':'공지'}</h2><div class="sub" style="margin:0">현재 버전 v${GAME_VERSION}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   ${S&&attDue()&&!only?attHtml():''}${S&&!only&&PENDING.length?duelRewardHtml():''}
+   ${S&&!only?attRateHtml():''}${S&&attDue()&&!only?attHtml():''}${S&&!only&&PENDING.length?duelRewardHtml():''}
    <div class="list">${list.map(noticeHtml).join('')}</div>
    ${only?`<button type="button" class="btn ghost wide" id="all-notices" style="margin-top:12px">지난 공지 모두 보기</button>`:''}`);
   markRead(list);
@@ -1736,14 +1759,14 @@ function openNotices(only){
 let popupsRan=false;
 function runPopups(){
   if(!S)return;updateDot();
-  if(attDue()){openSheet(`<div class="sheet-h"><h2 style="margin:0">오늘의 출석</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${attHtml()}`);bindAtt(()=>{closeSheet();setTimeout(runPopups,250)});return}
+  if(attDue()){openSheet(`<div class="sheet-h"><h2 style="margin:0">오늘의 출석</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${attHtml()}${attRateHtml()}`);bindAtt(()=>{closeSheet();setTimeout(runPopups,250)});return}
   const n=NOTICES[0];if(!S.notice.read.includes(n.v))openNotices(n.v);
 }
 document.addEventListener('click',e=>{
   if(e.target.closest('#notice-btn')){openNotices();return}
   const c=e.target.closest('[data-nclaim]');
   if(c&&S){const n=NOTICES.find(x=>x.v===c.dataset.nclaim);if(!n||!n.reward||S.notice.claimed.includes(n.v))return;
-    const r=n.reward;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.notice.claimed.push(n.v);save();renderTop();updateDot();
+    const r=n.reward;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.gtk=(S.gtk||0)+(r.gtk||0);S.isk=(S.isk||0)+(r.isk||0);S.notice.claimed.push(n.v);save();renderTop();updateDot();
     c.outerHTML=`<div class="sub" style="margin:0">보상 받음 · ${rewardText(r)}</div>`;toast(`공지 보상 ${rewardText(r)}`)}
 });
 
@@ -2004,6 +2027,7 @@ const GCOST={1:100,10:900}, ICOST={1:80,10:720};
 function vGacha(){
   const rates=`<div class="rates"><span class="r5">★★★★★ 3%</span><span class="r4">★★★★ 15%</span><span class="r3">★★★ 82%</span></div>`;
   return `<h2>등용</h2><p class="sub">시간마다 쌓이는 군량으로 장수와 보물을 얻어요. 10회 등용은 ★4 이상 하나를 보장합니다.</p>
+  ${S.gtk||S.isk?`<div class="banner-card"><div class="big">選</div><h2>선택권</h2><p class="sub" style="margin:0 0 8px">원하는 장수·보물을 골라 받아요. 이미 있으면 돌파·강화 +1.</p><div class="row" style="gap:8px"><button type="button" class="btn" data-tkopen="g" ${S.gtk?'':'disabled'}>장수 선택권 ${S.gtk||0}장</button><button type="button" class="btn" data-tkopen="i" ${S.isk?'':'disabled'}>보물 선택권 ${S.isk||0}장</button></div></div>`:''}
   <div class="banner-card"><div class="big">募將</div><h2>장수 등용</h2><p class="sub" style="margin:0">같은 장수가 나오면 돌파 단계가 올라 능력치가 6%씩 오릅니다(최대 5단계, ★3은 한계돌파로 10단계). 돌파를 다 채운 뒤 중복은 금(★3 200 · ★4 300 · ★5 1,000)으로 바뀌어요.</p>${rates}
    <div class="row"><button type="button" class="btn ghost" data-pull="g1" ${S.food<GCOST[1]?'disabled':''}>1회 <b class="sl food">糧</b>${GCOST[1]}</button><button type="button" class="btn" data-pull="g10" ${S.food<GCOST[10]?'disabled':''}>10회 <b class="sl food">糧</b>${GCOST[10]}</button></div></div>
   <div class="banner-card"><div class="big">寶庫</div><h2>보물 획득</h2><p class="sub" style="margin:0">보물 ${ITEMS.length}종. 장수마다 3개까지 장착해요(명마는 1개). 같은 보물이 또 나오면 돌파 +1, 최대 +${ITEM_MAXD}.</p>${rates}
@@ -2083,7 +2107,7 @@ function vDeck(){
   <div class="chips deckbar" role="group" aria-label="진형 선택" style="margin:10px 0 6px">${S.decks.map((d,k)=>`<button type="button" data-dk="${k}" aria-pressed="${k===S.dk}">${esc(deckName(k))}${k===S.defDk?' <small class="defmk">防</small>':''}</button>`).join('')}${S.decks.length<DECK_MAX?'<button type="button" data-dkadd>＋ 새 진형</button>':''}</div>
   <div class="chips" role="group" aria-label="배치" style="margin:4px 0 2px"><span class="flab">배치</span>${Object.entries(FORM).map(([k,F2])=>`<button type="button" data-form="${k}" aria-pressed="${curForm()===k}">${F2.n} <small>${F2.r.join('-')}</small></button>`).join('')}</div>
   <p class="sub" style="font-size:12px;margin:0 0 8px">${FORM[curForm()].d}</p>
-  <div class="row" style="gap:6px"><button type="button" class="btn ghost sm" data-dkname>이름 바꾸기</button>${isDef?'<span class="chip" style="border-color:var(--bronze);color:var(--bronze)">결투장 방어 진형</span>':'<button type="button" class="btn ghost sm" data-dkdef>방어 진형으로 지정</button>'}${S.decks.length<DECK_MAX?'<button type="button" class="btn ghost sm" data-dkcopy>복제</button>':''}${S.decks.length>1?'<button type="button" class="btn ghost sm" data-dkdel>삭제</button>':''}</div>
+  <div class="row" style="gap:6px"><button type="button" class="btn ghost sm" data-dkname>이름 바꾸기</button>${isDef?'<span class="chip" style="border-color:var(--bronze);color:var(--bronze)">결투장 방어 진형</span>':'<button type="button" class="btn ghost sm" data-dkdef>방어 진형으로 지정</button>'}${S.decks.length<DECK_MAX?'<button type="button" class="btn ghost sm" data-dkcopy>복제</button>':''}${S.decks.length>1?'<button type="button" class="btn ghost sm" data-dkdel>삭제</button>':''}<button type="button" class="btn ghost sm" data-tolab>연습장으로</button></div>
   <div class="row" style="margin:12px 0"><div><div class="sub" style="margin:0">총 전투력</div><div class="power num">${fmt(deckPower(specs))}</div></div><span class="sp"></span><button type="button" class="btn sm" id="rec-open">추천 편성</button></div>${teamBoxHtml(specs)}`;
   S.deck.forEach((gid,i)=>{
     const pos=`<div class="pos">${i+1}<small>${posOf(i)}</small></div>`;
@@ -2110,6 +2134,7 @@ document.addEventListener('click',e=>{
   const fmb=e.target.closest('[data-form]');if(fmb){S.decks[S.dk].f=cleanForm(fmb.dataset.form);save();renderView();toast(`${FORM[curForm()].n}으로 바꿨어요`);return}
   if(e.target.closest('[data-dkdef]')){S.defDk=S.dk;save();renderView();toast(`${deckName(S.dk)}을(를) 결투장 방어 진형으로 정했어요`);return}
   if(e.target.closest('[data-dkname]')){openDeckName();return}
+  if(e.target.closest('[data-tolab]')){copyMyDeckToLab('atk');save();view='pvp';pvpMode='lab';render();toast('연습장 공격덱으로 보냈어요');return}
   if(e.target.closest('[data-dkdel]')){openDeckDel();return}
 });
 function openDeckName(){
@@ -2138,12 +2163,16 @@ function autoDeck(){
   S.deck=Array.from({length:5},(_,i)=>top[i]||null);save();renderView();toast('전투력이 높은 순으로 편성했어요');
 }
 function sortedOwned(lv){return Object.keys(S.gens).sort((a,b)=>GMAP[b].rar-GMAP[a].rar||specPower(specOf(b,lv))-specPower(specOf(a,lv)))}
-function openSlotPicker(i){
+let pickFil={fac:'',cls:''}, pickSlot=0;
+document.addEventListener('click',e=>{const b=e.target.closest('[data-pkf]');if(!b)return;const[k,v]=b.dataset.pkf.split(':');pickFil[k]=v;openSlotPicker(pickSlot)});
+function openSlotPicker(i){pickSlot=i;
   const cur=S.deck[i];
-  const list=sortedOwned(slotLv(i)).filter(g=>g!==cur);
+  const list=sortedOwned(slotLv(i)).filter(g=>g!==cur&&(!pickFil.fac||GMAP[g].fac===pickFil.fac)&&(!pickFil.cls||GMAP[g].cls===pickFil.cls));
   openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${i+1}번 ${posOf(i)} 편성</h2><div class="sub" style="margin:0">이 자리 Lv ${slotLv(i)}로 싸워요</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   ${cur?`<button type="button" class="btn ghost wide" data-setslot="${i}:" style="margin-bottom:10px">${esc(GMAP[cur].name)} 빼기</button>`:''}
-  <p class="sub" style="margin:0 0 8px">★5 장수는 진형에 ${MAX5}명까지 넣을 수 있어요 (지금 ${count5(S.deck)}명)</p>
+  <div class="chips" role="group" aria-label="나라"><span class="flab">나라</span><button type="button" data-pkf="fac:" aria-pressed="${!pickFil.fac}">전체</button>${Object.entries(FAC).map(([k,n])=>`<button type="button" data-pkf="fac:${k}" aria-pressed="${pickFil.fac===k}">${n}</button>`).join('')}</div>
+  <div class="chips" role="group" aria-label="병종"><span class="flab">병종</span><button type="button" data-pkf="cls:" aria-pressed="${!pickFil.cls}">전체</button>${Object.entries(CLS).map(([k,c])=>`<button type="button" data-pkf="cls:${k}" aria-pressed="${pickFil.cls===k}">${c.n}</button>`).join('')}</div>
+  <p class="sub" style="margin:0 0 8px">★5 장수는 진형에 ${MAX5}명까지 넣을 수 있어요 (지금 ${count5(S.deck)}명) · ${list.length}명</p>
   <div class="list">${list.map(g=>{const b=GMAP[g],s=specOf(g,slotLv(i)),at=S.deck.indexOf(g);return `<button type="button" class="li" data-setslot="${i}:${g}" ${b.rar===5&&at<0&&count5(S.deck,i)>=MAX5?'disabled':''} style="text-align:left">${seal(b,'sm')}<div class="info"><b>${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span></b><span>${CLS[b.cls].g} ${CLS[b.cls].n} · 전투력 ${fmt(specPower(s))}${at>=0?` · 현재 ${at+1}번`:''}</span></div></button>`}).join('')}</div>`);
 }
 document.addEventListener('click',e=>{
@@ -2161,6 +2190,73 @@ try{if(localStorage.getItem(WORK_K)==='1')applyWork(true)}catch(e){}
 document.addEventListener('click',e=>{if(e.target.closest('#work-btn'))applyWork(!document.documentElement.classList.contains('work'))});
 document.addEventListener('keydown',e=>{if(e.key==='`'&&!e.target.closest('input,textarea')&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();applyWork(!document.documentElement.classList.contains('work'))}});
 
+
+/* ---------------- 시즌 · 출석률 (v2.0.2) ----------------
+   시즌 1: 2026-11-01 ~ 2027-01-31, 이후 3개월 단위. 그전은 테스트 기간.
+   출석률 = 이번 기간 출석 일수 ÷ (기록 시작일 ~ 오늘). 기간이 바뀌면 시즌 시작일부터 다시 세요. */
+const md=d=>`${+d.slice(5,7)}/${+d.slice(8,10)}`;
+function seasonOf(day){
+  if(day<'2026-11-01')return {k:'T',n:'테스트 기간',start:'2026-10-12',end:'2026-10-31'};
+  const y=+day.slice(0,4),m=+day.slice(5,7),idx=Math.floor(((y-2026)*12+(m-11))/3),sm=10+idx*3,f=x=>x.toISOString().slice(0,10);
+  return {k:'S'+(idx+1),n:'시즌 '+(idx+1),start:f(new Date(Date.UTC(2026+Math.floor(sm/12),sm%12,1))),end:f(new Date(Date.UTC(2026+Math.floor(sm/12),sm%12+3,0)))};
+}
+function cleanSat(x){if(!x||typeof x!=='object'||typeof x.k!=='string'||typeof x.from!=='string')return null;return {k:x.k.slice(0,4),n:Math.max(0,Math.min(400,x.n|0)),from:x.from.slice(0,10)}}
+function attSeason(){const d=kstDay(),se=seasonOf(d);
+  if(!S.sat||S.sat.k!==se.k){const from=S.sat?se.start:d;S.sat={k:se.k,n:0,from:from>d?d:from};if(S.att&&S.att.day===d)S.sat.n=1}
+  return S.sat}
+function attStats(a,today){const se=seasonOf(today||kstDay());today=today||kstDay();if(!a||a.k!==se.k)return null;
+  const el=Math.max(1,dayNum(today)-dayNum(a.from)+1), tot=Math.max(1,dayNum(se.end)-dayNum(a.from)+1);
+  return {se,n:a.n,el,tot,pct:Math.min(100,Math.round(a.n/el*100)),need:Math.max(0,Math.ceil(tot*.7)-a.n)}}
+function attRateHtml(){
+  const a=attSeason(), st=attStats(a);if(!st)return '';
+  return `<div class="stat" style="text-align:left;margin:0 0 10px"><div class="row"><small style="font-size:12px">${st.se.n} 출석률</small><span class="sp"></span><b class="num" style="color:${st.pct>=70?'var(--jade)':'var(--fg)'}">${st.pct}%</b></div>
+   <div class="bar"><i style="width:${st.pct}%;background:${st.pct>=70?'var(--jade)':'var(--bronze)'}"></i></div>
+   <div class="sub" style="margin:4px 0 0;font-size:12px">${st.n}일 / ${st.el}일 출석 · 기간 ${md(a.from)}~${md(st.se.end)} (${st.tot}일) · ${st.need?`기간 70%까지 ${st.need}일 더`:'기간 70% 달성!'}${st.se.k!=='T'?' · 70% 이상이면 시즌 종료 후 장수 선택권 5장 · 보물 선택권 10장':''}</div></div>`;
+}
+const attPub=()=>{const a=S&&S.sat;return a?{k:a.k,n:a.n,f:a.from}:null};
+const awayDays=p=>p&&p.at?Math.floor((Date.now()-p.at)/864e5):-1;
+function awayChip(p){const d=awayDays(p);return d>=3?`<span class="chip" style="margin-left:4px;border-color:var(--cinnabar);color:var(--cinnabar);font-size:11px">${d}일 미접속</span>`:''}
+function peekSeen(p,mine){if(mine)return '';const o=[];const a=p.sg&&p.sg.a,st=a?attStats({k:a.k,n:a.n,from:a.f}):null;if(st)o.push(`출석 ${st.pct}% (${st.n}/${st.el}일)`);
+  const d=awayDays(p);if(d>=0)o.push(d>=3?`<b style="color:var(--cinnabar)">${d}일 미접속</b>`:d>=1?`${d}일 전 접속`:'오늘 접속');return o.length?o.join(' · ')+' · ':''}
+/* ---------------- 장수·보물 선택권 (v2.0.2) ---------------- */
+let tkF={k:'g',rar:0,fac:'',g:''};
+function useTicketOn(kind,id){
+  if(kind==='g'){if((S.gtk||0)<1)return null;const g=GMAP[id];if(!g)return null;S.gtk--;
+    const own=S.gens[id];let tag='NEW';
+    if(!own)S.gens[id]={lv:1,d:0,its:[]};else if(own.d<maxD(g.rar)){own.d++;tag=own.d>5?`한계돌파 ${own.d}`:`돌파 ${own.d}`}else{const gg=DUP_GOLD[g.rar];S.gold+=gg;tag=`金 +${fmt(gg)}`}
+    return `${g.name} · ${tag}`}
+  if((S.isk||0)<1)return null;const it=IMAP[id];if(!it)return null;S.isk--;
+  const own=S.items.find(x=>x.k===id);let tag;
+  if(!own){S.items.push({u:'i'+(S.seq++),k:id,d:0,n:0,g:0});tag='NEW'}else if(own.d<ITEM_MAXD){own.d++;own.n=(own.n||0)+1;tag=`강화 +${own.d}`}else{const gg=ITEM_OVER[it.rar];S.gold+=gg;tag=`金 +${gg}`}
+  if(typeof colSync==='function'){const nw=colSync();if(typeof colToast==='function')setTimeout(()=>colToast(nw),900)}
+  return `${it.name} · ${tag}`;
+}
+function openTicket(k){
+  if(k)tkF.k=k;const G=tkF.k==='g', left=G?(S.gtk||0):(S.isk||0);
+  const list=(G?GENS:ITEMS).filter(x=>(!tkF.rar||x.rar===tkF.rar)&&(G?(!tkF.fac||x.fac===tkF.fac):(!tkF.g||x.g===tkF.g))).sort((a,b)=>b.rar-a.rar);
+  const st=x=>{if(G){const o=S.gens[x.id];return o?(o.d>=maxD(x.rar)?`돌파 끝 → 金 ${fmt(DUP_GOLD[x.rar])}`:`보유 · 돌파 ${o.d}/${maxD(x.rar)}`):'미보유'}
+    const o=S.items.find(y=>y.k===x.id);return o?(o.d>=ITEM_MAXD?`강화 끝 → 金 ${fmt(ITEM_OVER[x.rar])}`:`보유 · +${o.d}`):'미보유'};
+  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${G?'장수 선택권':'보물 선택권'}</h2><div class="sub" style="margin:0">남은 ${left}장 · 원하는 ${G?'장수':'보물'}를 골라요 (이미 있으면 ${G?'돌파':'강화'} +1)</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <div class="chips" role="group"><span class="flab">등급</span>${[0,5,4,3].map(r=>`<button type="button" data-tkf="rar:${r}" aria-pressed="${tkF.rar===r}">${r?stars(r):'전체'}</button>`).join('')}</div>
+   ${G?`<div class="chips" role="group"><span class="flab">나라</span><button type="button" data-tkf="fac:" aria-pressed="${!tkF.fac}">전체</button>${Object.entries(FAC).map(([k2,n])=>`<button type="button" data-tkf="fac:${k2}" aria-pressed="${tkF.fac===k2}">${n}</button>`).join('')}</div>`
+     :`<div class="chips" role="group"><span class="flab">종류</span><button type="button" data-tkf="g:" aria-pressed="${!tkF.g}">전체</button>${Object.entries(ITYPE).map(([k2,n])=>`<button type="button" data-tkf="g:${k2}" aria-pressed="${tkF.g===k2}">${n}</button>`).join('')}</div>`}
+   <div class="list">${list.map(x=>`<button type="button" class="li" data-tkuse="${x.id}" ${left<1?'disabled':''} style="text-align:left">${G?seal(x,'sm'):itemTile(x,0)}<div class="info"><b>${esc(x.name)} <span class="stars r${x.rar}">${stars(x.rar)}</span></b><span>${G?`${FAC[x.fac]} · ${CLS[x.cls].g} ${CLS[x.cls].n}`:ITYPE[x.g]} · ${st(x)}</span></div></button>`).join('')}</div>`);
+}
+document.addEventListener('click',e=>{
+  const o=e.target.closest('[data-tkopen]');if(o){openTicket(o.dataset.tkopen);return}
+  const f=e.target.closest('[data-tkf]');if(f){const[k,v]=f.dataset.tkf.split(':');tkF[k]=k==='rar'?+v:v;openTicket();return}
+  const ok=e.target.closest('[data-tkok]');if(ok){const r=useTicketOn(tkF.k,ok.dataset.tkok);if(!r)return;save();renderTop();renderView();toast(`선택권 사용 · ${r}`);openTicket();return}
+  if(e.target.closest('[data-tkback]')){openTicket();return}
+  const u=e.target.closest('[data-tkuse]');if(u&&!u.disabled){const id=u.dataset.tkuse,G=tkF.k==='g',x=G?GMAP[id]:IMAP[id],nm=x.name;
+    const maxed=G?(S.gens[id]&&S.gens[id].d>=maxD(x.rar)):(()=>{const o=S.items.find(y=>y.k===id);return o&&o.d>=ITEM_MAXD})();
+    if(maxed){const gg=G?DUP_GOLD[x.rar]:ITEM_OVER[x.rar];
+      openSheet(`<div class="sheet-h"><h2 style="margin:0">${G?'장수':'보물'} 선택권 사용</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+       <div class="li" style="margin-bottom:10px">${G?seal(x,'sm'):itemTile(x,ITEM_MAXD)}<div class="info"><b>${esc(nm)} <span class="stars r${x.rar}">${stars(x.rar)}</span></b><span>${G?`돌파 ${maxD(x.rar)}/${maxD(x.rar)}`:`+${ITEM_MAXD}`}</span></div></div>
+       <div class="warn" style="margin:0 0 12px"><b>이미 끝까지 키웠어요.</b><br>${G?'돌파':'강화'}가 최대입니다. 받는다면 금화로 보상받습니다. <b>(金 +${fmt(gg)})</b></div>
+       <div class="row" style="gap:8px"><button type="button" class="btn ghost" data-tkback>다른 ${G?'장수':'보물'} 고르기</button><button type="button" class="btn red" style="flex:1" data-tkok="${id}">선택권 1장으로 금화 받기</button></div>`);return}
+    if(u.dataset.arm!=='1'){document.querySelectorAll('[data-tkuse]').forEach(b=>{b.dataset.arm='';b.style.borderColor=''});u.dataset.arm='1';u.style.borderColor='var(--bronze)';toast(`한 번 더 누르면 선택권 1장으로 ${nm}을(를) 받아요`);return}
+    const r=useTicketOn(tkF.k,id);if(!r)return;save();renderTop();renderView();toast(`선택권 사용 · ${r}`);openTicket();return}
+});
 /* ---------------- 수성전 (v2.0.0) ----------------
    내 진형이 성을 지켜요. 적이 내 장수를 때린 피해는 성 체력에서 빠지고, 내 장수는 쓰러지지 않아요(회복·흡혈은 30% 효율로 성 체력 회복).
    적 무리를 모두 쓰러뜨리면 다음 무리가 1.35배 강해져서 들어와요. 성이 무너질 때까지 버틴 턴만큼 보상.
@@ -2206,8 +2302,9 @@ function cleanRec(x){if(!x||typeof x!=='object')return null;const t=Math.min(SIE
 function cleanSiege(x){if(!x||typeof x!=='object')return {};const o={day:typeof x.day==='string'?x.day:'',w:Number.isInteger(x.w)?x.w:-1,n:{},cd:{},wb:{}};
   for(const k of Object.keys(SIEGE)){o.n[k]=Math.min(SIEGE_DAILY,Math.max(0,(x.n&&x.n[k])|0));const c=Number(x.cd&&x.cd[k])||0;if(c)o.cd[k]=Math.min(c,Date.now()+121*60000);const r=cleanRec(x.wb&&x.wb[k]);if(r)o.wb[k]=r}return o}
 // 공개 문서에 넣는 이번 주 기록 (기록을 깰 때만 바뀌어요)
-function siegePub(){const s=S&&S.siege;if(!s||s.w!==weekIdx()||!s.wb||!Object.keys(s.wb).length)return null;const r={};for(const[k,v]of Object.entries(s.wb))r[k]={t:v.t,hp:v.hp,d:v.d};return {w:s.w,r}}
-function cleanSg(x){if(!x||typeof x!=='object'||!Number.isInteger(x.w))return null;const r={};for(const k of Object.keys(SIEGE)){const v=cleanRec(x.r&&x.r[k]);if(v)r[k]=v}return {w:x.w,r}}
+function siegePub(){const s=S&&S.siege,r={};if(s&&s.w===weekIdx()&&s.wb)for(const[k,v]of Object.entries(s.wb))r[k]={t:v.t,hp:v.hp,d:v.d};return {w:weekIdx(),r,a:attPub()}}
+function cleanSg(x){if(!x||typeof x!=='object'||!Number.isInteger(x.w))return null;const r={};for(const k of Object.keys(SIEGE)){const v=cleanRec(x.r&&x.r[k]);if(v)r[k]=v}
+  const a=x.a&&typeof x.a.k==='string'&&typeof x.a.f==='string'?{k:x.a.k.slice(0,4),n:Math.max(0,Math.min(400,x.a.n|0)),f:x.a.f.slice(0,10)}:null;return {w:x.w,r,a}}
 function siegeWave(key,seed,lv,itd,tend){
   const C=SIEGE[key];
   return n=>{const r=mulberry(seed*977+n*131);const pool=Object.keys(GMAP).filter(g=>g!==C.boss&&(!tend||tend==='any'||GMAP[g].cls===tend));const pick=[C.boss];let n5=GMAP[C.boss].rar===5?1:0,guard=0;
@@ -2387,22 +2484,24 @@ function recGauntlet(locked,lv,cb){
   return G;
 }
 const REC_SEEDS_F=[101,202,303];
-const recSeeds=()=>recMode==='raid'?[101,202]:[101];
+const recSeeds=()=>recMode==='raid'?[101,202]:recMode==='vs'?[101,202,303]:[101];
+const recSeedsF=()=>recMode==='vs'?[101,202,303,404,505,606,707,808]:REC_SEEDS_F;
 function recEval(specs,G,seeds){
   if(recMode==='raid'){const boss=raidBoss(raidCyc());return seeds.reduce((a,sd)=>a+Math.min(RAID_HIT_MAX,raidDamage(simulate(specs,boss,sd,{rounds:RAID_ROUNDS}))),0)/seeds.length}
-  let w=0,n=0;for(const d of G)for(const sd of seeds){const r=simulate(specs,d,sd);w+=(r.win?1:0)+.3*(recHpPct(r,0)-recHpPct(r,1));n++}return n?w/n:0;
+  const df=typeof recDefSide==='function'&&recDefSide();
+  let w=0,n=0;for(const d of G)for(const sd of seeds){const r=df?simulate(d,specs,sd):simulate(specs,d,sd),me=df?1:0,won=df?!r.win:r.win;w+=(won?1:0)+.3*(recHpPct(r,me)-recHpPct(r,1-me));n++}return n?w/n:0;
 }
 function recHpPct(res,side){const hp={},mx={};res.init[side].forEach(u=>{hp[u.slot]=u.hp;mx[u.slot]=u.maxhp});
   for(const e of res.ev){for(const h of e.hits||[])if(h.s===side)hp[h.i]=h.hp;for(const h of e.heals||[])if(h.s===side)hp[h.i]=h.hp}
   const k=Object.keys(mx);return k.length?k.reduce((a,i)=>a+Math.max(0,hp[i])/mx[i],0)/k.length:0}
-function recWin(specs,G,seeds){let w=0,n=0;for(const d of G)for(const sd of seeds){if(simulate(specs,d,sd).win)w++;n++}return n?w/n:0}
+function recWin(specs,G,seeds){const df=typeof recDefSide==='function'&&recDefSide();let w=0,n=0;for(const d of G)for(const sd of seeds){const r=df?simulate(d,specs,sd):simulate(specs,d,sd);if(df?!r.win:r.win)w++;n++}return n?w/n:0}
 // 나라·병종 조건 (고정 장수에는 적용하지 않아요)
 let recFil={fac:new Set(),cls:new Set()};
 const recOkF=g=>(!recFil.fac.size||recFil.fac.has(GMAP[g].fac))&&(!recFil.cls.size||recFil.cls.has(GMAP[g].cls));
 async function recCompute(progress){
   const cb=colBonus(), locked=recLocked(), lv=recLvOf(locked), free=5-locked.length;
   progress(5);await recTick();
-  const G=recMode==='raid'?[]:recGauntlet(locked,lv,cb);
+  const G=recMode==='raid'?[]:recMode==='vs'?[recVsSpecs()]:recGauntlet(locked,lv,cb);
   const heur=recPickGens(locked,lv,cb,recOkF), high=recPickGens(locked,lv,cb,g=>recOkF(g)&&GMAP[g].rar>=4);
   const curFree=S.deck.filter((g,i)=>g&&!locked.some(x=>x.slot===i));
   const seen=new Set(), sets=[];
@@ -2438,7 +2537,13 @@ async function recCompute(progress){
     const specs=d.map((g,i)=>g?{...recSpec(g,slotLv(i),best.its[g],cb),f:fk}:null);cand.push({d,specs,f:fk,v:recEval(specs,G,recSeeds())});
     if(++k%30===0){progress(75+Math.round(18*k/(ps.length*FK.length)));await recTick()}}
   cand.sort((a,b)=>b.v-a.v);let bo=null;
-  for(const c of cand.slice(0,6)){c.v2=recEval(c.specs,G,REC_SEEDS_F);if(!bo||c.v2>bo.v2)bo=c}
+  // 배치마다 가장 좋은 순서 1개씩은 꼭 다시 비교해요
+  const pool=[...new Set([...cand.slice(0,6),...FK.map(f=>cand.find(x=>x.f===f)).filter(Boolean)])];
+  for(const c of pool){c.v2=recEval(c.specs,G,recSeedsF());if(!bo||c.v2>bo.v2)bo=c}
+  const cfm=curForm(), keep=pool.filter(c=>c.f===cfm).sort((a,b)=>b.v2-a.v2)[0];
+  best.fcmp={};FK.forEach(f=>{const c=pool.filter(x=>x.f===f).sort((a,b)=>b.v2-a.v2)[0];if(c)best.fcmp[f]=recMode==='raid'?Math.round(c.v2):Math.round(recWin(c.specs,G,recSeedsF())*100)});
+  // 승률이 같으면 남은 체력 차이 때문에 돌격진(선봉 속도 +12)이 조금 앞서기 쉬워요. 차이가 작으면(승률 2%p 이하 · 레이드 피해 1% 이하) 지금 배치를 그대로 둬요
+  if(bo&&keep&&bo.f!==cfm){const a=best.fcmp[bo.f],b=best.fcmp[cfm];if(recMode==='raid'?b>=a*.99:b>=a-2){bo=keep;best.kept=1}}
   progress(95);await recTick();
   if(bo){best.deck=bo.d;best.specs=bo.specs;best.f=bo.f}
   // 보물 다듬기: 두 장수의 보물 맞바꾸기 / 남는 좋은 보물로 바꾸기를 모의전으로 비교 (고정 보물은 그대로)
@@ -2466,55 +2571,93 @@ async function recCompute(progress){
   }
   best.power=deckPower(best.specs);
   const cur=mySpecs();
-  if(recMode==='raid'){best.dmg=Math.round(recEval(best.specs,G,REC_SEEDS_F));best.curDmg=cur.some(Boolean)?Math.round(recEval(cur,G,REC_SEEDS_F)):0}
-  else{best.wr=recWin(best.specs,G,REC_SEEDS_F);best.curWr=cur.some(Boolean)?recWin(cur,G,REC_SEEDS_F):0;best.gN=G.length}
+  if(recMode==='raid'){best.dmg=Math.round(recEval(best.specs,G,recSeedsF()));best.curDmg=cur.some(Boolean)?Math.round(recEval(cur,G,recSeedsF())):0}
+  else{best.wr=recWin(best.specs,G,recSeedsF());best.curWr=cur.some(Boolean)?recWin(cur,G,recSeedsF()):0;best.gN=G.length}
   progress(100);return best;
 }
-function openRec(){
-  recLock.g=new Set([...recLock.g].filter(i=>S.deck[i]));
-  const rows=S.deck.map((g,i)=>{const pos=`<div class="pos">${i+1}<small>${posOf(i)}</small></div>`;
+/* 추천 편성 화면 (v2.0.1): 내 진형과 연습장 덱이 같은 추천 엔진을 써요.
+   연습장은 '모든 장수·모든 보물(덱 강화 단계)·덱 레벨'로 꾸민 임시 계정 위에서 계산하고, 끝나면 원래 기록으로 되돌려요(그동안 저장은 잠시 멈춤). */
+let REC_CTX=null, REC_SANDBOX=false;
+const myRecLock=recLock, labRecLock={atk:{g:new Set(),i:new Set()},def:{g:new Set(),i:new Set()}};
+const LAB_LV=[10,20,30,40,50];
+const recIsLab=()=>!!(REC_CTX&&REC_CTX.kind==='lab');
+const recDefSide=()=>recIsLab()&&REC_CTX.side==='def';
+const oppSide=s=>s==='atk'?'def':'atk';
+function recVsSpecs(){return labSpecs(labCur(recIsLab()?oppSide(REC_CTX.side):'def')).filter(Boolean)}
+function recVsReady(){return recVsSpecs().length>0}
+function recView(){
+  if(recIsLab()){const D=labCur(REC_CTX.side);return {lab:1,side:REC_CTX.side,D,deck:D.s.map(x=>x?x.g:null),its:g=>{const x=D.s.find(y=>y&&y.g===g);return x?x.i.slice():[]},
+    item:u=>IMAP[u]?{u,k:u,d:D.p}:null,name:`연습장 ${REC_CTX.side==='atk'?'공격덱':'방어덱'} · ${D.n}`,lv:()=>D.lv||MAXLV,cur:()=>labSpecs(D)}}
+  return {lab:0,deck:S.deck,its:g=>S.gens[g]?S.gens[g].its:[],item:itemU,name:deckName(S.dk),lv:i=>slotLv(i),cur:()=>mySpecs()};
+}
+// 연습장 덱을 임시 계정으로 바꿔 계산
+async function withLabSandbox(side,fn){
+  const D=labCur(side), real=S, lv=D.lv||MAXLV;
+  const gens={};GENS.forEach(g=>gens[g.id]={lv:1,d:maxD(g.rar),its:[]});
+  D.s.forEach(x=>{if(x&&gens[x.g])gens[x.g].its=x.i.slice()});
+  const deck=D.s.map(x=>x?x.g:null);
+  S={...real,gens,items:ITEMS.map(it=>({u:it.id,k:it.id,d:D.p,n:0,g:0})),slv:[lv,lv,lv,lv,lv],deck:deck.slice(),decks:[{n:D.n,g:deck.slice(),f:cleanForm(D.f)}],dk:0,defDk:0,colMax:{}};
+  REC_SANDBOX=true;
+  try{return await fn()}finally{S=real;REC_SANDBOX=false;colKey=''}
+}
+const REC_MODES=()=>recIsLab()?[['vs','상대 덱 맞춤'],['duel','결투장용'],['raid','레이드용']]:[['duel','결투장용'],['raid','레이드용'],['vs','연습장 방어덱 상대']];
+function openRec(ctx){
+  if(ctx!==undefined){REC_CTX=ctx;recLock=recIsLab()?labRecLock[ctx.side]:myRecLock;
+    if(recIsLab())recMode=recVsReady()?'vs':'duel';else if(recMode==='vs'&&!recVsReady())recMode='duel'}
+  const V=recView();
+  recLock.g=new Set([...recLock.g].filter(i=>V.deck[i]));
+  const rows=V.deck.map((g,i)=>{const pos=`<div class="pos">${i+1}<small>${posOf(i,V.lab?V.D.f:undefined)}</small></div>`;
     if(!g)return `<div class="slot empty">${pos}<div class="info"><b>빈 자리</b><span>추천으로 채워요</span></div></div>`;
-    const b=GMAP[g],on=recLock.g.has(i),st=S.gens[g];
+    const b=GMAP[g],on=recLock.g.has(i),its=V.its(g);
     return `<div class="slot" style="${on?'border-color:var(--bronze)':''}">${pos}${seal(b,'sm')}<div class="info"><b>${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span></b>
-      <span>${on?(st.its.length?'고정할 보물을 누르세요 (안 누르면 추천으로 바꿔요)':'보물 칸 3개는 추천으로 채워요'):'추천으로 바뀔 수 있어요'}</span>
-      ${on&&st.its.length?`<div class="ichips" style="margin-top:6px">${st.its.map(u=>{const x=itemU(u);if(!x)return '';const it=IMAP[x.k],lk=recLock.i.has(u);return `<button type="button" class="ichip r${it.rar}" data-rli="${u}" aria-pressed="${lk}" style="${lk?'background:var(--bronze);color:var(--ink)':''}">${lk?'📌 ':''}${esc(it.name)}${x.d?` <b>+${x.d}</b>`:''}</button>`}).join('')}</div>`:''}</div>
+      <span>${on?(its.length?'고정할 보물을 누르세요 (안 누르면 추천으로 바꿔요)':'보물 칸 3개는 추천으로 채워요'):'추천으로 바뀔 수 있어요'}</span>
+      ${on&&its.length?`<div class="ichips" style="margin-top:6px">${its.map(u=>{const x=V.item(u);if(!x)return '';const it=IMAP[x.k],lk=recLock.i.has(u);return `<button type="button" class="ichip r${it.rar}" data-rli="${u}" aria-pressed="${lk}" style="${lk?'background:var(--bronze);color:var(--ink)':''}">${lk?'📌 ':''}${esc(it.name)}${x.d?` <b>+${x.d}</b>`:''}</button>`}).join('')}</div>`:''}</div>
       <button type="button" class="btn sm ${on?'':'ghost'}" data-rlg="${i}" aria-pressed="${on}">${on?'고정됨':'고정'}</button></div>`}).join('');
-  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">추천 편성</h2><div class="sub" style="margin:0">${esc(deckName(S.dk))}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   <p class="sub" style="margin:0 0 8px">남길 장수는 <b>고정</b>을 누르고, 그 장수에게 그대로 둘 보물도 눌러 고정하세요. 나머지 자리와 보물 칸을 가진 장수·보물로 채워요. 아무것도 고정하지 않으면 전부 추천해요.</p>
-   <div class="seg" role="group" style="margin-bottom:8px"><button type="button" data-rmode="duel" aria-pressed="${recMode!=='raid'}">결투장용</button><button type="button" data-rmode="raid" aria-pressed="${recMode==='raid'}">레이드용 (이번 보스)</button></div>
+  const nOk=V.lab?GENS.filter(g=>recOkF(g.id)).length:Object.keys(S.gens).filter(recOkF).length;
+  const modeTxt=recMode==='raid'?'이번 레이드 보스와 싸워 평균 피해가 가장 큰 진형을 골라요.':recMode==='vs'?(V.lab?`반대편 ${REC_CTX.side==='atk'?'방어덱':'공격덱'}(${esc(labCur(oppSide(REC_CTX.side)).n)})과 여러 번 싸워 ${REC_CTX.side==='def'?'가장 잘 막아 내는':'가장 잘 이기는'} 진형을 골라요.`:`연습장 방어덱(${esc(labCur('def').n)})과 여러 번 싸워 가장 잘 이기는 진형을 골라요.`):'결투장 상위 군주들의 방어 진형과 대표 진형들을 상대로 모의전을 치러 승률이 가장 높은 진형을 골라요.';
+  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">추천 편성</h2><div class="sub" style="margin:0">${esc(V.name)}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub" style="margin:0 0 8px">남길 장수는 <b>고정</b>을 누르고, 그 장수에게 그대로 둘 보물도 눌러 고정하세요. 나머지 자리와 보물 칸을 ${V.lab?`모든 장수·모든 보물(Lv ${V.lv()} · 보물 +${V.D.p})로`:'가진 장수·보물로'} 채워요.</p>
+   <div class="seg" role="group" style="margin-bottom:8px">${REC_MODES().map(([k,n])=>`<button type="button" data-rmode="${k}" aria-pressed="${recMode===k}" ${k==='vs'&&!recVsReady()?'disabled':''}>${n}</button>`).join('')}</div>
    <div class="chips" role="group" aria-label="나라" style="margin:0 0 4px"><span class="flab">나라</span><button type="button" data-rfac="" aria-pressed="${!recFil.fac.size}">전체</button>${Object.entries(FAC).map(([k,n])=>`<button type="button" data-rfac="${k}" aria-pressed="${recFil.fac.has(k)}">${n}</button>`).join('')}</div>
    <div class="chips" role="group" aria-label="병종" style="margin:0 0 4px"><span class="flab">병종</span><button type="button" data-rcls="" aria-pressed="${!recFil.cls.size}">전체</button>${Object.entries(CLS).map(([k,c])=>`<button type="button" data-rcls="${k}" aria-pressed="${recFil.cls.has(k)}">${c.n}</button>`).join('')}</div>
-   ${recFil.cls.size===1?'<p class="sub" style="margin:0 0 6px;color:var(--cinnabar);font-size:12px">병종은 2종 이상 골라 주세요.</p>':recFil.fac.size||recFil.cls.size?`<p class="sub" style="margin:0 0 6px;font-size:12px">고정하지 않은 자리는 ${[recFil.fac.size?[...recFil.fac].map(k=>FAC[k]).join('·'):'',recFil.cls.size?[...recFil.cls].map(k=>CLS[k].n).join('·'):''].filter(Boolean).join(' / ')} 장수로만 채워요. (가진 장수 ${Object.keys(S.gens).filter(recOkF).length}명)</p>`:''}
+   ${recFil.cls.size===1?'<p class="sub" style="margin:0 0 6px;color:var(--cinnabar);font-size:12px">병종은 2종 이상 골라 주세요.</p>':recFil.fac.size||recFil.cls.size?`<p class="sub" style="margin:0 0 6px;font-size:12px">고정하지 않은 자리는 ${[recFil.fac.size?[...recFil.fac].map(k=>FAC[k]).join('·'):'',recFil.cls.size?[...recFil.cls].map(k=>CLS[k].n).join('·'):''].filter(Boolean).join(' / ')} 장수로만 채워요. (${V.lab?'고를 수 있는':'가진'} 장수 ${nOk}명)</p>`:''}
    ${rows}
-   <p class="sub" style="font-size:11px;margin:4px 0 10px">후보 진형을 만든 뒤 실제 전투 계산으로 비교해요(진영·인연·연합군·보물 도감·전법·속도·자리 순서 모두 반영). ${recMode==='raid'?'레이드용은 이번 레이드 보스와 싸워 평균 피해가 가장 큰 진형을 골라요.':'결투장용은 결투장 상위 군주들의 방어 진형과 내 장수로 만든 대표 진형들을 상대로 모의전을 치러 승률이 가장 높은 진형을 골라요.'} 2~5초 걸릴 수 있어요.</p>
+   <p class="sub" style="font-size:11px;margin:4px 0 10px">후보 진형을 만든 뒤 실제 전투 계산으로 비교해요(진영·인연·연합군·${V.lab?'':'보물 도감·'}전법·속도·자리 순서·배치 모두 반영). ${modeTxt} 2~5초 걸릴 수 있어요.</p>
    <button type="button" class="btn wide red" id="rec-go" ${recFil.cls.size===1?'disabled':''}>추천 받기</button>`);
 }
 function openRecResult(P){
-  const cur=mySpecs(), curP=deckPower(cur);
+  const V=recView(), cur=V.cur(), curP=deckPower(cur);
   const moved=[];
   const rows=P.deck.map((g,i)=>{const pos=`<div class="pos">${i+1}<small>${posOf(i,P.f)}</small></div>`;
     if(!g)return `<div class="slot empty">${pos}<div class="info"><b>빈 자리</b><span>넣을 장수가 없어요</span></div></div>`;
-    const b=GMAP[g],lockG=recLock.g.has(i)&&S.deck[i]===g,was=S.deck.indexOf(g);
-    const its=(P.its[g]||[]).map(u=>{const x=itemU(u),it=IMAP[x.k],h=itemHolder(u),lk=recLock.i.has(u)&&lockG;if(h&&h!==g)moved.push(`${it.name}: ${GMAP[h].name} → ${b.name}`);
-      return `<span class="ichip r${it.rar}" style="cursor:default">${lk?'📌 ':''}${esc(it.name)}${x.d?` <b>+${x.d}</b>`:''}${h&&h!==g?` <small style="color:var(--mute)">← ${esc(GMAP[h].name)}</small>`:!h?' <small style="color:var(--jade)">새로</small>':''}</span>`}).join('');
-    return `<div class="slot" style="display:block">${`<div class="row" style="flex-wrap:nowrap;gap:10px">${pos}${seal(b,'sm')}<div class="info"><b>${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span> ${lockG?'<span class="chip">고정</span>':was<0?'<span class="chip" style="border-color:var(--jade);color:var(--jade)">새로</span>':was!==i?`<span class="chip">${was+1}번에서</span>`:''}</b><span>${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${slotLv(i)} · 전투력 ${fmt(specPower(P.specs[i]))}</span></div></div>`}
+    const b=GMAP[g],lockG=recLock.g.has(i)&&V.deck[i]===g,was=V.deck.indexOf(g);
+    const its=(P.its[g]||[]).map(u=>{const x=V.item(u);if(!x)return '';const it=IMAP[x.k],h=V.lab?null:itemHolder(u),lk=recLock.i.has(u)&&lockG;if(h&&h!==g)moved.push(`${it.name}: ${GMAP[h].name} → ${b.name}`);
+      return `<span class="ichip r${it.rar}" style="cursor:default">${lk?'📌 ':''}${esc(it.name)}${x.d?` <b>+${x.d}</b>`:''}${h&&h!==g?` <small style="color:var(--mute)">← ${esc(GMAP[h].name)}</small>`:!V.lab&&!h?' <small style="color:var(--jade)">새로</small>':''}</span>`}).join('');
+    return `<div class="slot" style="display:block">${`<div class="row" style="flex-wrap:nowrap;gap:10px">${pos}${seal(b,'sm')}<div class="info"><b>${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span> ${lockG?'<span class="chip">고정</span>':was<0?'<span class="chip" style="border-color:var(--jade);color:var(--jade)">새로</span>':was!==i?`<span class="chip">${was+1}번에서</span>`:''}</b><span>${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${V.lv(i)} · 전투력 ${fmt(specPower(P.specs[i]))}</span></div></div>`}
      <div class="ichips" style="margin:6px 0 0 58px">${its||'<span class="sub" style="margin:0">보물 없음</span>'}</div></div>`}).join('');
   const st=(k,a,b2)=>`<div class="stat"><small>${k}</small><b>${a}</b><div class="sub" style="margin:0;font-size:11px">→ <b style="color:var(--fg)">${b2}</b></div></div>`;
+  const wrLab=recMode==='vs'?(recDefSide()?'막아 낸 비율':'상대 덱 승률'):'모의전 승률';
+  const gTxt=recMode==='vs'?`상대 덱 1개와 ${recSeedsF().length}판씩 치른 결과예요.`:`상대 ${P.gN}개 진형과 ${recSeedsF().length}판씩 치른 결과예요. 상대에는 결투장 상위 군주들의 방어 진형과 대표 진형이 들어가요.`;
   openSheet(`<div class="sheet-h"><h2 style="margin:0">추천 결과</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   <div class="stats" style="grid-template-columns:1fr 1fr;margin:0 0 6px">${st('총 전투력',fmt(curP),fmt(P.power)+(P.power!==curP?` (${P.power>curP?'+':'−'}${fmt(Math.abs(P.power-curP))})`:''))}${P.dmg!=null?st('레이드 예상 피해(평균)',fmt(P.curDmg||0),fmt(P.dmg)):st('모의전 승률',Math.round((P.curWr||0)*100)+'%',Math.round((P.wr||0)*100)+'%')}</div>
-   ${P.wr!=null?`<p class="sub" style="font-size:11px;margin:0 0 10px">상대 ${P.gN}개 진형과 3판씩 치른 결과예요. 상대에는 결투장 상위 군주들의 방어 진형과 내 장수로 만든 대표 진형이 들어가요.</p>`:''}
+   <div class="stats" style="grid-template-columns:1fr 1fr;margin:0 0 6px">${st('총 전투력',fmt(curP),fmt(P.power)+(P.power!==curP?` (${P.power>curP?'+':'−'}${fmt(Math.abs(P.power-curP))})`:''))}${P.dmg!=null?st('레이드 예상 피해(평균)',fmt(P.curDmg||0),fmt(P.dmg)):st(wrLab,Math.round((P.curWr||0)*100)+'%',Math.round((P.wr||0)*100)+'%')}</div>
+   ${P.wr!=null?`<p class="sub" style="font-size:11px;margin:0 0 10px">${gTxt}</p>`:''}
    <p class="sub" style="margin:0 0 6px">배치: <b style="color:var(--fg)">${FORM[P.f||'basic'].n}</b> · ${FORM[P.f||'basic'].d}</p>
-   ${teamBoxHtml(P.specs)}
+   ${P.fcmp?`<p class="sub" style="margin:0 0 6px;font-size:12px">배치 비교(배치마다 가장 좋은 자리 순서 기준): ${Object.entries(P.fcmp).map(([f,v])=>`${f===P.f?'<b style="color:var(--fg)">':''}${FORM[f].n} ${recMode==='raid'?fmt(v):v+'%'}${f===P.f?'</b>':''}`).join(' · ')}${P.kept?` — 차이가 작아(${recMode==='raid'?'1% 이하':'2%p 이하'}) 지금 배치를 그대로 뒀어요`:''}</p>`:''}
+   ${teamBoxHtml(P.specs,V.lab?1:undefined)}
    ${rows}
    ${moved.length?`<p class="sub" style="font-size:12px;margin:6px 0 0">옮겨 오는 보물 ${moved.length}개 — 원래 끼고 있던 장수는 그 보물이 빠져요(다른 진형에도 반영돼요).</p>`:''}
-   <div class="row" style="gap:8px;margin-top:12px"><button type="button" class="btn ghost" id="rec-back">다시 고르기</button><button type="button" class="btn red" style="flex:1" id="rec-apply">${esc(deckName(S.dk))}에 적용</button></div>
-   ${S.decks.length<DECK_MAX?'<button type="button" class="btn ghost wide" id="rec-new" style="margin-top:8px">새 진형으로 저장</button>':''}
+   <div class="row" style="gap:8px;margin-top:12px"><button type="button" class="btn ghost" id="rec-back">다시 고르기</button><button type="button" class="btn red" style="flex:1" id="rec-apply">${V.lab?esc(V.D.n):esc(deckName(S.dk))}에 적용</button></div>
+   ${!V.lab&&S.decks.length<DECK_MAX?'<button type="button" class="btn ghost wide" id="rec-new" style="margin-top:8px">새 진형으로 저장</button>':''}
    <p class="sub" style="font-size:11px;margin:8px 0 0">전투력은 어림값이에요. 전법·속도·상성에 따라 실제 결과는 달라질 수 있어요.</p>`);
-  $('#rec-back').onclick=openRec;
+  $('#rec-back').onclick=()=>openRec();
   $('#rec-apply').onclick=()=>recApply(P,false);
   const n=$('#rec-new');if(n)n.onclick=()=>recApply(P,true);
 }
 function recApply(P,asNew){
+  if(recIsLab()){
+    const D=labCur(REC_CTX.side);D.s=P.deck.map(g=>g?{g,i:(P.its[g]||[]).filter(k=>IMAP[k]).slice(0,ITEM_SLOTS)}:null);D.f=cleanForm(P.f);
+    Object.assign(D,labClean({atk:[D]}).atk[0],{n:D.n});labSimOut='';save();closeSheet();renderView();toast(`${D.n}에 추천 덱을 적용했어요`);return;
+  }
   const all=new Set(Object.values(P.its).flat());let moved=0;
   for(const[g,st]of Object.entries(S.gens)){if(P.its[g])continue;const before=st.its.length;st.its=st.its.filter(u=>!all.has(u));moved+=before-st.its.length}
   for(const[g,us]of Object.entries(P.its))if(S.gens[g])S.gens[g].its=us.slice(0,ITEM_SLOTS);
@@ -2523,16 +2666,27 @@ function recApply(P,asNew){
   toast(`${asNew?'새 진형으로 저장했어요':'추천 진형을 적용했어요'}${moved?` · 다른 장수에게서 보물 ${moved}개 옮김`:''}`);
 }
 document.addEventListener('click',e=>{
-  if(e.target.closest('#rec-open')){openRec();return}
-  const lg=e.target.closest('[data-rlg]');if(lg){const i=+lg.dataset.rlg;if(recLock.g.has(i)){recLock.g.delete(i);(S.gens[S.deck[i]]||{its:[]}).its.forEach(u=>recLock.i.delete(u))}else recLock.g.add(i);openRec();return}
+  if(e.target.closest('#rec-open')){openRec(null);return}
+  const lr=e.target.closest('[data-labrec]');if(lr){openRec({kind:'lab',side:lr.dataset.labrec});return}
+  const lg=e.target.closest('[data-rlg]');if(lg){const i=+lg.dataset.rlg,V=recView();if(recLock.g.has(i)){recLock.g.delete(i);V.its(V.deck[i]).forEach(u=>recLock.i.delete(u))}else recLock.g.add(i);openRec();return}
   const li=e.target.closest('[data-rli]');if(li){const u=li.dataset.rli;recLock.i.has(u)?recLock.i.delete(u):recLock.i.add(u);openRec();return}
-  const rm=e.target.closest('[data-rmode]');if(rm){recMode=rm.dataset.rmode;openRec();return}
+  const rm=e.target.closest('[data-rmode]');if(rm&&!rm.disabled){recMode=rm.dataset.rmode;openRec();return}
   const rf=e.target.closest('[data-rfac]');if(rf){const k=rf.dataset.rfac;if(!k)recFil.fac.clear();else recFil.fac.has(k)?recFil.fac.delete(k):recFil.fac.add(k);openRec();return}
   const rc=e.target.closest('[data-rcls]');if(rc){const k=rc.dataset.rcls;if(!k)recFil.cls.clear();else recFil.cls.has(k)?recFil.cls.delete(k):recFil.cls.add(k);openRec();return}
   if(e.target.closest('#rec-go')){const b=$('#rec-go');if(b.disabled)return;b.disabled=true;b.textContent='계산 중… 0%';
-    (async()=>{let P=null;try{P=await recCompute(p=>{const x=$('#rec-go');if(x)x.textContent=`계산 중… ${p}%`})}catch(err){console.error(err)}
+    (async()=>{let P=null;const prog=p=>{const x=$('#rec-go');if(x)x.textContent=`계산 중… ${p}%`};
+      try{P=recIsLab()?await withLabSandbox(REC_CTX.side,()=>recCompute(prog)):await recCompute(prog)}catch(err){console.error(err)}
       if(!$('#rec-go'))return;if(!P||!P.deck.some(Boolean)){toast('추천할 장수가 없어요');openRec();return}recPlan=P;openRecResult(P)})();return}
 });
+// 내 진형 → 연습장 (자리 레벨·보물 강화는 가장 가까운 연습장 단계로)
+const nearest=(arr,v)=>arr.reduce((a,b)=>Math.abs(b-v)<Math.abs(a-v)?b:a);
+function copyMyDeckToLab(side){
+  const D=labCur(side), specs=mySpecs().filter(Boolean);
+  D.s=S.deck.map(g=>g?{g,i:S.gens[g].its.map(u=>(itemU(u)||{}).k).filter(Boolean)}:null);D.f=curForm();
+  const ds=specs.flatMap(s=>itemsOf(s.i).map(o=>o.d));if(ds.length)D.p=nearest(LAB_PLUS,ds.reduce((a,b)=>a+b,0)/ds.length);
+  if(specs.length)D.lv=nearest(LAB_LV,specs.reduce((a,s)=>a+s.lv,0)/specs.length);
+  Object.assign(D,labClean({atk:[D]}).atk[0],{n:D.n});labSimOut='';
+}
 /* ---------------- 진영·인연 화면 ---------------- */
 function teamBoxHtml(specs,all){
   const us=specs.filter(Boolean).map((s,i)=>mkUnit(s,0,i)), info=teamBonusInfo(us);
@@ -2790,7 +2944,7 @@ function labDefault(){return {atk:[1,2,3].map(i=>labNew('공격 '+i)),def:[1,2,3
 function labClean(L){
   const d=labDefault();if(!L||typeof L!=='object')return d;
   const one=(src,dflt)=>{
-    const o={n:dflt.n,p:LAB_PLUS.includes(src&&src.p)?src.p:50,f:cleanForm(src&&src.f),s:[]},used=new Set();let n5=0;
+    const o={n:cleanName(src&&src.n)||dflt.n,p:LAB_PLUS.includes(src&&src.p)?src.p:50,lv:[10,20,30,40,50].includes(src&&src.lv)?src.lv:MAXLV,f:cleanForm(src&&src.f),s:[]},used=new Set();let n5=0;
     for(let i=0;i<5;i++){
       const x=src&&Array.isArray(src.s)?src.s[i]:null;
       if(!x||!GMAP[x.g]||o.s.some(y=>y&&y.g===x.g)||(GMAP[x.g].rar===5&&n5>=MAX5)){o.s.push(null);continue}
@@ -2804,7 +2958,7 @@ function labClean(L){
   return {atk:d.atk.map((x,i)=>one((L.atk||[])[i],x)),def:d.def.map((x,i)=>one((L.def||[])[i],x)),ai:Math.min(LAB_N-1,Math.max(0,L.ai|0)),di:Math.min(LAB_N-1,Math.max(0,L.di|0))};
 }
 const labCur=side=>S.lab[side][side==='atk'?S.lab.ai:S.lab.di];
-const labSpecs=D=>D.s.map((x,i)=>x?{g:x.g,lv:MAXLV,d:maxD(GMAP[x.g].rar),i:x.i.map(k=>k+':'+D.p),p:i,f:cleanForm(D.f)}:null);
+const labSpecs=D=>D.s.map((x,i)=>x?{g:x.g,lv:D.lv||MAXLV,d:maxD(GMAP[x.g].rar),i:x.i.map(k=>k+':'+D.p),p:i,f:cleanForm(D.f)}:null);
 const labN5=(D,skip)=>D.s.filter((x,j)=>x&&j!==skip&&GMAP[x.g].rar===5).length;
 function labSlotHtml(side,D,specs,i){
   const pos=`<div class="pos">${i+1}<small>${posOf(i,D.f)}</small></div>`, x=D.s[i];
@@ -2819,14 +2973,25 @@ function labBoxHtml(side){
   return `<div class="labbox"><div class="row"><h3 style="margin:0">${side==='atk'?'공격덱':'방어덱 (NPC)'}</h3><span class="sp"></span><span class="sub num" style="margin:0">전투력 <b style="color:var(--bronze)">${fmt(deckPower(specs))}</b></span></div>
    <div class="chips" role="group" aria-label="저장 슬롯">${arr.map((x,i)=>`<button type="button" data-labk="${side}:${i}" aria-pressed="${i===k}">${esc(x.n)}${x.s.some(Boolean)?'':' (빈 덱)'}</button>`).join('')}</div>
    <div class="chips" role="group" aria-label="보물 강화"><span class="flab">보물 강화</span>${LAB_PLUS.map(p=>`<button type="button" data-labp="${side}:${p}" aria-pressed="${D.p===p}">+${p}</button>`).join('')}</div>
+   <div class="chips" role="group" aria-label="레벨"><span class="flab">레벨</span>${LAB_LV.map(v=>`<button type="button" data-lablv="${side}:${v}" aria-pressed="${(D.lv||MAXLV)===v}">Lv ${v}</button>`).join('')}</div>
    <div class="chips" role="group" aria-label="배치"><span class="flab">배치</span>${Object.entries(FORM).map(([k,F2])=>`<button type="button" data-labf="${side}:${k}" aria-pressed="${cleanForm(D.f)===k}">${F2.n}</button>`).join('')}</div>
+   <div class="row" style="gap:6px;margin:0 0 8px"><button type="button" class="btn sm" data-labrec="${side}">추천 편성</button><button type="button" class="btn ghost sm" data-labname="${side}">이름 바꾸기</button></div>
    ${teamBoxHtml(specs,1)}
    ${D.s.map((_,i)=>labSlotHtml(side,D,specs,i)).join('')}
    <div class="row" style="gap:6px;flex-wrap:wrap"><button type="button" class="btn ghost sm" data-labfill="${side}">무작위 편성</button><button type="button" class="btn ghost sm" data-labcopy="${side}">내 진형 복사</button><button type="button" class="btn ghost sm" data-labapply="${side}">내 진형에 적용</button><span class="sp"></span><button type="button" class="btn ghost sm" data-labclear="${side}">비우기</button></div></div>`;
 }
+function openLabName(side){
+  const D=labCur(side);
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">연습장 덱 이름</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <input id="lab-name" type="text" maxlength="12" value="${esc(D.n)}" aria-label="덱 이름" style="width:100%;box-sizing:border-box;padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);color:var(--fg);font:inherit;font-size:16px">
+   <p class="sub" style="margin:6px 0 12px">12자까지</p><button type="button" class="btn wide" id="lab-name-ok">저장</button>`);
+  const i=$('#lab-name');i.focus();i.select();
+  const ok=()=>{const v=cleanName(i.value);if(!v){toast('이름을 입력해 주세요');return}D.n=v;save();closeSheet();renderView()};
+  $('#lab-name-ok').onclick=ok;i.onkeydown=e=>{if(e.key==='Enter')ok()};
+}
 function vLab(){
   const A=labCur('atk'), B=labCur('def'), ok=A.s.some(Boolean)&&B.s.some(Boolean);
-  return `<p class="sub">모든 장수(Lv ${MAXLV} · 돌파 최대, ★3은 10단계)와 모든 보물로 덱을 짜서 시험해 보는 곳이에요. 내 진형·결투장과는 따로 저장되고, 나팔·보상·기록은 없어요. ★5는 덱마다 ${MAX5}명까지, 같은 보물은 덱 안에서 한 번만 쓸 수 있어요. 보물 도감 효과는 적용되지 않아요.</p>
+  return `<p class="sub">모든 장수(돌파 최대, ★3은 10단계 · 레벨은 덱마다 Lv 10~50)와 모든 보물로 덱을 짜서 시험해 보는 곳이에요. '추천 편성'으로 상대 덱에 맞춘 덱을 찾을 수 있어요. 내 진형·결투장과는 따로 저장되고, 나팔·보상·기록은 없어요. ★5는 덱마다 ${MAX5}명까지, 같은 보물은 덱 안에서 한 번만 쓸 수 있어요. 보물 도감 효과는 적용되지 않아요.</p>
    ${labBoxHtml('atk')}
    <div class="row" style="gap:8px;margin:0 0 12px"><button type="button" class="btn red" style="flex:1" id="lab-go" ${ok?'':'disabled'}>전투 보기</button><button type="button" class="btn ghost" id="lab-sim" ${ok?'':'disabled'}>100판 승률</button></div>
    ${labSimOut?`<div class="stat" style="text-align:left;margin:-4px 0 12px" role="status">${labSimOut}</div>`:''}
@@ -2878,8 +3043,10 @@ document.addEventListener('click',e=>{
   const lk=t.closest('[data-labk]');if(lk){const[sd,k]=lk.dataset.labk.split(':');S.lab[sd==='atk'?'ai':'di']=+k;labSimOut='';save();renderView();return}
   const lp=t.closest('[data-labp]');if(lp){const[sd,p]=lp.dataset.labp.split(':');labCur(sd).p=+p;labSimOut='';save();renderView();return}
   const lf=t.closest('[data-labfill]');if(lf){labCur(lf.dataset.labfill).s=labRandom();labSimOut='';save();renderView();return}
+  const llv=t.closest('[data-lablv]');if(llv){const[sd,v]=llv.dataset.lablv.split(':');labCur(sd).lv=+v;labSimOut='';save();renderView();return}
+  const lnm=t.closest('[data-labname]');if(lnm){openLabName(lnm.dataset.labname);return}
   const lfm=t.closest('[data-labf]');if(lfm){const[sd,k]=lfm.dataset.labf.split(':');labCur(sd).f=cleanForm(k);labSimOut='';save();renderView();return}
-  const lc=t.closest('[data-labcopy]');if(lc){const D=labCur(lc.dataset.labcopy);D.f=curForm();D.s=S.deck.map(g=>g?{g,i:S.gens[g].its.map(u=>(S.items.find(y=>y.u===u)||{}).k).filter(Boolean)}:null);Object.assign(D,labClean({atk:[D]}).atk[0],{n:D.n});labSimOut='';save();renderView();toast('내 진형의 장수와 보물 종류를 복사했어요');return}
+  const lc=t.closest('[data-labcopy]');if(lc){copyMyDeckToLab(lc.dataset.labcopy);save();renderView();toast('내 진형의 장수·보물·배치·레벨을 복사했어요');return}
   const lx=t.closest('[data-labclear]');if(lx){const sd=lx.dataset.labclear;if(labClearArm!==sd){labClearArm=sd;lx.textContent='한 번 더 누르면 비워요';lx.classList.add('red');setTimeout(()=>{if(labClearArm===sd){labClearArm=null;if(view==='pvp')renderView()}},2500);return}
     labClearArm=null;labCur(sd).s=[null,null,null,null,null];labSimOut='';save();renderView();return}
   const mv=t.closest('[data-labmv]');if(mv){e.stopPropagation();const[sd,a,d]=mv.dataset.labmv.split(':');const i=+a,j=i+ +d;if(j<0||j>4)return;const s=labCur(sd).s;[s[i],s[j]]=[s[j],s[i]];save();renderView();return}
@@ -2980,7 +3147,7 @@ function raidRewardOf(key){
 document.addEventListener('click',async e=>{
   const rc=e.target.closest('[data-rclaim]');
   if(rc){const key=rc.dataset.rclaim,c=+key.slice(1).split('_')[0];if(S.raid.claimed.includes(key)||c<raidCyc()-1)return;const r=raidRewardOf(key);if(!r){toast('아직 받을 수 없는 보상이에요');return}
-    tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.raid.claimed.push(key);S.raid.claimed=S.raid.claimed.slice(-40);save();renderTop();renderView();toast(`레이드 보상 · ${rewardText(r)}`);return}
+    tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.gtk=(S.gtk||0)+(r.gtk||0);S.isk=(S.isk||0)+(r.isk||0);S.raid.claimed.push(key);S.raid.claimed=S.raid.claimed.slice(-40);save();renderTop();renderView();toast(`레이드 보상 · ${rewardText(r)}`);return}
   if(!e.target.closest('#raid-go')||raidBusy)return;
   const c=raidCyc(), st=raidStats(c);if(raidLeft(st)<1){toast('오늘 도전을 모두 썼어요');return}
   const mine=mySpecs();if(!mine.some(Boolean)){toast('진형을 먼저 편성하세요');return}
@@ -3050,7 +3217,7 @@ function vPvp(){
   h+=`<h3>오늘 순위 <span style="font-weight:400">· 군주를 누르면 진형을 볼 수 있어요</span></h3><div class="list">`;
   rows.forEach(p=>{
     const mine=p.id===UID, r=rk[p.id];
-    h+=`<div class="li ${mine?'me':''}" data-peek="${esc(p.id)}" role="button" tabindex="0" aria-label="진형 보기"><span class="rank">${r||'–'}</span><div class="info"><b data-uid="${esc(p.id)}">…</b><span class="num">${r?`${score(p.r)}점 · `:'오늘 미참여 · '}공 ${p.r.aw}-${p.r.al} 방 ${p.r.dw}-${p.r.dl} · 전투력 ${fmt(p.power)} · 완성도 ${pct(deckComp(p.deck))}</span></div>
+    h+=`<div class="li ${mine?'me':''}" data-peek="${esc(p.id)}" role="button" tabindex="0" aria-label="진형 보기"><span class="rank">${r||'–'}</span><div class="info"><b data-uid="${esc(p.id)}">…</b>${mine?'':awayChip(p)}<span class="num">${r?`${score(p.r)}점 · `:'오늘 미참여 · '}공 ${p.r.aw}-${p.r.al} 방 ${p.r.dw}-${p.r.dl} · 전투력 ${fmt(p.power)} · 완성도 ${pct(deckComp(p.deck))}</span></div>
      ${mine?'<span class="chip">나</span>':`<div class="iact"><button type="button" class="btn sm red" data-duel="${esc(p.id)}" ${ticketsLeft()<1||!mySpecs().some(Boolean)?'disabled':''}>도전</button><button type="button" class="btn sm ghost" data-spar="${esc(p.id)}">연습</button></div>`}</div>`;
   });
   h+=`</div>`;
@@ -3117,7 +3284,7 @@ function openPeek(id){
       <span>${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${s.lv}/${MAXLV} · ${dupHtml(s.d,1,maxD(b.rar))} · 전투력 ${fmt(specPower(s))}</span>
       ${its.length?its.map(({it,d})=>`<span><span class="ig r${it.rar}">${itemImg(it)}</span> ${esc(it.name)}${d?` <b class="idp">+${d}</b>`:''} <span class="stars r${it.rar}">${stars(it.rar)}</span></span>`).join(''):'<span>보물 없음</span>'}
       <div class="bar"><i style="width:${c*100}%;background:var(--bronze)"></i></div></div><span class="pc num">${pct(c)}</span></div>`}).join('');
-  openSheet(`<div class="sheet-h"><div style="min-width:0"><h2 style="margin:0" data-uid="${esc(id)}">…</h2><div class="sub" style="margin:0">전투력 ${fmt(deckPower(p.deck))} · 공 ${st.aw}-${st.al} · 방 ${st.dw}-${st.dl} · ${score(st)}점</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+  openSheet(`<div class="sheet-h"><div style="min-width:0"><h2 style="margin:0" data-uid="${esc(id)}">…</h2><div class="sub" style="margin:0">${peekSeen(p,mine)}전투력 ${fmt(deckPower(p.deck))} · 공 ${st.aw}-${st.al} · 방 ${st.dw}-${st.dl} · ${score(st)}점</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <div class="stat" style="text-align:left;margin:8px 0 12px"><div class="row"><small style="font-size:12px">진형 완성도</small><span class="sp"></span><span class="pc num" style="font-size:22px">${pct(dc)}</span></div><div class="bar"><i style="width:${dc*100}%;background:var(--bronze)"></i></div></div>
    <h3>${mine?'내 방어 진형':'방어 진형'} (${p.deck.length}/5)</h3>${p.deck[0]&&p.deck[0].cb?`<p class="sub" style="margin:0 0 6px">보물 도감 효과 · ${colText(p.deck[0].cb)}</p>`:''}
    ${p.deck.length?`<div class="list">${rows}</div>`:'<div class="empty-state">진형에 장수가 없어요.</div>'}
