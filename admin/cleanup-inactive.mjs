@@ -11,9 +11,12 @@ const DAYS = Number(process.env.DAYS);
 const MODE = process.env.MODE === 'delete' ? 'delete' : 'preview';
 const KEEP = new Set((process.env.KEEP_UIDS || '').split(/[\s,]+/).filter(Boolean));
 const MAX = Number(process.env.MAX_DELETE) || 100;
-if (!Number.isFinite(DAYS) || DAYS < 7) throw new Error('days는 7 이상이어야 합니다');
+const fail = m => { console.log(`::error::${m}`); process.exit(1); };
+if (!Number.isFinite(DAYS) || DAYS < 1) fail('days는 1 이상의 숫자여야 합니다');
+let SA;
+try { SA = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || ''); } catch { fail('FIREBASE_SERVICE_ACCOUNT secret이 비어 있거나 JSON 형식이 아닙니다. 키 파일 내용 전체를 { 부터 } 까지 붙여 넣었는지 확인하세요'); }
 
-initializeApp({ credential: cert(JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)) });
+initializeApp({ credential: cert(SA) });
 const db = getFirestore(), auth = getAuth();
 const now = Date.now(), cutoff = now - DAYS * 864e5;
 const ms = v => { const t = typeof v === 'number' ? v : Date.parse(v || ''); return Number.isFinite(t) ? t : 0; };
