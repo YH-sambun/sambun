@@ -1,0 +1,86 @@
+# 미접속 유저 정리: Actions 탭 → "미접속 유저 정리" → Run workflow 로 직접 실행합니다.
+# 필요한 Secrets (Settings → Secrets and variables → Actions)
+#   FIREBASE_SERVICE_ACCOUNT : Firebase 콘솔 → 프로젝트 설정 → 서비스 계정 → "새 비공개 키 생성"으로 받은 JSON 전체
+#   BACKUP_PASSWORD          : 백업 파일 암호 (아무 긴 문자열)
+#   백업 풀기: openssl enc -d -aes-256-cbc -pbkdf2 -in backup.json.enc -out backup.json  (암호는 BACKUP_PASSWORD)
+name: 미접속 유저 정리
+
+on:
+  workflow_dispatch:
+    inputs:
+      days:
+        description: '며칠 이상 접속하지 않은 유저를 대상으로 할지 (7 이상)'
+        required: true
+        default: '30'
+      mode:
+        description: 'preview = 목록만 보기, delete = 실제 삭제'
+        type: choice
+        options: [preview, delete]
+        default: preview
+      confirm:
+        description: 'delete일 때만: "삭제"라고 입력'
+        required: false
+        default: ''
+      max_delete:
+        description: '한 번에 지울 최대 인원 (넘으면 아무것도 지우지 않고 중단)'
+        required: false
+        default: '100'
+      keep_uids:
+        description: '절대 지우지 않을 uid (쉼표로 구분, 선택)'
+        required: false
+        default: ''
+
+concurrency: cleanup-inactive
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: 삭제 확인
+        if: inputs.mode == 'delete' && inputs.confirm != '삭제'
+        run: |
+          echo '::error::delete 모드는 confirm 칸에 "삭제"를 입력해야 실행됩니다.'
+          exit 1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+        working-directory: admin
+      # 지우기 전에 대상자 원본 데이터를 먼저 백업합니다
+      - name: 대상 확인과 백업 파일 만들기
+        working-directory: admin
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DAYS: ${{ inputs.days }}
+          MODE: preview
+          KEEP_UIDS: ${{ inputs.keep_uids }}
+        run: node cleanup-inactive.mjs
+      # 공개 저장소의 실행 결과 파일은 누구나 받을 수 있으므로 반드시 암호화해서 올립니다
+      - name: 백업 암호화
+        working-directory: admin
+        env:
+          BACKUP_PASSWORD: ${{ secrets.BACKUP_PASSWORD }}
+        run: |
+          if [ -z "$BACKUP_PASSWORD" ]; then echo '::error::BACKUP_PASSWORD secret이 없어서 중단했습니다.'; rm -f backup.json; exit 1; fi
+          openssl enc -aes-256-cbc -pbkdf2 -salt -pass env:BACKUP_PASSWORD -in backup.json -out backup.json.enc
+          rm -f backup.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: backup-${{ github.run_number }}
+          path: admin/backup.json.enc
+          retention-days: 90
+      - name: 삭제 실행
+        if: inputs.mode == 'delete'
+        working-directory: admin
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+          DAYS: ${{ inputs.days }}
+          MODE: delete
+          MAX_DELETE: ${{ inputs.max_delete }}
+          KEEP_UIDS: ${{ inputs.keep_uids }}
+        run: |
+          node cleanup-inactive.mjs
+          rm -f backup.json
