@@ -387,7 +387,7 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v2.0.4</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v2.0.5</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -519,7 +519,7 @@ const SK={
  xiahouyuan:{n:'질풍신속',d:'무작위 적에게 3번 1.0배 피해',tg:'rand',h:3,m:1},
  zhangliao:{n:'합비의 위명',d:'적 전체 0.6배 피해, 적 전체 공격 2턴 -20%',tg:'all',m:.6,deb:{to:'all',atk:-.2,dur:2}},
  xuchu:{n:'나의투마초',d:'갑옷을 벗고 맨 앞 적에게 3.4배 피해, 자신 방어 2턴 -30%',tg:'front',m:3.4,buff:{to:'self',def:-.3,dur:2}},
- dianwei:{n:'악래의 호위',d:'맨 앞 적에게 1.5배 피해, 조조(없으면 체력이 가장 낮은 아군)를 2턴 동안 호위. 호위받는 아군이 쓰러질 피해를 받으면 전위가 대신 맞음',tg:'front',m:1.5,guard:{dur:2,pref:'caocao'}},
+ dianwei:{n:'악래의 호위',d:'맨 앞 적에게 1.8배 피해, 아군 전체 방어 2턴 +20%, 자신 체력 15% 회복. 특성: 전투마다 2번(조조가 있으면 3번), 아군이 쓰러질 피해를 대신 맞고 그 피해를 30% 줄여 받음',tg:'front',m:1.8,buff:{to:'all',def:.2,dur:2},heal:{to:'self',p:.15},pguard:{n:2,pref:'caocao',red:.3}},
  guojia:{n:'귀재의 간파',d:'체력 비율이 가장 높은 적에게 2.6배 피해, 1턴 기절',tg:'hpmax',m:2.6,stun:1},
  sunquan:{n:'강동 수성',d:'아군 전체 체력 20% 회복, 아군 전체 방어 2턴 +20%',tg:'none',heal:{to:'all',p:.2},buff:{to:'all',def:.2,dur:2}},
  ganning:{n:'백기겁영',d:'적 전체 0.55배 피해, 자신 공격 2턴 +25%',tg:'all',m:.55,buff:{to:'self',atk:.25,dur:2}},
@@ -1094,10 +1094,13 @@ function eff(u,k){let v=1;for(const b of u.bf)v+=b[k]||0;return Math.max(.3,v)}
 function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:opt.siege.hp}:null;let RR=0,waves=1;
   const rng=mulberry(seed);
   const A=buildTeam(As,0), B=buildTeam(Bs,1), T=[A.us,B.us];
+  if(opt&&opt.tm)twApply(T[0],opt.tm);
+  T.forEach(tm=>tm.forEach(u=>{const pg=u.sk&&u.sk.pguard;if(pg)u.pg=pg.n+(tm.some(x=>x.id===pg.pref)?1:0)}));
   const init=[T[0].map(u=>({...u})),T[1].map(u=>({...u}))];
   const ev=[], alive=k=>k===0&&C?C.hp>0:T[k].some(x=>x.hp>0);
   const dmgTo=(t,d,e,extra)=>{if(C&&t.side===0){C.hp=Math.max(0,C.hp-d);e.hits.push({s:0,i:t.slot,d,hp:t.hp,ch:C.hp,...extra});return}
     if(t.grd&&t.grdT>0&&t.grd!==t&&t.grd.hp>0&&t.hp-d<=0){const gd=t.grd;t.grd=null;t.grdT=0;e.notes.push(`${gd.name}이(가) ${t.name} 대신 맞음`);dmgTo(gd,d,e,extra);return}
+    if(t.hp-d<=0&&!t.pgOn){const gd=T[t.side].find(x=>x!==t&&x.pg>0&&x.hp>0&&!x.pgOn);if(gd){gd.pg--;e.notes.push(`${gd.name}이(가) ${t.name} 대신 맞음`);gd.pgOn=1;dmgTo(gd,Math.max(1,Math.round(d*(1-gd.sk.pguard.red))),e,extra);gd.pgOn=0;return}}
     t.hp-=d;if(t.hp<=0){if(t.endure&&!t.endUsed){t.hp=1;t.endUsed=1;e.notes.push(`${t.name} 불굴`)}else t.hp=0}e.hits.push({s:t.side,i:t.slot,d,hp:t.hp,...extra})};
   for(let r=1;r<=((opt&&opt.rounds)||25)&&alive(0)&&alive(1);r++){RR=r;
     // 속도가 같으면 매 턴 무작위(시드 고정)로 순서를 정해요
@@ -1248,7 +1251,7 @@ function sanitize(s){
     if(s.gens&&Object.keys(s.gens).length)MIG_LV={ref,slv:o.slv.slice()};
   }
   for(const g of Object.values(o.gens))g.lv=1;
-  o.siege=cleanSiege(s.siege);
+  o.siege=cleanSiege(s.siege);o.tw=cleanTw(s.tw);
   return o;
 }
 // 레벨은 진형의 자리(1~5번)에 붙어요. 진형 밖 장수는 가장 높은 자리 레벨 기준으로 보여 줘요
@@ -1512,10 +1515,16 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='2.0.4';
+const GAME_VERSION='2.0.5';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'2.0.5',date:'2026-10-15',title:'천명의 탑 · 전위 리워크',reward:{ap:20},items:[
+  '야전 탭에 \'천명탑\'이 생겼어요. 내 진형으로 30층까지 올라가는 도전이에요. 한 번 지면 그 도전은 끝나요. 하루 3회까지 도전할 수 있어요.',
+  '층을 깰 때마다 천명 3개 중 하나를 골라 쌓아요. 천명은 26종이고 일반 60% · 희귀 32% · 전설 8% 확률로 나와요. 병종 천명은 그 병종이 2명 이상일 때만 나와요.',
+  '적은 도전을 시작할 때 내 진형 전투력에 맞춰져요. 1층은 내 전투력의 60%이고, 한 층 오를 때마다 8%씩 강해져요. 5층마다 보스(장각·동탁·여포·원소·사마의·조조)가 나와요. 같은 주에는 모두 같은 장수와 싸워요.',
+  '보상: 깬 층에 비례해 금을 받아요(30층 = 시간당 금 생산량 8시간분). 30층을 돌파하면 장수 등용권 10장을 받아요. 이번 주 최고 층은 순위로 보여요.',
+  '전위 \'악래의 호위\' 리워크: 전법은 맨 앞 적 1.8배 피해 + 아군 전체 방어 2턴 +20% + 자신 체력 15% 회복이에요. 새 특성으로 전투마다 2번(조조가 있으면 3번), 아군이 쓰러질 피해를 받으면 전위가 대신 맞아요. 이때 받는 피해는 30% 줄어요. 같은 전투력 상대 기준 승률 기여가 ★4 보병 중 최하위에서 우금·허저 수준으로 올라와요.']},
  {v:'2.0.4',date:'2026-10-15',title:'이름 변경 · 장수 고르기 필터 · 금화 룰렛 개편 · 유비 조정',items:[
   '메뉴 이름이 바뀌었어요: 둔영 탭 → 둔영, 토벌전 → 토벌전, 야전 → 야전, 연무장 → 연무장. 기능과 기록은 그대로예요.',
   '둔영의 자리 편성과 연무장 장수 고르기에 이름 검색, 나라·병종·등급·전법 종류 필터, 정렬(전투력·등급·공격·방어·체력·속도·이름)이 생겼어요.',
@@ -1872,6 +1881,7 @@ const HELP=[
   ['보물 도감','보물마다 +0(보유)·+10·+25·+50에 처음 도달하면 영구 등록돼 모든 장수가 강해져요. 팔아도 등록은 남아요. 세트를 완성하면 추가 효과가 있고, 야전에도 적용돼요. 연무장에는 적용되지 않아요.'],
   ['보물 획득권','보물 획득에 군량 대신 먼저 쓰여요. 1장이 1회예요.'],
   ['장수 등용권','장수 등용에 군량 대신 먼저 쓰여요. 1장이 1회예요. 금화 룰렛에서 얻어요.'],
+  ['천명의 탑','야전 탭의 천명탑. 내 진형으로 30층까지 올라가요. 층을 깨면 천명 3개 중 하나를 골라 쌓고, 지면 끝나요. 하루 3회. 깬 층에 비례해 금, 30층 돌파 시 장수 등용권 10장.'],
   ['금화 룰렛','등용 탭 아래. 금 1,000으로 돌려 금·군량·나팔·보물 획득권·장수 등용권·장수 선택권·보물 선택권 중 하나를 받아요. 하루 20회, 매일 0시(한국 시간)에 다시 채워져요.'],
   ['쿠폰','화면 위 券 버튼에서 쿠폰 목록(이름·보상·기한)을 보고 바로 받거나, 쿠폰 번호를 직접 입력할 수 있어요. 계정마다 한 번씩 받을 수 있어요.'],
   ['토벌전','야전 탭의 토벌전. 3일마다 새 적 3명(Lv'+MAXLV+' · 돌파 최대 · 보물 +50, 체력 20배)이 나와요. 내 진형으로 10턴 싸워 준 피해가 모두의 게이지에 쌓이고, 25·50·75·100%마다 그 회차에 1번 이상 도전한 군주 모두가 보상을 받아요. 하루 3회. 기여 1~3위는 회차가 끝난 뒤 추가 보상. 보상은 다음 회차가 끝날 때까지 받을 수 있어요.'],
@@ -2394,9 +2404,9 @@ function cleanRec(x){if(!x||typeof x!=='object')return null;const t=Math.min(SIE
 function cleanSiege(x){if(!x||typeof x!=='object')return {};const o={day:typeof x.day==='string'?x.day:'',w:Number.isInteger(x.w)?x.w:-1,n:{},cd:{},wb:{}};
   for(const k of Object.keys(SIEGE)){o.n[k]=Math.min(SIEGE_DAILY,Math.max(0,(x.n&&x.n[k])|0));const c=Number(x.cd&&x.cd[k])||0;if(c)o.cd[k]=Math.min(c,Date.now()+121*60000);const r=cleanRec(x.wb&&x.wb[k]);if(r)o.wb[k]=r}return o}
 // 공개 문서에 넣는 이번 주 기록 (기록을 깰 때만 바뀌어요)
-function siegePub(){const s=S&&S.siege,r={};if(s&&s.w===weekIdx()&&s.wb)for(const[k,v]of Object.entries(s.wb))r[k]={t:v.t,hp:v.hp,d:v.d};return {w:weekIdx(),r,a:attPub()}}
+function siegePub(){const s=S&&S.siege,r={};if(s&&s.w===weekIdx()&&s.wb)for(const[k,v]of Object.entries(s.wb))r[k]={t:v.t,hp:v.hp,d:v.d};return {w:weekIdx(),r,a:attPub(),t:S&&S.tw&&S.tw.w===weekIdx()&&S.tw.best?{w:S.tw.w,f:S.tw.best}:null}}
 function cleanSg(x){if(!x||typeof x!=='object'||!Number.isInteger(x.w))return null;const r={};for(const k of Object.keys(SIEGE)){const v=cleanRec(x.r&&x.r[k]);if(v)r[k]=v}
-  const a=x.a&&typeof x.a.k==='string'&&typeof x.a.f==='string'?{k:x.a.k.slice(0,4),n:Math.max(0,Math.min(400,x.a.n|0)),f:x.a.f.slice(0,10)}:null;return {w:x.w,r,a}}
+  const a=x.a&&typeof x.a.k==='string'&&typeof x.a.f==='string'?{k:x.a.k.slice(0,4),n:Math.max(0,Math.min(400,x.a.n|0)),f:x.a.f.slice(0,10)}:null;const t=x.t&&Number.isInteger(x.t.w)?{w:x.t.w,f:Math.max(0,Math.min(30,x.t.f|0))}:null;return {w:x.w,r,a,t}}
 function siegeWave(key,seed,lv,itd,tend){
   const C=SIEGE[key];
   return n=>{const r=mulberry(seed*977+n*131);const pool=Object.keys(GMAP).filter(g=>g!==C.boss&&(!tend||tend==='any'||GMAP[g].cls===tend));const pick=[C.boss];let n5=GMAP[C.boss].rar===5?1:0,guard=0;
@@ -3280,11 +3290,133 @@ function openLabApply(side){
   };
 }
 document.addEventListener('click',e=>{const a=e.target.closest('[data-labapply]');if(a)openLabApply(a.dataset.labapply)});
-function pvpSegHtml(){return `<div class="seg" role="group" aria-label="야전 메뉴"><button type="button" data-pvpm="duel" aria-pressed="${pvpMode==='duel'}">야전</button><button type="button" data-pvpm="raid" aria-pressed="${pvpMode==='raid'}">토벌전</button><button type="button" data-pvpm="lab" aria-pressed="${pvpMode==='lab'}">연무장</button><button type="button" data-pvpm="siege" aria-pressed="${pvpMode==='siege'}">수성전</button></div>`}
+/* ---------------- 천명의 탑 (v2.0.5) ----------------
+   하루 3회. 층마다 무작위 장수 5명(주간 공통 시드), 5층마다 보스.
+   적 전투력 = 내 진형 전투력(도전 중 가장 높았던 값) × 0.6 × 1.08^(층-1), 보스 층 ×1.12.
+   층을 깨면 천명 3개 중 1개(일반 60 · 희귀 32 · 전설 8%). 지면 끝.
+   보상: 금 = 시간당 금 생산 × 8 × (깬 층 ÷ 30), 30층 돌파 시 장수 등용권 10장.
+   시뮬레이션(실제 함수, 덱마다 20회): 중간값 15~18층, 30층 정복은 약 5%. */
+const TW_MAX=30, TW_DAILY=3, TW_G=1.08, TW_GOLD_H=8, TW_CLEAR_GPK=10;
+const TW_BOSS={5:'zhangjiao',10:'dongzhuo',15:'lubu',20:'yuanshao',25:'simayi',30:'caocao'};
+const TM_T={1:['일반','var(--mute)'],2:['희귀','var(--jade)'],3:['전설','var(--bronze)']};
+const TM=[
+ {id:'mj',n:'맹장의 기세',t:1,d:'전원 공격 +6%',f:{atk:.06}},
+ {id:'cg',n:'철갑',t:1,d:'전원 방어 +10%',f:{def:.10}},
+ {id:'gg',n:'강건',t:1,d:'전원 체력 +6%',f:{hp:.06}},
+ {id:'jp',n:'질풍',t:1,d:'전원 속도 +6, 공격 +3%',f:{spd:6,atk:.03}},
+ {id:'bi',n:'보병 결집',t:1,d:'보병 방어·체력 +12%',f:{cls:'inf',def:.12,hp:.12},c:{cls:'inf'}},
+ {id:'bc',n:'기병 돌격',t:1,d:'기병 공격 +12%',f:{cls:'cav',atk:.12},c:{cls:'cav'}},
+ {id:'ba',n:'궁병 집중',t:1,d:'궁병 치명 확률 +12%p',f:{cls:'arc',cr:.12},c:{cls:'arc'}},
+ {id:'bt',n:'책사 지략',t:1,d:'책사 공격 +10%',f:{cls:'tac',atk:.10},c:{cls:'tac'}},
+ {id:'sb',n:'정예 선봉',t:1,d:'선봉 방어 +15%',f:{row:0,def:.15}},
+ {id:'hb',n:'후방 지원',t:1,d:'후위 공격 +10%',f:{row:2,atk:.10}},
+ {id:'ny',n:'날카로운 일격',t:1,d:'전원 치명 피해 +20%p',f:{cd:.2}},
+ {id:'gr',n:'군량 비축',t:1,d:'전원 체력·방어 +4%',f:{hp:.04,def:.04}},
+ {id:'ig',n:'일기당천',t:2,d:'1번 자리 장수 공격·체력 +16%',f:{slot:0,atk:.16,hp:.16}},
+ {id:'gs',n:'결사',t:2,d:'전원 공격 +14%, 체력 -8%',f:{atk:.14,hp:-.08}},
+ {id:'hr',n:'호령',t:2,d:'전원 전법 피해 +10%',f:{skp:.10}},
+ {id:'hh',n:'흡혈',t:2,d:'준 피해의 3%만큼 회복',f:{ls:.03}},
+ {id:'hg',n:'화공',t:2,d:'공격 전법에 화상 추가(공격의 2.4% · 2턴), 이미 있으면 화상 +20%',f:{burn:.2}},
+ {id:'id',n:'인덕의 가호',t:2,d:'전법 회복량 +40%',f:{heal:.4},c:{heal:1}},
+ {id:'bg',n:'불굴',t:2,d:'전원 전투마다 한 번 쓰러질 피해를 체력 1로 버팀',f:{endure:1},once:1},
+ {id:'oh',n:'명장의 기개',t:2,d:'★4 이상 장수 공격·체력 +8%',f:{rar:4,atk:.08,hp:.08}},
+ {id:'dh',n:'동향의 결속',t:2,d:'같은 나라 3명 이상이면 전원 방어·체력 +8%',f:{fac3:1,def:.08,hp:.08},c:{fac3:1}},
+ {id:'gsp',n:'기습',t:2,d:'전원 속도 +10',f:{spd:10}},
+ {id:'cm',n:'천하무쌍',t:3,d:'전원 공격·방어·체력 +10%',f:{atk:.1,def:.1,hp:.1}},
+ {id:'bs',n:'불사의 군세',t:3,d:'불굴(한 번 버팀) + 전원 체력 +10%',f:{endure:1,hp:.1},once:1},
+ {id:'pw',n:'패왕의 위엄',t:3,d:'전원 공격 +12%, 전법 피해 +12%',f:{atk:.12,skp:.12}},
+ {id:'co',n:'철옹성',t:3,d:'전원 방어 +20%, 체력 +12%',f:{def:.2,hp:.12}}
+];
+const TMAP=Object.fromEntries(TM.map(x=>[x.id,x]));
+function twApply(us,mods){
+  const fc={};us.forEach(u=>{const b=GMAP[u.id];if(b)fc[b.fac]=(fc[b.fac]||0)+1});const f3=Object.values(fc).some(n=>n>=3);
+  for(const id of mods){const m=TMAP[id];if(!m)continue;const f=m.f;if(f.fac3&&!f3)continue;
+    us.forEach(u=>{const b=GMAP[u.id];
+      if(f.cls&&u.cls!==f.cls)return;if(f.slot!=null&&u.slot!==f.slot)return;if(f.row!=null&&(u.row||0)!==f.row)return;if(f.rar&&(!b||b.rar<f.rar))return;
+      if(f.atk)u.atk*=1+f.atk;if(f.def)u.def*=1+f.def;if(f.hp){u.maxhp=Math.round(u.maxhp*(1+f.hp));u.hp=u.maxhp}if(f.spd)u.spd+=f.spd;
+      if(f.cr)u.cr=(u.cr||.1)+f.cr;if(f.cd)u.cd=(u.cd||1.5)+f.cd;if(f.ls)u.ls=(u.ls||0)+f.ls;if(f.skp)u.skp=(u.skp||0)+f.skp;if(f.endure)u.endure=1;
+      if(f.burn&&u.sk&&u.sk.tg&&u.sk.tg!=='none'){const s={...u.sk};s.burn=s.burn?{...s.burn,p:s.burn.p*(1+f.burn)}:{p:.024,dur:2};u.sk=s}
+      if(f.heal&&u.sk&&u.sk.heal)u.sk={...u.sk,heal:{...u.sk.heal,p:u.sk.heal.p*(1+f.heal)}};
+    })}
+}
+const twRatio=fl=>0.6*Math.pow(TW_G,fl-1)*(TW_BOSS[fl]?1.12:1);
+function twEnemy(w,fl,myP,lv,itd){
+  const r=mulberry((w+11)*104729+fl*7919), all=GENS.map(g=>g.id), boss=TW_BOSS[fl], pick=boss?[boss]:[];let n5=boss&&GMAP[boss].rar===5?1:0,guard=0;
+  while(pick.length<5&&guard++<600){const g=all[Math.floor(r()*all.length)];if(pick.includes(g))continue;if(GMAP[g].rar===5){if(n5>=MAX5)continue;n5++}pick.push(g)}
+  const fk=['basic','assault','guard'][Math.floor(r()*3)];
+  const base=pick.map((g,i)=>({g,lv,d:Math.floor(r()*(maxD(GMAP[g].rar)+1)),i:Array.from({length:3},()=>ITEMS[Math.floor(r()*ITEMS.length)].id+':'+Math.floor(r()*(itd+1))),p:i,f:fk}));
+  const sc=twRatio(fl)*myP/Math.max(1,deckPower(base));return base.map(s=>({...s,sc}));
+}
+function cleanTw(x){if(!x||typeof x!=='object')return {};const R=x.run&&typeof x.run==='object'?x.run:null;
+  const ids=a=>(Array.isArray(a)?a:[]).filter(i=>TMAP[i]).slice(0,TW_MAX);
+  return {day:typeof x.day==='string'?x.day:'',n:Math.max(0,Math.min(TW_DAILY,x.n|0)),w:Number.isInteger(x.w)?x.w:-1,best:Math.max(0,Math.min(TW_MAX,x.best|0)),
+    run:R?{fl:Math.max(1,Math.min(TW_MAX,R.fl|0)),p:Math.max(0,Number(R.p)||0),tm:ids(R.tm),of:Array.isArray(R.of)?ids(R.of).slice(0,3):null}:null}}
+function twState(){const d=kstDay(),w=weekIdx();if(!S.tw||typeof S.tw!=='object'||!('n' in S.tw))S.tw=cleanTw(S.tw);const s=S.tw;if(s.day!==d){s.day=d;s.n=0}if(s.w!==w){s.w=w;s.best=0}if(s.run===undefined)s.run=null;return s}
+const twGold=c=>Math.round(goldRate()*TW_GOLD_H*c/TW_MAX);
+function twOffer(R){
+  const deck=S.deck.filter(Boolean).map(g=>GMAP[g]), cc={}, fc={};deck.forEach(b=>{cc[b.cls]=(cc[b.cls]||0)+1;fc[b.fac]=(fc[b.fac]||0)+1});
+  const healer=deck.some(b=>{const s=skillOf(b);return s.heal&&s.heal.to!=='self'}), f3=Object.values(fc).some(n=>n>=3);
+  const ok=m=>!(m.once&&R.tm.includes(m.id))&&!(m.c&&((m.c.cls&&(cc[m.c.cls]||0)<2)||(m.c.heal&&!healer)||(m.c.fac3&&!f3)));
+  const out=[];let guard=0;
+  while(out.length<3&&guard++<100){const x=Math.random()*100,t=x<60?1:x<92?2:3;const c=TM.filter(m=>m.t===t&&ok(m)&&!out.includes(m.id));if(c.length)out.push(c[Math.floor(Math.random()*c.length)].id)}
+  return out;
+}
+function twEnd(cleared,why){const s=twState(), gold=twGold(cleared), clear=cleared>=TW_MAX;
+  S.gold+=gold;if(clear)S.gpk=(S.gpk||0)+TW_CLEAR_GPK;const better=cleared>(s.best||0);if(better)s.best=cleared;s.run=null;save();renderTop();
+  return `<div class="row" style="justify-content:center;gap:6px">${gold?`<span class="coin"><b class="sl gold">金</b>+${fmt(gold)}</span>`:''}${clear?`<span class="coin"><b class="sl gold">券</b>장수 등용권 +${TW_CLEAR_GPK}</span>`:''}</div>
+   <p class="sub">${why} · ${cleared}층까지 돌파${better?' · <b style="color:var(--bronze)">이번 주 최고 기록!</b>':''}</p>`}
+function twStart(){const s=twState();if(s.run)return;if(s.n>=TW_DAILY){toast('오늘 도전을 모두 했어요');return}
+  const P=siegeParams(null);if(!P.mine.some(Boolean)){toast('진형을 먼저 편성하세요');return}
+  s.n++;s.run={fl:1,p:P.pw,tm:[],of:null};save();renderView();toast(`천명의 탑 도전 시작 · 오늘 ${s.n}/${TW_DAILY}`)}
+function twFight(){const s=twState(),R=s.run;if(!R||R.of)return;
+  const P=siegeParams(null);if(!P.mine.some(Boolean)){toast('진형을 먼저 편성하세요');return}
+  R.p=Math.max(R.p,P.pw);const fl=R.fl,foe=twEnemy(s.w,fl,R.p,P.lv,P.itd),seed=(s.w+3)*7919+fl*131+s.n*17;
+  const res=simulate(P.mine,foe,seed,{tm:R.tm.slice()}), boss=TW_BOSS[fl];let html;
+  if(res.win&&fl>=TW_MAX)html=twEnd(TW_MAX,'천명의 탑 정복!');
+  else if(res.win){R.fl=fl+1;R.of=twOffer(R);save();html=`<p class="sub">${fl}층 돌파! 천명을 골라 다음 층으로 올라가세요.</p>`}
+  else html=twEnd(fl-1,`${fl}층에서 패배`);
+  playBattle(res,`천명의 탑 ${fl}층`,'내 진형',`${fl}층${boss?' · '+GMAP[boss].name:''} 수비군`,()=>html,{});
+}
+function twPick(id){const R=twState().run;if(!R||!R.of||!R.of.includes(id))return;R.tm.push(id);R.of=null;save();renderView();toast(`천명 · ${TMAP[id].n}`)}
+function twRank(){const w=weekIdx(),rows=[];(PLAYERS||[]).forEach(p=>{if(p.id===UID)return;const t=p.sg&&p.sg.t;if(t&&t.w===w&&t.f)rows.push({id:p.id,f:t.f})});
+  const s=S.tw;if(s&&s.w===w&&s.best)rows.push({id:UID||'me',f:s.best,me:1});return rows.sort((a,b)=>b.f-a.f)}
+const tmChip=id=>{const m=TMAP[id];return `<span class="chip" title="${esc(m.d)}" style="border-color:${TM_T[m.t][1]};color:${TM_T[m.t][1]}">${esc(m.n)}</span>`};
+function vTower(){
+  const s=twState(),R=s.run,P=siegeParams(null),left=TW_DAILY-s.n,rk=twRank(),myR=rk.findIndex(r=>r.me);
+  let h=`<div class="banner-card"><div class="big">天命</div><h2>천명의 탑</h2><p class="sub" style="margin:0">내 진형으로 ${TW_MAX}층까지 올라요. 층을 깰 때마다 천명 3개 중 하나를 골라 쌓고, 한 번 지면 끝나요. 적은 내 전투력에 맞춰 층마다 8%씩 강해지고 5층마다 보스가 나와요.</p>
+   <div class="stats" style="grid-template-columns:repeat(3,1fr);margin:10px 0"><div class="stat"><small>오늘 도전</small><b>${s.n}/${TW_DAILY}</b></div><div class="stat"><small>이번 주 최고</small><b>${s.best?s.best+'층':'-'}${myR>=0?` <small style="display:inline;color:var(--mute)">${myR+1}위</small>`:''}</b></div><div class="stat"><small>30층 돌파</small><b style="font-size:13px">장수 등용권 ${TW_CLEAR_GPK}장</b></div></div>`;
+  if(!R){
+    h+=`<button type="button" class="btn red wide" data-tw="start" ${left<=0||!P.mine.some(Boolean)?'disabled':''}>${left<=0?'오늘 도전을 모두 했어요':`도전 시작 · 남은 ${left}회`}</button>
+     <p class="sub" style="margin:8px 0 0">보상: 깬 층에 비례해 금(지금 기준 30층 ${fmt(twGold(TW_MAX))}, 15층 ${fmt(twGold(15))}). 30층을 돌파하면 장수 등용권 ${TW_CLEAR_GPK}장을 받아요.</p></div>`;
+  } else if(R.of){
+    h+=`<h3 style="margin:4px 0 8px">${R.fl-1}층 돌파 · 천명 고르기</h3><div class="list">${R.of.map(id=>{const m=TMAP[id];return `<button type="button" class="li" data-twpick="${id}" style="text-align:left;border-color:${TM_T[m.t][1]}"><div class="info"><b>${esc(m.n)} <span class="chip" style="border-color:${TM_T[m.t][1]};color:${TM_T[m.t][1]}">${TM_T[m.t][0]}</span>${R.tm.includes(id)?' <small style="color:var(--mute)">· 겹쳐 쌓여요</small>':''}</b><span>${esc(m.d)}</span></div></button>`}).join('')}</div></div>`;
+  } else {
+    const fl=R.fl,boss=TW_BOSS[fl],p=Math.max(R.p,P.pw),foe=twEnemy(s.w,fl,p,P.lv,P.itd),fp=deckPower(foe);
+    h+=`<div class="row" style="margin:4px 0 6px"><h3 style="margin:0">${fl}층${boss?` · <span style="color:var(--cinnabar)">보스 ${esc(GMAP[boss].name)}</span>`:''}</h3><span class="sp"></span><span class="chip">${fl}/${TW_MAX}</span></div>
+     <div class="row" style="gap:4px;flex-wrap:wrap;margin-bottom:6px">${foe.map(x=>seal(GMAP[x.g],'sm')).join('')}</div>
+     <p class="sub" style="margin:0 0 8px">적 전투력 <b style="color:var(--fg)">${fmt(fp)}</b> · 내 진형 ${fmt(P.pw)}${R.tm.length?` (천명 ${R.tm.length}개 별도)`:''}</p>
+     ${R.tm.length?`<div class="chips" style="margin-bottom:8px">${R.tm.map(tmChip).join('')}</div>`:'<p class="sub" style="margin:0 0 8px">아직 천명이 없어요.</p>'}
+     <div class="row" style="gap:8px"><button type="button" class="btn ghost" data-tw="quit">그만두기</button><button type="button" class="btn red" style="flex:1" data-tw="fight" ${P.mine.some(Boolean)?'':'disabled'}>${fl}층 도전</button></div>
+     <p class="sub" style="margin:8px 0 0">지금 그만두면 ${fl-1}층 기준 금 +${fmt(twGold(fl-1))}. 도전 중에 진형을 바꿔도 되지만, 적은 도전 중 가장 높았던 내 전투력에 맞춰져요.</p></div>`;
+  }
+  h+=`<div class="labbox" style="margin-top:12px"><div class="row"><h3 style="margin:0">이번 주 순위</h3><span class="sp"></span><span class="chip">${weekRange(weekIdx())}</span></div>
+   ${rk.length?`<div class="list" style="margin-top:8px">${rk.slice(0,20).map((r,i)=>`<div class="li ${r.me?'me':''}"><span class="rank">${i+1}</span><div class="info"><b ${r.me?'':`data-uid="${esc(r.id)}"`}>${r.me?'나':'…'}</b><span>${r.f}층${r.f>=TW_MAX?' · 정복':''}</span></div></div>`).join('')}</div>`:'<p class="sub" style="margin:8px 0 0">이번 주 기록이 아직 없어요.</p>'}</div>`;
+  setTimeout(()=>{if(typeof fillNames==='function')fillNames()});
+  return h;
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-tw]');if(b&&!b.disabled){const a=b.dataset.tw;
+    if(a==='start')twStart();else if(a==='fight')twFight();
+    else if(a==='quit'){const R=twState().run;if(!R)return;openSheet(`<div class="sheet-h"><h2 style="margin:0">도전을 그만둘까요?</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div><p class="sub">${R.fl-1}층까지의 보상(금 +${fmt(twGold(R.fl-1))})을 받고 끝내요. 오늘 쓴 도전 횟수는 돌아오지 않아요.</p><div class="row" style="gap:8px"><button type="button" class="btn ghost" data-close style="flex:1">계속하기</button><button type="button" class="btn red" data-tw="quitok" style="flex:1">그만두기</button></div>`)}
+    else if(a==='quitok'){const R=twState().run;if(!R)return;const html=twEnd(R.fl-1,'도전 종료');closeSheet();renderView();openSheet(`<div class="sheet-h"><h2 style="margin:0">천명의 탑 결과</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${html}`)}
+    return}
+  const p=e.target.closest('[data-twpick]');if(p){twPick(p.dataset.twpick);return}
+});
+function pvpSegHtml(){return `<div class="seg" role="group" aria-label="야전 메뉴"><button type="button" data-pvpm="duel" aria-pressed="${pvpMode==='duel'}">야전</button><button type="button" data-pvpm="raid" aria-pressed="${pvpMode==='raid'}">토벌전</button><button type="button" data-pvpm="lab" aria-pressed="${pvpMode==='lab'}">연무장</button><button type="button" data-pvpm="siege" aria-pressed="${pvpMode==='siege'}">수성전</button><button type="button" data-pvpm="tower" aria-pressed="${pvpMode==='tower'}">천명탑</button></div>`}
 function vPvp(){
   const myP=deckPower(defSpecs());
   let h=`<div class="row"><h2>야전</h2><span class="sp"></span>${MODE==='shared'?'<button type="button" class="btn ghost sm" id="settings">내 정보</button>':''}</div>`;
-  h+=pvpSegHtml();if(pvpMode==='lab')return h+vLab();if(pvpMode==='raid')return h+vRaid();if(pvpMode==='siege')return h+vSiege();
+  h+=pvpSegHtml();if(pvpMode==='lab')return h+vLab();if(pvpMode==='raid')return h+vRaid();if(pvpMode==='siege')return h+vSiege();if(pvpMode==='tower')return h+vTower();
   h+=deckQuickHtml('공격 진형');
   if(MODE!=='shared'){
     return h+`<p class="sub">다른 군주의 방어 진형에 도전하는 곳이에요.</p><div class="empty-state"><b>對戰</b>서버 설정이 끝나면 친구들과 겨룰 수 있어요. 지금은 연습전만 가능합니다.</div>
