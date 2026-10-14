@@ -36,7 +36,8 @@ html.work .sc{display:inline;font-family:var(--body);font-size:13px;font-weight:
 html.work .seal{background:var(--panel2)!important;box-shadow:0 0 0 1px var(--line)!important}
 html.work .itm{background:var(--panel2)!important;border-color:var(--line)!important}
 html.work .bk-deco,html.work .tab b,html.work .big,html.work .stamp,html.work .lg-hz,html.work .empty-state b{display:none!important}
-html.work .stars{color:var(--mute)!important}
+html.work .stars{color:var(--mute)!important;letter-spacing:0}
+html.work .dup b{font-weight:600;color:var(--mute)}
 html.work .bu.hit,html.work .dmg{animation:none!important}
 html.work #work-btn{background:#555;color:#fff}
 /* 남은 색(고정 색 버튼·막대·뱃지)까지 흑백으로 */
@@ -62,7 +63,7 @@ button:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--bronze);ou
 .banner{margin:0 16px 8px;font-size:12px;color:var(--mute);border:1px dashed var(--line);border-radius:10px;padding:8px 10px}
 
 main#view{flex:1;min-height:0;overflow-y:auto;padding:8px 16px 24px}
-.tabs{display:grid;grid-template-columns:repeat(6,1fr);border-top:1px solid var(--line);background:var(--panel)}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid var(--line);background:var(--panel)}
 .tab{background:none;border:0;padding:8px 0 10px;min-height:56px;justify-content:center;display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--mute)}
 .tab b{font-family:var(--display);font-weight:400;font-size:20px;line-height:1}
 .tab span{font-size:12px}
@@ -111,6 +112,7 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 .seg{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:3px;margin:4px 0 12px}
 .seg button{flex:1;background:none;border:0;border-radius:7px;padding:7px 0;color:var(--mute);font-weight:500}
 .seg button[aria-pressed="true"]{background:var(--panel2);color:var(--fg)}
+.seg-top{margin-bottom:8px}.seg-top button{font-weight:700}.seg-top button[aria-pressed="true"]{background:var(--bronze);color:var(--ink)}
 
 /* stage map */
 .chap{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
@@ -407,7 +409,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v3.0.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v3.0.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -429,7 +431,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
     <button class="tab" type="button" data-v="deck"><b>營</b><span>둔영</span></button>
     <button class="tab" type="button" data-v="gens"><b>將</b><span>무장</span></button>
     <button class="tab" type="button" data-v="pvp"><b>戰</b><span>전장</span></button>
-    <button class="tab" type="button" data-v="dex"><b>錄</b><span>도감</span></button>
   </nav>
 </div>
 <div id="sheet" hidden></div>
@@ -1107,6 +1108,7 @@ const $=s=>document.querySelector(s);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt=n=>Math.floor(n).toLocaleString('ko-KR');
 const stars=n=>'★'.repeat(n);
+const isWork=()=>document.documentElement.classList.contains('work');
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const seedOf=(...a)=>{let h=2166136261;for(const c of a.join('|'))h=Math.imul(h^c.charCodeAt(0),16777619);return (h>>>0)%2147483647};
@@ -1266,7 +1268,7 @@ const REP_MUL=.3;
 function stageReward(n,first){const m=1+.08*Math.floor(n/5);return first?{gold:Math.round((150+20*n)*m),food:Math.round((200+12*n)*m)}:{gold:Math.round((60+10*n)*m*REP_MUL),food:Math.round((20+2*n)*m*REP_MUL)}}
 
 /* ---------------- state ---------------- */
-let S=null, view='stage', genTab='gens', MIG_LV=null, MIG301=0;
+let S=null, view='stage', genTab='gens', genTop='own', MIG_LV=null, MIG301=0;
 // v3.0.1: ★3에서 ★4로 오른 장수. 한계돌파(6~10단계)는 5단계로 맞추고 넘친 단계마다 금 200을 돌려줘요
 const UP301=['weiyan','yanyan','gaoshun','chengong','zhoutai'], UP301_GOLD=200;
 let DB=null, USER=null, UID=null, MODE='boot';
@@ -1592,10 +1594,15 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='3.0.2';
+const GAME_VERSION='3.0.3';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.0.3',date:'2026-10-15',title:'월급루팡 만세!',items:[
+  '무장 탭과 도감 탭을 합쳤어요. 무장 탭 맨 위에서 보유무장과 도감을 골라 볼 수 있어요.',
+  '보유무장은 예전 무장 탭(장수 · 보물), 도감은 예전 도감 탭(장수 · 보물 · 인연) 그대로예요. 아래 탭은 5개가 됐어요.',
+  '업무 모드에서 등급 별(★)이 R5 · R4 · R3 같은 글자로 바뀌어요.',
+  '업무 모드에서 돌파 ◆◇ 표시가 3/5처럼 숫자로 바뀌어요. ★3 장수의 한계돌파는 7/10처럼 하나로 합쳐 보여요.']},
  {v:'3.0.2',date:'2026-10-15',title:'선택권 보유 필터',items:[
   '장수 선택권 · 보물 선택권 고르기 화면에 보유 필터(전체 · 미보유 · 보유)가 생겼어요. 아직 없는 장수나 보물만 골라 볼 수 있어요.']},
  {v:'3.0.1',date:'2026-10-15',title:'등급 조정 · 밸런스 패치',reward:{gtk:5,itk:20},items:[
@@ -1952,7 +1959,7 @@ $('#tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b||!S)return;view=b.
 
 /* ---------------- 돌파 표시 · 도움말 ---------------- */
 const maxD=r=>r===3?10:5;
-function dupHtml(d,lab,mx){d=d||0;mx=mx||5;const a=Math.min(d,5),b=Math.max(0,d-5);return `<span class="dup" title="돌파 ${d}/${mx}" aria-label="돌파 ${d}/${mx}">${lab?'<small>돌파</small>':''}${'◆'.repeat(a)}<i>${'◇'.repeat(5-a)}</i>${mx>5?`<span class="dup2">${'✦'.repeat(b)}<i>${'✧'.repeat(mx-5-b)}</i></span>`:''}</span>`}
+function dupHtml(d,lab,mx){d=d||0;mx=mx||5;if(isWork())return `<span class="dup" title="돌파 ${d}/${mx}" aria-label="돌파 ${d}/${mx}">${lab?'<small>돌파</small>':''}<b class="num">${d}/${mx}</b></span>`;const a=Math.min(d,5),b=Math.max(0,d-5);return `<span class="dup" title="돌파 ${d}/${mx}" aria-label="돌파 ${d}/${mx}">${lab?'<small>돌파</small>':''}${'◆'.repeat(a)}<i>${'◇'.repeat(5-a)}</i>${mx>5?`<span class="dup2">${'✦'.repeat(b)}<i>${'✧'.repeat(mx-5-b)}</i></span>`:''}</span>`}
 const HELP=[
  {t:'기본 능력치',rows:[
   ['무력','물리 공격과 체력의 바탕이 돼요. 보병·기병·궁병의 공격력은 무력으로 정해져요.'],
@@ -1982,7 +1989,7 @@ const HELP=[
   ['판정','25턴 안에 결판이 나지 않으면 남은 체력 비율이 높은 쪽이 이겨요.'],
   ['연무장','둔영 탭의 연무장에서 모든 장수(Lv'+MAXLV+' · 돌파 최대)와 모든 보물(+1·+25·+50)로 공격덱·NPC 방어덱을 3개씩 저장해 시험할 수 있어요. 보상·기록은 없고 보물 도감 효과는 빠져요. 공격덱의 [내 진형에 적용]으로 보유한 장수·보물을 같은 배치로 내 진형에 옮길 수 있어요.']]},
  {t:'진형 효과',rows:[
-  ['진영 보너스','같은 진영의 ★3 이상 장수가 3·4·5명이면 그 진영 장수가 강해져요(6명이면 5명과 같아요). 도감의 인연 탭에 전체 표가 있어요.'],
+  ['진영 보너스','같은 진영의 ★3 이상 장수가 3·4·5명이면 그 진영 장수가 강해져요(6명이면 5명과 같아요). 무장 탭 › 도감 › 인연에 전체 표가 있어요.'],
   ['인연','함께 편성하면 발동하고, 진형의 모든 장수 능력치가 올라요. 둔영 탭에서 발동 중인 인연을 볼 수 있어요.'],
   ['타국 인연','서로 다른 진영의 장수로 이루어진 인연은 효과가 '+CROSS_MUL+'배예요. 여러 나라 장수를 섞어 쓰도록 돕는 보너스예요.'],
   ['연합군','★3 이상 장수의 나라가 3개국이면 ★3 이상 전원 공격·체력·방어 +5%, 4개국이면 +8%. 진영 보너스·인연과 함께 적용돼요.'],
@@ -2024,7 +2031,7 @@ function seal(b,size=''){return `<div class="seal ${size} f-${b.fac} r${b.rar}" 
 function renderView(){
   if(!S)return;
   const v=$('#view');
-  v.innerHTML=({stage:vStage,gacha:vGacha,deck:vDeck,gens:vGens,pvp:vPvp,dex:vDex})[view]();
+  v.innerHTML=({stage:vStage,gacha:vGacha,deck:vDeck,gens:()=>genTop==='dex'?vDex():vGens(),pvp:vPvp,dex:vDex})[view]();
   v.querySelectorAll('.deckbar').forEach(bar=>{const b=bar.querySelector('[aria-pressed="true"]');if(b)bar.scrollLeft=Math.max(0,b.offsetLeft-bar.clientWidth/2+b.offsetWidth/2)});
   if(view==='pvp'){fillNames();if(duelTab==='hist')fillHistory()}
 }
@@ -2314,7 +2321,7 @@ function vDeck(){
     h+=`<div class="slot" role="button" tabindex="0" data-slot="${i}">${pos2}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${CLS[g.cls].g} ${CLS[g.cls].n} · ${dupHtml(s.d,0,maxD(g.rar))}${it?` · ${esc(it.name)}`:''} · 전투력 ${fmt(specPower(s))}</span></div>
     <div class="mv"><button type="button" data-mv="${i}:-1" aria-label="앞으로" ${i===0?'disabled':''}>▲</button><button type="button" data-mv="${i}:1" aria-label="뒤로" ${i===NSLOT-1?'disabled':''}>▼</button><button type="button" class="clr" data-clr="${i}" aria-label="${esc(g.name)} 빼기">✕</button></div></div>`;
   });
-  h+=`<div class="legend"><b>전투 규칙</b><br>보병·기병은 가장 앞줄(선봉) 적 중 한 명을 공격하고, 궁병은 체력이 가장 낮은 적을, 책사는 무작위 적을 노립니다. 전법은 기병 2번째, 보병·궁병 3번째, 책사 4번째 행동마다 발동해요. 도발 중인 적이 있으면 단일 공격은 그 적에게 향해요.<br><b>상성</b> 기병 → 보병 → 궁병 → 기병 (유리하면 피해 +25%, 궁병은 기병에게 +50%). 궁병은 기병을 먼저 노려요.<br><b>진영·인연</b> 같은 진영 3명 이상, 또는 인연 있는 장수를 함께 넣으면 능력치가 올라요(인연은 진형 전원에게 적용). 다른 나라 장수끼리의 타국 인연은 효과가 2배이고, 3개국 이상 섞으면 연합군 보너스를 받아요. 도감의 인연 탭에서 전체 목록을 볼 수 있어요.<br><button type="button" class="btn ghost sm" data-help="3" style="margin-top:8px">전투 규칙 자세히 보기</button></div>`;
+  h+=`<div class="legend"><b>전투 규칙</b><br>보병·기병은 가장 앞줄(선봉) 적 중 한 명을 공격하고, 궁병은 체력이 가장 낮은 적을, 책사는 무작위 적을 노립니다. 전법은 기병 2번째, 보병·궁병 3번째, 책사 4번째 행동마다 발동해요. 도발 중인 적이 있으면 단일 공격은 그 적에게 향해요.<br><b>상성</b> 기병 → 보병 → 궁병 → 기병 (유리하면 피해 +25%, 궁병은 기병에게 +50%). 궁병은 기병을 먼저 노려요.<br><b>진영·인연</b> 같은 진영 3명 이상, 또는 인연 있는 장수를 함께 넣으면 능력치가 올라요(인연은 진형 전원에게 적용). 다른 나라 장수끼리의 타국 인연은 효과가 2배이고, 3개국 이상 섞으면 연합군 보너스를 받아요. 무장 탭 › 도감 › 인연에서 전체 목록을 볼 수 있어요.<br><button type="button" class="btn ghost sm" data-help="3" style="margin-top:8px">전투 규칙 자세히 보기</button></div>`;
   return h;
 }
 document.addEventListener('click',e=>{
@@ -2410,7 +2417,13 @@ document.addEventListener('click',e=>{
 const WORK_K='yeonhap-work';
 function applyWork(on){document.documentElement.classList.toggle('work',on);const h=document.querySelector('.brand-hz');if(h)h.textContent=on?'업무 현황':'연합 삼국지';
   document.title=on?'업무 현황':'연합 삼국지 · 창천토벌';const m=document.querySelector('meta[name=theme-color]');if(m)m.content=on?'#f4f5f7':'#0e1716';
-  const b=$('#work-btn');if(b)b.setAttribute('aria-pressed',String(on));try{localStorage.setItem(WORK_K,on?'1':'0')}catch(e){}}
+  const b=$('#work-btn');if(b)b.setAttribute('aria-pressed',String(on));try{localStorage.setItem(WORK_K,on?'1':'0')}catch(e){}
+  if(on)workScan(document.body);if(typeof S!=='undefined'&&S){try{render()}catch(e){}}}
+// 업무 모드: 화면 글자 속 ★(★5, ★★★)을 R5 같은 글자로
+function workTxt(t){return t.replace(/★{2,5}/g,m=>'R'+m.length).replace(/★(?=\d)/g,'R').replace(/★/g,'R')}
+function workScan(root){if(!isWork()||!root)return;if(root.nodeType===3){if(root.nodeValue.includes('★'))root.nodeValue=workTxt(root.nodeValue);return}
+  if(root.nodeType!==1)return;const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);let n;while(n=w.nextNode())if(n.nodeValue.includes('★'))n.nodeValue=workTxt(n.nodeValue)}
+new MutationObserver(ms=>{if(!isWork())return;for(const m of ms){if(m.type==='characterData')workScan(m.target);else m.addedNodes.forEach(workScan)}}).observe(document.documentElement,{childList:true,subtree:true,characterData:true});
 try{if(localStorage.getItem(WORK_K)==='1')applyWork(true)}catch(e){}
 document.addEventListener('click',e=>{if(e.target.closest('#work-btn'))applyWork(!document.documentElement.classList.contains('work'))});
 document.addEventListener('keydown',e=>{if(e.key==='`'&&!e.target.closest('input,textarea')&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();applyWork(!document.documentElement.classList.contains('work'))}});
@@ -2951,9 +2964,12 @@ function bondsDexHtml(){
 }
 
 /* ---------------- 무장 ---------------- */
+// v3.0.4: 무장 탭 = 보유무장 + 도감
+function genTopHtml(){return `<h2>무장</h2><div class="seg seg-top" role="group"><button type="button" data-gtop="own" aria-pressed="${genTop!=='dex'}">보유무장</button><button type="button" data-gtop="dex" aria-pressed="${genTop==='dex'}">도감</button></div>`}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-gtop]');if(t){genTop=t.dataset.gtop;renderView();$('#view').scrollTop=0}});
 function vGens(){
   const own=sortedOwned();
-  let h=`<h2>무장</h2><div class="seg" role="group"><button type="button" data-gt="gens" aria-pressed="${genTab==='gens'}">장수 ${own.length}/${GENS.length}</button><button type="button" data-gt="items" aria-pressed="${genTab==='items'}">보물 ${S.items.length}</button></div>`;
+  let h=`${genTopHtml()}<div class="seg" role="group"><button type="button" data-gt="gens" aria-pressed="${genTab==='gens'}">장수 ${own.length}/${GENS.length}</button><button type="button" data-gt="items" aria-pressed="${genTab==='items'}">보물 ${S.items.length}</button></div>`;
   if(genTab==='gens'){
     h+=gfHtml('gens',GF.gens,{sorts:{rar:'등급',power:'전투력',bond:'보유 인연',atk:'공격',def:'방어',hp:'체력',spd:'속도',name:'이름'},extra:[['상태','st',[['','전체'],['deck','편성 중'],['free','미편성'],['dmax','돌파 최대'],['dup','돌파 남음']]]]});
     const list=filteredGens();
@@ -3125,7 +3141,7 @@ const DSORT={rar:'등급',str:'무력',int:'지력',lead:'통솔',spd:'속도',n
 function statCell(lab,v,max){return `<div class="dc"><small>${lab}</small><b class="num">${v}</b><span class="db"><i style="width:${Math.min(100,v/max*100)}%"></i></span></div>`}
 function vDex(){
   const ownedN=GENS.filter(g=>S.gens[g.id]).length, kinds=new Set(Object.keys(S.colMax||{}));
-  let h=`<h2>도감</h2><p class="sub">모든 장수와 보물의 기본 능력치예요. 보유한 것은 밝게, 아직 없는 것은 흐리게 표시돼요.</p>
+  let h=`${genTopHtml()}<p class="sub">모든 장수와 보물의 기본 능력치예요. 보유한 것은 밝게, 아직 없는 것은 흐리게 표시돼요.</p>
   <div class="seg" role="group"><button type="button" data-dt="gens" aria-pressed="${dexTab==='gens'}">장수 ${ownedN}/${GENS.length}</button><button type="button" data-dt="items" aria-pressed="${dexTab==='items'}">보물 ${kinds.size}/${ITEMS.length}</button><button type="button" data-dt="bonds" aria-pressed="${dexTab==='bonds'}">인연</button></div>`;
   if(dexTab==='bonds')return h+bondsDexHtml();
   if(dexTab==='gens'){
