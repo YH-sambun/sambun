@@ -350,7 +350,8 @@ button.sbar.on .sn{color:var(--bronze);font-weight:700}
 .slot .pos{width:48px}
 .mv button.clr{color:var(--cinnabar)}
 .defmk{display:inline-block;font-family:var(--display);font-size:11px;color:var(--ink);background:var(--bronze);border-radius:4px;padding:0 3px;line-height:1.4;vertical-align:1px}
-.deckbar button{max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.deckbar button{max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:none}
+.deckbar{flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:thin;padding-bottom:4px;-webkit-overflow-scrolling:touch}
 .savest{display:block;margin:1px 0 0;text-align:left;cursor:pointer;font-size:inherit;color:var(--mute);white-space:nowrap;background:none;border:0;padding:0;font-family:var(--body)}
 .savest[data-st=err],.savest[data-st=conflict]{color:var(--cinnabar);text-decoration:underline}
 .res-sec .chips{margin-bottom:4px}
@@ -383,7 +384,7 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v2.0.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v2.0.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -450,7 +451,7 @@ const GENS_RAW=[
  ['xuchu','허저','許褚','wei',4,'inf',96,36,65,66],
  ['dianwei','전위','典韋','wei',4,'inf',95,35,56,68],
  ['guojia','곽가','郭嘉','wei',4,'tac',15,98,60,78],
- ['sunquan','손권','孫權','wu',4,'arc',67,80,76,74],
+ ['sunquan','손권','孫權','wu',4,'tac',67,80,76,74],
  ['ganning','감녕','甘寧','wu',4,'arc',92,60,86,86],
  ['taishici','태사자','太史慈','wu',4,'arc',93,66,82,84],
  ['luxun','육손','陸遜','wu',4,'tac',69,95,96,80],
@@ -515,13 +516,13 @@ const SK={
  xiahouyuan:{n:'질풍신속',d:'무작위 적에게 3번 1.0배 피해',tg:'rand',h:3,m:1},
  zhangliao:{n:'합비의 위명',d:'적 전체 0.6배 피해, 적 전체 공격 2턴 -20%',tg:'all',m:.6,deb:{to:'all',atk:-.2,dur:2}},
  xuchu:{n:'나의투마초',d:'갑옷을 벗고 맨 앞 적에게 3.4배 피해, 자신 방어 2턴 -30%',tg:'front',m:3.4,buff:{to:'self',def:-.3,dur:2}},
- dianwei:{n:'완성의 수호',d:'맨 앞 적 1.8배 피해, 아군 전체 방어 2턴 +30%',tg:'front',m:1.8,buff:{to:'all',def:.3,dur:2}},
+ dianwei:{n:'악래의 호위',d:'맨 앞 적에게 1.5배 피해, 조조(없으면 체력이 가장 낮은 아군)를 2턴 동안 호위. 호위받는 아군이 쓰러질 피해를 받으면 전위가 대신 맞음',tg:'front',m:1.5,guard:{dur:2,pref:'caocao'}},
  guojia:{n:'귀재의 간파',d:'체력 비율이 가장 높은 적에게 2.6배 피해, 1턴 기절',tg:'hpmax',m:2.6,stun:1},
- sunquan:{n:'강동 수성',d:'아군 전체 체력 12% 회복, 아군 전체 방어 2턴 +20%',tg:'none',heal:{to:'all',p:.12},buff:{to:'all',def:.2,dur:2}},
+ sunquan:{n:'강동 수성',d:'아군 전체 체력 20% 회복, 아군 전체 방어 2턴 +20%',tg:'none',heal:{to:'all',p:.2},buff:{to:'all',def:.2,dur:2}},
  ganning:{n:'백기겁영',d:'적 전체 0.55배 피해, 자신 공격 2턴 +25%',tg:'all',m:.55,buff:{to:'self',atk:.25,dur:2}},
  taishici:{n:'신정의 신궁',d:'공격력이 가장 높은 적에게 2.7배 피해, 50% 확률로 1턴 기절',tg:'high',m:2.7,stun:.5},
  luxun:{n:'화소연영',d:'적 전체 0.45배 피해, 3턴 동안 화상(매 턴 공격의 12%, 방어 무시)',tg:'all',m:.45,burn:{p:.12,dur:3}},
- zhangjiao:{n:'황천당립',d:'적 전체 0.5배 피해, 각 30% 확률로 1턴 기절',tg:'all',m:.5,stun:.3},
+ zhangjiao:{n:'태평도',d:'적 전체 0.4배 피해, 각 20% 확률로 1턴 기절, 아군 전체 체력 10% 회복',tg:'all',m:.4,stun:.2,heal:{to:'all',p:.1}},
  dongzhuo:{n:'주지육림',d:'적 전체 방어 2턴 -25%, 자신 체력 20% 회복',tg:'none',deb:{to:'all',def:-.25,dur:2},heal:{to:'self',p:.2}},
  yuanshao:{n:'사세삼공',d:'아군 전체 공격과 방어 2턴 +25%',tg:'none',buff:{to:'all',atk:.25,def:.25,dur:2}},
  weiyan:{n:'자오곡 기책',d:'맨 뒤 적에게 2.9배 피해',tg:'back',m:2.9},
@@ -1092,7 +1093,9 @@ function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:op
   const A=buildTeam(As,0), B=buildTeam(Bs,1), T=[A.us,B.us];
   const init=[T[0].map(u=>({...u})),T[1].map(u=>({...u}))];
   const ev=[], alive=k=>k===0&&C?C.hp>0:T[k].some(x=>x.hp>0);
-  const dmgTo=(t,d,e,extra)=>{if(C&&t.side===0){C.hp=Math.max(0,C.hp-d);e.hits.push({s:0,i:t.slot,d,hp:t.hp,ch:C.hp,...extra});return}t.hp-=d;if(t.hp<=0){if(t.endure&&!t.endUsed){t.hp=1;t.endUsed=1;e.notes.push(`${t.name} 불굴`)}else t.hp=0}e.hits.push({s:t.side,i:t.slot,d,hp:t.hp,...extra})};
+  const dmgTo=(t,d,e,extra)=>{if(C&&t.side===0){C.hp=Math.max(0,C.hp-d);e.hits.push({s:0,i:t.slot,d,hp:t.hp,ch:C.hp,...extra});return}
+    if(t.grd&&t.grdT>0&&t.grd!==t&&t.grd.hp>0&&t.hp-d<=0){const gd=t.grd;t.grd=null;t.grdT=0;e.notes.push(`${gd.name}이(가) ${t.name} 대신 맞음`);dmgTo(gd,d,e,extra);return}
+    t.hp-=d;if(t.hp<=0){if(t.endure&&!t.endUsed){t.hp=1;t.endUsed=1;e.notes.push(`${t.name} 불굴`)}else t.hp=0}e.hits.push({s:t.side,i:t.slot,d,hp:t.hp,...extra})};
   for(let r=1;r<=((opt&&opt.rounds)||25)&&alive(0)&&alive(1);r++){RR=r;
     // 속도가 같으면 매 턴 무작위(시드 고정)로 순서를 정해요
     const order=[...T[0],...T[1]].filter(u=>u.hp>0);order.forEach(u=>u.tb=rng());order.sort((a,b)=>b.spd-a.spd||a.tb-b.tb);
@@ -1136,6 +1139,7 @@ function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:op
             hit(t,m,S);if(!hitT.includes(t))hitT.push(t)}
         }
         if(S.taunt){u.taunt=S.taunt;e.notes.push('도발')}
+        if(S.guard){const al=allies().filter(x=>x!==u);const g=al.find(x=>x.id===S.guard.pref)||(al.length?al.reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a):null);if(g){g.grd=u;g.grdT=S.guard.dur;e.notes.push(`${g.name} 호위`)}}
         if(S.stun)hitT.forEach(t=>{if(t.hp>0&&rng()<S.stun){t.stun=1;e.stuns.push({s:t.side,i:t.slot})}});
         if(S.burn)hitT.forEach(t=>{if(t.hp>0)t.burn.push({d:Math.max(1,Math.round(atkV*S.burn.p)),dur:S.burn.dur,by:[u.side,u.slot]})});
         if(S.heal){const H=S.heal, tg=H.to==='all'?allies():H.to==='low'?[allies().reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a)]:[u];
@@ -1151,7 +1155,7 @@ function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:op
     const tick={tick:1,hits:[],heals:[],notes:[]};
     [...T[0],...T[1]].forEach(u=>{
       for(const b of u.burn){if(u.hp>0)dmgTo(u,b.d,tick,{burn:1,by:b.by})}
-      u.burn=u.burn.filter(b=>--b.dur>0);u.bf=u.bf.filter(b=>--b.dur>0);if(u.taunt>0)u.taunt--;
+      u.burn=u.burn.filter(b=>--b.dur>0);u.bf=u.bf.filter(b=>--b.dur>0);if(u.taunt>0)u.taunt--;if(u.grdT>0&&--u.grdT<=0)u.grd=null;
     });
     if(tick.hits.length)ev.push(tick);
     if(C&&C.hp>0&&!T[1].some(x=>x.hp>0)){waves++;const nb=buildTeam(opt.siege.wave(waves),1);T[1]=nb.us;ev.push({spawn:waves,units:nb.us.map(u=>({...u})),hits:[],heals:[],notes:[]})}
@@ -1168,9 +1172,15 @@ function bonusLine(info){if(!info)return '';const p=[...(info.ally?[`연합군 $
 /* ---------------- stages ---------------- */
 function mkTroop(tr,cls){const b=TROOP_BASE[cls];return {name:tr[0],hz:tr[1],fac:tr[2],rar:2,cls,str:b[0],int:b[1],lead:b[2],spd:b[3],skill:DEF_SKILL[cls]}}
 function stageLv(n){return 1+Math.floor(n*.6)+(n%5===4?2:0)}
+// 오장원(마지막 장): 최상위권(전투력 약 30,000)에 맞춘 정예군. 적 전투력 약 18,000 → 30,000
+const STAGE_SC={55:4.34,56:4.49,57:4.16,58:4.99,59:3.29};
+const SKIP_R=1.2;
+const stagePow=n=>deckPower(stageSpecs(n));
+function skipCount(){const mine=mySpecs();if(!mine.some(Boolean))return 0;const mp=deckPower(mine);let n=S.stage,c=0;while(n<NSTAGE&&mp>=SKIP_R*stagePow(n)){c++;n++}return c}
 function stageSpecs(n){
   const c=CH[Math.floor(n/5)],row=c.st[n%5],lv=stageLv(n);
-  return row.map(x=>x.startsWith('T:')?{troop:mkTroop(c.tr,x.slice(2)),lv,d:0,sc:ENEMY_SCALE}:{g:x,lv,d:0,sc:ENEMY_SCALE});
+  const sc=ENEMY_SCALE*(STAGE_SC[n]||1);
+  return row.map(x=>x.startsWith('T:')?{troop:mkTroop(c.tr,x.slice(2)),lv,d:0,sc}:{g:x,lv,d:0,sc});
 }
 function stageName(n){const c=CH[Math.floor(n/5)];return n%5===4?`${c.n} · ${c.boss}`:`${c.n} · 제${n%5+1}전`}
 // 반복(소탕) 보상 배율: 하루 소탕량이 48회 → 160회로 늘어난 만큼(48/160) 줄여 하루 총량을 이전과 비슷하게 맞춤
@@ -1200,7 +1210,7 @@ function sanitize(s){
     if(!y){const n={u:String(x.u),k:x.k,d:Math.min(ITEM_MAXD,Math.max(0,x.d|0)),n:Math.max(0,x.n|0),g:Math.max(0,Number(x.g)||0)};if(x.lk)n.lk=true;by[x.k]=n;o.items.push(n)}
     else{const k=Math.min(ITEM_MAXD-y.d,1+(x.d|0));y.d+=k;y.n+=k;y.g+=Math.max(0,Number(x.g)||0);if(x.lk)y.lk=true}}}
   o.itk=Math.max(0,Math.min(9999,s.itk|0));
-  o.gtk=Math.max(0,Math.min(999,s.gtk|0));o.isk=Math.max(0,Math.min(999,s.isk|0));o.sat=cleanSat(s.sat);
+  o.gtk=Math.max(0,Math.min(999,s.gtk|0));o.isk=Math.max(0,Math.min(999,s.isk|0));o.sat=cleanSat(s.sat);o.satLast=s.satLast&&typeof s.satLast==='object'?{k:String(s.satLast.k||'').slice(0,4),n:s.satLast.n|0,pct:s.satLast.pct|0,rw:s.satLast.rw?1:0}:null;
   o.cpn=Array.isArray(s.cpn)?s.cpn.filter(x=>typeof x==='string'&&x.length===64).slice(-300):[];
   o.lab=labClean(s.lab);
   {const r=s.raid&&typeof s.raid==='object'?s.raid:{};o.raid={day:String(r.day||''),n:Math.max(0,Math.min(RAID_DAILY,r.n|0)),claimed:Array.isArray(r.claimed)?r.claimed.filter(x=>typeof x==='string').slice(-40):[]}}
@@ -1243,7 +1253,7 @@ const slotLv=i=>(S.slv&&S.slv[i])||1;
 function defLv(gid){const at=S.deck.indexOf(gid);return at>=0?slotLv(at):Math.max(...S.slv)}
 function specOf(gid,lv){const g=S.gens[gid];if(!g)return null;return {g:gid,lv:lv||defLv(gid),d:g.d,i:g.its.map(u=>S.items.find(x=>x.u===u)).filter(Boolean).map(x=>x.k+':'+(x.d||0)),cb:colBonus()}}
 function mySpecs(){const f=curForm();return S.deck.map((g,i)=>g?{...specOf(g,slotLv(i)),p:i,f}:null)}
-const DECK_MAX=5;
+const DECK_MAX=20;
 const deckName=k=>(S&&S.decks&&S.decks[k]&&S.decks[k].n)||('진형 '+(k+1));
 function syncDeck(){if(S&&S.decks&&S.decks[S.dk])S.decks[S.dk].g=S.deck.slice()}
 function defDeckArr(){return S.defDk===S.dk?S.deck:(S.decks[S.defDk]||{g:S.deck}).g}
@@ -1252,7 +1262,7 @@ function switchDeck(k){if(!S.decks[k]||k===S.dk)return;syncDeck();S.dk=k;S.deck=
 // 출진 창·레이드·결투장에서 쓸 진형을 바로 고르는 칩
 let deckQuickCb=null;
 function deckQuickHtml(lab,cb){deckQuickCb=cb||null;if(!S.decks||S.decks.length<2)return '';
-  return `<div class="chips" role="group" aria-label="${lab}" style="margin:6px 0"><span class="flab">${lab}</span>${S.decks.map((d,k)=>`<button type="button" data-dkq="${k}" aria-pressed="${k===S.dk}">${esc(deckName(k))}${k===S.defDk?' <small class="defmk">防</small>':''}</button>`).join('')}</div>`}
+  return `<div class="chips deckbar" role="group" aria-label="${lab}" style="margin:6px 0"><span class="flab">${lab}</span>${S.decks.map((d,k)=>`<button type="button" data-dkq="${k}" aria-pressed="${k===S.dk}">${esc(deckName(k))}${k===S.defDk?' <small class="defmk">防</small>':''}</button>`).join('')}</div>`}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-dkq]');if(!b)return;e.stopPropagation();switchDeck(+b.dataset.dkq);const cb=deckQuickCb;if(cb)cb();else renderView()});
 function chaptersDone(){return Math.floor(S.stage/5)}
 function foodRateAt(st){return 60+4*st+25*Math.floor(st/5)}
@@ -1499,10 +1509,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='2.0.2';
+const GAME_VERSION='2.0.3';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'2.0.3',date:'2026-10-15',title:'출석 보상 자동 지급 · 진형 20개 · 회복·호위 · 오장원 · 자동 진군',reward:{ap:20},items:[
+  '시즌 출석률 70% 이상이면, 다음 시즌 첫 접속 때 장수 선택권 5장과 보물 선택권 10장이 자동으로 들어와요. 쿠폰을 입력할 필요가 없어요(테스트 기간은 제외).',
+  '진형을 20개까지 만들 수 있어요. 진형이 많으면 진형 목록을 옆으로 밀어서 볼 수 있어요.',
+  '손권이 궁병에서 책사로 바뀌었어요. 전법 강동 수성의 회복량이 12%에서 20%로 올랐어요(책사는 네 번째 행동마다 전법이라 발동 횟수가 줄어든 만큼 보정).',
+  '장각의 전법이 태평도로 바뀌었어요: 적 전체 0.4배 피해, 각 20% 확률로 1턴 기절, 아군 전체 체력 10% 회복. 군웅에도 회복 장수가 생겼어요.',
+  '전위의 전법이 악래의 호위로 바뀌었어요: 맨 앞 적에게 1.5배 피해, 조조가 있으면 조조를(없으면 체력이 가장 낮은 아군을) 2턴 동안 호위해요. 호위받는 아군이 쓰러질 만큼 피해를 받으면 전위가 대신 맞아요.',
+  '마지막 장 오장원을 최상위권에 맞춰 어렵게 바꿨어요. 적 전투력이 제1전 약 18,000에서 제갈량·사마의가 맞서는 마지막 전투 약 30,000까지 올라가요.',
+  '자동 진군: 내 진형 전투력이 스테이지 적 전투력의 120% 이상이면 전투 없이 돌파해요. 출정 탭의 \'자동 진군\' 버튼을 누르면 돌파할 수 있는 곳까지 한 번에 깨요(스테이지마다 나팔 3개, 첫 승리 보상은 그대로).']},
  {v:'2.0.2',date:'2026-10-15',title:'시즌제 운영 안내 (11월 1일 시즌 1 시작)',reward:{ap:20},items:[
   '10월 31일 23:59까지는 테스트 기간이에요.',
   '11월 1일 새 빌드와 함께 시즌 1이 시작돼요. 시즌은 3개월 단위예요(시즌 1: 11월~1월, 시즌 2: 2월~4월 …).',
@@ -1758,7 +1776,7 @@ function openNotices(only){
 }
 let popupsRan=false;
 function runPopups(){
-  if(!S)return;updateDot();
+  if(!S)return;{const k0=S.sat&&S.sat.k;attSeason();if(S.sat&&S.sat.k!==k0){save();renderTop()}if(ATT_RW_MSG){const m=ATT_RW_MSG;ATT_RW_MSG='';toast(m);setTimeout(()=>toast(m),3500)}}updateDot();
   if(attDue()){openSheet(`<div class="sheet-h"><h2 style="margin:0">오늘의 출석</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${attHtml()}${attRateHtml()}`);bindAtt(()=>{closeSheet();setTimeout(runPopups,250)});return}
   const n=NOTICES[0];if(!S.notice.read.includes(n.v))openNotices(n.v);
 }
@@ -1857,6 +1875,7 @@ function renderView(){
   if(!S)return;
   const v=$('#view');
   v.innerHTML=({stage:vStage,gacha:vGacha,deck:vDeck,gens:vGens,pvp:vPvp,dex:vDex})[view]();
+  v.querySelectorAll('.deckbar').forEach(bar=>{const b=bar.querySelector('[aria-pressed="true"]');if(b)bar.scrollLeft=Math.max(0,b.offsetLeft-bar.clientWidth/2+b.offsetWidth/2)});
   if(view==='pvp'){fillNames();if(duelTab==='hist')fillHistory()}
 }
 
@@ -1866,6 +1885,7 @@ function vStage(){
   let h=`<h2>출정</h2><p class="sub">도전마다 나팔 ${AP_COST}개를 쓰고, 지면 돌려받아요. 3분마다 1개씩 채워져요(최대 ${AP_CAP}개). 스테이지를 깰수록 보상과 시간당 생산량이 늘고, 장을 평정하면 크게 뛰어요. 진척 ${S.stage}/${NSTAGE}</p>
   <div class="stats" style="grid-template-columns:1fr 1fr;margin-top:0"><div class="stat"><small>현재 시간당 생산</small><b>糧 ${foodRate()} · 金 ${goldRate()}</b></div><div class="stat"><small>다음 스테이지 평정 시</small><b>${S.stage>=NSTAGE?'최대치':`糧 ${nf} · 金 ${ng}`}</b></div></div>`;
   const cur=Math.min(CH.length-1,Math.floor(S.stage/5)), lockedN=CH.length-1-cur;
+  {const sk=S.stage<NSTAGE?skipCount():0;if(sk>0)h+=`<button type="button" class="btn wide red" id="auto-adv" style="margin:4px 0 8px" ${S.ap<AP_COST?'disabled':''}>자동 진군 · ${sk}개 스테이지 돌파 <b class="sl ap">角</b>${sk*AP_COST}</button><p class="sub" style="margin:0 0 10px;font-size:12px">내 진형 전투력이 적의 ${Math.round(SKIP_R*100)}% 이상인 스테이지는 전투 없이 돌파해요. 나팔이 모자라면 있는 만큼만 진행해요.</p>`}
   if(S.stage>0)h+=`<button type="button" class="btn wide" data-stage="${S.stage-1}" style="margin:4px 0 12px">최근 평정 · ${esc(stageName(S.stage-1))} 소탕·재도전</button>`;
   [cur,...CH.map((_,i)=>i).filter(i=>i<cur).reverse()].forEach(ci=>{const c=CH[ci];
     const lo=ci*5, locked=S.stage<lo;
@@ -1888,12 +1908,13 @@ function openStage(n){
   tickAP();
   const foe=stageSpecs(n), mine=mySpecs(), first=n>=S.stage, rw=stageReward(n,first);
   const fp=deckPower(foe), mp=deckPower(mine);
-  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${esc(stageName(n))}</h2><div class="sub" style="margin:0">적 레벨 ${stageLv(n)}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${esc(stageName(n))}</h2><div class="sub" style="margin:0">적 레벨 ${stageLv(n)}${STAGE_SC[n]?' · 정예군':''}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <h3>적 진형</h3><div class="reveal">${foe.map(s=>{const b=baseOf(s);return `<div class="rv" style="animation:none">${seal(b,'sm')}<div class="nm">${esc(b.name)}</div><div class="cls">${CLS[b.cls].g} ${CLS[b.cls].n}</div></div>`}).join('')}</div>
   ${deckQuickHtml('출전 진형',()=>openStage(n))}<div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat"><small>적 전투력</small><b>${fmt(fp)}</b></div><div class="stat"><small>내 전투력</small><b style="color:${mp>=fp?'var(--jade)':'var(--cinnabar)'}">${fmt(mp)}</b></div></div>
   <div class="row" style="margin-bottom:14px"><span class="sub" style="margin:0">${first?'첫 승리 보상':'반복 보상'}</span><span class="sp"></span><span class="coin"><b class="sl gold">金</b>${fmt(rw.gold)}</span><span class="coin"><b class="sl food">糧</b>${fmt(rw.food)}</span></div>
   ${n<S.stage?sweepHtml(n):''}
-  <button type="button" class="btn wide red" id="go" ${mine.some(Boolean)&&S.ap>=AP_COST?'':'disabled'}>출진 <b class="sl ap">角</b>${AP_COST}</button>
+  ${first&&mine.some(Boolean)&&mp>=SKIP_R*fp?`<p class="sub" style="margin:0 0 6px;color:var(--jade)">내 전투력이 적의 ${Math.round(SKIP_R*100)}% 이상이라 전투 없이 돌파해요.</p>`:''}
+  <button type="button" class="btn wide red" id="go" ${mine.some(Boolean)&&S.ap>=AP_COST?'':'disabled'}>${first&&mine.some(Boolean)&&mp>=SKIP_R*fp?'돌파 (전투 생략)':'출진'} <b class="sl ap">角</b>${AP_COST}</button>
   ${S.ap<AP_COST?`<p class="sub" style="margin-top:8px">나팔이 부족해요 (${S.ap}/${AP_COST}). 3분마다 1개씩 채워지고, 지면 돌려받아요.</p>`:''}
   ${mine.some(Boolean)?'':'<p class="sub" style="margin-top:8px">진형 탭에서 장수를 먼저 편성하세요.</p>'}`);
   if(n<S.stage)bindSweep(n);
@@ -1901,6 +1922,7 @@ function openStage(n){
     closeSheet();
     tickAP();if(S.ap<AP_COST){toast('나팔이 부족해요');return}
     S.ap-=AP_COST;
+    if(n>=S.stage&&mp>=SKIP_R*fp){const r=stageReward(n,true);S.gold+=r.gold;S.food+=r.food;S.stage=n+1;save();renderTop();renderView();toast(`${stageName(n)} 돌파 (전투 생략) · 金 +${fmt(r.gold)} · 糧 +${fmt(r.food)}`);return}
     const res=simulate(mine,foe,(Math.random()*2**31)|0);
     let rwText=null;
     if(res.win){const f=n>=S.stage;const r=stageReward(n,f);S.gold+=r.gold;S.food+=r.food;if(f)S.stage=n+1;rwText=r}else S.ap+=AP_COST;
@@ -1909,6 +1931,19 @@ function openStage(n){
   };
 }
 
+function autoAdvance(){
+  tickAP();const mine=mySpecs();if(!mine.some(Boolean)){toast('진형을 먼저 편성하세요');return}
+  const mp=deckPower(mine), from=S.stage;let g=0,f=0;
+  while(S.stage<NSTAGE&&S.ap>=AP_COST&&mp>=SKIP_R*stagePow(S.stage)){S.ap-=AP_COST;const r=stageReward(S.stage,true);S.gold+=r.gold;S.food+=r.food;g+=r.gold;f+=r.food;S.stage++}
+  const c=S.stage-from;if(!c){toast(S.ap<AP_COST?'나팔이 부족해요':'전투 없이 돌파할 수 있는 스테이지가 없어요');return}
+  save();renderTop();renderView();
+  const stop=S.stage>=NSTAGE?'모든 스테이지를 평정했어요!':S.ap<AP_COST&&mp>=SKIP_R*stagePow(S.stage)?'나팔이 모자라 여기서 멈췄어요.':`다음 ${esc(stageName(S.stage))}은(는) 적 전투력 ${fmt(stagePow(S.stage))}이라 직접 싸워야 해요.`;
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">자동 진군</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p style="margin:0 0 8px"><b>${c}개 스테이지</b>를 돌파했어요 (${esc(stageName(from))} → ${esc(stageName(S.stage-1))})</p>
+   <div class="row" style="gap:6px;margin-bottom:10px"><span class="coin"><b class="sl gold">金</b>+${fmt(g)}</span><span class="coin"><b class="sl food">糧</b>+${fmt(f)}</span><span class="sub" style="margin:0">나팔 ${c*AP_COST}개 사용</span></div>
+   <p class="sub" style="margin:0">${stop}</p>`);
+}
+document.addEventListener('click',e=>{if(e.target.closest('#auto-adv'))autoAdvance()});
 /* ---------------- 소탕 ---------------- */
 let swN=1;
 const swMax=()=>Math.floor(S.ap/AP_COST);
@@ -2201,7 +2236,11 @@ function seasonOf(day){
   return {k:'S'+(idx+1),n:'시즌 '+(idx+1),start:f(new Date(Date.UTC(2026+Math.floor(sm/12),sm%12,1))),end:f(new Date(Date.UTC(2026+Math.floor(sm/12),sm%12+3,0)))};
 }
 function cleanSat(x){if(!x||typeof x!=='object'||typeof x.k!=='string'||typeof x.from!=='string')return null;return {k:x.k.slice(0,4),n:Math.max(0,Math.min(400,x.n|0)),from:x.from.slice(0,10)}}
+const ATT_RW={rate:.7,gtk:5,isk:10};let ATT_RW_MSG='';
 function attSeason(){const d=kstDay(),se=seasonOf(d);
+  if(S.sat&&S.sat.k!==se.k&&S.sat.k!=='T'){const ps=seasonOf(S.sat.from),tot=Math.max(1,dayNum(ps.end)-dayNum(S.sat.from)+1),pr=S.sat.n/tot;
+    if(pr>=ATT_RW.rate){S.gtk=(S.gtk||0)+ATT_RW.gtk;S.isk=(S.isk||0)+ATT_RW.isk;ATT_RW_MSG=`${ps.n} 출석률 ${Math.round(pr*100)}% 달성 보상 · 장수 선택권 ${ATT_RW.gtk}장 · 보물 선택권 ${ATT_RW.isk}장`}
+    S.satLast={k:S.sat.k,n:S.sat.n,pct:Math.round(pr*100),rw:pr>=ATT_RW.rate?1:0}}
   if(!S.sat||S.sat.k!==se.k){const from=S.sat?se.start:d;S.sat={k:se.k,n:0,from:from>d?d:from};if(S.att&&S.att.day===d)S.sat.n=1}
   return S.sat}
 function attStats(a,today){const se=seasonOf(today||kstDay());today=today||kstDay();if(!a||a.k!==se.k)return null;
@@ -2211,7 +2250,8 @@ function attRateHtml(){
   const a=attSeason(), st=attStats(a);if(!st)return '';
   return `<div class="stat" style="text-align:left;margin:0 0 10px"><div class="row"><small style="font-size:12px">${st.se.n} 출석률</small><span class="sp"></span><b class="num" style="color:${st.pct>=70?'var(--jade)':'var(--fg)'}">${st.pct}%</b></div>
    <div class="bar"><i style="width:${st.pct}%;background:${st.pct>=70?'var(--jade)':'var(--bronze)'}"></i></div>
-   <div class="sub" style="margin:4px 0 0;font-size:12px">${st.n}일 / ${st.el}일 출석 · 기간 ${md(a.from)}~${md(st.se.end)} (${st.tot}일) · ${st.need?`기간 70%까지 ${st.need}일 더`:'기간 70% 달성!'}${st.se.k!=='T'?' · 70% 이상이면 시즌 종료 후 장수 선택권 5장 · 보물 선택권 10장':''}</div></div>`;
+   ${S.satLast?`<div class="sub" style="margin:2px 0 0;font-size:12px">지난 ${S.satLast.k==='T'?'테스트 기간':'시즌 '+S.satLast.k.slice(1)} 출석률 ${S.satLast.pct}%${S.satLast.rw?' · 선택권 받음':''}</div>`:''}
+   <div class="sub" style="margin:4px 0 0;font-size:12px">${st.n}일 / ${st.el}일 출석 · 기간 ${md(a.from)}~${md(st.se.end)} (${st.tot}일) · ${st.need?`기간 70%까지 ${st.need}일 더`:'기간 70% 달성!'}${st.se.k!=='T'?' · 70% 이상이면 다음 시즌 첫 접속 때 장수 선택권 5장 · 보물 선택권 10장 자동 지급':''}</div></div>`;
 }
 const attPub=()=>{const a=S&&S.sat;return a?{k:a.k,n:a.n,f:a.from}:null};
 const awayDays=p=>p&&p.at?Math.floor((Date.now()-p.at)/864e5):-1;
