@@ -384,7 +384,7 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v2.0.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v2.0.4</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -508,7 +508,7 @@ const SK={
  simayi:{n:'고평릉의 변',d:'적 전체 0.55배 피해, 적 전체 방어 2턴 -30%',tg:'all',m:.55,deb:{to:'all',def:-.3,dur:2}},
  zhouyu:{n:'적벽화공',d:'적 전체 0.6배 피해, 3턴 동안 화상(매 턴 공격의 10%, 방어 무시)',tg:'all',m:.6,burn:{p:.1,dur:3}},
  sunce:{n:'소패왕',d:'맨 앞 적에게 3.6배 피해, 방어 30% 무시',tg:'front',m:3.6,ign:.3},
- liubei:{n:'인덕',d:'아군 전체 체력 15% 회복, 아군 전체 공격 2턴 +10%',tg:'none',heal:{to:'all',p:.15},buff:{to:'all',atk:.1,dur:2}},
+ liubei:{n:'인덕',d:'아군 전체 체력 8% 회복, 아군 전체 공격 2턴 +10%',tg:'none',heal:{to:'all',p:.08},buff:{to:'all',atk:.1,dur:2}},
  machao:{n:'위수 추격',d:'체력이 가장 낮은 적에게 3.0배 피해, 대상 체력이 30% 이하면 4.5배',tg:'low',m:3,exe:{thr:.3,m:4.5}},
  huangzhong:{n:'정군산의 일격',d:'공격력이 가장 높은 적에게 2.5배 치명타 확정',tg:'high',m:2.5,crit:1},
  pangtong:{n:'연환계',d:'적 전체 0.45배 피해, 3턴 동안 화상(매 턴 공격의 8%, 방어 무시)',tg:'all',m:.45,burn:{p:.08,dur:3}},
@@ -1509,10 +1509,14 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='2.0.3';
+const GAME_VERSION='2.0.4';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'2.0.4',date:'2026-10-15',title:'유비 \'인덕\' 회복량 조정',items:[
+  '유비의 전법 \'인덕\' 회복량을 아군 전체 15%에서 8%로 낮췄어요. 공격 +10% 효과는 그대로예요.',
+  '보병은 3번 행동마다 전법을 써서 책사(4번마다)보다 자주 회복하고, 앞줄에서 오래 버텨 한 판에 평균 7번쯤 썼어요. 그래서 같은 ★4 회복 장수인 손권보다 한 판 회복량이 약 2배였고, 수성전에서는 성 체력의 80%가량을 되돌려 놓았어요.',
+  '조정 후에도 유비는 아군 전체를 가장 자주 회복하는 장수예요. 받은 피해 대비 회복이 71%에서 55%로, 수성전 평균 버틴 턴이 139턴에서 119턴으로 바뀌어요(모의전 기준).']},
  {v:'2.0.3',date:'2026-10-15',title:'출석 보상 자동 지급 · 진형 20개 · 회복·호위 · 오장원 · 자동 진군',reward:{ap:20},items:[
   '시즌 출석률 70% 이상이면, 다음 시즌 첫 접속 때 장수 선택권 5장과 보물 선택권 10장이 자동으로 들어와요. 쿠폰을 입력할 필요가 없어요(테스트 기간은 제외).',
   '진형을 20개까지 만들 수 있어요. 진형이 많으면 진형 목록을 옆으로 밀어서 볼 수 있어요.',
