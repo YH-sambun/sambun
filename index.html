@@ -302,6 +302,17 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .sbar .st{height:12px;background:var(--panel2);border-radius:3px;overflow:hidden}
 .sbar .st i{display:block;height:100%;background:var(--bronze);border-radius:3px}
 .sbar b{text-align:right;font-variant-numeric:tabular-nums}
+button.sbar{width:100%;background:none;border:0;padding:2px 0;color:inherit;font:inherit;font-size:12px;text-align:left;cursor:pointer;border-radius:6px}
+button.sbar:hover,button.sbar:focus-visible{background:var(--panel2)}
+button.sbar .sn{text-decoration:underline dotted;text-underline-offset:3px}
+.rs-pop{position:fixed;inset:0;z-index:40;background:rgba(4,8,8,.65);display:flex;align-items:center;justify-content:center;padding:16px}
+.rs-pop-b{width:100%;max-width:440px;max-height:100%;overflow-y:auto}
+.rs-pop .stats small{font-size:10px}
+.slot .pos .slv{display:block;margin:4px auto 0;width:46px;padding:2px 0;font:600 11px var(--body);background:var(--panel2);border:1px solid var(--bronze-d);color:var(--bronze);border-radius:6px;cursor:pointer}
+.slot .pos{width:48px}
+.mv button.clr{color:var(--cinnabar)}
+.savest{display:block;margin:1px 0 0;text-align:left;cursor:pointer;font-size:inherit;color:var(--mute);white-space:nowrap;background:none;border:0;padding:0;font-family:var(--body)}
+.savest[data-st=err],.savest[data-st=conflict]{color:var(--cinnabar);text-decoration:underline}
 .res-sec .chips{margin-bottom:4px}
 .mvp{width:100%;background:var(--panel);border:1px solid var(--bronze-d);border-radius:14px;padding:12px;text-align:left}
 .mvp-h{display:flex;align-items:center;gap:12px;position:relative}
@@ -332,7 +343,7 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.18.0</span></span></div><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko">창천토벌 · 蒼天討伐 · <span id="ver">v1.19.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1015,7 +1026,7 @@ function simulate(As,Bs,seed,opt){
         if(!t||t.hp<=0)return;const crit=(o&&o.crit)||rng()<u.cr;
         const raw=atkV*mult*adv(u.cls,t.cls)*(.9+rng()*.2)*(crit?u.cd:1)*(o?1+u.skp:1);
         let ed=t.def*eff(t,'def')*(1-((o&&o.ign)||0));if(u.cls==='tac')ed*=.6;
-        const dd=Math.max(1,Math.round(raw*120/(120+ed)*(1-t.dr)));dmgTo(t,dd,e,{c:crit});
+        const dd=Math.max(1,Math.round(raw*120/(120+ed)*(1-t.dr)));dmgTo(t,dd,e,{c:crit,m:Math.max(0,Math.round(raw)-dd)});
         if(u.ls>0&&u.hp>0){const h=Math.min(u.maxhp-u.hp,Math.round(dd*u.ls));if(h>0){u.hp+=h;e.heals.push({s:u.side,i:u.slot,h,hp:u.hp})}}
       };
       if(!sk){
@@ -1082,13 +1093,13 @@ const REP_MUL=.3;
 function stageReward(n,first){const m=1+.08*Math.floor(n/5);return first?{gold:Math.round((150+20*n)*m),food:Math.round((200+12*n)*m)}:{gold:Math.round((60+10*n)*m*REP_MUL),food:Math.round((20+2*n)*m*REP_MUL)}}
 
 /* ---------------- state ---------------- */
-let S=null, view='stage', genTab='gens';
+let S=null, view='stage', genTab='gens', MIG_LV=null;
 let DB=null, USER=null, UID=null, MODE='boot';
 let PLAYERS=[], BATTLES=[];
 function newState(){
   return {v:1,gold:500,food:1000,last:Date.now(),stage:0,seq:1,
     gens:{liaohua:{lv:1,d:0,its:[]},lejin:{lv:1,d:0,its:[]},lidian:{lv:1,d:0,its:[]}},
-    items:[],itk:0,cpn:[],rl:{day:'',n:0},lab:labDefault(),colMax:{},raid:{day:'',n:0,claimed:[]},deck:['liaohua','lejin','lidian',null,null],pvp:{day:'',used:0},duel:{done:[],pruned:''},ap:AP_CAP,apT:Date.now(),att:{day:'',streak:0,total:0},notice:{read:[],claimed:[]},created:Date.now()};
+    slv:[1,1,1,1,1],items:[],itk:0,cpn:[],rl:{day:'',n:0},lab:labDefault(),colMax:{},raid:{day:'',n:0,claimed:[]},deck:['liaohua','lejin','lidian',null,null],pvp:{day:'',used:0},duel:{done:[],pruned:''},ap:AP_CAP,apT:Date.now(),att:{day:'',streak:0,total:0},notice:{read:[],claimed:[]},created:Date.now()};
 }
 function sanitize(s){
   const n=newState();
@@ -1121,10 +1132,25 @@ function sanitize(s){
   const ids=new Set(o.items.map(x=>x.u));
   const used=new Set(),kOf=u=>{const x=o.items.find(y=>y.u===u);return x?IMAP[x.k]:null};
   for(const g of Object.values(o.gens)){let horse=false;g.its=g.its.filter(u=>{if(!ids.has(u)||used.has(u))return false;const it=kOf(u);if(it.g==='馬'){if(horse)return false;horse=true}used.add(u);return true})}
+  // v1.19: 장수별 레벨 → 자리별 레벨. 진형 장수의 레벨을 그 자리 레벨로, 빈 자리는 다음으로 높은 레벨로 정하고 나머지 레벨에 쓴 금은 돌려줘요
+  if(Array.isArray(s.slv)&&s.slv.length===5)o.slv=s.slv.map(v=>Math.min(MAXLV,Math.max(1,v|0)));
+  else{
+    const dk=Array.isArray(s.deck)?s.deck:[], used=new Set(), L=g=>o.gens[g]?o.gens[g].lv:1;
+    o.slv=[0,1,2,3,4].map(i=>{const g=dk[i];if(g&&o.gens[g]&&!used.has(g)){used.add(g);return L(g)}return 0});
+    const rest=Object.keys(o.gens).filter(g=>!used.has(g)).map(L).sort((a,b)=>b-a);
+    o.slv=o.slv.map(v=>v||rest.shift()||1);
+    const spent=Object.values(o.gens).reduce((a,g)=>a+lvCost(1,g.lv),0), keep=o.slv.reduce((a,v)=>a+lvCost(1,v),0), ref=Math.max(0,spent-keep);
+    if(ref)o.gold=(Number(o.gold)||0)+ref;
+    if(s.gens&&Object.keys(s.gens).length)MIG_LV={ref,slv:o.slv.slice()};
+  }
+  for(const g of Object.values(o.gens))g.lv=1;
   return o;
 }
-function specOf(gid){const g=S.gens[gid];if(!g)return null;return {g:gid,lv:g.lv,d:g.d,i:g.its.map(u=>S.items.find(x=>x.u===u)).filter(Boolean).map(x=>x.k+':'+(x.d||0)),cb:colBonus()}}
-function mySpecs(){return S.deck.map(g=>g?specOf(g):null)}
+// 레벨은 진형의 자리(1~5번)에 붙어요. 진형 밖 장수는 가장 높은 자리 레벨 기준으로 보여 줘요
+const slotLv=i=>(S.slv&&S.slv[i])||1;
+function defLv(gid){const at=S.deck.indexOf(gid);return at>=0?slotLv(at):Math.max(...S.slv)}
+function specOf(gid,lv){const g=S.gens[gid];if(!g)return null;return {g:gid,lv:lv||defLv(gid),d:g.d,i:g.its.map(u=>S.items.find(x=>x.u===u)).filter(Boolean).map(x=>x.k+':'+(x.d||0)),cb:colBonus()}}
+function mySpecs(){return S.deck.map((g,i)=>g?specOf(g,slotLv(i)):null)}
 function chaptersDone(){return Math.floor(S.stage/5)}
 function foodRateAt(st){return 60+4*st+25*Math.floor(st/5)}
 function goldRateAt(st){return 30+3*st+15*Math.floor(st/5)}
@@ -1159,25 +1185,78 @@ function lsLoad(){try{return JSON.parse(localStorage.getItem(LSK)||'null')}catch
 function lsSave(){try{localStorage.setItem(LSK,JSON.stringify(S))}catch(e){}}
 function save(){dirty=true;clearTimeout(saveT);saveT=setTimeout(flush,600)}
 function publicDoc(){const specs=mySpecs().filter(Boolean);return {name:MYNAME,deck:specs,power:deckPower(specs),stage:S.stage}}
+/* 기기 간 동기화: 저장할 때마다 번호(rev)를 1씩 올려요. 서버 번호가 내가 아는 번호보다 크면
+   다른 기기(탭)가 먼저 저장한 것이므로 덮어쓰지 않고 어느 기록을 쓸지 물어봐요. */
+let baseRev=0, conflictData=null, saveSt='', saveAt=0, lastCheck=0;
+function setSaveSt(st){saveSt=st;if(st==='ok')saveAt=Date.now();paintSaveSt()}
+function paintSaveSt(){const n=$('#save-st');if(!n)return;
+  n.textContent=MODE!=='shared'?'':saveSt==='saving'?'저장 중…':saveSt==='err'?'저장 재시도 중':saveSt==='conflict'?'⚠ 다른 기기 기록 확인 (누르기)':saveAt?'저장됨 '+new Date(saveAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false}):'';
+  n.dataset.st=saveSt}
 async function flush(){
-  if(saving||!S)return; saving=true;
+  clearTimeout(saveT);saveT=null;
+  if(saving||!S)return;
+  if(conflictData){openConflict();return}
+  saving=true;
   try{
     while(dirty){
       dirty=false;
-      const snap=JSON.parse(JSON.stringify(S));
       if(MODE==='shared'){
-        await writeRetry(()=>FS.collection('saves').doc(UID).set(snap));
+        setSaveSt('saving');
+        const snap=JSON.parse(JSON.stringify(S)), ref=FS.collection('saves').doc(UID);let nr=0;
+        await writeRetry(()=>FS.runTransaction(async tx=>{
+          const d=await tx.get(ref), sr=d.exists?(Number(d.data().rev)||0):0;
+          if(sr>baseRev){const er=new Error('conflict');er.code='save-conflict';er.data=d.data();throw er}
+          nr=sr+1;snap.rev=nr;snap.sv=Date.now();tx.set(ref,snap)}));
+        baseRev=nr;S.rev=nr;setSaveSt('ok');
         const pub=publicDoc(), key=JSON.stringify(pub);
         if(key!==lastPub){await writeRetry(()=>FS.collection('players').doc(UID).set({...pub,at:Date.now()}));lastPub=key}
       } else lsSave();
     }
   }catch(e){
+    if(e&&e.code==='save-conflict'){dirty=true;conflictData=e.data;saving=false;setSaveSt('conflict');openConflict();return}
     if(e&&e.code==='permission-denied'){toast('저장 권한이 없어요. 로그아웃 후 다시 로그인해 주세요.')}
-    else{dirty=true;setTimeout(flush,4000)}
+    else{dirty=true;setSaveSt('err');setTimeout(flush,4000)}
   }
   saving=false;
 }
+function adoptServer(d,quiet){
+  clearTimeout(saveT);saveT=null;dirty=false;conflictData=null;
+  S=sanitize(d);baseRev=Number(d.rev)||0;S.rev=baseRev;lastPub='';
+  if(MIG_LV){dirty=true;save()}
+  closeSheet();setSaveSt('ok');render();migToast();
+  if(!quiet)toast('다른 기기에서 저장한 최신 기록을 불러왔어요');
+}
+// 다른 기기(탭)에서 더 최신 기록이 저장됐을 때: 이 기기에 저장 안 된 변경이 없으면 조용히 불러오고, 있으면 물어봐요
+function remoteNewer(d){
+  if(saving||!d)return;
+  if((Number(d.rev)||0)<=baseRev)return;
+  if(dirty||saveT){conflictData=d;setSaveSt('conflict');openConflict()}
+  else adoptServer(d);
+}
+function openConflict(){
+  const d=conflictData;if(!d)return;const o=sanitize(d);MIG_LV=null;
+  const when=d.sv?new Date(Number(d.sv)).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+  const row=(k,a,b)=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line)"><span class="sub" style="margin:0;width:80px">${k}</span><b class="num" style="flex:1;text-align:center">${a}</b><b class="num" style="flex:1;text-align:center">${b}</b></div>`;
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">다른 기기의 최신 기록</h2></div>
+   <p class="sub" style="margin:0 0 10px">다른 기기나 다른 탭에서 더 최근에 저장한 기록이 있어요${when?` (${when} 저장)`:''}. 둘 중 하나를 골라 주세요. 고르기 전까지 이 기기는 저장하지 않아요.</p>
+   <div style="margin-bottom:12px">${row('','다른 기기','이 기기')}${row('스테이지',o.stage,S.stage)}${row('장수',Object.keys(o.gens).length,Object.keys(S.gens).length)}${row('보물',o.items.length,S.items.length)}${row('금',fmt(o.gold),fmt(S.gold))}${row('군량',fmt(o.food),fmt(S.food))}</div>
+   <button type="button" class="btn wide" id="cf-load">다른 기기 기록 불러오기 (추천)</button>
+   <button type="button" class="btn ghost wide" id="cf-keep" style="margin-top:8px">이 기기 기록으로 덮어쓰기</button>
+   <p class="sub" style="margin:8px 0 0;font-size:11px">덮어쓰면 다른 기기에서 한 진행은 사라져요.</p>`);
+  $('#cf-load').onclick=()=>adoptServer(conflictData);
+  $('#cf-keep').onclick=()=>{baseRev=Number(conflictData.rev)||0;conflictData=null;dirty=true;closeSheet();flush()};
+}
+async function checkRemote(){
+  if(MODE!=='shared'||!UID||!FS||saving||Date.now()-lastCheck<3000)return;lastCheck=Date.now();
+  try{const d=await FS.collection('saves').doc(UID).get({source:'server'});if(d.exists)remoteNewer(d.data())}catch(e){}
+}
+// 화면을 닫거나 다른 앱으로 넘어갈 때 기다리지 않고 바로 저장, 돌아오면 최신 기록 확인
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){if(dirty||saveT)flush()}else checkRemote()});
+window.addEventListener('pagehide',()=>{if(dirty||saveT)flush()});
+window.addEventListener('pageshow',e=>{if(e.persisted)checkRemote()});
+document.addEventListener('click',e=>{if(e.target.closest('#save-st')){if(conflictData)openConflict();else checkRemote()}});
 async function writeRetry(fn){try{return await fn()}catch(e){if(e&&e.code==='unavailable'){await new Promise(r=>setTimeout(r,500+Math.random()*700));return fn()}throw e}}
+function migToast(){if(!MIG_LV)return;const m=MIG_LV;MIG_LV=null;setTimeout(()=>toast(`레벨이 자리별로 바뀌었어요 · 자리 Lv ${m.slv.join('/')}${m.ref?` · 金 +${fmt(m.ref)} 돌려받음`:''}`),1200)}
 function setBanner(t){const b=$('#mode-banner');b.textContent=t;b.hidden=!t}
 const configured=()=>!!(FIREBASE_CONFIG.apiKey&&FIREBASE_CONFIG.projectId);
 const isKakao=()=>/KAKAOTALK/i.test(navigator.userAgent);
@@ -1197,7 +1276,7 @@ async function boot(){
   if(!configured()||!window.firebase){
     MODE='local';S=sanitize(lsLoad());
     setBanner(configured()?'서버에 연결하지 못해 이 기기에만 저장 중이에요.':'서버 설정 전이라 이 기기에만 저장돼요. (관리자: index.html의 FIREBASE_CONFIG를 채워 주세요)');
-    showGame(true);render();setInterval(renderTop,1000);setTimeout(runPopups,500);return;
+    showGame(true);render();setInterval(renderTop,1000);setTimeout(runPopups,500);migToast();return;
   }
   firebase.initializeApp(FIREBASE_CONFIG);
   AUTH=firebase.auth();FS=firebase.firestore();
@@ -1209,7 +1288,7 @@ async function boot(){
     $('#view').innerHTML='<div class="loading">군영을 세우는 중…</div>';
     try{
       const snap=await FS.collection('saves').doc(UID).get();
-      S=sanitize(snap.exists?snap.data():null);
+      S=sanitize(snap.exists?snap.data():null);baseRev=snap.exists?(Number(snap.data().rev)||0):0;S.rev=baseRev;conflictData=null;
       const p=await FS.collection('players').doc(UID).get();
       const pd=p.exists?p.data():null;
       MYNAME=cleanName(pd&&pd.name)||cleanName(u.displayName)||('군주'+Math.floor(1000+Math.random()*9000));
@@ -1218,6 +1297,7 @@ async function boot(){
       dirty=true;flush();
       subscribe();showGame(true);render();
       if(!pd)setTimeout(()=>openSettings(true),400);else setTimeout(runPopups,500);
+      migToast();
     }catch(e){toast('기록을 불러오지 못했어요 ('+(e.code||'오류')+')');showLogin()}
   });
   setInterval(renderTop,1000);
@@ -1236,6 +1316,8 @@ function subscribe(){
     PLAYERS=snap.docs.map(d=>({id:d.id,...cleanPlayer(d.data())})).filter(p=>p.deck.length);refreshPvp();
   },()=>{}));
   subBattles();
+  // 내 저장 기록을 지켜보다가 다른 기기가 더 최신 기록을 저장하면 반영
+  UNSUB.push(FS.collection('saves').doc(UID).onSnapshot(d=>{if(d.exists&&!d.metadata.hasPendingWrites)remoteNewer(d.data())},()=>{}));
   setTimeout(checkSettlement,1500);
 }
 function unsubscribeAll(){UNSUB.forEach(f=>{try{f()}catch(e){}});UNSUB=[];if(unsubBat){try{unsubBat()}catch(e){}unsubBat=null}}
@@ -1312,10 +1394,16 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.18.0';
+const GAME_VERSION='1.19.0';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'1.19.0',date:'2026-10-14',title:'자리별 레벨 · 장수별 전투 기록 · 기기 동기화',reward:{ap:20},items:[
+  '레벨이 장수가 아니라 진형의 자리(1~5번)에 붙어요. 어떤 장수를 넣어도 그 자리의 레벨로 싸워요. 진형 탭의 각 자리에 있는 Lv 버튼으로 올리거나 초기화할 수 있어요.',
+  '바뀌면서 지금 진형 장수의 레벨은 그 자리의 레벨이 되고(빈 자리는 다음으로 높은 장수 레벨), 나머지 장수에 쓴 금은 모두 돌려받았어요.',
+  '진형의 각 자리에 ✕ 버튼이 생겨 바로 빈칸으로 만들 수 있어요.',
+  '전투 결과의 막대그래프에서 장수 이름을 누르면 그 장수의 전투 기록(일반 공격 피해 · 전법 피해 · 경감한 피해 등)을 볼 수 있어요.',
+  '다른 기기(또는 다른 탭)에서 더 최근에 저장한 기록이 있으면 덮어쓰지 않고 어느 기록을 쓸지 물어봐요. 앱으로 돌아오면 최신 기록을 확인하고, 화면을 닫을 때 바로 저장해요. 오른쪽 위에 마지막 저장 시각이 보여요.']},
  {v:'1.18.0',date:'2026-10-14',title:'인연 효과가 진형 전원에게',reward:{ap:20},items:[
   '인연이 발동하면 이제 인연에 속한 장수뿐 아니라 진형의 모든 장수가 효과를 받아요.',
   '모두가 받게 된 만큼 인연 수치는 이전의 40%로 조정했어요. 진형 전체가 받는 효과의 총합은 이전과 비슷해요(예: 도원결의 공격·체력 +15% → +6%, 진형 5명 모두).',
@@ -1552,7 +1640,7 @@ const HELP=[
   ['전투력','공격×1.5 + 체력÷6 + 방어×1.2 + 속도. 강함을 한눈에 비교하는 참고 수치이고, 진형 전투력에는 진영·인연 보너스가 포함돼요.']]},
  {t:'성장',rows:[
   ['등급','★3은 기본, ★4는 능력치 ×1.08, ★5는 ×1.16이에요.'],
-  ['레벨','1레벨 오를 때마다 능력치 +7%, 속도 +0.3. 최대 Lv '+MAXLV+'.'],
+  ['레벨','1레벨 오를 때마다 능력치 +7%, 속도 +0.3. 최대 Lv '+MAXLV+'. 레벨은 장수가 아니라 진형의 자리(1~5번)마다 정해요. 진형 탭에서 자리의 Lv 버튼을 눌러 올리거나 초기화(금 전액 환불)할 수 있어요.'],
   ['돌파','같은 장수를 또 얻으면 한 단계 올라요. 단계마다 능력치 +6%, 최대 5단계(◆◆◆◆◆). 5단계 이후 중복은 금으로 바뀌어요(★4 300 · ★5 1,000).'],
   ['한계돌파','★3 장수는 5단계 뒤에도 중복으로 6~10단계(✦)까지 더 오르고, 단계마다 똑같이 +6%예요. 10단계 이후 중복은 금 200으로 바뀌어요.'],
   ['보물','장수마다 3개까지 장착해요. 공격·체력·방어는 퍼센트로, 속도는 수치로 더해져요. 아래 보물 항목에 자세히 있어요.']]},
@@ -1848,14 +1936,16 @@ document.addEventListener('click',e=>{
 /* ---------------- 진형 ---------------- */
 function vDeck(){
   const specs=mySpecs();
-  let h=`<div class="row"><div><h2>진형</h2><p class="sub" style="margin:0">이 진형으로 출정하고, 대전에서는 방어 진형으로도 쓰여요. ★5 장수는 ${MAX5}명까지(지금 ${count5(S.deck)}명).</p></div></div>
+  let h=`<div class="row"><div><h2>진형</h2><p class="sub" style="margin:0">이 진형으로 출정하고, 대전에서는 방어 진형으로도 쓰여요. ★5 장수는 ${MAX5}명까지(지금 ${count5(S.deck)}명). 레벨은 자리마다 정해요(Lv 버튼).</p></div></div>
   <div class="row" style="margin:12px 0"><div><div class="sub" style="margin:0">총 전투력</div><div class="power num">${fmt(deckPower(specs))}</div></div><span class="sp"></span><button type="button" class="btn ghost sm" id="auto">자동 편성</button></div>${teamBoxHtml(specs)}`;
   S.deck.forEach((gid,i)=>{
     const pos=`<div class="pos">${i+1}<small>${POS[i]}</small></div>`;
-    if(!gid){h+=`<div class="slot empty" role="button" tabindex="0" data-slot="${i}">${pos}<div class="info"><b>빈 자리</b><span>눌러서 장수 편성</span></div></div>`;return}
+    const lvb=`<button type="button" class="slv" data-slv="${i}" aria-label="${i+1}번 자리 레벨">Lv ${slotLv(i)}</button>`;
+    const pos2=`<div class="pos">${i+1}<small>${POS[i]}</small>${lvb}</div>`;
+    if(!gid){h+=`<div class="slot empty" role="button" tabindex="0" data-slot="${i}">${pos2}<div class="info"><b>빈 자리</b><span>눌러서 장수 편성</span></div></div>`;return}
     const g=GMAP[gid], s=specs[i], its=itemsOf(s.i), it=its.length?{name:its.map(x=>x.it.name+(x.d?'+'+x.d:'')).join(', ')}:null;
-    h+=`<div class="slot" role="button" tabindex="0" data-slot="${i}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${CLS[g.cls].g} ${CLS[g.cls].n} · Lv ${s.lv} · ${dupHtml(s.d,0,maxD(g.rar))}${it?` · ${esc(it.name)}`:''} · 전투력 ${fmt(specPower(s))}</span></div>
-    <div class="mv"><button type="button" data-mv="${i}:-1" aria-label="앞으로" ${i===0?'disabled':''}>▲</button><button type="button" data-mv="${i}:1" aria-label="뒤로" ${i===4?'disabled':''}>▼</button></div></div>`;
+    h+=`<div class="slot" role="button" tabindex="0" data-slot="${i}">${pos2}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${CLS[g.cls].g} ${CLS[g.cls].n} · ${dupHtml(s.d,0,maxD(g.rar))}${it?` · ${esc(it.name)}`:''} · 전투력 ${fmt(specPower(s))}</span></div>
+    <div class="mv"><button type="button" data-mv="${i}:-1" aria-label="앞으로" ${i===0?'disabled':''}>▲</button><button type="button" data-mv="${i}:1" aria-label="뒤로" ${i===4?'disabled':''}>▼</button><button type="button" class="clr" data-clr="${i}" aria-label="${esc(g.name)} 빼기">✕</button></div></div>`;
   });
   h+=`<div class="legend"><b>전투 규칙</b><br>보병·기병은 앞 번호의 적부터 공격하고, 궁병은 체력이 가장 낮은 적을, 책사는 무작위 적을 노립니다. 전법은 기병 2번째, 보병·궁병 3번째, 책사 4번째 행동마다 발동해요. 도발 중인 적이 있으면 단일 공격은 그 적에게 향해요.<br><b>상성</b> 기병 → 보병 → 궁병 → 기병 (유리하면 피해 +25%, 궁병은 기병에게 +50%). 궁병은 기병을 먼저 노려요.<br><b>진영·인연</b> 같은 진영 3명 이상, 또는 인연 있는 장수를 함께 넣으면 능력치가 올라요(인연은 진형 전원에게 적용). 다른 나라 장수끼리의 타국 인연은 효과가 2배이고, 3개국 이상 섞으면 연합군 보너스를 받아요. 도감의 인연 탭에서 전체 목록을 볼 수 있어요.<br><button type="button" class="btn ghost sm" data-help="3" style="margin-top:8px">전투 규칙 자세히 보기</button></div>`;
   return h;
@@ -1863,24 +1953,26 @@ function vDeck(){
 document.addEventListener('click',e=>{
   const mv=e.target.closest('[data-mv]');
   if(mv){e.stopPropagation();const[i,d]=mv.dataset.mv.split(':').map(Number);const j=i+d;if(j<0||j>4)return;[S.deck[i],S.deck[j]]=[S.deck[j],S.deck[i]];save();renderView();return}
+  const sv=e.target.closest('[data-slv]');if(sv){e.stopPropagation();openSlotLv(+sv.dataset.slv);return}
+  const cl=e.target.closest('[data-clr]');if(cl){e.stopPropagation();const k=+cl.dataset.clr,g=S.deck[k];S.deck[k]=null;save();renderView();if(g)toast(`${GMAP[g].name}을(를) 진형에서 뺐어요`);return}
   const sl=e.target.closest('[data-slot]');if(sl){openSlotPicker(+sl.dataset.slot);return}
   if(e.target.closest('#auto')){autoDeck();return}
 });
-document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-slot]')){e.preventDefault();openSlotPicker(+e.target.dataset.slot)}});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('.slot[data-slot]')){e.preventDefault();openSlotPicker(+e.target.dataset.slot)}});
 function autoDeck(){
   const order={inf:0,cav:1,arc:2,tac:3};
-  let n5=0;const top=Object.keys(S.gens).map(g=>({g,p:specPower(specOf(g))})).sort((a,b)=>b.p-a.p).filter(x=>!(GMAP[x.g].rar===5&&++n5>MAX5)).slice(0,5).map(x=>x.g);
+  let n5=0;const top=Object.keys(S.gens).map(g=>({g,p:specPower(specOf(g,Math.max(...S.slv)))})).sort((a,b)=>b.p-a.p).filter(x=>!(GMAP[x.g].rar===5&&++n5>MAX5)).slice(0,5).map(x=>x.g);
   top.sort((a,b)=>order[GMAP[a].cls]-order[GMAP[b].cls]);
   S.deck=Array.from({length:5},(_,i)=>top[i]||null);save();renderView();toast('전투력이 높은 순으로 편성했어요');
 }
-function sortedOwned(){return Object.keys(S.gens).sort((a,b)=>GMAP[b].rar-GMAP[a].rar||S.gens[b].lv-S.gens[a].lv||specPower(specOf(b))-specPower(specOf(a)))}
+function sortedOwned(lv){return Object.keys(S.gens).sort((a,b)=>GMAP[b].rar-GMAP[a].rar||specPower(specOf(b,lv))-specPower(specOf(a,lv)))}
 function openSlotPicker(i){
   const cur=S.deck[i];
-  const list=sortedOwned().filter(g=>g!==cur);
-  openSheet(`<div class="sheet-h"><h2 style="margin:0">${i+1}번 ${POS[i]} 편성</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+  const list=sortedOwned(slotLv(i)).filter(g=>g!==cur);
+  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${i+1}번 ${POS[i]} 편성</h2><div class="sub" style="margin:0">이 자리 Lv ${slotLv(i)}로 싸워요</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   ${cur?`<button type="button" class="btn ghost wide" data-setslot="${i}:" style="margin-bottom:10px">${esc(GMAP[cur].name)} 빼기</button>`:''}
   <p class="sub" style="margin:0 0 8px">★5 장수는 진형에 ${MAX5}명까지 넣을 수 있어요 (지금 ${count5(S.deck)}명)</p>
-  <div class="list">${list.map(g=>{const b=GMAP[g],s=specOf(g),at=S.deck.indexOf(g);return `<button type="button" class="li" data-setslot="${i}:${g}" ${b.rar===5&&at<0&&count5(S.deck,i)>=MAX5?'disabled':''} style="text-align:left">${seal(b,'sm')}<div class="info"><b>${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span></b><span>${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${s.lv} · 전투력 ${fmt(specPower(s))}${at>=0?` · 현재 ${at+1}번`:''}</span></div></button>`}).join('')}</div>`);
+  <div class="list">${list.map(g=>{const b=GMAP[g],s=specOf(g,slotLv(i)),at=S.deck.indexOf(g);return `<button type="button" class="li" data-setslot="${i}:${g}" ${b.rar===5&&at<0&&count5(S.deck,i)>=MAX5?'disabled':''} style="text-align:left">${seal(b,'sm')}<div class="info"><b>${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span></b><span>${CLS[b.cls].g} ${CLS[b.cls].n} · 전투력 ${fmt(specPower(s))}${at>=0?` · 현재 ${at+1}번`:''}</span></div></button>`}).join('')}</div>`);
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-setslot]');if(!b||b.disabled)return;
@@ -1927,11 +2019,11 @@ function vGens(){
     h+=`<div class="chips" role="group" aria-label="등급"><span class="flab">등급</span>${chip('rar',0,'전체')}${[5,4,3].map(r=>chip('rar',r,stars(r))).join('')}</div>
     <div class="chips" role="group" aria-label="병종"><span class="flab">병종</span>${chip('cls','','전체')}${Object.entries(CLS).map(([k,c])=>chip('cls',k,c.n)).join('')}</div>
     <div class="chips" role="group" aria-label="나라"><span class="flab">나라</span>${chip('fac','','전체')}${Object.entries(FAC).map(([k,n])=>chip('fac',k,n)).join('')}</div>
-    <div class="chips" role="group" aria-label="정렬"><span class="flab">정렬</span>${chip('sort','rar','등급순')}${chip('sort','lv','레벨순')}${chip('sort','bond','보유 인연수')}${chip('sort','power','전투력순')}</div>`;
+    <div class="chips" role="group" aria-label="정렬"><span class="flab">정렬</span>${chip('sort','rar','등급순')}${chip('sort','bond','보유 인연수')}${chip('sort','power','전투력순')}</div>`;
     const list=filteredGens();
     h+=`<p class="sub" style="margin:4px 0 8px">${list.length}명 표시</p>`;
     if(!list.length)return h+`<div class="empty-state"><b>將</b>조건에 맞는 장수가 없어요. 필터를 바꿔 보세요.</div>`;
-    h+=`<div class="grid">${list.map(({g,p,bn})=>{const b=GMAP[g],s=S.gens[g];return `<button type="button" class="gc ${S.deck.includes(g)?'in-deck':''}" data-gen="${g}">${seal(b)}<div class="nm">${esc(b.name)}</div><div class="stars r${b.rar}">${stars(b.rar)}</div>${dupHtml(s.d,0,maxD(b.rar))}<div class="meta"><span class="cls">${CLS[b.cls].g}</span><span class="num">Lv ${s.lv}</span>${S.deck.includes(g)?'<span class="chip">출전</span>':''}</div>${gf.sort==='power'?`<div class="meta num">전투력 ${fmt(p)}</div>`:gf.sort==='bond'?`<div class="meta">인연 ${bn}개</div>`:''}</button>`}).join('')}</div>`;
+    h+=`<div class="grid">${list.map(({g,p,bn})=>{const b=GMAP[g],s=S.gens[g];return `<button type="button" class="gc ${S.deck.includes(g)?'in-deck':''}" data-gen="${g}">${seal(b)}<div class="nm">${esc(b.name)}</div><div class="stars r${b.rar}">${stars(b.rar)}</div>${dupHtml(s.d,0,maxD(b.rar))}<div class="meta"><span class="cls">${CLS[b.cls].g}</span>${S.deck.includes(g)?`<span class="num">Lv ${slotLv(S.deck.indexOf(g))}</span><span class="chip">출전</span>`:''}</div>${gf.sort==='power'?`<div class="meta num">전투력 ${fmt(p)}</div>`:gf.sort==='bond'?`<div class="meta">인연 ${bn}개</div>`:''}</button>`}).join('')}</div>`;
   } else {
     if(!S.items.length)return h+`<div class="empty-state"><b>寶庫</b>아직 보물이 없어요. 등용 탭의 보물 획득에서 얻을 수 있어요.</div>`;
     const chipI=(k,v,lab)=>`<button type="button" data-if="${k}:${v}" aria-pressed="${String(itf[k])===String(v)}">${lab}</button>`;
@@ -1951,7 +2043,7 @@ let gf={rar:0,cls:'',fac:'',sort:'rar'};
 function ownedBonds(g){return BONDS.filter(B=>B.ids.includes(g)&&B.ids.every(x=>S.gens[x])).length}
 function filteredGens(){
   const L=Object.keys(S.gens).filter(g=>{const b=GMAP[g];return (!gf.rar||b.rar===+gf.rar)&&(!gf.cls||b.cls===gf.cls)&&(!gf.fac||b.fac===gf.fac)})
-    .map(g=>({g,p:specPower(specOf(g)),bn:ownedBonds(g),lv:S.gens[g].lv,r:GMAP[g].rar}));
+    .map(g=>({g,p:specPower(specOf(g)),bn:ownedBonds(g),lv:defLv(g),r:GMAP[g].rar}));
   const by={rar:(a,b)=>b.r-a.r||b.lv-a.lv||b.p-a.p,lv:(a,b)=>b.lv-a.lv||b.r-a.r||b.p-a.p,bond:(a,b)=>b.bn-a.bn||b.r-a.r||b.p-a.p,power:(a,b)=>b.p-a.p}[gf.sort]||((a,b)=>b.r-a.r);
   return L.sort(by);
 }
@@ -2019,50 +2111,55 @@ document.addEventListener('click',e=>{
 });
 function openGen(gid){
   const b=GMAP[gid], st=S.gens[gid], s=specOf(gid), u=mkUnit(s,0,0);
-  const cost=50*st.lv, inDeck=S.deck.includes(gid);
+  const at=S.deck.indexOf(gid), inDeck=at>=0;
   openSheet(`<div class="sheet-h">${seal(b,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz)}</span></h2>
-   <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${st.lv}/${MAXLV}</div>${dupHtml(st.d,1,maxD(b.rar))}</div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · ${inDeck?`${at+1}번 자리 Lv ${slotLv(at)}`:`진형 밖 · Lv ${s.lv} 기준`}</div>${dupHtml(st.d,1,maxD(b.rar))}</div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <div class="row" style="margin-top:8px"><span class="sub" style="margin:0">능력치</span><button type="button" class="qh" data-help="1" aria-label="능력치 도움말">?</button></div><div class="stats" style="margin-top:4px"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
   <div class="sub" style="margin:2px 0 6px">치명 ${Math.round(u.cr*100)}% · 치명 피해 ${Math.round(u.cd*100)}%${u.ls?` · 흡혈 ${Math.round(u.ls*1000)/10}%`:''}${u.dr?` · 피해 감소 ${Math.round(u.dr*1000)/10}%`:''}${u.skp?` · 전법 피해 +${Math.round(u.skp*1000)/10}%`:''}</div>${usageHtml(gid)}<div class="row sub" style="margin:0 0 4px">무력 ${b.str} · 지력 ${b.int} · 통솔 ${b.lead}<span class="sp"></span>전투력 <b style="color:var(--bronze)">${fmt(unitPower(u))}</b></div>
   <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. ${cdText(b.cls)} 발동.</p>${bondsOfHtml(b.id)}
   <h3>보물 <span style="font-weight:400">· ${st.its.length}/${ITEM_SLOTS}칸 · 명마는 1개까지</span></h3>
   <div class="list" style="margin-bottom:12px">${Array.from({length:ITEM_SLOTS},(_,k)=>{const x=st.its[k]&&S.items.find(i=>i.u===st.its[k]),iv=x&&IMAP[x.k];return `<div class="li">${iv?`${itemTile(iv,x.d)}<div class="info"><b>${esc(iv.name)}${x.d?` <span class="pc">+${x.d}</span>`:''}</b><span>${fxText(iv,x.d,b)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>빈 칸</b><span>보물을 장착할 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-equip="${gid}:${iv?k:st.its.length}">${iv?'변경':'장착'}</button></div>`}).join('')}</div>
-  <h3>레벨</h3>${lvBoxHtml(gid)}
+  <h3>레벨</h3><div class="lvbox"><p class="sub" style="margin:0">레벨은 장수가 아니라 진형의 자리마다 정해져요. ${inDeck?`지금 ${at+1}번 자리(Lv ${slotLv(at)})에 있어요.`:`진형 밖이라 가장 높은 자리 레벨(Lv ${s.lv}) 기준으로 능력치를 보여 줘요.`}</p>${inDeck?`<button type="button" class="btn ghost wide" data-slv="${at}" style="margin-top:8px">${at+1}번 자리 레벨 조정</button>`:''}</div>
   <button type="button" class="btn ghost wide" data-deckt="${gid}" style="margin-top:10px">${inDeck?'진형에서 빼기':'진형에 넣기'}</button>`);
-  bindLv(gid);
 }
 /* ---------------- 레벨 슬라이더 · 초기화 ---------------- */
 const LV_COST=50;
 const lvCost=(a,b)=>b<=a?0:LV_COST*((b-1)*b/2-(a-1)*a/2);
 function maxAffordLv(lv){let t=lv;while(t<MAXLV&&lvCost(lv,t+1)<=S.gold)t++;return t}
-function lvBoxHtml(gid){
-  const st=S.gens[gid], mx=maxAffordLv(st.lv), refund=lvCost(1,st.lv);
-  return `<div class="lvbox">${st.lv>=MAXLV?'<p class="sub" style="margin:0">최대 레벨이에요.</p>':`
-   <div class="row"><span class="sub" style="margin:0">Lv ${st.lv} →</span><b id="lv-to" class="pc num">Lv ${st.lv+1}</b><span class="sp"></span><span class="num" id="lv-cost"></span></div>
-   <input type="range" id="lv-range" min="${st.lv+1}" max="${MAXLV}" value="${Math.max(st.lv+1,Math.min(mx,st.lv+1))}" step="1" aria-label="목표 레벨">
-   <div class="row" style="margin-top:2px"><span class="sub" style="margin:0">가진 금으로 Lv ${mx}까지 가능</span><span class="sp"></span>${mx>st.lv?`<button type="button" class="btn ghost sm" id="lv-max">가능한 만큼</button>`:''}</div>
+function lvBoxHtml(lv){
+  const mx=maxAffordLv(lv), refund=lvCost(1,lv);
+  return `<div class="lvbox">${lv>=MAXLV?'<p class="sub" style="margin:0">최대 레벨이에요.</p>':`
+   <div class="row"><span class="sub" style="margin:0">Lv ${lv} →</span><b id="lv-to" class="pc num">Lv ${lv+1}</b><span class="sp"></span><span class="num" id="lv-cost"></span></div>
+   <input type="range" id="lv-range" min="${lv+1}" max="${MAXLV}" value="${lv+1}" step="1" aria-label="목표 레벨">
+   <div class="row" style="margin-top:2px"><span class="sub" style="margin:0">가진 금으로 Lv ${mx}까지 가능</span><span class="sp"></span>${mx>lv?`<button type="button" class="btn ghost sm" id="lv-max">가능한 만큼</button>`:''}</div>
    <button type="button" class="btn wide" id="lv-go" style="margin-top:8px">레벨 올리기</button>`}
-   ${st.lv>1?`<div class="row" style="margin-top:10px"><span class="sub" style="margin:0">초기화하면 Lv 1로 돌아가고 쓴 금 ${fmt(refund)}을 모두 돌려받아요.</span><span class="sp"></span><button type="button" class="btn ghost sm" id="lv-reset">레벨 초기화</button></div>
-   <div class="warn" id="lv-warn" hidden><b>Lv ${st.lv} → Lv 1로 초기화할까요?</b><br>금 ${fmt(refund)}을 돌려받아요.<div class="row" style="margin-top:10px"><button type="button" class="btn ghost" id="lv-no">취소</button><button type="button" class="btn red" id="lv-yes" style="flex:1">네, 초기화</button></div></div>`:''}</div>`;
+   ${lv>1?`<div class="row" style="margin-top:10px"><span class="sub" style="margin:0">초기화하면 Lv 1로 돌아가고 쓴 금 ${fmt(refund)}을 모두 돌려받아요.</span><span class="sp"></span><button type="button" class="btn ghost sm" id="lv-reset">레벨 초기화</button></div>
+   <div class="warn" id="lv-warn" hidden><b>Lv ${lv} → Lv 1로 초기화할까요?</b><br>금 ${fmt(refund)}을 돌려받아요.<div class="row" style="margin-top:10px"><button type="button" class="btn ghost" id="lv-no">취소</button><button type="button" class="btn red" id="lv-yes" style="flex:1">네, 초기화</button></div></div>`:''}</div>`;
 }
-function bindLv(gid){
-  const st=S.gens[gid], r=$('#lv-range');
+function bindLv(get,set,reopen,label){
+  const r=$('#lv-range');
   if(r){
-    const upd=()=>{const t=+r.value,c=lvCost(st.lv,t),ok=c<=S.gold;$('#lv-to').textContent='Lv '+t;const ce=$('#lv-cost');ce.textContent='金 '+fmt(c);ce.style.color=ok?'var(--fg)':'var(--cinnabar)';const g=$('#lv-go');g.disabled=!ok;g.textContent=ok?`Lv ${t}까지 올리기`:`금이 ${fmt(c-S.gold)} 부족해요`};
+    const upd=()=>{const t=+r.value,c=lvCost(get(),t),ok=c<=S.gold;$('#lv-to').textContent='Lv '+t;const ce=$('#lv-cost');ce.textContent='金 '+fmt(c);ce.style.color=ok?'var(--fg)':'var(--cinnabar)';const g=$('#lv-go');g.disabled=!ok;g.textContent=ok?`Lv ${t}까지 올리기`:`금이 ${fmt(c-S.gold)} 부족해요`};
     r.oninput=upd;upd();
-    const m=$('#lv-max');if(m)m.onclick=()=>{r.value=maxAffordLv(st.lv);upd()};
-    $('#lv-go').onclick=()=>{const t=Math.min(MAXLV,+r.value),c=lvCost(st.lv,t);if(t<=st.lv||c>S.gold)return;S.gold-=c;const from=st.lv;st.lv=t;save();renderTop();renderView();openGen(gid);toast(`${GMAP[gid].name} Lv ${from} → ${t}`)};
+    const m=$('#lv-max');if(m)m.onclick=()=>{r.value=maxAffordLv(get());upd()};
+    $('#lv-go').onclick=()=>{const from=get(),t=Math.min(MAXLV,+r.value),c=lvCost(from,t);if(t<=from||c>S.gold)return;S.gold-=c;set(t);save();renderTop();renderView();reopen();toast(`${label} Lv ${from} → ${t}`)};
   }
   const rs=$('#lv-reset');
   if(rs){
     rs.onclick=()=>{$('#lv-warn').hidden=false;rs.hidden=true};
     $('#lv-no').onclick=()=>{$('#lv-warn').hidden=true;rs.hidden=false};
-    $('#lv-yes').onclick=()=>{const g=lvCost(1,st.lv);S.gold+=g;st.lv=1;save();renderTop();renderView();openGen(gid);toast(`레벨 초기화 · 金 +${fmt(g)}`)};
+    $('#lv-yes').onclick=()=>{const g=lvCost(1,get());S.gold+=g;set(1);save();renderTop();renderView();reopen();toast(`${label} 레벨 초기화 · 金 +${fmt(g)}`)};
   }
+}
+function openSlotLv(i){
+  const gid=S.deck[i];
+  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${i+1}번 ${POS[i]} 자리 레벨</h2><div class="sub" style="margin:0">${gid?esc(GMAP[gid].name)+' 편성 중':'빈 자리'} · Lv ${slotLv(i)}/${MAXLV}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub" style="margin:0 0 10px">레벨은 장수가 아니라 자리에 붙어요. 이 자리에 어떤 장수를 넣어도 Lv ${slotLv(i)}로 싸워요.</p>${lvBoxHtml(slotLv(i))}
+   <div class="row" style="margin-top:12px;gap:6px">${[0,1,2,3,4].map(k=>`<button type="button" class="btn ghost sm" data-slv="${k}" aria-pressed="${k===i}" style="flex:1${k===i?';border-color:var(--bronze);color:var(--bronze)':''}">${k+1}번 Lv ${slotLv(k)}</button>`).join('')}</div>`);
+  bindLv(()=>slotLv(i),v=>{S.slv[i]=v},()=>openSlotLv(i),`${i+1}번 자리`);
 }
 document.addEventListener('click',e=>{
   const l=e.target.closest('[data-lvup]');
-  if(l&&!l.disabled){const g=l.dataset.lvup,st=S.gens[g],c=50*st.lv;if(S.gold<c||st.lv>=MAXLV)return;S.gold-=c;st.lv++;save();renderTop();openGen(g);renderView();return}
   const d=e.target.closest('[data-deckt]');
   if(d){const g=d.dataset.deckt,at=S.deck.indexOf(g);if(at>=0)S.deck[at]=null;else{if(GMAP[g].rar===5&&count5(S.deck)>=MAX5){toast(`★5 장수는 진형에 ${MAX5}명까지 넣을 수 있어요`);return}const e2=S.deck.indexOf(null);if(e2<0){toast('진형이 가득 찼어요. 진형 탭에서 자리를 비워 주세요.');return}S.deck[e2]=g}save();openGen(g);renderView();return}
   const q=e.target.closest('[data-equip]');if(q){const[g,k]=q.dataset.equip.split(':');openEquip(g,+k||0);return}
@@ -2095,7 +2192,7 @@ function vDex(){
     h+=`<div class="chips" role="group" aria-label="세력">${[['all','전체'],...Object.entries(FAC)].map(([k,v])=>`<button type="button" data-dfac="${k}" aria-pressed="${dexFac===k}">${v}</button>`).join('')}</div>
     <div class="chips" role="group" aria-label="정렬"><span class="sub" style="margin:0;align-self:center">정렬</span>${Object.entries(DSORT).map(([k,v])=>`<button type="button" data-dsort="${k}" aria-pressed="${dexSort===k}">${v}</button>`).join('')}</div>`;
     const list=GENS.filter(g=>dexFac==='all'||g.fac===dexFac).sort((a,b)=>dexSort==='rar'?(b.rar-a.rar||(b.str+b.int+b.lead)-(a.str+a.int+a.lead)):(b[dexSort]-a[dexSort]||b.rar-a.rar));
-    h+=`<div class="list">${list.map(g=>{const own=S.gens[g.id];return `<button type="button" class="li dex ${own?'':'unown'}" data-dexg="${g.id}">${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${FAC[g.fac]} · ${CLS[g.cls].g} ${CLS[g.cls].n} · ${esc(g.skill)}${own?` · 보유 Lv ${own.lv}`:''}${MODE==='shared'&&usageOf(g.id)?` · 사용률 ${Math.round(usageOf(g.id).pct*100)}%`:''}</span>
+    h+=`<div class="list">${list.map(g=>{const own=S.gens[g.id];return `<button type="button" class="li dex ${own?'':'unown'}" data-dexg="${g.id}">${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${FAC[g.fac]} · ${CLS[g.cls].g} ${CLS[g.cls].n} · ${esc(g.skill)}${own?' · 보유':''}${MODE==='shared'&&usageOf(g.id)?` · 사용률 ${Math.round(usageOf(g.id).pct*100)}%`:''}</span>
       <div class="dst">${statCell('무력',g.str,100)}${statCell('지력',g.int,100)}${statCell('통솔',g.lead,100)}${statCell('속도',g.spd,100)}</div></div></button>`}).join('')}</div>`;
   } else {
     h+=colDexHtml();
@@ -2107,7 +2204,7 @@ function openDex(id){
   const a=mkUnit({g:id,lv:1,d:0},0,0), z=mkUnit({g:id,lv:MAXLV,d:maxD(b.rar)},0,0);
   const row=(l,x,y)=>`<tr><th scope="row">${l}</th><td>${x}</td><td>${y}</td></tr>`;
   openSheet(`<div class="sheet-h">${seal(b,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz)}</span></h2>
-   <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · ${own?`보유 중 (Lv ${own.lv}, 돌파 ${own.d})`:'미보유'}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · ${own?`보유 중 (돌파 ${own.d})`:'미보유'}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <div class="stats"><div class="stat"><small>무력</small><b>${b.str}</b></div><div class="stat"><small>지력</small><b>${b.int}</b></div><div class="stat"><small>통솔</small><b>${b.lead}</b></div><div class="stat"><small>속도</small><b>${b.spd}</b></div></div>
   ${usageHtml(id)}<h3>전투 능력치 (보물 미장착 기준)</h3>
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>Lv 1</th><th>Lv ${MAXLV} · 돌파 5</th></tr></thead><tbody>
@@ -2351,11 +2448,11 @@ function openLabApply(){
   const P=labApplyPlan(), ok=P.some(r=>r.x&&r.own);
   const miss=P.filter(r=>r.x&&!r.own).length+P.reduce((a,r)=>a+(r.own?r.its.filter(o=>!o.it).length:0),0);
   openSheet(`<div class="sheet-h"><h2 style="margin:0">내 진형에 적용</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   <p class="sub" style="margin:0 0 10px">${esc(labCur('atk').n)}의 장수 자리와 보물 배치를 내 진형(스테이지·결투장 방어)에 옮겨요. 레벨·돌파·보물 강화 수치는 내 것 그대로이고, 다른 장수가 끼고 있던 보물은 옮겨 와요.${miss?' 보유하지 않은 장수·보물은 빠져요.':''}</p>
+   <p class="sub" style="margin:0 0 10px">${esc(labCur('atk').n)}의 장수 자리와 보물 배치를 내 진형(스테이지·결투장 방어)에 옮겨요. 자리 레벨·돌파·보물 강화 수치는 내 것 그대로이고, 다른 장수가 끼고 있던 보물은 옮겨 와요.${miss?' 보유하지 않은 장수·보물은 빠져요.':''}</p>
    <div class="list">${P.map(r=>{const pos=`<div class="pos">${r.i+1}<small>${POS[r.i]}</small></div>`;
      if(!r.x)return `<div class="slot empty">${pos}<div class="info"><b>빈 자리</b></div></div>`;
      const g=GMAP[r.x.g];
-     return `<div class="slot" style="${r.own?'':'opacity:.5'}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)}${r.own?` <span class="sub" style="font-size:12px">Lv ${S.gens[r.x.g].lv}</span>`:' · 미보유 (빈 자리)'}</b>
+     return `<div class="slot" style="${r.own?'':'opacity:.5'}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)}${r.own?` <span class="sub" style="font-size:12px">자리 Lv ${slotLv(r.i)}</span>`:' · 미보유 (빈 자리)'}</b>
       ${r.own?`<span>${r.its.length?r.its.map(o=>{const it=IMAP[o.k];return o.it?`${esc(it.name)}${o.it.d?' +'+o.it.d:''}${o.h&&o.h!==r.x.g?` (${esc(GMAP[o.h].name)}에게서)`:''}`:`<s>${esc(it.name)}</s> 미보유`}).join(' · '):'보물 없음'}</span>`:''}</div></div>`}).join('')}</div>
    <div class="row" style="margin-top:14px;gap:8px"><button type="button" class="btn ghost" data-close>취소</button><button type="button" class="btn red" style="flex:1" id="lab-apply-yes" ${ok?'':'disabled'}>${ok?'내 진형에 적용':'보유한 장수가 없어요'}</button></div>`);
   const y=$('#lab-apply-yes');if(y)y.onclick=()=>{
@@ -2494,33 +2591,44 @@ document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.tar
 /* ---------------- 전투 기록 · MVP · 결과 공유 ---------------- */
 const CAN_SHARE=typeof FIREBASE_CONFIG!=='undefined';
 function battleStats(res){
-  const st={};const K=(s,i)=>st[s+'-'+i]||(st[s+'-'+i]={acts:0,sk:0,dmg:0,crit:0,kills:0,heal:0,taken:0,hp:0});
+  const st={};const K=(s,i)=>st[s+'-'+i]||(st[s+'-'+i]={acts:0,sk:0,dmg:0,nd:0,sd:0,mit:0,crit:0,kills:0,heal:0,taken:0,hp:0});
   res.init.forEach(t=>t.forEach(u=>{K(u.side,u.slot).hp=u.hp}));
-  for(const e of res.ev){for(const h of e.hits||[]){const t=K(h.s,h.i);if(!h.self)t.taken+=h.d;t.hp=h.hp}for(const h of e.heals||[])K(h.s,h.i).hp=h.hp}
+  for(const e of res.ev){for(const h of e.hits||[]){const t=K(h.s,h.i);if(!h.self){t.taken+=h.d;t.mit+=h.m||0}t.hp=h.hp}for(const h of e.heals||[])K(h.s,h.i).hp=h.hp}
   for(const e of res.ev){
     if(e.skip)continue;
-    if(e.tick){for(const h of e.hits||[])if(h.by){const r=K(h.by[0],h.by[1]);r.dmg+=h.d;if(h.hp===0)r.kills++}continue}
+    if(e.tick){for(const h of e.hits||[])if(h.by){const r=K(h.by[0],h.by[1]);r.dmg+=h.d;r.sd+=h.d;if(h.hp===0)r.kills++}continue}
     const r=K(e.s,e.i);r.acts++;if(e.sk)r.sk++;
-    for(const h of e.hits||[]){if(h.self)continue;r.dmg+=h.d;if(h.c)r.crit++;if(h.hp===0)r.kills++}
+    for(const h of e.hits||[]){if(h.self)continue;r.dmg+=h.d;if(e.sk)r.sd+=h.d;else r.nd+=h.d;if(h.c)r.crit++;if(h.hp===0)r.kills++}
     for(const h of e.heals||[])r.heal+=h.h;
   }
   return st;
 }
 let rsSide=0, rsMetric='dmg';
-const RS_M={dmg:'피해량',taken:'받은 피해',acts:'공격 횟수',dps:'회당 피해'};
+const RS_M={dmg:'피해량',taken:'받은 피해',mit:'경감한 피해',acts:'공격 횟수',dps:'회당 피해'};
 function statChart(res,st){
   const us=res.init[rsSide].map(u=>{const r=st[u.side+'-'+u.slot];return {u,r,v:rsMetric==='dps'?(r.acts?Math.round(r.dmg/r.acts):0):r[rsMetric]}}).sort((a,b)=>b.v-a.v);
   const mx=Math.max(1,...us.map(x=>x.v));
-  return us.map(({u,r,v})=>`<div class="sbar"><span class="sn">${esc(u.name)}</span><span class="st"><i style="width:${v/mx*100}%"></i></span><b class="num">${fmt(v)}</b></div>`).join('');
+  return us.map(({u,r,v})=>`<button type="button" class="sbar" data-rsu="${u.side}-${u.slot}" aria-label="${esc(u.name)} 전투 기록 보기"><span class="sn">${esc(u.name)}</span><span class="st"><i style="width:${v/mx*100}%"></i></span><b class="num">${fmt(v)}</b></button>`).join('');
 }
 function mvpOf(res,st,side){
   let best=null;res.init[side].forEach(u=>{const r=st[u.side+'-'+u.slot],sc=r.dmg+r.heal*.6;if(!best||sc>best.sc)best={u,r,sc}});return best;
 }
-function mvpHtml(m){
+function mvpHtml(m,tag){
   if(!m)return '';const {u,r}=m;const it=u.items&&u.items.length?{name:u.items.map(x=>x.n+(x.d?'+'+x.d:'')).join(', ')}:null;
-  return `<div class="mvp"><div class="mvp-h"><span class="mvp-t">MVP</span>${seal(u,'lg')}<div style="text-align:left;min-width:0"><b style="font-size:17px">${esc(u.name)}</b> <span class="stars r${u.rar}">${stars(u.rar)}</span><div class="sub" style="margin:0">${FAC[u.fac]} · ${CLS[u.cls].g} ${CLS[u.cls].n}${u.lv?` · Lv ${u.lv}`:''}${it?` · ${esc(it.name)}`:''}</div><div class="sub" style="margin:0">전법 ${esc(u.skill)}</div></div></div>
-   <div class="stats" style="grid-template-columns:repeat(4,1fr);margin:10px 0 6px"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
-   <div class="stats" style="grid-template-columns:repeat(4,1fr);margin:0"><div class="stat"><small>받은 피해</small><b>${fmt(r.taken)}</b></div><div class="stat"><small>남은 체력</small><b>${fmt(Math.max(0,r.hp))}</b></div><div class="stat"><small>총 피해</small><b>${fmt(r.dmg)}</b></div><div class="stat"><small>행동 · 전법</small><b>${r.acts} · ${r.sk}</b></div><div class="stat"><small>회당 피해</small><b>${fmt(r.acts?Math.round(r.dmg/r.acts):0)}</b></div><div class="stat"><small>치명타</small><b>${r.crit}</b></div><div class="stat"><small>처치</small><b>${r.kills}</b></div><div class="stat"><small>회복</small><b>${fmt(r.heal)}</b></div></div></div>`;
+  const c=(k,v)=>`<div class="stat"><small>${k}</small><b>${v}</b></div>`;
+  return `<div class="mvp"><div class="mvp-h">${tag===''?'':`<span class="mvp-t">${tag||'MVP'}</span>`}${seal(u,'lg')}<div style="text-align:left;min-width:0"><b style="font-size:17px">${esc(u.name)}</b> <span class="stars r${u.rar}">${stars(u.rar)}</span><div class="sub" style="margin:0">${FAC[u.fac]} · ${CLS[u.cls].g} ${CLS[u.cls].n}${u.lv?` · Lv ${u.lv}`:''}${it?` · ${esc(it.name)}`:''}</div><div class="sub" style="margin:0">전법 ${esc(u.skill)}</div></div></div>
+   <div class="stats" style="grid-template-columns:repeat(4,1fr);margin:10px 0 0">${c('총 피해',fmt(r.dmg))}${c('일반 공격 피해',fmt(r.nd))}${c('전법 피해',fmt(r.sd))}${c('처치',r.kills)}${c('받은 피해',fmt(r.taken))}${c('경감한 피해',fmt(r.mit))}${c('남은 체력',fmt(Math.max(0,r.hp)))}${c('회복',fmt(r.heal))}${c('행동 · 전법',r.acts+' · '+r.sk)}${c('회당 피해',fmt(r.acts?Math.round(r.dmg/r.acts):0))}${c('치명타',r.crit)}${c('생존',r.hp>0?'○':'✕')}</div>
+   <p class="sub" style="margin:6px 0 0;font-size:11px">경감한 피해: 방어력과 피해 감소로 막아 낸 양이에요. 화상 피해는 전법 피해에 포함돼요.</p></div>`;
+}
+function openUnitPop(res,st,key){
+  const[s,i]=key.split('-').map(Number), u=res.init[s].find(x=>x.slot===i), r=st[key];if(!u||!r)return;
+  const best=mvpOf(res,st,s), tag=best&&best.u===u?'MVP':'';
+  const host=document.querySelector('.bt');if(!host)return;
+  const old=document.querySelector('.rs-pop');if(old)old.remove();
+  const p=document.createElement('div');p.className='rs-pop';p.setAttribute('role','dialog');p.setAttribute('aria-modal','true');
+  p.innerHTML=`<div class="rs-pop-b">${mvpHtml({u,r},tag)}<button type="button" class="btn wide" data-rsclose style="margin-top:10px">닫기</button></div>`;
+  p.addEventListener('click',e=>{if(e.target===p||e.target.closest('[data-rsclose]'))p.remove()});
+  host.appendChild(p);p.querySelector('[data-rsclose]').focus({preventScroll:true});
 }
 // 결과 링크: 진형과 시드를 담아 같은 전투를 다시 재생
 const packSpecs=a=>a.filter(Boolean).map(s=>[s.g,s.lv,s.d||0,s.i&&s.i.length?s.i:0,s.cb||0]);
@@ -2606,7 +2714,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     box.innerHTML=`<div class="res-card" id="res-card"><div class="stamp ${res.win||rp||vd?'w':'l'}">${vd?vd.stamp:rp?'戰':res.win?'勝':'敗'}</div><h2 style="margin:0">${esc(winLab)}</h2>${resultHtml()}
      <div class="res-sec"><h3>전투 기록</h3>
       <div class="chips no-cap" role="group"><button type="button" data-rss="0" aria-pressed="${rsSide===0}">${esc(allyLab)}</button><button type="button" data-rss="1" aria-pressed="${rsSide===1}">${esc(foeLab)}</button><span class="sp"></span>${Object.entries(RS_M).map(([k,v])=>`<button type="button" data-rsm="${k}" aria-pressed="${rsMetric===k}">${v}</button>`).join('')}</div>
-      <div class="sub" id="rs-cap" style="margin:0 0 4px">${esc(rsSide?foeLab:allyLab)} · ${RS_M[rsMetric]}</div><div id="rs-chart">${statChart(res,stt)}</div></div>
+      <div class="sub" id="rs-cap" style="margin:0 0 4px">${esc(rsSide?foeLab:allyLab)} · ${RS_M[rsMetric]}</div><div class="sub no-cap" style="margin:0 0 4px;font-size:11px">장수 이름을 누르면 장수별 전투 기록을 볼 수 있어요.</div><div id="rs-chart">${statChart(res,stt)}</div></div>
      ${mvpHtml(mvpOf(res,stt,rp?(res.win?0:1):0))}</div>
      ${sh&&CAN_SHARE?`<div class="share-row"><button type="button" class="btn ghost" id="sh-link">결과 링크 공유</button><button type="button" class="btn ghost" id="sh-img">이미지로 공유</button></div><div id="share-fallback" hidden style="width:100%;max-width:440px"><p class="sub" style="margin:0 0 4px">아래 내용을 길게 눌러 복사한 뒤 카카오톡에 붙여넣으세요.</p><textarea readonly></textarea></div>`:''}
      <button type="button" class="btn" id="bt-close" style="min-width:160px">${rp?'게임 하러 가기':'확인'}</button>`;
@@ -2614,6 +2722,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     const redraw=()=>{$('#rs-chart').innerHTML=statChart(res,stt);$('#rs-cap').textContent=`${rsSide?foeLab:allyLab} · ${RS_M[rsMetric]}`;box.querySelectorAll('[data-rss]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.rss===rsSide)));box.querySelectorAll('[data-rsm]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.rsm===rsMetric)))};
     box.querySelectorAll('[data-rss]').forEach(b=>b.onclick=()=>{rsSide=+b.dataset.rss;redraw()});
     box.querySelectorAll('[data-rsm]').forEach(b=>b.onclick=()=>{rsMetric=b.dataset.rsm;redraw()});
+    box.addEventListener('click',e=>{const b=e.target.closest('[data-rsu]');if(b)openUnitPop(res,stt,b.dataset.rsu)});
     if(sh&&CAN_SHARE){$('#sh-link').onclick=()=>shareLink(sh,res.win);$('#sh-img').onclick=()=>shareImage($('#res-card'),sh)}
     $('#bt-close').onclick=()=>{el.hidden=true;el.innerHTML='';if(rp){history.replaceState(null,'',location.pathname+location.search);if(typeof showLogin==='function'&&!S&&MODE!=='local')showLogin()}renderTop();renderView()};
     $('#bt-close').focus();
