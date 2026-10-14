@@ -383,7 +383,7 @@ dl.help dd{margin:0;color:var(--fg)}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v1.20.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v2.0.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -479,7 +479,14 @@ const GENS_RAW=[
  ['yuanshu','원술','袁術','qun',3,'arc',60,67,70,70],
  ['wenpin','문빙','文聘','wei',3,'inf',80,68,82,66],
  ['yanyan','엄안','嚴顔','shu',3,'arc',82,62,78,70],
- ['handang','한당','韓當','wu',3,'cav',80,55,76,82]
+ ['handang','한당','韓當','wu',3,'cav',80,55,76,82],
+ ['haozhao','학소','郝昭','wei',4,'inf',80,74,92,64],
+ ['gongsunzan','공손찬','公孫瓚','qun',4,'cav',88,62,84,90],
+ ['zhugejin','제갈근','諸葛瑾','wu',3,'tac',44,82,74,70],
+ ['liuxun','유순','劉循','qun',3,'inf',74,60,78,62],
+ ['caoren','조인','曹仁','wei',3,'cav',84,62,88,74],
+ ['zhoucang','주창','周倉','shu',3,'inf',86,40,70,72],
+ ['sunshangxiang','손상향','孫尙香','wu',4,'arc',80,62,72,90]
 ];
 const GENS=GENS_RAW.map(r=>({id:r[0],name:r[1],hz:r[2],fac:r[3],rar:r[4],cls:r[5],str:r[6],int:r[7],lead:r[8],spd:r[9],skill:r[10]||DEF_SKILL[r[5]]}));
 const GMAP=Object.fromEntries(GENS.map(g=>[g.id,g]));
@@ -538,6 +545,13 @@ const SK={
  xusheng:{n:'의성의 계',d:'맨 앞 적 1.6배 피해, 적 전체 공격 2턴 -15%, 자신 방어 2턴 +30%',tg:'front',m:1.6,deb:{to:'all',atk:-.15,dur:2},buff:{to:'self',def:.3,dur:2}},
  wenpin:{n:'강하 수비',d:'맨 앞 적에게 1.3배 피해, 자신 2턴 도발, 자신 방어 2턴 +30%',tg:'front',m:1.3,taunt:2,buff:{to:'self',def:.3,dur:2}},
  yanyan:{n:'노장의 일시',d:'체력이 가장 낮은 적에게 2.2배 피해, 치명타 확정',tg:'low',m:2.2,crit:1},
+ haozhao:{n:'진창 사수',d:'맨 앞 적에게 1.2배 피해, 자신 2턴 도발, 아군 전체 방어 2턴 +20%',tg:'front',m:1.2,taunt:2,buff:{to:'all',def:.2,dur:2}},
+ gongsunzan:{n:'백마의종',d:'맨 앞 적을 2번 베어 각 1.2배 피해, 아군 전체 공격 2턴 +10%',tg:'front',h:2,m:1.2,buff:{to:'all',atk:.1,dur:2}},
+ zhugejin:{n:'오의 사신',d:'체력이 가장 낮은 아군 체력 20% 회복, 적 전체 공격 2턴 -10%',tg:'none',heal:{to:'low',p:.2},deb:{to:'all',atk:-.1,dur:2}},
+ liuxun:{n:'낙성 고수',d:'자신 2턴 도발, 자신 방어 2턴 +35%, 자신 체력 15% 회복',tg:'none',taunt:2,buff:{to:'self',def:.35,dur:2},heal:{to:'self',p:.15}},
+ caoren:{n:'번성 사수',d:'맨 앞 적에게 1.1배 피해, 자신 1턴 도발, 아군 전체 방어 2턴 +15%',tg:'front',m:1.1,taunt:1,buff:{to:'all',def:.15,dur:2}},
+ zhoucang:{n:'청룡도 호위',d:'맨 앞 적에게 1.6배 피해, 자신 방어 2턴 +20%',tg:'front',m:1.6,buff:{to:'self',def:.2,dur:2}},
+ sunshangxiang:{n:'궁요희',d:'무작위 적에게 화살을 3번 쏘아 각 0.9배 피해',tg:'rand',h:3,m:.9},
  handang:{n:'강동 기병',d:'맨 앞 적을 2번 베어 각 1.1배 피해, 맞은 적 방어 2턴 -15%',tg:'front',h:2,m:1.1,deb:{to:'hit',def:-.15,dur:2}},
  yuanshu:{n:'옥새의 위세',d:'아군 전체 공격 2턴 +30%, 자신 방어 2턴 -20%',tg:'none',buff:[{to:'all',atk:.3,dur:2},{to:'self',def:-.2,dur:2}]}
 };
@@ -605,7 +619,19 @@ const BONDS=[
  {n:'촉의 노장',ids:['yanyan','huangzhong'],fx:{atk:.12},d:'나이를 잊고 활을 당긴 두 노장 엄안과 황충'},
  {n:'파군의 의리',ids:['yanyan','zhangfei'],fx:{def:.10,atk:.08},d:'파군에서 사로잡힌 엄안의 기개에 장비가 결박을 풀어 준 인연'},
  {n:'귀순한 충신',ids:['wenpin','caocao'],fx:{def:.10,hp:.05},d:'유표의 장수였던 문빙을 조조가 믿고 강하를 맡긴 인연'},
- {n:'강하 공방',ids:['wenpin','ganning'],fx:{def:.08},d:'강하를 지킨 문빙과 이를 노린 감녕'}
+ {n:'강하 공방',ids:['wenpin','ganning'],fx:{def:.08},d:'강하를 지킨 문빙과 이를 노린 감녕'},
+ {n:'진창 공방',ids:['haozhao','zhugeliang'],fx:{def:.12},d:'진창에서 제갈량의 대군을 막아 낸 학소'},
+ {n:'백마의 인연',ids:['gongsunzan','zhaoyun'],fx:{atk:.08,hp:.08},d:'백마의종을 이끈 공손찬과 그 아래에 있던 조운'},
+ {n:'계교의 숙적',ids:['gongsunzan','yuanshao'],fx:{atk:.10},d:'계교에서 맞붙고 역경에서 끝을 본 공손찬과 원소'},
+ {n:'제갈 형제',ids:['zhugejin','zhugeliang'],fx:{hp:.10,def:.06},d:'오와 촉으로 갈라 섬긴 형 제갈근과 아우 제갈량'},
+ {n:'손권의 신뢰',ids:['zhugejin','sunquan'],fx:{hp:.08},d:'손권이 끝까지 믿은 오의 원로 제갈근'},
+ {n:'낙성 공방',ids:['liuxun','pangtong'],fx:{atk:.10},d:'낙성을 지킨 유순과 그곳에서 쓰러진 방통'},
+ {n:'조씨 종형제',ids:['caoren','caocao'],fx:{atk:.08,def:.06},d:'조조의 사촌 동생으로 평생 곁을 지킨 조인'},
+ {n:'번성 공방',ids:['caoren','guanyu'],fx:{def:.12},d:'번성에서 관우의 공격을 견뎌 낸 조인'},
+ {n:'강릉 공방',ids:['caoren','zhouyu'],fx:{def:.10},d:'강릉에서 주유와 1년 넘게 맞선 조인'},
+ {n:'청룡도의 주인',ids:['zhoucang','guanyu'],fx:{atk:.12},d:'관우의 청룡언월도를 들고 끝까지 따른 주창'},
+ {n:'궁요희의 혼인',ids:['sunshangxiang','liubei'],fx:{atk:.08,hp:.06},d:'손권의 누이로 유비에게 시집간 손상향'},
+ {n:'손씨 남매',ids:['sunshangxiang','sunquan'],fx:{atk:.06,hp:.06},d:'오빠 손권과 누이 손상향'}
 ];
 
 // 서로 다른 진영 장수로 이루어진 인연(타국 인연)은 효과가 CROSS_MUL배
@@ -899,7 +925,7 @@ const TRAIT={
  weiyan:TR('helm','bushy',{sk:'d',fierce:1}),guanping:TR('hood','none',{hood:'#2f7a4a'}),madai:TR('helm','goatee',{}),liaohua:TR('band','stubble',{}),yujin:TR('helm','goatee',{}),
  lejin:TR('helm','none',{}),lidian:TR('band','goatee',{}),chengpu:TR('helm','long',{old:1}),huanggai:TR('helm','bushy',{old:1}),zhoutai:TR('band','stubble',{sk:'d',fierce:1}),
  lingtong:TR('band','none',{}),gaoshun:TR('helm','goatee',{fierce:1}),chengong:TR('scholar','goatee',{robe:1}),huaxiong:TR('helm','bushy',{fierce:1}),yanliang:TR('helm','bushy',{sk:'d',fierce:1}),
- dengai:TR('helm','goatee',{}),xusheng:TR('helm','goatee',{}),wenchou:TR('helm','goatee',{fierce:1}),jiling:TR('helm','bushy',{}),yuanshu:TR('crown','goatee',{gold:1}),wenpin:TR('helm','goatee',{}),yanyan:TR('helm','long',{old:1,fierce:1}),handang:TR('band','goatee',{}),
+ dengai:TR('helm','goatee',{}),xusheng:TR('helm','goatee',{}),wenchou:TR('helm','goatee',{fierce:1}),jiling:TR('helm','bushy',{}),yuanshu:TR('crown','goatee',{gold:1}),wenpin:TR('helm','goatee',{}),yanyan:TR('helm','long',{old:1,fierce:1}),caoren:TR('helm','bushy',{}),zhoucang:TR('band','bushy',{sk:'d',fierce:1}),sunshangxiang:TR('lady','none',{fem:1,dress:['#d0503a','#8f2f22']}),haozhao:TR('helm','goatee',{fierce:1}),gongsunzan:TR('helm','stubble',{white:1}),zhugejin:TR('scholar','long',{robe:1}),liuxun:TR('helm','none',{}),handang:TR('band','goatee',{}),
  sunjian:TR('helm','goatee',{fierce:1}),diaochan:TR('lady','none',{fem:1,robe:1,dress:['#e48aa8','#b05a78']}),zhurong:TR('tribal','none',{fem:1,sk:'d',fierce:1})
 };
 function pxGrid(n,s){const c=document.createElement('canvas');c.width=c.height=n*s;const x=c.getContext('2d');return {c,p:(col,i,j,w=1,h=1)=>{if(!col||w<=0||h<=0)return;x.fillStyle=col;x.fillRect(i*s,j*s,w*s,h*s)}}}
@@ -1260,7 +1286,7 @@ let saveT=null, saving=false, dirty=false, lastPub='';
 function lsLoad(){try{return JSON.parse(localStorage.getItem(LSK)||'null')}catch(e){return null}}
 function lsSave(){try{localStorage.setItem(LSK,JSON.stringify(S))}catch(e){}}
 function save(){syncDeck();dirty=true;clearTimeout(saveT);saveT=setTimeout(flush,600)}
-function publicDoc(){const specs=defSpecs().filter(Boolean);return {name:MYNAME,deck:specs,power:deckPower(specs),stage:S.stage}}
+function publicDoc(){const specs=defSpecs().filter(Boolean);return {name:MYNAME,deck:specs,power:deckPower(specs),stage:S.stage,sg:siegePub()}}
 /* 기기 간 동기화: 저장할 때마다 번호(rev)를 1씩 올려요. 서버 번호가 내가 아는 번호보다 크면
    다른 기기(탭)가 먼저 저장한 것이므로 덮어쓰지 않고 어느 기록을 쓸지 물어봐요. */
 let baseRev=0, conflictData=null, saveSt='', saveAt=0, lastCheck=0;
@@ -1405,7 +1431,7 @@ function duelTick(){
 }
 function cleanPlayer(d){
   const deck=capFive((Array.isArray(d&&d.deck)?d.deck:[]).slice(0,5).filter(s=>s&&GMAP[s.g]).map(s=>({g:s.g,lv:Math.min(MAXLV,Math.max(1,s.lv|0)),d:Math.min(maxD(GMAP[s.g].rar),Math.max(0,s.d|0)),i:itemsOf(s.i).map(o=>o.it.id+':'+o.d),cb:cleanCb(s.cb),p:Number.isInteger(s.p)&&s.p>=0&&s.p<5?s.p:undefined,f:FORM[s.f]?s.f:undefined})));
-  return {name:cleanName(d&&d.name),deck,stage:Math.min(NSTAGE,Math.max(0,(d&&d.stage)|0)),at:Number(d&&d.at)||0};
+  return {name:cleanName(d&&d.name),deck,stage:Math.min(NSTAGE,Math.max(0,(d&&d.stage)|0)),at:Number(d&&d.at)||0,sg:cleanSg(d&&d.sg)};
 }
 
 /* ---------------- login / settings ---------------- */
@@ -1470,10 +1496,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='1.20.2';
+const GAME_VERSION='2.0.0';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'2.0.0',date:'2026-10-15',title:'v2.0 · 수성전 9곳 · 주간 순위 · 새 장수 4명',reward:{ap:30,food:1000},items:[
+  '수성전 성이 9곳으로 늘었어요: 합비·소패·진창·번성·강릉·사수관·낙성·하비·역경. 매주 월요일 0시에 3곳이 열리고, 같은 성은 2주 연속 나오지 않아요.',
+  '성마다 그 주의 적 성향(무작위·보병·기병·궁병·책사 위주)이 정해져요. 수성전 화면에서 다음 주에 열릴 성과 적 성향을 미리 볼 수 있어요.',
+  '성마다 보상이 달라요: 금(합비·강릉·하비), 군량(소패·번성), 금+군량(진창·낙성), 보물 획득권(사수관·역경). 어려운 성일수록 1턴 보상이 조금 더 많아요.',
+  '하루 도전은 성마다 5판이에요(열리는 성이 3곳이라 하루 최대 15판).',
+  '주간 순위가 생겼어요. 성마다 이번 주 최고 기록(버틴 턴 → 남은 성 체력 순)으로 줄 세우고, 군주를 누르면 수비 진형과 보물을 볼 수 있어요. 기록을 깰 때만 저장돼요.',
+  '수성 명장: 그 성을 지켰던 장수(합비 장료, 소패 유비, 진창 학소, 번성·강릉 조인, 사수관 화웅, 낙성 유순, 하비 여포·진궁·고순, 역경 공손찬)가 진형에 있으면 성 체력 +10%.',
+  '새 장수 7명: 학소(★4 위·보병), 공손찬(★4 군웅·기병), 손상향(★4 오·궁병), 조인(★3 위·기병), 제갈근(★3 오·책사), 주창(★3 촉·보병), 유순(★3 군웅·보병). 새 인연 12개도 생겼어요. 나라별 장수 수는 촉 14 · 위 15 · 오 15 · 군웅 15명이에요.']},
  {v:'1.20.2',date:'2026-10-14',title:'수성전 · 진형 배치(돌격진·기본진·수비진)',reward:{ap:20},items:[
   '결투장 탭에 수성전이 생겼어요. 합비(손권)와 소패(여포)를 지켜요. 적이 내 장수를 때린 피해는 성 체력(내 진형 전투력 × 4)에서 빠지고, 내 장수는 쓰러지지 않아요.',
   '적 무리를 모두 물리치면 다음 무리가 1.35배 강해져서 몰려와요. 성이 무너질 때까지 버틴 턴만큼 합비는 금, 소패는 군량을 받아요(최대 150턴).',
@@ -2127,62 +2161,132 @@ try{if(localStorage.getItem(WORK_K)==='1')applyWork(true)}catch(e){}
 document.addEventListener('click',e=>{if(e.target.closest('#work-btn'))applyWork(!document.documentElement.classList.contains('work'))});
 document.addEventListener('keydown',e=>{if(e.key==='`'&&!e.target.closest('input,textarea')&&!e.ctrlKey&&!e.metaKey&&!e.altKey){e.preventDefault();applyWork(!document.documentElement.classList.contains('work'))}});
 
-/* ---------------- 수성전 (v1.20.2) ----------------
+/* ---------------- 수성전 (v2.0.0) ----------------
    내 진형이 성을 지켜요. 적이 내 장수를 때린 피해는 성 체력에서 빠지고, 내 장수는 쓰러지지 않아요(회복·흡혈은 30% 효율로 성 체력 회복).
-   적 무리를 모두 쓰러뜨리면 다음 무리가 1.35배 강해져서 들어와요. 성이 무너질 때까지 버틴 턴만큼 보상. */
+   적 무리를 모두 쓰러뜨리면 다음 무리가 1.35배 강해져서 들어와요. 성이 무너질 때까지 버틴 턴만큼 보상.
+   성 9곳 중 매주 3곳이 열리고(월요일 0시 기준, 2주 연속 같은 성은 나오지 않음), 성마다 그 주의 적 성향이 정해져요.
+   보상(1턴당, 시간당 생산량 대비)은 성마다 난이도(시뮬레이션 평균 턴)를 반영한 배율을 곱했어요. 보물 획득권은 군량 1.5%와 같은 가치(1장=군량 80). */
 const SIEGE={
-  hefei:{n:'합비',hz:'合肥',boss:'sunquan',res:'gold',k:.06,d:'장료가 손권의 대군을 막아 낸 성. 손권과 장수들이 몰려와요.'},
-  xiaopei:{n:'소패',hz:'小沛',boss:'lubu',res:'food',k:.015,d:'유비가 여포의 공격을 막아 낸 성. 여포와 장수들이 몰려와요.'}};
-const SIEGE_K=4, SIEGE_DAILY=8, SIEGE_MAXR=150, SIEGE_HEAL=.3, SIEGE_BASE=.8, SIEGE_GROW=1.35;
+  hefei:{n:'합비',hz:'合肥',boss:'sunquan',def:['zhangliao'],rw:{gold:.06},d:'215년 장료가 손권의 대군을 막아 낸 성. 손권과 장수들이 몰려와요.'},
+  xiaopei:{n:'소패',hz:'小沛',boss:'lubu',def:['liubei'],rw:{food:.0165},d:'유비가 여포의 공격을 막아 낸 성. 여포와 장수들이 몰려와요.'},
+  chencang:{n:'진창',hz:'陳倉',boss:'zhugeliang',def:['haozhao'],rw:{gold:.033,food:.0083},d:'229년 학소가 1천여 명으로 제갈량의 대군을 20여 일 막아 낸 성.'},
+  fancheng:{n:'번성',hz:'樊城',boss:'guanyu',def:['caoren'],rw:{food:.0165},d:'219년 조인이 관우의 포위와 홍수를 견디고 지켜 낸 성.'},
+  jiangling:{n:'강릉',hz:'江陵',boss:'zhouyu',def:['caoren'],rw:{gold:.072},d:'208~209년 조인이 적벽 이후 주유의 공격을 1년 넘게 막아 낸 성.'},
+  sishui:{n:'사수관',hz:'汜水關',boss:'sunjian',def:['huaxiong'],rw:{itk:.0165},d:'연의에서 동탁군 화웅이 손견을 물리친 관문.'},
+  luocheng:{n:'낙성',hz:'雒城',boss:'liubei',def:['liuxun'],rw:{gold:.03,food:.0075},d:'214년 유순이 유비군을 1년 가까이 막아 낸 성. 방통이 이곳에서 전사했어요.'},
+  xiapi:{n:'하비',hz:'下邳',boss:'caocao',def:['lubu','chengong','gaoshun'],rw:{gold:.069},d:'198년 여포가 조조의 포위를 버티다 함락된 성.'},
+  yijing:{n:'역경',hz:'易京',boss:'yuanshao',def:['gongsunzan'],rw:{itk:.0158},d:'199년 공손찬이 성채를 쌓고 원소에 맞서 버틴 곳.'}
+};
+const SIEGE_K=4, SIEGE_DAILY=5, SIEGE_MAXR=150, SIEGE_HEAL=.3, SIEGE_BASE=.8, SIEGE_GROW=1.35, SIEGE_HERO=.10;
+const SIEGE_EPOCH=Date.UTC(2026,9,11,15);   // 2026-10-12(월) 0시 KST
+const SIEGE_WEEK0=['hefei','xiaopei','chencang'];
+const TEND={any:{n:'무작위',d:'모든 병종이 섞여 와요'},inf:{n:'보병 위주',d:'보병이 몰려와요'},cav:{n:'기병 위주',d:'기병이 몰려와요'},arc:{n:'궁병 위주',d:'궁병이 몰려와요'},tac:{n:'책사 위주',d:'책사가 몰려와요'}};
+const RES_L={gold:['金','금'],food:['糧','군량'],itk:['券','보물 획득권']};
 const siegeCdMin=t=>Math.min(120,10+Math.max(0,t-1)*110/99);
-function siegeState(){const d=kstDay();if(!S.siege||typeof S.siege!=='object')S.siege={};const s=S.siege;
-  if(s.day!==d){s.day=d;s.n={hefei:0,xiaopei:0}}if(!s.n)s.n={hefei:0,xiaopei:0};if(!s.cd)s.cd={};if(!s.best)s.best={};return s}
-function cleanSiege(x){if(!x||typeof x!=='object')return {};const o={day:typeof x.day==='string'?x.day:'',n:{},cd:{},best:{}};
-  for(const k of Object.keys(SIEGE)){o.n[k]=Math.min(SIEGE_DAILY,Math.max(0,(x.n&&x.n[k])|0));const c=Number(x.cd&&x.cd[k])||0;o.cd[k]=Math.min(c,Date.now()+121*60000);o.best[k]=Math.min(SIEGE_MAXR,Math.max(0,(x.best&&x.best[k])|0))}return o}
-function siegeWave(key,seed,lv,itd){
+const weekIdx=(t=Date.now())=>Math.floor((t-SIEGE_EPOCH)/(7*864e5));
+const weekRange=w=>{const a=new Date(SIEGE_EPOCH+w*7*864e5+9*3600e3),b=new Date(a.getTime()+6*864e5);return `${a.getUTCMonth()+1}/${a.getUTCDate()}~${b.getUTCMonth()+1}/${b.getUTCDate()}`};
+let _sweek={};
+function siegeWeek(w){
+  w=Math.max(0,w|0);if(_sweek[w])return _sweek[w];
+  let prev=[];const keys=Object.keys(SIEGE),TK=Object.keys(TEND);
+  for(let i=0;i<=w;i++){
+    if(_sweek[i]){prev=_sweek[i].keys;continue}
+    const r=mulberry(90001+i*7919);let pick;
+    if(i===0)pick=SIEGE_WEEK0.slice();
+    else{const av=keys.filter(k=>!prev.includes(k));for(let j=av.length-1;j>0;j--){const k=Math.floor(r()*(j+1));[av[j],av[k]]=[av[k],av[j]]}pick=av.slice(0,3)}
+    const tend={};pick.forEach(k=>tend[k]=TK[Math.floor(r()*TK.length)]);
+    _sweek[i]={keys:pick,tend};prev=pick;
+  }
+  return _sweek[w];
+}
+function siegeState(){const d=kstDay(),w=weekIdx();if(!S.siege||typeof S.siege!=='object')S.siege={};const s=S.siege;
+  if(s.day!==d){s.day=d;s.n={}}if(!s.n)s.n={};if(!s.cd)s.cd={};if(s.w!==w){s.w=w;s.wb={}}if(!s.wb)s.wb={};return s}
+function cleanSpecs(a){return capFive((Array.isArray(a)?a:[]).slice(0,5).filter(s=>s&&GMAP[s.g]).map(s=>({g:s.g,lv:Math.min(MAXLV,Math.max(1,s.lv|0)),d:Math.min(maxD(GMAP[s.g].rar),Math.max(0,s.d|0)),i:itemsOf(s.i).map(o=>o.it.id+':'+o.d),p:Number.isInteger(s.p)&&s.p>=0&&s.p<5?s.p:undefined,f:FORM[s.f]?s.f:undefined})))}
+function cleanRec(x){if(!x||typeof x!=='object')return null;const t=Math.min(SIEGE_MAXR,Math.max(0,x.t|0));if(!t)return null;return {t,hp:Math.min(100,Math.max(0,x.hp|0)),d:cleanSpecs(x.d)}}
+function cleanSiege(x){if(!x||typeof x!=='object')return {};const o={day:typeof x.day==='string'?x.day:'',w:Number.isInteger(x.w)?x.w:-1,n:{},cd:{},wb:{}};
+  for(const k of Object.keys(SIEGE)){o.n[k]=Math.min(SIEGE_DAILY,Math.max(0,(x.n&&x.n[k])|0));const c=Number(x.cd&&x.cd[k])||0;if(c)o.cd[k]=Math.min(c,Date.now()+121*60000);const r=cleanRec(x.wb&&x.wb[k]);if(r)o.wb[k]=r}return o}
+// 공개 문서에 넣는 이번 주 기록 (기록을 깰 때만 바뀌어요)
+function siegePub(){const s=S&&S.siege;if(!s||s.w!==weekIdx()||!s.wb||!Object.keys(s.wb).length)return null;const r={};for(const[k,v]of Object.entries(s.wb))r[k]={t:v.t,hp:v.hp,d:v.d};return {w:s.w,r}}
+function cleanSg(x){if(!x||typeof x!=='object'||!Number.isInteger(x.w))return null;const r={};for(const k of Object.keys(SIEGE)){const v=cleanRec(x.r&&x.r[k]);if(v)r[k]=v}return {w:x.w,r}}
+function siegeWave(key,seed,lv,itd,tend){
   const C=SIEGE[key];
-  return n=>{const r=mulberry(seed*977+n*131);const pool=Object.keys(GMAP).filter(g=>g!==C.boss);const pick=[C.boss];let n5=GMAP[C.boss].rar===5?1:0,guard=0;
-    while(pick.length<5&&guard++<500){const g=pool[Math.floor(r()*pool.length)];if(pick.includes(g))continue;if(GMAP[g].rar===5){if(n5>=MAX5)continue;n5++}pick.push(g)}
+  return n=>{const r=mulberry(seed*977+n*131);const pool=Object.keys(GMAP).filter(g=>g!==C.boss&&(!tend||tend==='any'||GMAP[g].cls===tend));const pick=[C.boss];let n5=GMAP[C.boss].rar===5?1:0,guard=0;
+    while(pick.length<5&&guard++<800){const g=pool[Math.floor(r()*pool.length)];if(pick.includes(g))continue;if(GMAP[g].rar===5){if(n5>=MAX5)continue;n5++}pick.push(g)}
     const sc=SIEGE_BASE*Math.pow(SIEGE_GROW,n-1);
     return pick.map((g,i)=>({g,lv,d:Math.floor(r()*(maxD(GMAP[g].rar)+1)),i:Array.from({length:3},()=>ITEMS[Math.floor(r()*ITEMS.length)].id+':'+Math.floor(r()*(itd+1))),sc,p:i,f:'basic'}))};
 }
-function siegeParams(){
+function siegeHero(key){const C=SIEGE[key];return C.def.filter(g=>S.deck.includes(g))}
+function siegeParams(key){
   const mine=mySpecs(), f=mine.filter(Boolean), pw=deckPower(mine);
   const lv=f.length?Math.round(f.reduce((a,s)=>a+s.lv,0)/f.length):1;
   const ds=f.flatMap(s=>itemsOf(s.i).map(o=>o.d)), itd=ds.length?Math.round(ds.reduce((a,b)=>a+b,0)/ds.length):0;
-  return {mine,pw,hp:Math.round(pw*SIEGE_K),lv,itd};
+  const hero=key?siegeHero(key).length>0:false;
+  return {mine,pw,hp:Math.round(pw*SIEGE_K*(hero?1+SIEGE_HERO:1)),lv,itd,hero};
 }
-const siegeRate=key=>SIEGE[key].res==='gold'?goldRate()*SIEGE[key].k:foodRate()*SIEGE[key].k;
+// 1턴당 보상
+function siegeRate(key){const rw=SIEGE[key].rw,o={};if(rw.gold)o.gold=goldRate()*rw.gold;if(rw.food)o.food=foodRate()*rw.food;if(rw.itk)o.itk=foodRate()*rw.itk/ICOST[1];return o}
+function siegeReward(key,t){const r=siegeRate(key),o={};for(const[k,v]of Object.entries(r)){o[k]=k==='itk'?Math.max(t>=10?1:0,Math.floor(t*v)):Math.round(t*v)}return o}
+const rwText=o=>Object.entries(o).map(([k,v])=>`<span class="coin"><b class="sl ${k==='itk'?'gold':k}">${RES_L[k][0]}</b>+${fmt(v)}</span>`).join(' ');
+const rateText=o=>Object.entries(o).map(([k,v])=>`${RES_L[k][0]} ${k==='itk'?(v>=1?fmt(Math.round(v*10)/10):`${Math.max(1,Math.round(1/v))}턴당 1장`):fmt(Math.round(v*10)/10)}`).join(' · ');
 function hms(ms){const t=Math.max(0,Math.ceil(ms/1000)),h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(s).padStart(2,'0')}
+function siegeRank(key){
+  const w=weekIdx(), rows=[];
+  (PLAYERS||[]).forEach(p=>{if(p.id===UID)return;const v=p.sg&&p.sg.w===w&&p.sg.r[key];if(v)rows.push({id:p.id,...v})});
+  const me=S.siege&&S.siege.w===w&&S.siege.wb[key];if(me)rows.push({id:UID||'me',...me,me:1});
+  return rows.sort((a,b)=>b.t-a.t||b.hp-a.hp);
+}
 function vSiege(){
-  const st=siegeState(), P=siegeParams();
-  let h=`<p class="sub">성을 지키는 싸움이에요. 적이 내 장수를 때린 피해는 <b style="color:var(--fg)">성 체력</b>에서 빠지고 내 장수는 쓰러지지 않아요. 적 무리를 모두 물리치면 다음 무리가 ${SIEGE_GROW}배 강해져서 몰려와요. 성이 무너질 때까지 버틴 턴만큼 보상을 받아요(최대 ${SIEGE_MAXR}턴).</p>
+  const st=siegeState(), w=weekIdx(), W=siegeWeek(w), N=siegeWeek(w+1), P=siegeParams();
+  let h=`<p class="sub">성을 지키는 싸움이에요. 적이 내 장수를 때린 피해는 <b style="color:var(--fg)">성 체력</b>에서 빠지고 내 장수는 쓰러지지 않아요. 적 무리를 물리치면 다음 무리가 ${SIEGE_GROW}배 강해져서 몰려와요. 버틴 턴만큼 보상을 받아요(최대 ${SIEGE_MAXR}턴).</p>
    ${deckQuickHtml('수비 진형')}
-   <div class="stats" style="grid-template-columns:1fr 1fr;margin:6px 0 12px"><div class="stat"><small>성 체력 (전투력 × ${SIEGE_K})</small><b>${fmt(P.hp)}</b></div><div class="stat"><small>배치</small><b>${FORM[curForm()].n}</b></div></div>`;
-  for(const [key,C] of Object.entries(SIEGE)){
-    const cd=(st.cd[key]||0)-Date.now(), left=SIEGE_DAILY-st.n[key], boss=GMAP[C.boss], rate=siegeRate(key);
-    h+=`<div class="banner-card" style="margin-bottom:12px"><div class="big">${C.hz}</div><div class="row">${seal(boss,'sm')}<div><h2 style="margin:0">${C.n} 수성전</h2><div class="sub" style="margin:0">${esc(C.d)}</div></div></div>
-     <div class="stats" style="grid-template-columns:repeat(3,1fr);margin:10px 0"><div class="stat"><small>1턴 보상</small><b>${C.res==='gold'?'金':'糧'} ${fmt(Math.round(rate*10)/10)}</b></div><div class="stat"><small>오늘</small><b>${st.n[key]}/${SIEGE_DAILY}</b></div><div class="stat"><small>최고 기록</small><b>${st.best[key]?st.best[key]+'턴':'-'}</b></div></div>
-     ${left<=0?`<button type="button" class="btn wide" disabled>오늘 도전을 모두 했어요</button>`:cd>0?`<button type="button" class="btn wide" disabled>다시 도전까지 <span data-scd="${st.cd[key]}">${hms(cd)}</span></button>`:`<button type="button" class="btn wide red" data-siege="${key}" ${P.mine.some(Boolean)?'':'disabled'}>${C.n} 지키기</button>`}</div>`;
+   <div class="stats" style="grid-template-columns:1fr 1fr;margin:6px 0 10px"><div class="stat"><small>성 체력 (전투력 × ${SIEGE_K})</small><b>${fmt(P.hp)}</b></div><div class="stat"><small>배치</small><b>${FORM[curForm()].n}</b></div></div>
+   <div class="row" style="margin:0 0 8px"><h3 style="margin:0">이번 주 수성전</h3><span class="sp"></span><span class="chip">${weekRange(w)}</span></div>`;
+  for(const key of W.keys){
+    const C=SIEGE[key], cd=(st.cd[key]||0)-Date.now(), used=st.n[key]||0, left=SIEGE_DAILY-used, boss=GMAP[C.boss], hero=siegeHero(key), best=st.wb[key], rk=siegeRank(key), myR=rk.findIndex(r=>r.me);
+    const tn=W.tend[key];
+    h+=`<div class="banner-card" style="margin-bottom:12px"><div class="big">${C.hz}</div><div class="row" style="flex-wrap:nowrap">${seal(boss,'sm')}<div style="min-width:0"><h2 style="margin:0">${C.n} <span class="chip">${TEND[tn].n}</span></h2><div class="sub" style="margin:0">${esc(C.d)}</div></div></div>
+     ${C.def.length?`<p class="sub" style="margin:6px 0 0;font-size:12px">수성 명장: ${C.def.map(g=>`<b style="color:${S.deck.includes(g)?'var(--jade)':'var(--mute)'}">${esc(GMAP[g].name)}</b>`).join(' · ')} — 진형에 있으면 성 체력 +${SIEGE_HERO*100}%${hero.length?' (적용 중)':''}</p>`:''}
+     <div class="stats" style="grid-template-columns:repeat(3,1fr);margin:10px 0"><div class="stat"><small>1턴 보상</small><b style="font-size:13px">${rateText(siegeRate(key))}</b></div><div class="stat"><small>오늘</small><b>${used}/${SIEGE_DAILY}</b></div><div class="stat"><small>이번 주 내 기록</small><b>${best?best.t+'턴':'-'}${myR>=0?` <small style="display:inline;color:var(--mute)">${myR+1}위</small>`:''}</b></div></div>
+     <div class="row" style="gap:8px;flex-wrap:nowrap"><button type="button" class="btn ghost" data-srank="${key}">순위 ${rk.length?`(${rk.length})`:''}</button>
+     ${left<=0?`<button type="button" class="btn" style="flex:1" disabled>오늘 도전을 모두 했어요</button>`:cd>0?`<button type="button" class="btn" style="flex:1" disabled>다시 도전까지 <span data-scd="${st.cd[key]}">${hms(cd)}</span></button>`:`<button type="button" class="btn red" style="flex:1" data-siege="${key}" ${P.mine.some(Boolean)?'':'disabled'}>${C.n} 지키기</button>`}</div></div>`;
   }
-  h+=`<p class="sub" style="font-size:12px">재도전 대기: 버틴 턴에 비례해 1턴 10분 ~ 100턴 이상 2시간. 성마다 하루 ${SIEGE_DAILY}판. 적은 손권·여포 고정에 무작위 장수 4명이고, 레벨은 내 진형 평균, 보물은 무작위(강화는 내 보물 평균까지)예요.</p>`;
+  h+=`<div class="labbox" style="margin-bottom:10px"><div class="row"><h3 style="margin:0">다음 주 예고</h3><span class="sp"></span><span class="chip">${weekRange(w+1)}</span></div>
+    <div class="list" style="margin-top:8px">${N.keys.map(k=>{const C=SIEGE[k];return `<div class="li">${seal(GMAP[C.boss],'sm')}<div class="info"><b>${C.n} <span class="chip">${TEND[N.tend[k]].n}</span></b><span>${esc(GMAP[C.boss].name)} 공격 · ${Object.keys(C.rw).map(r=>RES_L[r][1]).join('+')}${C.def.length?` · 수성 명장 ${C.def.map(g=>GMAP[g].name).join('·')}`:''}</span></div></div>`}).join('')}</div>
+    <p class="sub" style="margin:6px 0 0;font-size:12px">미리 진형과 보물을 준비해 두세요. 적 성향에 맞춰 상성이 좋은 병종을 넣으면 오래 버텨요.</p></div>
+   <p class="sub" style="font-size:12px">재도전 대기: 버틴 턴에 비례해 1턴 10분 ~ 100턴 이상 2시간. 성마다 하루 ${SIEGE_DAILY}판. 순위는 매주 월요일 0시에 새로 시작하고, 버틴 턴이 같으면 남은 성 체력이 많은 쪽이 위예요. 적은 고정 장수 1명 + 그 주 성향에 맞는 무작위 장수 4명이고, 레벨은 내 진형 평균, 보물은 무작위(강화는 내 보물 평균까지)예요.</p>`;
   return h;
 }
-function siegeGo(key){
-  const C=SIEGE[key], st=siegeState();
-  if(st.n[key]>=SIEGE_DAILY){toast('오늘 도전을 모두 했어요');return}
-  if((st.cd[key]||0)>Date.now()){toast('아직 재도전 대기 중이에요');return}
-  const P=siegeParams();if(!P.mine.some(Boolean)){toast('진형을 먼저 편성하세요');return}
-  const seed=(Math.random()*2**31)|0, wave=siegeWave(key,seed,P.lv,P.itd);
-  const res=simulate(P.mine,wave(1),seed,{rounds:SIEGE_MAXR,siege:{hp:P.hp,wave}});
-  const t=res.turns, amt=Math.round(t*siegeRate(key)), cdm=siegeCdMin(t);
-  if(C.res==='gold')S.gold+=amt;else S.food+=amt;
-  st.n[key]++;st.cd[key]=Date.now()+Math.round(cdm*60000);st.best[key]=Math.max(st.best[key]||0,t);save();renderTop();
-  playBattle(res,`${C.n} 수성전`,'수비군 (내 진형)',`공격군 · ${GMAP[C.boss].name}`,()=>`<p class="sub">${t}턴 동안 버텼어요 · 제${res.waves}파까지${res.win?' · 끝까지 지켜 냈어요':''}</p>
-     <div class="row" style="justify-content:center"><span class="coin"><b class="sl ${C.res}">${C.res==='gold'?'金':'糧'}</b>+${fmt(amt)}</span></div>
-     <p class="sub">다음 도전까지 ${Math.round(cdm)}분 · 오늘 ${st.n[key]}/${SIEGE_DAILY}</p>`,{siege:{max:P.hp},verdict:{stamp:'守',lab:`${t}턴 수성`}});
+function openSiegeRank(key,sel){
+  const C=SIEGE[key], rk=siegeRank(key), w=weekIdx();
+  const det=sel!=null&&rk[sel]?rk[sel]:null;
+  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${C.n} 수성전 순위</h2><div class="sub" style="margin:0">${weekRange(w)} · ${TEND[siegeWeek(w).tend[key]]?TEND[siegeWeek(w).tend[key]].n:''}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   ${rk.length?`<div class="list">${rk.map((r,i)=>`<button type="button" class="li ${r.me?'me':''}" data-srk="${key}:${i}" style="text-align:left;${i===sel?'border-color:var(--bronze)':''}"><span class="rank">${i+1}</span><div class="info"><b ${r.me?'':`data-uid="${esc(r.id)}"`}>${r.me?'나':'…'}</b><span>${r.t}턴${r.t>=SIEGE_MAXR?' · 끝까지 지킴':''} · 남은 성 체력 ${r.hp}% · ${FORM[(r.d[0]&&r.d[0].f)||'basic'].n}</span></div></button>`).join('')}</div>`:'<div class="empty-state"><b>守</b>이번 주 기록이 아직 없어요.</div>'}
+   ${det?`<h3>수비 진형 · ${FORM[(det.d[0]&&det.d[0].f)||'basic'].n}</h3><div class="list">${det.d.map((s,k)=>{const b=GMAP[s.g],its=itemsOf(s.i),pp=s.p!=null?s.p:k;return `<div class="li" style="align-items:flex-start">${seal(b,'sm')}<div class="info"><b>${pp+1}번 ${posOf(pp,s.f||'basic')} · ${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span></b><span>${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${s.lv} · ${dupHtml(s.d,1,maxD(b.rar))}</span><span>${its.length?its.map(({it,d})=>`${esc(it.name)}${d?' +'+d:''}`).join(' · '):'보물 없음'}</span></div></div>`}).join('')}</div>`:rk.length?'<p class="sub" style="margin-top:8px">군주를 누르면 수비 진형과 보물을 볼 수 있어요.</p>':''}`);
+  if(typeof fillNames==='function')fillNames();
 }
-document.addEventListener('click',e=>{const b=e.target.closest('[data-siege]');if(b&&!b.disabled)siegeGo(b.dataset.siege)});
+function siegeGo(key){
+  const C=SIEGE[key], st=siegeState(), W=siegeWeek(weekIdx());
+  if(!W.keys.includes(key)){toast('이번 주에 열린 성이 아니에요');return}
+  if((st.n[key]||0)>=SIEGE_DAILY){toast('오늘 도전을 모두 했어요');return}
+  if((st.cd[key]||0)>Date.now()){toast('아직 재도전 대기 중이에요');return}
+  const P=siegeParams(key);if(!P.mine.some(Boolean)){toast('진형을 먼저 편성하세요');return}
+  const seed=(Math.random()*2**31)|0, wave=siegeWave(key,seed,P.lv,P.itd,W.tend[key]);
+  const res=simulate(P.mine,wave(1),seed,{rounds:SIEGE_MAXR,siege:{hp:P.hp,wave}});
+  const t=res.turns, hpPct=Math.round(Math.max(0,res.castle)/res.castleMax*100), rw=siegeReward(key,t), cdm=siegeCdMin(t);
+  if(rw.gold)S.gold+=rw.gold;if(rw.food)S.food+=rw.food;if(rw.itk)S.itk=Math.min(9999,(S.itk||0)+rw.itk);
+  st.n[key]=(st.n[key]||0)+1;st.cd[key]=Date.now()+Math.round(cdm*60000);
+  const old=st.wb[key], better=!old||t>old.t||(t===old.t&&hpPct>old.hp);
+  if(better)st.wb[key]={t,hp:hpPct,d:cleanSpecs(P.mine.filter(Boolean))};
+  save();renderTop();
+  playBattle(res,`${C.n} 수성전`,'수비군 (내 진형)',`공격군 · ${GMAP[C.boss].name}`,()=>`<p class="sub">${t}턴 동안 버텼어요 · 제${res.waves}파까지${res.win?' · 끝까지 지켜 냈어요':''}${P.hero?' · 수성 명장 효과':''}</p>
+     <div class="row" style="justify-content:center;gap:6px">${rwText(rw)}</div>
+     <p class="sub">${better?'<b style="color:var(--bronze)">이번 주 최고 기록!</b> · ':''}다음 도전까지 ${Math.round(cdm)}분 · 오늘 ${st.n[key]}/${SIEGE_DAILY}</p>`,{siege:{max:P.hp},verdict:{stamp:'守',lab:`${t}턴 수성`}});
+}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-siege]');if(b&&!b.disabled){siegeGo(b.dataset.siege);return}
+  const r=e.target.closest('[data-srank]');if(r){openSiegeRank(r.dataset.srank);return}
+  const k=e.target.closest('[data-srk]');if(k){const[key,i]=k.dataset.srk.split(':');openSiegeRank(key,+i);return}
+});
 /* ---------------- 추천 편성 ----------------
    고정한 장수(자리 그대로)와 고정한 보물은 두고, 남은 자리와 보물 칸을 추천으로 채워요.
    1) 장수: 진영·연합군·인연 효과까지 넣은 진형 점수가 가장 높은 조합을 찾아요(여러 출발점 + 한 명씩 바꿔 보기)
