@@ -409,7 +409,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v3.1.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v3.2.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1611,10 +1611,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='3.1.0';
+const GAME_VERSION='3.2.0';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.2.0',date:'2026-10-15',title:'덱코드',items:[
+  '둔영의 [덱코드]로 지금 진형을 코드로 복사해 친구에게 보낼 수 있어요. 카카오톡에 그대로 붙여 넣으면 돼요.',
+  '받은 덱코드를 붙여 넣으면 지금 진형에 덮어쓰거나, 새 진형으로 저장하거나, 연무장 공격덱·방어덱으로 불러올 수 있어요.',
+  '덱코드에는 장수 6자리, 배치, 진형 이름, 보물 종류가 들어가요. 자리 레벨·돌파·보물 강화 수치는 들어가지 않아요. 복사할 때 \'보물 포함\'을 끄면 보물은 빼고 보내요.',
+  '내 진형으로 불러오면 가진 장수와 보물만 같은 자리에 들어가고, 없는 장수는 빈 자리로 남아요. 연무장으로 불러오면 모든 장수와 보물이 그대로 들어가요(레벨·강화는 그 연무장 덱 설정).',
+  '연무장 덱에서도 [덱코드]로 복사하거나 불러올 수 있어요. 친구 덱을 방어덱에 넣고 추천 편성으로 이기는 진형을 찾아보세요.',
+  '연무장의 [내 진형에 적용]에서 \'새 진형으로 저장\'도 고를 수 있어요.',
+  '★5 3명 제한은 덱코드로 불러올 때도 그대로예요.']},
  {v:'3.1.0',date:'2026-10-15',title:'니니야 잠좀자라',reward:{gold:50000},items:[
   '추천 편성에서 병종을 1종만 골라도 추천받을 수 있어요. 궁병만, 책사만처럼 한 병종 위주의 진형을 찾아 줘요.',
   '고른 조건에 맞는 장수가 빈 자리보다 적으면, 맞는 장수를 모두 넣고 남는 자리는 다른 병종 장수 중 가장 잘 맞는 장수로 채워요(나라 조건을 함께 골랐다면 되도록 그 나라 장수로). 몇 자리를 다른 장수로 채웠는지 추천 화면과 결과에 보여 줘요.',
@@ -2336,7 +2344,7 @@ function vDeck(){
   <div class="chips deckbar" role="group" aria-label="진형 선택" style="margin:10px 0 6px">${S.decks.map((d,k)=>`<button type="button" data-dk="${k}" aria-pressed="${k===S.dk}">${esc(deckName(k))}${k===S.defDk?' <small class="defmk">防</small>':''}</button>`).join('')}${S.decks.length<DECK_MAX?'<button type="button" data-dkadd>＋ 새 진형</button>':''}</div>
   <div class="chips" role="group" aria-label="배치" style="margin:4px 0 2px"><span class="flab">배치</span>${Object.entries(FORM).map(([k,F2])=>`<button type="button" data-form="${k}" aria-pressed="${curForm()===k}" title="${esc(F2.d)} · ${esc(formAdvTxt(k))}">${F2.n} <small>${F2.r.join('-')}</small></button>`).join('')}<button type="button" data-formtab aria-label="진형 상성표">상성 ?</button></div>
   <p class="sub" style="font-size:12px;margin:0 0 8px">${FORM[curForm()].d}<br>상성: ${formAdvTxt(curForm())}</p>
-  <div class="row" style="gap:6px"><button type="button" class="btn ghost sm" data-dkname>이름 바꾸기</button>${isDef?'<span class="chip" style="border-color:var(--bronze);color:var(--bronze)">야전 방어 진형</span>':'<button type="button" class="btn ghost sm" data-dkdef>방어 진형으로 지정</button>'}${S.decks.length<DECK_MAX?'<button type="button" class="btn ghost sm" data-dkcopy>복제</button>':''}${S.decks.length>1?'<button type="button" class="btn ghost sm" data-dkdel>삭제</button>':''}<button type="button" class="btn ghost sm" data-tolab>연무장 공격덱으로 보내기</button></div>
+  <div class="row" style="gap:6px"><button type="button" class="btn ghost sm" data-dkname>이름 바꾸기</button>${isDef?'<span class="chip" style="border-color:var(--bronze);color:var(--bronze)">야전 방어 진형</span>':'<button type="button" class="btn ghost sm" data-dkdef>방어 진형으로 지정</button>'}${S.decks.length<DECK_MAX?'<button type="button" class="btn ghost sm" data-dkcopy>복제</button>':''}${S.decks.length>1?'<button type="button" class="btn ghost sm" data-dkdel>삭제</button>':''}<button type="button" class="btn ghost sm" data-tolab>연무장 공격덱으로 보내기</button><button type="button" class="btn ghost sm" data-dcode="mine">덱코드</button></div>
   <div class="row" style="margin:12px 0"><div><div class="sub" style="margin:0">총 전투력</div><div class="power num">${fmt(deckPower(specs))}</div></div><span class="sp"></span><button type="button" class="btn sm" id="rec-open">추천 편성</button></div>${teamBoxHtml(specs)}`;
   S.deck.forEach((gid,i)=>{
     const pos=`<div class="pos">${i+1}<small>${posOf(i)}</small></div>`;
@@ -2948,14 +2956,17 @@ function recApply(P,asNew){
     const D=labCur(REC_CTX.side);D.s=P.deck.map(g=>g?{g,i:(P.its[g]||[]).filter(k=>IMAP[k]).slice(0,ITEM_SLOTS)}:null);D.f=cleanForm(P.f);
     Object.assign(D,labClean({atk:[D]}).atk[0],{n:D.n});labSimOut='';save();closeSheet();renderView();toast(`${D.n}에 추천 덱을 적용했어요`);return;
   }
-  // 다른 진형의 보물 구성은 그대로 두고, 이 진형(또는 새 진형)에만 적용해요 (v3.1.0)
+  applyDeckPlan(P,asNew,'추천 '+(S.decks.length+1));
+  toast(`${asNew?'새 진형으로 저장했어요':'추천 진형을 적용했어요'} · 다른 진형의 보물은 그대로예요`);
+}
+// P={deck:[6자리],its:{장수:[보물 u]},f:배치}를 지금 진형(또는 새 진형)에 적용. 다른 진형의 보물 구성은 그대로 둬요 (v3.1.0)
+function applyDeckPlan(P,asNew,newName){
   syncDeck();
-  if(asNew){S.decks.push({n:('추천 '+(S.decks.length+1)).slice(0,12),g:P.deck.slice(),f:cleanForm(P.f),i:{}});S.dk=S.decks.length-1}
+  if(asNew){S.decks.push({n:cleanName(newName)||('진형 '+(S.decks.length+1)),g:P.deck.slice(),f:cleanForm(P.f),i:{}});S.dk=S.decks.length-1}
   const all=new Set(Object.values(P.its).flat());
   for(const[g,st]of Object.entries(S.gens)){if(P.its[g])continue;st.its=st.its.filter(u=>!all.has(u))}
   for(const[g,us]of Object.entries(P.its))if(S.gens[g])S.gens[g].its=us.slice(0,ITEM_SLOTS);
   S.deck=P.deck.slice();S.decks[S.dk].f=cleanForm(P.f);save();closeSheet();renderTop();renderView();
-  toast(`${asNew?'새 진형으로 저장했어요':'추천 진형을 적용했어요'} · 다른 진형의 보물은 그대로예요`);
 }
 document.addEventListener('click',e=>{
   if(e.target.closest('#rec-open')){openRec(null);return}
@@ -3277,7 +3288,7 @@ function labBoxHtml(side){
    <div class="row" style="gap:6px;margin:0 0 8px"><button type="button" class="btn sm" data-labrec="${side}">추천 편성</button><button type="button" class="btn ghost sm" data-labname="${side}">이름 바꾸기</button></div>
    ${teamBoxHtml(specs,1)}
    ${D.s.map((_,i)=>labSlotHtml(side,D,specs,i)).join('')}
-   <div class="row" style="gap:6px;flex-wrap:wrap"><button type="button" class="btn ghost sm" data-labfill="${side}">무작위 편성</button><button type="button" class="btn ghost sm" data-labcopy="${side}">내 진형 복사</button><button type="button" class="btn ghost sm" data-labapply="${side}">내 진형에 적용</button><span class="sp"></span><button type="button" class="btn ghost sm" data-labclear="${side}">비우기</button></div></div>`;
+   <div class="row" style="gap:6px;flex-wrap:wrap"><button type="button" class="btn ghost sm" data-labfill="${side}">무작위 편성</button><button type="button" class="btn ghost sm" data-labcopy="${side}">내 진형 복사</button><button type="button" class="btn ghost sm" data-labapply="${side}">내 진형에 적용</button><button type="button" class="btn ghost sm" data-dcode="${side}">덱코드</button><span class="sp"></span><button type="button" class="btn ghost sm" data-labclear="${side}">비우기</button></div></div>`;
 }
 function openLabName(side){
   const D=labCur(side);
@@ -3472,21 +3483,97 @@ function openLabApply(side){
   side=side==='def'?'def':'atk';const P=labApplyPlan(side), ok=P.some(r=>r.x&&r.own);
   const miss=P.filter(r=>r.x&&!r.own).length+P.reduce((a,r)=>a+(r.own?r.its.filter(o=>!o.it).length:0),0);
   openSheet(`<div class="sheet-h"><h2 style="margin:0">내 진형에 적용</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   <p class="sub" style="margin:0 0 10px">${esc(labCur(side).n)}의 장수 자리와 보물 배치를 지금 고른 내 진형 <b>${esc(deckName(S.dk))}</b>에 옮겨요. 자리 레벨·돌파·보물 강화 수치는 내 것 그대로이고, 다른 장수가 끼고 있던 보물은 옮겨 와요.${miss?' 보유하지 않은 장수·보물은 빠져요.':''}</p>
+   <p class="sub" style="margin:0 0 10px">${esc(labCur(side).n)}의 장수 자리와 보물 배치를 지금 고른 내 진형 <b>${esc(deckName(S.dk))}</b>이나 새 진형에 옮겨요. 자리 레벨·돌파·보물 강화 수치는 내 것 그대로이고, 다른 장수가 끼고 있던 보물은 옮겨 와요.${miss?' 보유하지 않은 장수·보물은 빠져요.':''}</p>
    <div class="list">${P.map(r=>{const pos=`<div class="pos">${r.i+1}<small>${posOf(r.i,labCur(side).f)}</small></div>`;
      if(!r.x)return `<div class="slot empty">${pos}<div class="info"><b>빈 자리</b></div></div>`;
      const g=GMAP[r.x.g];
      return `<div class="slot" style="${r.own?'':'opacity:.5'}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)}${r.own?` <span class="sub" style="font-size:12px">자리 Lv ${slotLv(r.i)}</span>`:' · 미보유 (빈 자리)'}</b>
       ${r.own?`<span>${r.its.length?r.its.map(o=>{const it=IMAP[o.k];return o.it?`${esc(it.name)}${o.it.d?' +'+o.it.d:''}${o.h&&o.h!==r.x.g?` (${esc(GMAP[o.h].name)}에게서)`:''}`:`<s>${esc(it.name)}</s> 미보유`}).join(' · '):'보물 없음'}</span>`:''}</div></div>`}).join('')}</div>
-   <div class="row" style="margin-top:14px;gap:8px"><button type="button" class="btn ghost" data-close>취소</button><button type="button" class="btn red" style="flex:1" id="lab-apply-yes" ${ok?'':'disabled'}>${ok?'내 진형에 적용':'보유한 장수가 없어요'}</button></div>`);
-  const y=$('#lab-apply-yes');if(y)y.onclick=()=>{
-    const nd=Array(NSLOT).fill(null);let moved=0;
-    for(const r of labApplyPlan(side)){if(!r.x||!r.own)continue;nd[r.i]=r.x.g;const us=[];
-      for(const o of r.its){if(!o.it)continue;const h=itemHolder(o.it.u);if(h&&h!==r.x.g){S.gens[h].its=S.gens[h].its.filter(u=>u!==o.it.u);moved++}us.push(o.it.u)}
-      S.gens[r.x.g].its=us.slice(0,ITEM_SLOTS)}
-    S.deck=nd;S.decks[S.dk].f=cleanForm(labCur(side).f);save();closeSheet();renderTop();renderView();toast(`${deckName(S.dk)}에 적용했어요 · 장수 ${nd.filter(Boolean).length}명${moved?` · 보물 ${moved}개 옮김`:''}`);
+   <div class="row" style="margin-top:14px;gap:8px"><button type="button" class="btn ghost" data-close>취소</button><button type="button" class="btn red" style="flex:1" id="lab-apply-yes" ${ok?'':'disabled'}>${ok?'지금 진형에 적용':'보유한 장수가 없어요'}</button></div>
+   ${ok&&S.decks.length<DECK_MAX?'<button type="button" class="btn ghost wide" id="lab-apply-new" style="margin-top:8px">새 진형으로 저장</button>':''}`);
+  const go=asNew=>{const D=labCur(side),P=ownPlan(D.s,D.f);applyDeckPlan(P,asNew,D.n);
+    toast(`${asNew?`새 진형 ${deckName(S.dk)}으로 저장했어요`:`${deckName(S.dk)}에 적용했어요`} · 장수 ${P.deck.filter(Boolean).length}명`)};
+  const y=$('#lab-apply-yes');if(y)y.onclick=()=>go(false);
+  const n=$('#lab-apply-new');if(n)n.onclick=()=>go(true);
+}
+// 연무장 덱·덱코드의 자리 [{g,i:[보물 종류]}]에서 내가 가진 장수·보물만 골라 applyDeckPlan용 계획으로
+function ownPlan(slots,f){
+  const deck=Array(NSLOT).fill(null),its={};let n5=0;
+  slots.forEach((x,i)=>{if(!x||!S.gens[x.g]||deck.includes(x.g))return;if(GMAP[x.g].rar===5&&++n5>MAX5)return;deck[i]=x.g;
+    its[x.g]=x.i.map(k=>S.items.find(y=>y.k===k)).filter(Boolean).map(y=>y.u).slice(0,ITEM_SLOTS)});
+  return {deck,its,f:cleanForm(f)};
+}
+/* ---------------- 덱코드 (v3.2.0) ----------------
+   "삼분덱:" 뒤에 {v,n,f,s:[[장수,[보물 종류]]|0 ×6]}를 base64url로. 레벨·돌파·강화 수치는 넣지 않아요.
+   불러올 때는 연무장 덱 검사(labClean)로 장수 중복·★5 3명·보물 중복·명마 1개를 걸러요. */
+const DCODE_PRE='삼분덱:';
+function deckCodeSrc(src){
+  if(src==='atk'||src==='def'){const D=labCur(src);return {n:D.n,f:cleanForm(D.f),s:D.s.map(x=>x?{g:x.g,i:x.i.slice()}:null)}}
+  return {n:deckName(S.dk),f:curForm(),s:S.deck.map(g=>g&&S.gens[g]?{g,i:S.gens[g].its.map(u=>(itemU(u)||{}).k).filter(Boolean)}:null)};
+}
+function deckCodeText(src,withIts){
+  const D=deckCodeSrc(src), o={v:1,n:D.n,f:D.f,s:D.s.map(x=>x?[x.g,withIts&&x.i.length?x.i:0]:0)};
+  const names=D.s.map(x=>x?GMAP[x.g].name:'빈 자리').join(' · ');
+  return `[연합 삼국지 덱코드] ${D.n} · ${FORM[D.f].n}\n${names}\n${DCODE_PRE}${b64e(JSON.stringify(o))}`;
+}
+function parseDeckCode(txt){
+  const m=String(txt||'').match(/삼분덱\s*[:：]\s*([A-Za-z0-9_-]{8,})/)||String(txt||'').trim().match(/^([A-Za-z0-9_-]{8,})$/);if(!m)return null;
+  let o;try{o=JSON.parse(b64d(m[1]))}catch(e){return null}
+  if(!o||typeof o!=='object'||!Array.isArray(o.s))return null;
+  const D=labClean({atk:[{n:o.n,f:o.f,s:o.s.slice(0,NSLOT).map(x=>Array.isArray(x)?{g:x[0],i:Array.isArray(x[1])?x[1]:[]}:null)}]}).atk[0];
+  if(!D.s.some(Boolean))return null;
+  return {n:cleanName(o.n)||'받은 진형',f:D.f,s:D.s};
+}
+async function copyText(t,box){
+  try{await navigator.clipboard.writeText(t);toast('덱코드를 복사했어요. 카카오톡 대화창에 붙여넣어 보내세요.');return}catch(e){}
+  if(box){box.focus();box.select();try{if(document.execCommand('copy')){toast('덱코드를 복사했어요');return}}catch(e){}}
+  toast('복사하지 못했어요. 코드 칸을 길게 눌러 복사해 주세요.');
+}
+const taStyle='width:100%;box-sizing:border-box;height:84px;background:var(--panel2);color:var(--fg);border:1px solid var(--line);border-radius:8px;font:12px var(--body);padding:8px;resize:vertical;word-break:break-all';
+let dcIts=true;
+function openDeckCode(src){
+  const lab=src==='atk'||src==='def', D=deckCodeSrc(src), has=D.s.some(Boolean);
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">덱코드</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <h3 style="margin:0 0 4px">코드 복사</h3>
+   <p class="sub" style="margin:0 0 8px">${lab?'연무장 ':''}<b>${esc(D.n)}</b>의 장수 자리·배치${dcIts?'·보물 종류':''}를 코드로 만들어요. 레벨·돌파·강화 수치는 들어가지 않아요.</p>
+   ${has?`<label class="row" style="gap:6px;margin:0 0 8px;font-size:14px"><input type="checkbox" id="dc-its" ${dcIts?'checked':''}> 보물 포함</label>
+   <textarea id="dc-out" readonly style="${taStyle}">${esc(deckCodeText(src,dcIts))}</textarea>
+   <button type="button" class="btn wide" id="dc-copy" style="margin:8px 0 16px">코드 복사</button>`:'<p class="sub" style="margin:0 0 16px">진형이 비어 있어요.</p>'}
+   <h3 style="margin:0 0 4px">코드 불러오기</h3>
+   <p class="sub" style="margin:0 0 8px">받은 메시지를 통째로 붙여 넣어도 돼요.</p>
+   <textarea id="dc-in" placeholder="${DCODE_PRE}…" style="${taStyle}"></textarea>
+   <button type="button" class="btn red wide" id="dc-load" style="margin-top:8px">불러오기</button>`);
+  const cb=$('#dc-its');if(cb)cb.onchange=()=>{dcIts=cb.checked;openDeckCode(src)};
+  const cp=$('#dc-copy');if(cp)cp.onclick=()=>copyText(deckCodeText(src,dcIts),$('#dc-out'));
+  $('#dc-load').onclick=()=>{const C=parseDeckCode($('#dc-in').value);if(!C){toast('덱코드를 읽지 못했어요. 코드를 빠짐없이 붙여 넣어 주세요.');return}
+    openDeckImport(C,lab?src+':'+(src==='atk'?S.lab.ai:S.lab.di):'cur')};
+}
+// 대상: cur(지금 진형) · new(새 진형) · atk:0~2 · def:0~2(연무장)
+function openDeckImport(C,tgt){
+  const lab=/^(atk|def):/.test(tgt), mine=!lab, P=ownPlan(C.s,C.f);
+  const tg=(k,l)=>`<button type="button" data-dctg="${k}" aria-pressed="${tgt===k}">${l}</button>`;
+  const opts=`<div class="chips" role="group" aria-label="내 진형" style="margin:0 0 6px"><span class="flab">내 진형</span>${tg('cur',`지금 진형 (${esc(deckName(S.dk))})`)}${S.decks.length<DECK_MAX?tg('new','새 진형'):''}</div>`
+    +['atk','def'].map(sd=>`<div class="chips" role="group" aria-label="연무장 ${sd==='atk'?'공격덱':'방어덱'}" style="margin:0 0 6px"><span class="flab">연무장 ${sd==='atk'?'공격':'방어'}</span>${S.lab[sd].map((x,k)=>tg(sd+':'+k,esc(x.n))).join('')}</div>`).join('');
+  const miss=mine?C.s.filter(x=>x&&!P.deck.includes(x.g)).length:0;
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">덱코드 불러오기</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub" style="margin:0 0 8px"><b>${esc(C.n)}</b> · ${FORM[C.f].n}</p>
+   <div style="margin:0 0 8px">${opts}</div>
+   <p class="sub" style="margin:0 0 10px">${mine?`가진 장수와 보물만 같은 자리에 넣어요. 자리 레벨·돌파·보물 강화는 내 것 그대로예요.${miss?` 없는 장수 ${miss}명은 빈 자리가 돼요.`:''}${tgt==='cur'?` 지금 진형 <b>${esc(deckName(S.dk))}</b>은 이 덱으로 바뀌어요.`:''}`:'모든 장수와 보물이 그대로 들어가요. 레벨·보물 강화는 그 연무장 덱 설정을 써요. 그 덱은 이 덱으로 바뀌어요.'}</p>
+   <div class="list">${C.s.map((x,i)=>{const pos=`<div class="pos">${i+1}<small>${posOf(i,C.f)}</small></div>`;
+     if(!x)return `<div class="slot empty">${pos}<div class="info"><b>빈 자리</b></div></div>`;
+     const g=GMAP[x.g], own=!mine||P.deck[i]===x.g, have=k=>!mine||(own&&P.its[x.g].some(u=>(itemU(u)||{}).k===k));
+     return `<div class="slot" style="${own?'':'opacity:.5'}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span>${own?'':' · 미보유 (빈 자리)'}</b>
+      <span>${x.i.length?x.i.map(k=>have(k)?esc(IMAP[k].name):`<s>${esc(IMAP[k].name)}</s>${own?' 미보유':''}`).join(' · '):'보물 없음'}</span></div></div>`}).join('')}</div>
+   <div class="row" style="margin-top:14px;gap:8px"><button type="button" class="btn ghost" data-close>취소</button><button type="button" class="btn red" style="flex:1" id="dc-yes" ${mine&&!P.deck.some(Boolean)?'disabled':''}>${mine&&!P.deck.some(Boolean)?'보유한 장수가 없어요':'불러오기'}</button></div>`);
+  document.querySelectorAll('[data-dctg]').forEach(b=>b.onclick=()=>openDeckImport(C,b.dataset.dctg));
+  const y=$('#dc-yes');if(y)y.onclick=()=>{
+    if(mine){applyDeckPlan(P,tgt==='new',C.n);toast(`${tgt==='new'?`새 진형 ${deckName(S.dk)}으로 저장했어요`:`${deckName(S.dk)}에 불러왔어요`} · 장수 ${P.deck.filter(Boolean).length}명`);return}
+    const[sd,k]=tgt.split(':'),D=S.lab[sd][+k];
+    Object.assign(D,labClean({atk:[{...D,n:C.n,f:C.f,s:C.s}]}).atk[0]);S.lab[sd==='atk'?'ai':'di']=+k;labSimOut='';
+    save();closeSheet();view='deck';deckMode='lab';render();toast(`연무장 ${sd==='atk'?'공격덱':'방어덱'} ${D.n}에 불러왔어요`);
   };
 }
+document.addEventListener('click',e=>{const a=e.target.closest('[data-dcode]');if(a)openDeckCode(a.dataset.dcode)});
 document.addEventListener('click',e=>{const a=e.target.closest('[data-labapply]');if(a)openLabApply(a.dataset.labapply)});
 /* ---------------- 천명의 탑 (v2.0.5) ----------------
    하루 3회. 층마다 무작위 장수 6명(주간 공통 시드), 5층마다 보스.
