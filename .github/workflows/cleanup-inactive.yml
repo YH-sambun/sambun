@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
     inputs:
       days:
-        description: '며칠 이상 접속하지 않은 유저를 대상으로 할지 (7 이상)'
+        description: '며칠 이상 접속하지 않은 유저를 대상으로 할지 (1 이상)'
         required: true
         default: '30'
       mode:
@@ -43,8 +43,8 @@ jobs:
         run: |
           echo '::error::delete 모드는 confirm 칸에 "삭제"를 입력해야 실행됩니다.'
           exit 1
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with:
           node-version: 22
       - run: npm ci --no-audit --no-fund
