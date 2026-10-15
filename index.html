@@ -263,7 +263,7 @@ html.work .rv.x5::before,html.work .rv.x5::after,html.work .rv.x5 .spk{display:n
 #toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--line);color:var(--fg);padding:9px 14px;border-radius:10px;font-size:13px;z-index:40;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
 #toast.on{opacity:1}
 .loading{display:grid;place-items:center;height:60%;color:var(--mute);font-family:var(--display);font-size:20px}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){html:not(.fxon) *,html.fxon *:not(#battle):not(#battle *){animation:none!important;transition:none!important}}
 
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 body{margin:0}
@@ -587,7 +587,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.6.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.6.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1531,7 +1531,8 @@ function stageSpecs(n){
 function stageName(n){const c=CH[Math.floor(n/5)];return n%5===4?`${c.n} · ${c.boss}`:`${c.n} · 제${n%5+1}전`}
 // 반복(소탕) 보상 배율: 하루 소탕량이 48회 → 160회로 늘어난 만큼(48/160) 줄여 하루 총량을 이전과 비슷하게 맞춤
 const REP_MUL=.3;
-function stageReward(n,first){const m=1+.08*Math.floor(n/5);return first?{gold:Math.round((150+20*n)*m),food:Math.round((200+12*n)*m)}:{gold:Math.round((60+10*n)*m*REP_MUL),food:Math.round((20+2*n)*m*REP_MUL)}}
+// v3.6.3: 방치 금화 2배(v3.5.0)에 맞춰 스테이지 금 보상도 2배
+function stageReward(n,first){const m=1+.08*Math.floor(n/5);return first?{gold:Math.round((150+20*n)*m)*2,food:Math.round((200+12*n)*m)}:{gold:Math.round((60+10*n)*m*REP_MUL)*2,food:Math.round((20+2*n)*m*REP_MUL)}}
 
 /* ---------------- state ---------------- */
 let S=null, view='stage', genTab='gens', genTop='own', MIG_LV=null, MIG301=0, MIG340=0;
@@ -1883,7 +1884,8 @@ function openSettings(first){
   logoutArm=false;bindReset();
   {const nf=$('#name-form');if(nf&&!first)nf.insertAdjacentHTML('afterend',attRateHtml())}
   {const lo=$('#logout');if(lo&&!first){lo.insertAdjacentHTML('beforebegin',`<label class="row" style="gap:8px;margin:0 0 4px;font-size:14px"><input type="checkbox" id="no-shake" ${btNoShake()?'checked':''}> 전투 화면 흔들림 끄기</label><p class="sub" style="margin:0 0 12px">치명타·마지막 일격 때 화면이 흔들리지 않아요.</p>`);$('#no-shake').onchange=e=>{btNoShakeSave(e.target.checked);toast(e.target.checked?'전투 화면 흔들림을 껐어요':'전투 화면 흔들림을 켰어요')};
-    lo.insertAdjacentHTML('beforebegin',`<label class="row" style="gap:8px;margin:0 0 4px;font-size:14px"><input type="checkbox" id="cutin-on" ${btCutin()?'checked':''}> 전법 컷인 보기</label><p class="sub" style="margin:0 0 12px">전법이 발동할 때 장수 인장과 전법 이름이 띠로 지나가요(전법마다 약 0.8초). 4배속 이상에서는 나오지 않아요.</p>`);$('#cutin-on').onchange=e=>{btCutinSave(e.target.checked);toast(e.target.checked?'전법 컷인을 켰어요':'전법 컷인을 껐어요')}}}
+    lo.insertAdjacentHTML('beforebegin',`<label class="row" style="gap:8px;margin:0 0 4px;font-size:14px"><input type="checkbox" id="cutin-on" ${btCutin()?'checked':''}> 전법 컷인 보기</label><p class="sub" style="margin:0 0 12px">전법이 발동할 때 장수 인장과 전법 이름이 띠로 지나가요(전법마다 약 0.8초). 4배속 이상에서는 나오지 않아요.</p>`);$('#cutin-on').onchange=e=>{btCutinSave(e.target.checked);toast(e.target.checked?'전법 컷인을 켰어요':'전법 컷인을 껐어요')};
+    lo.insertAdjacentHTML('beforebegin',`<label class="row" style="gap:8px;margin:0 0 4px;font-size:14px"><input type="checkbox" id="fx-on" ${btFxOn()?'checked':''}> 전투 연출 항상 켜기</label><p class="sub" style="margin:0 0 12px">휴대폰의 '동작 줄이기'가 켜져 있어도 전투 연출(섬광·베기·도장·컷인)을 보여 줘요. 끄면 기기 설정을 따라요.</p>`);$('#fx-on').onchange=e=>{btFxOnSave(e.target.checked);toast(e.target.checked?'전투 연출을 항상 켜요':'전투 연출이 기기 설정을 따라요')}}}
   const lg=$('#link-google');if(lg)lg.onclick=linkGoogle;
   $('#name-form').onsubmit=ev=>{ev.preventDefault();const v=cleanName($('#name-input').value);if(!v){toast('이름을 입력해 주세요');return}MYNAME=v;save();closeSheet();renderView();toast('이름을 저장했어요');if(first)setTimeout(runPopups,300)};
   const lo=$('#logout');
@@ -1899,10 +1901,20 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='3.6.1';
+const GAME_VERSION='3.6.3';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.6.3',date:'2026-10-15',title:'스테이지 · 토벌전 금 보상 2배',reward:{ap:30},items:[
+  'v3.5.0에서 방치 금화가 2배가 됐는데 스테이지와 토벌전 금 보상은 그대로여서 함께 올렸어요. 공성전·천명의 탑·원정군은 방치 금화에 맞춰 이미 2배가 되어 있어요.',
+  '스테이지 첫 돌파와 소탕(다시 싸우기 포함)의 금 보상이 2배예요. 예: 마지막 스테이지 첫 돌파 금 2,500 → 5,000, 소탕 1회 367 → 734. 군량 보상은 그대로예요.',
+  '토벌전 게이지 75% 보상이 금 30,000 → 60,000이 됐어요. 이번 회차에 아직 받지 않았다면 오른 금액으로 받아요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
+ {v:'3.6.2',date:'2026-10-15',title:'대량 소환 10회 단위 · 전투 연출 항상 켜기',reward:{ap:30},items:[
+  '대량 등용·획득을 10회 단위로만 뽑아요. 슬라이더가 10칸씩 움직이고, 최대 횟수와 \'획득권 모두\'도 10회 단위로 내려서 보여 줘요(예: 147회 가능 → 140회, 획득권 23장 → 20회). 10회마다 ★4 이상 보장이 모든 묶음에 딱 맞게 적용돼요.',
+  '10회도 뽑을 수 없으면 [대량] 버튼이 꺼져요. 1회 버튼과 획득권 1~9장 전용 버튼은 그대로예요.',
+  '휴대폰의 \'동작 줄이기\'(손쉬운 사용)가 켜져 있으면 전투 연출(섬광·베기·會心/擊破 도장·컷인 등)이 모두 꺼지게 되어 있어요. 내 정보에 \'전투 연출 항상 켜기\'를 추가해서 기기 설정을 바꾸지 않아도 전투 연출을 볼 수 있어요. 기본은 꺼짐(기기 설정을 따름)이에요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'3.6.1',date:'2026-10-15',title:'진형 편성 창에서 바로 보물 교체',reward:{ap:30},items:[
   '둔영에서 진형 자리를 눌러 여는 편성 창에 그 장수의 보물 3칸이 바로 보여요. 칸을 누르면 보물 변경 창이 열리고, 고르거나 해제하면 다시 편성 창으로 돌아와요. 무장 탭에 가지 않아도 장수 교체와 무기 교체를 한 창에서 할 수 있어요.',
   '보물 줄 제목에 지금 어느 진형 기준으로 저장되는지 함께 보여 줘요. 전투 규칙과 능력치는 바뀌지 않았어요.',
@@ -2449,7 +2461,7 @@ const HELP=[
   ['보물 도감','보물마다 +0(보유)·+10·+25·+50에 처음 도달하면 영구 등록돼 모든 장수가 강해져요. 팔아도 등록은 남아요. 세트를 완성하면 추가 효과가 있고, 야전에도 적용돼요. 연무장에는 적용되지 않아요.'],
   ['보물 획득권','보물 획득에 군량 대신 먼저 쓰여요. 1장이 1회예요.'],
   ['천장','장수 등용과 보물 획득을 각각 누적 100회 할 때마다 장수 선택권·보물 선택권을 1장 드려요. ★5가 나와도 횟수는 그대로 이어져요.'],
-  ['대량 소환','등용 탭의 [대량]에서 한 번에 최대 300회까지 뽑아요. 획득권을 먼저 쓰고 모자란 만큼 군량으로 뽑으며, 10회마다 ★4 이상을 보장해요. 11회 이상은 결과를 요약해서 보여 줘요.'],
+  ['대량 소환','등용 탭의 [대량]에서 10회 단위로 한 번에 최대 300회까지 뽑아요. 획득권을 먼저 쓰고 모자란 만큼 군량으로 뽑으며, 10회마다 ★4 이상을 보장해요. 11회 이상은 결과를 요약해서 보여 줘요.'],
   ['장수 등용권','장수 등용에 군량 대신 먼저 쓰여요. 1장이 1회예요. 금화 룰렛에서 얻어요.'],
   ['원정군','전장 탭의 원정군. 무작위 ★3 장수 3명(레벨 고정 · 돌파·보물 없음)으로 3막을 돌파해요. 갈래길에서 전투·정예·주막·모병을 골라 가고 체력은 전투 사이에 이어져요. 하루 2회. 진행한 칸에 비례해 금, 정복 시 보물 선택권 1장.'],
   ['천명의 탑','전장 탭의 천명탑. 내 진형으로 30층까지 올라가요. 층을 깨면 천명 3개 중 하나를 골라 쌓고, 지면 끝나요. 하루 3회. 깬 층에 비례해 금, 30층 돌파 시 장수 등용권 10장.'],
@@ -2677,20 +2689,22 @@ function costHtml(kind,n,noTk){const c=pullCost(kind,n,noTk);return [c.t?`<b cla
 function pullBtns(kind){const P=PK[kind],pc=(S.pity&&S.pity[kind])||0,mx=pullMax(kind);
   // v3.4.2: 획득권이 1~9장이면 획득권만 쓰는 버튼과 군량 10회(할인가) 버튼을 나눠요
   const tk=S[P.tk]||0, split=tk>0&&tk<10;
-  return `<div class="row" style="flex-wrap:wrap"><button type="button" class="btn ghost" data-pull="${kind}1" ${canPull(kind,1)?'':'disabled'}>1회 ${costHtml(kind,1)}</button>${split&&tk>1?`<button type="button" class="btn ghost" data-pull="${kind}${tk}">${P.tn.split(' ')[1]} ${tk}회 ${costHtml(kind,tk)}</button>`:''}<button type="button" class="btn" data-pull="${kind}10${split?'f':''}" ${canPull(kind,10,split)?'':'disabled'}>10회 ${costHtml(kind,10,split)}</button><button type="button" class="btn ghost" data-mass="${kind}" ${mx>1?'':'disabled'}>대량</button></div>
+  return `<div class="row" style="flex-wrap:wrap"><button type="button" class="btn ghost" data-pull="${kind}1" ${canPull(kind,1)?'':'disabled'}>1회 ${costHtml(kind,1)}</button>${split&&tk>1?`<button type="button" class="btn ghost" data-pull="${kind}${tk}">${P.tn.split(' ')[1]} ${tk}회 ${costHtml(kind,tk)}</button>`:''}<button type="button" class="btn" data-pull="${kind}10${split?'f':''}" ${canPull(kind,10,split)?'':'disabled'}>10회 ${costHtml(kind,10,split)}</button><button type="button" class="btn ghost" data-mass="${kind}" ${mx>=10?'':'disabled'}>대량</button></div>
    <div class="pity"><span>천장 <b class="num">${pc}</b>/${PITY_N}</span><div class="bar"><i style="width:${pc/PITY_N*100}%;background:var(--bronze)"></i></div><span>${PITY_N}회마다 ${P.sn}</span></div>`}
 let bulkN={g:10,i:10};
 function openMass(kind){
-  const P=PK[kind],mx=pullMax(kind),tk=S[P.tk]||0;if(mx<2){toast('군량이 부족해요');return}
-  const n=Math.max(1,Math.min(mx,bulkN[kind]||10));bulkN[kind]=n;
-  const quick=[10,30,50,100,300].filter(v=>v<mx);
+  const P=PK[kind],mx=pullMax(kind),tk=S[P.tk]||0;
+  const m10=Math.floor(mx/10)*10,tk10=Math.floor(Math.min(tk,mx)/10)*10;if(m10<10){toast('10회분 군량이 부족해요');return}
+  // v3.6.2: 대량 소환은 10회 단위로만
+  const n=Math.max(10,Math.min(m10,Math.floor((bulkN[kind]||10)/10)*10));bulkN[kind]=n;
+  const quick=[10,30,50,100,300].filter(v=>v<m10);
   openSheet(`<div class="sheet-h"><h2 style="margin:0">대량 ${kind==='g'?'등용':'획득'}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   <p class="sub" style="margin:0 0 10px">${P.tn} ${fmt(tk)}장을 먼저 쓰고, 모자란 횟수는 군량으로 뽑아요(10회 묶음은 ${fmt(P.c[10])}). 10회마다 ★4 이상 보장, 한 번에 최대 ${BULK_MAX}회.</p>
+   <p class="sub" style="margin:0 0 10px">${P.tn} ${fmt(tk)}장을 먼저 쓰고, 모자란 횟수는 군량으로 뽑아요(10회 묶음은 ${fmt(P.c[10])}). 10회 단위로 뽑고, 10회마다 ★4 이상 보장, 한 번에 최대 ${BULK_MAX}회.</p>
    <div class="stat" style="text-align:center;margin:0 0 10px"><b class="num" id="bk-n" style="font-size:28px">${n}</b><span style="font-size:14px">회</span><div class="sub" style="margin:4px 0 0" id="bk-c">${costHtml(kind,n)}</div></div>
-   <input type="range" id="bk-r" min="1" max="${mx}" step="1" value="${n}" style="width:100%" aria-label="뽑을 횟수">
-   <div class="chips" role="group" aria-label="빠른 선택" style="margin:8px 0">${quick.map(v=>`<button type="button" data-bkq="${v}">${v}회</button>`).join('')}<button type="button" data-bkq="${mx}">최대 ${mx}회</button>${tk>1?`<button type="button" data-bkq="${Math.min(tk,mx)}">${P.tn.slice(0,2)}권 모두 (${Math.min(tk,mx)}회)</button>`:''}</div>
+   <input type="range" id="bk-r" min="10" max="${m10}" step="10" value="${n}" style="width:100%" aria-label="뽑을 횟수">
+   <div class="chips" role="group" aria-label="빠른 선택" style="margin:8px 0">${quick.map(v=>`<button type="button" data-bkq="${v}">${v}회</button>`).join('')}<button type="button" data-bkq="${m10}">최대 ${m10}회</button>${tk10>=10?`<button type="button" data-bkq="${tk10}">${P.tn.slice(0,2)}권 모두 (${tk10}회)</button>`:''}</div>
    <button type="button" class="btn red wide" id="bk-go">${n}회 뽑기</button>`);
-  const r=$('#bk-r'),upd=v=>{v=Math.max(1,Math.min(mx,v|0));bulkN[kind]=v;r.value=v;$('#bk-n').textContent=v;$('#bk-c').innerHTML=costHtml(kind,v);$('#bk-go').textContent=v+'회 뽑기'};
+  const r=$('#bk-r'),upd=v=>{v=Math.max(10,Math.min(m10,Math.floor((v|0)/10)*10));bulkN[kind]=v;r.value=v;$('#bk-n').textContent=v;$('#bk-c').innerHTML=costHtml(kind,v);$('#bk-go').textContent=v+'회 뽑기'};
   r.oninput=()=>upd(+r.value);
   document.querySelectorAll('[data-bkq]').forEach(b=>b.onclick=()=>upd(+b.dataset.bkq));
   $('#bk-go').onclick=()=>doPull(kind,bulkN[kind]);
@@ -3903,7 +3917,7 @@ document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.tar
    회차마다 모든 군주가 같은 적 3명(Lv40 · 돌파 5 · 보물 3개 +50, 인연 적용)을 상대해요.
    10턴 동안 준 피해가 공동 게이지에 쌓이고, 도전 기록은 raids 컬렉션에 한 건씩 남아요. */
 const RAID_EPOCH='2026-10-13', RAID_DAYS=3, RAID_DAILY=3, RAID_ROUNDS=10, RAID_HPX=20, RAID_HP=1800000, RAID_HIT_MAX=300000;
-const RAID_TIERS=[{p:.25,r:{food:3000}},{p:.5,r:{itk:10}},{p:.75,r:{gold:30000}},{p:1,r:{itk:30}}];
+const RAID_TIERS=[{p:.25,r:{food:3000}},{p:.5,r:{itk:10}},{p:.75,r:{gold:60000}},{p:1,r:{itk:30}}];
 const RAID_RANK=[{itk:10,food:2000},{itk:7,food:2000},{itk:5,food:2000}];
 let RAIDS=[], raidUnsub=null, raidBusy=false;
 const dayNum=d=>Math.round(Date.parse(d+'T00:00:00Z')/864e5);
@@ -4510,7 +4524,11 @@ function btNoShake(){try{return localStorage.getItem('sg_no_shake')==='1'}catch(
 function btNoShakeSave(on){try{localStorage.setItem('sg_no_shake',on?'1':'0')}catch(e){}}
 function btGraphOn(){try{return localStorage.getItem('sg_bt_graph')==='1'}catch(e){return false}}
 function btGraphSave(on){try{localStorage.setItem('sg_bt_graph',on?'1':'0')}catch(e){}}
-const btStill=()=>matchMedia('(prefers-reduced-motion: reduce)').matches||isWork();
+// v3.6.2: '전투 연출 항상 켜기'면 기기 동작 줄이기를 무시하고 전투 연출을 보여 줘요
+function btFxOn(){try{return localStorage.getItem('sg_fx_on')==='1'}catch(e){return false}}
+function btFxOnSave(on){try{localStorage.setItem('sg_fx_on',on?'1':'0')}catch(e){}document.documentElement.classList.toggle('fxon',on)}
+try{document.documentElement.classList.toggle('fxon',btFxOn())}catch(e){}
+const btStill=()=>(matchMedia('(prefers-reduced-motion: reduce)').matches&&!btFxOn())||isWork();
 // 결과 요약 (v3.3.0): 턴 수 · 생존 인원 · 준 피해 비교 · 아군 생존 현황
 function battleTurns(res){if(res.turns)return res.turns;let n=1;const seen=new Set();for(const e of res.ev){if(e.spawn||e.tick||e.phase)continue;const k=e.s+'-'+e.i;if(seen.has(k)){n++;seen.clear()}seen.add(k)}return n}
 function resSummary(res,st,SG,l0,l1){
