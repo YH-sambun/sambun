@@ -519,13 +519,67 @@ html.work .bt-graph{background:var(--panel)}
 .bt-fin.l{background:rgba(6,10,10,.45);backdrop-filter:grayscale(1) brightness(.75);-webkit-backdrop-filter:grayscale(1) brightness(.75);animation:drain .75s ease-out forwards}
 @keyframes drain{from{opacity:0}to{opacity:1}}
 html.work .ink,html.work .bt-fin{display:none}
+/* v3.4.2 도감 */
+.grid.dexg{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.grid.dexg .gc{padding:10px 4px 8px;gap:4px}
+.grid.dexg .gc .nm{font-size:13px}
+.grid.dexg .gc .stars{font-size:10px}
+.gc.unown{opacity:.5}.gc.unown .seal,.gc.unown .itm{filter:grayscale(.85)}
+@media (max-width:360px){.grid.dexg{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.dpips{display:flex;gap:4px;justify-content:center}.dpips i{width:7px;height:7px;border-radius:50%;border:1px solid var(--line);background:var(--panel2)}.dpips i.on{background:var(--bronze);border-color:var(--bronze)}
+.chip.on{border-color:var(--bronze);color:var(--bronze)}.chip.near{border-color:var(--cinnabar);color:var(--cinnabar)}
+.colreq .cr{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit;color:inherit;cursor:pointer}
+.colreq .cr small{font-size:10px;color:var(--cinnabar);white-space:nowrap}
+.colreq .cr.miss .itm{opacity:.45;filter:grayscale(.7);box-shadow:0 0 0 1px var(--cinnabar)}
+details.btbl summary{color:var(--mute)}
+.bgrp[hidden]{display:none}
+/* v3.4.2 전투 연출 */
+.bu .hp{position:relative}.bu .hp i.lag{position:absolute;left:0;top:0;bottom:0;background:#fff3d6;opacity:.75;transition:width .45s .3s}
+.bu .hp i.cur{position:relative}
+.bu.stop{filter:brightness(2.4) contrast(1.2);transform:scale(1.06)}
+.bt-bot .bu.kb{animation:kbD .3s ease-out,hitf .3s}.bt-top .bu.kb{animation:kbU .3s ease-out,hitf .3s}
+@keyframes kbU{30%{transform:translateY(-7px) rotate(-2deg)}70%{transform:translateY(1px)}}
+@keyframes kbD{30%{transform:translateY(7px) rotate(2deg)}70%{transform:translateY(-1px)}}
+.xburst{position:absolute;left:50%;top:20px;width:52px;height:52px;margin:-26px 0 0 -26px;border-radius:50%;pointer-events:none;z-index:3;background:radial-gradient(circle,#fff 0 18%,rgba(255,240,200,.7) 30%,transparent 62%);animation:xburst .32s ease-out forwards}
+@keyframes xburst{from{transform:scale(.2);opacity:1}to{transform:scale(1.5);opacity:0}}
+.xslash{position:absolute;left:50%;top:20px;width:78px;height:3px;margin:-1.5px 0 0 -39px;pointer-events:none;z-index:3;border-radius:2px;background:linear-gradient(90deg,transparent,#fff 40%,#ffe9b0 60%,transparent);box-shadow:0 0 8px #ffe9b0;transform:rotate(var(--a,-30deg)) scaleX(0);animation:xslash .26s ease-out forwards}
+@keyframes xslash{40%{transform:rotate(var(--a,-30deg)) scaleX(1);opacity:1}100%{transform:rotate(var(--a,-30deg)) scaleX(1.1);opacity:0}}
+.dmg.big{font-size:18px;-webkit-text-stroke:.4px #000;animation:xpop .85s forwards}
+.dmg.big.c{font-size:20px}
+.dmg.cx{color:#ffe9a8;text-shadow:0 0 10px rgba(233,198,108,.9),0 2px 0 #6b4a10;font-size:23px}
+@keyframes xpop{0%{transform:translate(-50%,4px) scale(.4)}18%{transform:translate(-50%,-8px) scale(1.3)}32%{transform:translate(-50%,-4px) scale(1)}100%{transform:translate(-50%,-28px) scale(1);opacity:0}}
+.fast .dmg.big{animation-duration:.6s}
+.xvig{position:absolute;inset:0;z-index:7;pointer-events:none;border-radius:inherit;box-shadow:inset 0 0 0 2px var(--r5),inset 0 0 60px 10px rgba(233,198,108,.4);animation:xvig .5s ease-out forwards}
+@keyframes xvig{to{opacity:0}}
+.bt{transition:transform .18s}.bt.zoom{transform:scale(1.03)}
+.xstamp{position:absolute;left:50%;top:4px;z-index:9;pointer-events:none;font-family:var(--display);font-size:18px;line-height:1;padding:3px 4px;border:2px solid currentColor;border-radius:4px;transform:translateX(-50%) rotate(-10deg);white-space:nowrap;background:rgba(14,23,22,.75);animation:xstamp .7s ease-out forwards}
+.xstamp.cr{color:var(--r5)}.xstamp.ko{color:var(--cinnabar);font-size:20px}
+.fast .xstamp{animation-duration:.45s}
+@keyframes xstamp{0%{transform:translateX(-50%) scale(2.4) rotate(-16deg);opacity:0}25%{transform:translateX(-50%) scale(.95) rotate(-10deg);opacity:1}35%{transform:translateX(-50%) rotate(-10deg)}80%{opacity:1}100%{opacity:0;transform:translateX(-50%) translateY(-8px) rotate(-10deg)}}
+.seal.shard{position:absolute;margin:0;z-index:6;pointer-events:none}
+.kink{position:absolute;width:10px;height:10px;border-radius:50%;background:rgba(10,8,6,.9);z-index:2;pointer-events:none;animation:kink .6s ease-out forwards}
+@keyframes kink{from{transform:scale(.2)}to{transform:translate(var(--x),var(--y)) scale(var(--z));opacity:0}}
+.xcut{position:absolute;left:0;right:0;top:50%;height:96px;margin-top:-48px;z-index:8;pointer-events:none;display:flex;align-items:center;gap:14px;padding:0 18px;overflow:hidden;background:linear-gradient(90deg,rgba(6,10,10,.95),rgba(20,30,28,.92) 60%,rgba(6,10,10,.95));border-block:1px solid var(--bronze);animation:xcutb .9s ease-in-out forwards}
+.xcut::before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(100deg,transparent 0 22px,rgba(210,170,85,.13) 22px 24px);animation:xspeed .9s linear}
+@keyframes xspeed{to{background-position:-240px 0}}
+@keyframes xcutb{0%{clip-path:inset(50% 0 50% 0)}14%{clip-path:inset(0 0 0 0)}82%{clip-path:inset(0 0 0 0);opacity:1}100%{clip-path:inset(0 0 0 0);opacity:0}}
+.xcut .seal{position:relative;animation:xcutin .9s cubic-bezier(.2,.9,.3,1) forwards}
+@keyframes xcutin{0%{transform:translateX(-140px)}22%{transform:translateX(6px)}30%,85%{transform:none}100%{transform:translateX(30px);opacity:0}}
+.xcut .t{position:relative;display:flex;flex-direction:column;min-width:0;animation:xcutt .9s ease-out forwards}
+.xcut .t small{font-size:12px;color:var(--mute);letter-spacing:.15em}
+.xcut .t b{font-family:var(--display);font-weight:400;font-size:28px;color:var(--r5);text-shadow:0 0 12px rgba(233,198,108,.5);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@keyframes xcutt{0%,12%{opacity:0;transform:translateX(60px);letter-spacing:.4em}35%,85%{opacity:1;transform:none;letter-spacing:0}100%{opacity:0}}
+.xcombo{position:absolute;right:14px;top:50%;margin-top:-26px;z-index:7;pointer-events:none;text-align:right;font-variant-numeric:tabular-nums;animation:xcombo 1.2s ease-out forwards}
+.xcombo b{display:block;font-family:var(--display);font-weight:400;font-size:28px;line-height:1;color:var(--r5)}.xcombo span{font-size:12px;color:var(--fg)}
+@keyframes xcombo{0%{transform:scale(1.4);opacity:0}15%{transform:none;opacity:1}75%{opacity:1}100%{opacity:0}}
+html.work .xburst,html.work .xslash,html.work .xvig,html.work .xstamp,html.work .xcut,html.work .xcombo,html.work .kink,html.work .seal.shard{display:none}
 </style>
 </head>
 <body>
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.4.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.4.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1040,27 +1094,40 @@ function colSync(){
   return nw;
 }
 function colToast(nw){if(!nw.length)return;toast(`보물 도감 등록 · ${nw.slice(0,3).join(', ')}${nw.length>3?` 외 ${nw.length-3}개`:''}`)}
-let colTab='items';
+let colTab='items', dexIo='';
+const colPips=it=>`<span class="dpips" aria-label="도감 등록 ${COL_MS.filter((_,j)=>colReg(it.id,j)).map(m=>'+'+m).join(' ')||'없음'}">${COL_MS.map((ms,j)=>`<i class="${colReg(it.id,j)?'on':''}" title="+${ms}"></i>`).join('')}</span>`;
 function colDexHtml(){
   const cb=colBonus(), reg=colRegN(), done=COL_SETS.filter(colSetDone).length;
   let h=`<div class="stat" style="text-align:left;margin:4px 0 12px"><div class="row"><small style="font-size:12px">보물 도감</small><span class="sp"></span><span class="num">등록 <b>${reg}</b>/${ITEMS.length*COL_MS.length} · 세트 <b>${done}</b>/${COL_SETS.length}</span></div>
    <div class="bar" style="margin:6px 0"><i style="width:${reg/(ITEMS.length*COL_MS.length)*100}%;background:var(--bronze)"></i></div>
    <div class="sub" style="margin:0">모든 장수에게 적용 중: <b style="color:var(--fg)">${colText(cb)}</b></div>
    <div class="sub" style="margin:4px 0 0">+0(보유)·+10·+25·+50에 처음 도달하면 영구 등록돼요. 야전에도 적용되고, 효과마다 최대치가 있어요.</div></div>
-   <div class="seg" role="group"><button type="button" data-colt="items" aria-pressed="${colTab==='items'}">보물별 등록</button><button type="button" data-colt="sets" aria-pressed="${colTab==='sets'}">세트 ${done}/${COL_SETS.length}</button></div>`;
+   <div class="seg" role="group"><button type="button" data-colt="items" aria-pressed="${colTab==='items'}">등록 현황</button><button type="button" data-colt="sets" aria-pressed="${colTab==='sets'}">세트 ${done}/${COL_SETS.length}</button></div>`;
   if(colTab==='sets'){
-    return h+`<div class="list">${COL_SETS.map(C=>{const have=C.req.filter(id=>S.colMax[id]!=null&&S.colMax[id]>=C.lv).length,ok=have===C.req.length;
-      return `<div class="li" style="display:block;${ok?'border-color:var(--bronze)':''}"><div class="row"><b>${esc(C.n)}</b><span class="sp"></span><span class="chip"${ok?' style="border-color:var(--bronze);color:var(--bronze)"':''}>${ok?'완성':`${have}/${C.req.length}`}</span></div>
+    const rows=COL_SETS.map(C=>{const have=C.req.filter(id=>S.colMax[id]!=null&&S.colMax[id]>=C.lv).length;return {C,have,left:C.req.length-have}}).sort((a,b)=>(a.left===0)-(b.left===0)||a.left-b.left||b.have/b.C.req.length-a.have/a.C.req.length);
+    return h+`<p class="sub" style="margin:0 0 8px">완성까지 남은 보물이 적은 세트부터 보여요.</p><div class="list">${rows.map(({C,have,left})=>{const ok=!left;
+      return `<div class="li" style="display:block;${ok?'border-color:var(--bronze)':''}"><div class="row"><b>${esc(C.n)}</b><span class="sp"></span><span class="chip${ok?' on':left===1?' near':''}">${ok?'완성':left===1?'1개 남음':`${have}/${C.req.length}`}</span></div>
        <div class="sub" style="margin:2px 0 6px">${esc(C.d)} · 모두 +${C.lv} 이상 → <b style="color:var(--fg)">${colText(C.fx)}</b></div>
-       <div class="colreq">${C.req.map(id=>{const it=IMAP[id],m=S.colMax[id],r=m!=null&&m>=C.lv;return `<span class="${r?'':'unown'}" title="${esc(it.name)} ${m!=null?'+'+m:'미보유'}">${itemTile(it,m||0)}</span>`}).join('')}</div></div>`}).join('')}</div>`;
+       <div class="colreq">${C.req.map(id=>{const it=IMAP[id],m=S.colMax[id],r=m!=null&&m>=C.lv;return `<button type="button" class="cr${r?'':' miss'}" data-dexi="${id}" title="${esc(it.name)} ${m!=null?'+'+m:'미보유'}">${itemTile(it,m||0)}${r?'':`<small>${m==null?'미보유':`+${m}→+${C.lv}`}</small>`}</button>`}).join('')}</div></div>`}).join('')}</div>`;
   }
+  const c=(v,l)=>`<button type="button" data-dio="${v}" aria-pressed="${dexIo===v}">${l}</button>`;
   h+=`<div class="chips" role="group" aria-label="종류">${[['','전체'],...Object.entries(ITYPE)].map(([t,n])=>`<button type="button" data-dig="${t}" aria-pressed="${dexIg===t}">${n}</button>`).join('')}</div>
-   <p class="sub" style="margin:0 0 8px">종류별 등록 효과: 무기 공격 · 방어구 체력·방어 · 명마 속도 · 장신구 치명·체력 · 서책 전법 피해</p>`;
-  const list=ITEMS.filter(it=>!dexIg||it.g===dexIg).sort((a,b)=>b.rar-a.rar||a.g.localeCompare(b.g));
-  return h+`<div class="list">${list.map(it=>{const x=S.items.find(y=>y.k===it.id),m=S.colMax[it.id];
-    return `<div class="li ${m!=null?'':'unown'}">${itemTile(it,x&&x.d)}<div class="info"><b>${esc(it.name)} <span class="stars r${it.rar}">${stars(it.rar)}</span></b><span>${ITYPE[it.g]}${it.wf?`(${WFAM[it.wf]})`:''}${itemUsers(it)?` · ${itemUsers(it)}`:''} · ${fxText(it,0)}</span>
-     <span class="cpips">${COL_MS.map((ms,j)=>`<i class="${colReg(it.id,j)?'on':''}" title="${colText(colItemFx(it,j))}">+${ms}</i>`).join('')}</span><span>단계마다 ${COL_MS.map((_,j)=>colText(colItemFx(it,j))).join(' / ')}</span></div><span class="chip">${x?`+${x.d}`:m!=null?`최고 +${m}`:'미보유'}</span></div>`}).join('')}</div>`;
+   <div class="chips" role="group" aria-label="보유"><span class="flab">보유</span>${c('','전체')}${c('y','보유')}${c('n','미보유')}</div>
+   <p class="sub" style="margin:0 0 8px">점 4개는 +0 · +10 · +25 · +50 등록이에요. 누르면 단계별 효과를 볼 수 있어요.</p>`;
+  const list=ITEMS.filter(it=>(!dexIg||it.g===dexIg)&&(!dexIo||(dexIo==='y')===(S.colMax[it.id]!=null))).sort((a,b)=>b.rar-a.rar||a.g.localeCompare(b.g));
+  h+=`<p class="sub" style="margin:0 0 8px">${list.length}종</p>`;
+  return h+(list.length?`<div class="grid dexg">${list.map(it=>{const x=S.items.find(y=>y.k===it.id),m=S.colMax[it.id];
+    return `<button type="button" class="gc ${m!=null?'':'unown'}" data-dexi="${it.id}" aria-label="${esc(it.name)}${m!=null?'':' 미보유'}">${itemTile(it,x&&x.d)}<div class="nm">${esc(it.name)}</div><div class="stars r${it.rar}">${stars(it.rar)}</div>${colPips(it)}</button>`}).join('')}</div>`:'<div class="empty-state"><b>寶</b>조건에 맞는 보물이 없어요.</div>');
 }
+function openDexItem(id){
+  const it=IMAP[id];if(!it)return;const x=S.items.find(y=>y.k===id),m=S.colMax[id],sets=COL_SETS.filter(C=>C.req.includes(id));
+  openSheet(`<div class="sheet-h">${itemTile(it,x&&x.d)}<div style="min-width:0"><h2 style="margin:0">${esc(it.name)}</h2><div class="stars r${it.rar}">${stars(it.rar)}</div><div class="sub" style="margin:0">${ITYPE[it.g]}${it.wf?`(${WFAM[it.wf]})`:''}${itemUsers(it)?` · ${itemUsers(it)}`:''} · ${x?`보유 +${x.d}`:m!=null?`최고 +${m}`:'미보유'}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <h3>장착 효과</h3><p style="margin:0;font-size:13px">${fxText(it,x?x.d:0)}</p>
+   <h3>도감 등록</h3><div class="list">${COL_MS.map((ms,j)=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line);flex-wrap:nowrap"><b class="num" style="width:44px;flex:none;color:${colReg(id,j)?'var(--bronze)':'var(--mute)'}">+${ms}</b><span style="flex:1;font-size:13px">${colText(colItemFx(it,j))}</span><span class="chip${colReg(id,j)?' on':''}">${colReg(id,j)?'등록':'미등록'}</span></div>`).join('')}</div>
+   <h3>속한 세트</h3>${sets.length?`<div class="list">${sets.map(C=>`<div class="row" style="padding:4px 0"><b style="font-size:14px">${esc(C.n)}</b><span class="sub" style="margin:0">· 모두 +${C.lv} → ${colText(C.fx)}</span><span class="sp"></span><span class="chip${colSetDone(C)?' on':''}">${colSetDone(C)?'완성':'미완성'}</span></div>`).join('')}</div>`:'<p class="sub">이 보물이 들어간 세트는 없어요.</p>'}
+   ${x?`<button type="button" class="btn ghost wide" style="margin-top:12px" data-item="${x.u}">내 보물 화면으로</button>`:'<p class="sub" style="margin-top:12px">등용 탭의 보물 획득에서 얻을 수 있어요.</p>'}`);
+}
+document.addEventListener('click',e=>{const io=e.target.closest('[data-dio]');if(io){dexIo=io.dataset.dio;renderView();return}const di=e.target.closest('[data-dexi]');if(di){openDexItem(di.dataset.dexi)}});
 document.addEventListener('click',e=>{const c=e.target.closest('[data-colt]');if(c){colTab=c.dataset.colt;renderView()}});
 
 const TROOP_BASE={inf:[62,30,60,62],cav:[68,28,55,80],arc:[60,35,52,72],tac:[30,62,55,68]};
@@ -1783,7 +1850,8 @@ function openSettings(first){
    ${anon?(isInApp()?`<div class="warn" style="margin:0 0 12px"><b>구글 연동</b><br>지금은 카카오톡 같은 앱 안 브라우저라 구글 연동이 막혀 있어요. 게스트 기록은 처음 시작한 브라우저에만 남아 있어서, 다른 브라우저로 옮기면 새 게스트가 돼요.</div>`:`<button type="button" class="btn wide" id="link-google" style="margin-bottom:6px">구글 계정 연동하기</button><p class="sub">연동하면 지금 기록이 그대로 구글 계정에 묶여서, 다른 기기에서도 구글로 로그인해 이어서 할 수 있어요.</p>`):''}<button type="button" class="btn ghost wide" id="logout">로그아웃</button><h3>처음부터 다시 시작</h3>${resetBlock()}`}`);
   logoutArm=false;bindReset();
   {const nf=$('#name-form');if(nf&&!first)nf.insertAdjacentHTML('afterend',attRateHtml())}
-  {const lo=$('#logout');if(lo&&!first){lo.insertAdjacentHTML('beforebegin',`<label class="row" style="gap:8px;margin:0 0 4px;font-size:14px"><input type="checkbox" id="no-shake" ${btNoShake()?'checked':''}> 전투 화면 흔들림 끄기</label><p class="sub" style="margin:0 0 12px">치명타·마지막 일격 때 화면이 흔들리지 않아요.</p>`);$('#no-shake').onchange=e=>{btNoShakeSave(e.target.checked);toast(e.target.checked?'전투 화면 흔들림을 껐어요':'전투 화면 흔들림을 켰어요')}}}
+  {const lo=$('#logout');if(lo&&!first){lo.insertAdjacentHTML('beforebegin',`<label class="row" style="gap:8px;margin:0 0 4px;font-size:14px"><input type="checkbox" id="no-shake" ${btNoShake()?'checked':''}> 전투 화면 흔들림 끄기</label><p class="sub" style="margin:0 0 12px">치명타·마지막 일격 때 화면이 흔들리지 않아요.</p>`);$('#no-shake').onchange=e=>{btNoShakeSave(e.target.checked);toast(e.target.checked?'전투 화면 흔들림을 껐어요':'전투 화면 흔들림을 켰어요')};
+    lo.insertAdjacentHTML('beforebegin',`<label class="row" style="gap:8px;margin:0 0 4px;font-size:14px"><input type="checkbox" id="cutin-on" ${btCutin()?'checked':''}> 전법 컷인 보기</label><p class="sub" style="margin:0 0 12px">전법이 발동할 때 장수 인장과 전법 이름이 띠로 지나가요(전법마다 약 0.8초). 4배속 이상에서는 나오지 않아요.</p>`);$('#cutin-on').onchange=e=>{btCutinSave(e.target.checked);toast(e.target.checked?'전법 컷인을 켰어요':'전법 컷인을 껐어요')}}}
   const lg=$('#link-google');if(lg)lg.onclick=linkGoogle;
   $('#name-form').onsubmit=ev=>{ev.preventDefault();const v=cleanName($('#name-input').value);if(!v){toast('이름을 입력해 주세요');return}MYNAME=v;save();closeSheet();renderView();toast('이름을 저장했어요');if(first)setTimeout(runPopups,300)};
   const lo=$('#logout');
@@ -1799,10 +1867,22 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='3.4.1';
+const GAME_VERSION='3.4.2';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.4.2',date:'2026-10-15',title:'도감 개편 · 전투 연출 · 소환권',reward:{ap:30},items:[
+  '도감 탭 순서를 장수 · 인연 · 보물로 바꿨어요.',
+  '장수 도감이 카드 그리드로 바뀌어 한 화면에 더 많이 보여요. 카드를 누르면 지금처럼 자세한 정보가 열려요.',
+  '인연 탭: 진영 · 연합군 · 의용군 표는 접어 두고, 인연은 \'발동 가능 · 1명 부족 · 그 외\'로 묶었어요. 장수 이름으로 인연을 검색할 수 있어요.',
+  '보물 도감: \'보물별 등록\'의 이름을 \'등록 현황\'으로 바꾸고 타일로 바꿨어요. 점 4개가 +0 · +10 · +25 · +50 등록이에요. 보물을 누르면 단계별 효과와 속한 세트를 볼 수 있어요.',
+  '보물 도감에 전체 · 보유 · 미보유 필터를 추가했어요. 종류 필터와 함께 쓸 수 있어요.',
+  '세트 탭은 완성까지 남은 개수가 적은 세트부터 보여 주고, 모자란 보물에는 지금 단계와 필요한 단계를 표시해요.',
+  '획득권(등용권)이 1~9장이면 \'획득권 N회\'로 남은 장수를 다 쓰고, 10회는 군량 10회 할인가로 따로 뽑아요. 예전에는 남은 횟수를 1회 가격 군량으로 채워 할인을 못 받았어요.',
+  '전투 연출 강화: 맞는 순간 번쩍이며 밀려나고, 피해 숫자가 더 커졌어요. 체력바에는 깎인 만큼 잔상이 남아요. 치명타는 금빛 테두리와 會心 도장, 처치는 인장이 깨지며 擊破 도장이 찍혀요.',
+  '전법 컷인: 전법이 발동하면 장수 인장과 전법 이름이 띠로 지나가요. 기본은 꺼져 있고, 이름 설정(내 정보)에서 \'전법 컷인 보기\'로 켤 수 있어요. 4배속 이상에서는 나오지 않아요.',
+  '연무장에서 장수 변경(빈 자리 포함)을 눌러도 아무 반응이 없던 문제를 고쳤어요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'3.4.1',date:'2026-10-15',title:'병종 밸런스 조정 · 화전궁',reward:{ap:30},items:[
   '3.4.0 병종 제한 뒤 모의전을 돌려 보니 궁병이 약해지고 책사가 강해져서(병종 편중 진형 승률 궁병 39% · 책사 62%) 세 가지를 조정했어요.',
   '궁병은 활 1개와 검 1개를 함께 낄 수 있어요(활 2개나 검 2개는 안 돼요). 다른 병종은 그대로 무기 1개예요.',
@@ -2517,12 +2597,14 @@ function rollRar(){const r=Math.random();return r<.03?5:r<.18?4:3}
    천장: 장수 등용·보물 획득을 각각 누적 100회마다 선택권 1장(★5가 나와도 초기화되지 않아요). */
 const PITY_N=100, BULK_MAX=300;
 const PK={g:{c:GCOST,tk:'gpk',sel:'gtk',tn:'장수 등용권',sn:'장수 선택권',w:'등용'},i:{c:ICOST,tk:'itk',sel:'isk',tn:'보물 획득권',sn:'보물 선택권',w:'획득'}};
-function pullCost(kind,n){const P=PK[kind],t=Math.min(S[P.tk]||0,n),m=n-t;return {t,food:Math.floor(m/10)*P.c[10]+(m%10)*P.c[1]}}
-const canPull=(kind,n)=>pullCost(kind,n).food<=S.food;
+function pullCost(kind,n,noTk){const P=PK[kind],t=noTk?0:Math.min(S[P.tk]||0,n),m=n-t;return {t,food:Math.floor(m/10)*P.c[10]+(m%10)*P.c[1]}}
+const canPull=(kind,n,noTk)=>pullCost(kind,n,noTk).food<=S.food;
 function pullMax(kind){let n=0;while(n<BULK_MAX&&canPull(kind,n+1))n++;return n}
-function costHtml(kind,n){const c=pullCost(kind,n);return [c.t?`<b class="sl gold">券</b>${fmt(c.t)}`:'',c.food?`<b class="sl food">糧</b>${fmt(c.food)}`:''].filter(Boolean).join(' ')||'—'}
+function costHtml(kind,n,noTk){const c=pullCost(kind,n,noTk);return [c.t?`<b class="sl gold">券</b>${fmt(c.t)}`:'',c.food?`<b class="sl food">糧</b>${fmt(c.food)}`:''].filter(Boolean).join(' ')||'—'}
 function pullBtns(kind){const P=PK[kind],pc=(S.pity&&S.pity[kind])||0,mx=pullMax(kind);
-  return `<div class="row"><button type="button" class="btn ghost" data-pull="${kind}1" ${canPull(kind,1)?'':'disabled'}>1회 ${costHtml(kind,1)}</button><button type="button" class="btn" data-pull="${kind}10" ${canPull(kind,10)?'':'disabled'}>10회 ${costHtml(kind,10)}</button><button type="button" class="btn ghost" data-mass="${kind}" ${mx>1?'':'disabled'}>대량</button></div>
+  // v3.4.2: 획득권이 1~9장이면 획득권만 쓰는 버튼과 군량 10회(할인가) 버튼을 나눠요
+  const tk=S[P.tk]||0, split=tk>0&&tk<10;
+  return `<div class="row" style="flex-wrap:wrap"><button type="button" class="btn ghost" data-pull="${kind}1" ${canPull(kind,1)?'':'disabled'}>1회 ${costHtml(kind,1)}</button>${split&&tk>1?`<button type="button" class="btn ghost" data-pull="${kind}${tk}">${P.tn.split(' ')[1]} ${tk}회 ${costHtml(kind,tk)}</button>`:''}<button type="button" class="btn" data-pull="${kind}10${split?'f':''}" ${canPull(kind,10,split)?'':'disabled'}>10회 ${costHtml(kind,10,split)}</button><button type="button" class="btn ghost" data-mass="${kind}" ${mx>1?'':'disabled'}>대량</button></div>
    <div class="pity"><span>천장 <b class="num">${pc}</b>/${PITY_N}</span><div class="bar"><i style="width:${pc/PITY_N*100}%;background:var(--bronze)"></i></div><span>${PITY_N}회마다 ${P.sn}</span></div>`}
 let bulkN={g:10,i:10};
 function openMass(kind){
@@ -2540,8 +2622,8 @@ function openMass(kind){
   document.querySelectorAll('[data-bkq]').forEach(b=>b.onclick=()=>upd(+b.dataset.bkq));
   $('#bk-go').onclick=()=>doPull(kind,bulkN[kind]);
 }
-function doPull(kind,n){
-  const P=PK[kind];if(!(n>=1)||n>BULK_MAX)return;const c=pullCost(kind,n);if(c.food>S.food){toast('군량이 부족해요');return}
+function doPull(kind,n,noTk){
+  const P=PK[kind];if(!(n>=1)||n>BULK_MAX)return;const c=pullCost(kind,n,noTk);if(c.food>S.food){toast('군량이 부족해요');return}
   S[P.tk]=(S[P.tk]||0)-c.t;S.food-=c.food;
   const out=[];
   for(let i=0;i<n;i++){
@@ -2565,18 +2647,18 @@ function doPull(kind,n){
   S.pity=S.pity||{g:0,i:0};const pv=(S.pity[kind]||0)+n,got=Math.floor(pv/PITY_N);S.pity[kind]=pv%PITY_N;
   if(got)S[P.sel]=Math.min(999,(S[P.sel]||0)+got);
   const colNew=kind==='i'?colSync():[];save();renderTop();renderView();colToast(colNew);
-  const show=()=>openPullResult(kind,out,got);
+  const show=()=>openPullResult(kind,out,got,noTk);
   if(out.some(x=>x.rar===5)&&!btStill())r5Fx(kind,show);else show();
 }
 const pullCard=(kind,x,i,big)=>`<div class="rv${x.rar===5?' x5':''}" style="animation-delay:${Math.min(i,20)*70}ms">${x.rar===5?'<i class="spk"></i><i class="spk"></i><i class="spk"></i>':''}${kind==='g'?seal(x):`<div class="itm r${x.rar}">${itemImg(x)}</div>`}<div class="nm">${esc(x.name)}</div><div class="stars r${x.rar}">${stars(x.rar)}</div><div class="tag">${esc(x.tag)}</div></div>`;
-function openPullResult(kind,out,got){
+function openPullResult(kind,out,got,noTk){
   const P=PK[kind],n=out.length,cnt=r=>out.filter(x=>x.rar===r).length;
   const gold=out.reduce((a,x)=>a+(x.gold||0),0),nw=out.filter(x=>x.tag.startsWith('NEW')).length,up=n-nw-out.filter(x=>x.gold).length;
   const pc=S.pity[kind]||0;
   const head=`<div class="sheet-h"><h2 style="margin:0">${kind==='g'?'등용 결과':'획득한 보물'} <small class="sub" style="font-weight:400">${n}회</small></h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    ${got?`<div class="pity-hit" role="status">천장 달성! ${P.sn} +${got}장 · 등용 탭 위 선택권에서 써요</div>`:''}`;
   const foot=`<div class="pity" style="margin-top:12px"><span>천장 <b class="num">${pc}</b>/${PITY_N}</span><div class="bar"><i style="width:${pc/PITY_N*100}%;background:var(--bronze)"></i></div></div>
-   <div class="row" style="margin-top:12px;gap:8px">${canPull(kind,n)&&n>1?`<button type="button" class="btn ghost" data-again="${kind}${n}">${n}회 더</button>`:''}<button type="button" class="btn ghost" style="flex:1" data-close>확인</button></div>`;
+   <div class="row" style="margin-top:12px;gap:8px">${canPull(kind,n,noTk)&&n>1?`<button type="button" class="btn ghost" data-again="${kind}${n}${noTk?'f':''}">${n}회 더</button>`:''}<button type="button" class="btn ghost" style="flex:1" data-close>확인</button></div>`;
   if(n<=10){out.sort((a,b)=>b.rar-a.rar);openSheet(`${head}<div class="reveal">${out.map((x,i)=>pullCard(kind,x,i)).join('')}</div>${foot}`);return}
   // 11회 이상: ★5는 카드로, ★4·★3은 같은 것끼리 묶어서
   const grp=r=>{const m=new Map();out.filter(x=>x.rar===r).forEach(x=>{const g=m.get(x.id)||{x,c:0};g.c++;g.x=x;m.set(x.id,g)});return [...m.values()].sort((a,b)=>b.c-a.c)};
@@ -2598,9 +2680,10 @@ function r5Fx(kind,done){
   el.addEventListener('click',end);document.body.appendChild(el);const t=setTimeout(end,1500);
 }
 document.addEventListener('click',e=>{
-  const b=e.target.closest('[data-pull]');if(b&&!b.disabled){doPull(b.dataset.pull[0],+b.dataset.pull.slice(1));return}
+  const pa=v=>[v[0],parseInt(v.slice(1),10),v.endsWith('f')];
+  const b=e.target.closest('[data-pull]');if(b&&!b.disabled){doPull(...pa(b.dataset.pull));return}
   const k=e.target.closest('[data-mass]');if(k&&!k.disabled){openMass(k.dataset.mass);return}
-  const a=e.target.closest('[data-again]');if(a){closeSheet();doPull(a.dataset.again[0],+a.dataset.again.slice(1));return}
+  const a=e.target.closest('[data-again]');if(a){closeSheet();doPull(...pa(a.dataset.again));return}
 });
 
 /* ---------------- 금화 룰렛 (v2.0.4) ----------------
@@ -3333,18 +3416,30 @@ function bondsOfHtml(id){
   const bs=BONDS.filter(B=>B.ids.includes(id));if(!bs.length)return '';
   return `<h3>인연</h3><div class="list">${bs.map(B=>`<div class="li" style="display:block"><b>${B.n}</b> <span class="sub">· ${fxStr(B.fx)}${B.full?` (${B.fullMin?B.fullMin+'명 이상':'전원'} ${fxStr(B.full)})`:''}</span><div class="sub" style="margin:2px 0 0">${B.ids.map(x=>GMAP[x].name).join(' · ')}${B.min?` 중 ${B.min}명 이상`:''}</div></div>`).join('')}</div>`;
 }
+let bondQ='', bondTbl=false;
 function bondsDexHtml(){
   const facRows=Object.entries(FAC_BONUS).map(([f,t])=>`<tr><th scope="row">${FAC[f]}</th>${t.map(v=>`<td>${facStr(v)}</td>`).join('')}</tr>`).join('');
-  return `<h3>진영 보너스 <span style="font-weight:400">· 같은 진영 ★3 이상 장수에게 적용</span></h3>
+  const q=bondQ.trim(), nm=B=>esc(B.n+' '+B.ids.map(x=>GMAP[x].name+(GMAP[x].hz||'')).join(' '));
+  const need=B=>Math.max(0,(B.min||B.ids.length)-B.ids.filter(x=>S.gens[x]).length);
+  const grp=[['발동 가능 · 장수를 모두 가졌어요',B=>need(B)===0],['1명 부족',B=>need(B)===1],['그 외',B=>need(B)>1]];
+  const card=B=>{const n=need(B);return `<div class="li bond${q&&!nm(B).includes(q)?' gf-x':''}" data-bnm="${nm(B)}"><div class="info"><b>${B.n}${B.cross?` <span class="chip">타국 ×${CROSS_MUL}</span>`:''}${n===0?' <span class="chip on">발동 가능</span>':''}</b><span>${esc(B.d)}</span><span class="bfx">${fxStr(B.fx)}${B.full?` · ${B.fullMin?B.fullMin+'명 이상':'전원'} 시 ${fxStr(B.full)}`:''}${B.min?` · ${B.min}명 이상`:''}</span>
+    <div class="bmem">${B.ids.map(x=>`<span class="${S.gens[x]?'':'unown'}" title="${GMAP[x].name}">${seal(GMAP[x],'sm')}<small>${GMAP[x].name}</small></span>`).join('')}</div></div></div>`};
+  return `<details class="p3 btbl" ${bondTbl?'open':''}><summary>진영 · 연합군 · 의용군 보너스 표</summary>
+  <h3>진영 보너스 <span style="font-weight:400">· 같은 진영 ★3 이상 장수에게 적용</span></h3>
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>3명</th><th>4명</th><th>5명 이상</th></tr></thead><tbody>${facRows}</tbody></table></div>
   <h3>연합군 보너스 <span style="font-weight:400">· ★3 이상 장수의 나라 수, 진형의 ★3 이상 전원에게 적용</span></h3>
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>3개국</th><th>4개국</th></tr></thead><tbody><tr><th scope="row">연합군</th><td>${fxStr(ALLY_BONUS[3])}</td><td>${fxStr(ALLY_BONUS[4])}</td></tr></tbody></table></div>
   <h3>의용군 <span style="font-weight:400">· 진형의 ★3 장수 수, ★3 장수에게만 적용</span></h3>
-  <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>1명</th><th>2명</th><th>3명 이상</th></tr></thead><tbody><tr><th scope="row">의용군</th><td>${fxStr(VOL_BONUS[1])}</td><td>${fxStr(VOL_BONUS[2])}</td><td>${fxStr(VOL_BONUS[3])}</td></tr></tbody></table></div>
+  <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>1명</th><th>2명</th><th>3명 이상</th></tr></thead><tbody><tr><th scope="row">의용군</th><td>${fxStr(VOL_BONUS[1])}</td><td>${fxStr(VOL_BONUS[2])}</td><td>${fxStr(VOL_BONUS[3])}</td></tr></tbody></table></div></details>
   <h3>인연 ${BONDS.length}종 <span style="font-weight:400">· 발동하면 진형 전원에게 적용</span></h3>
-  <div class="list">${BONDS.map(B=>`<div class="li bond"><div class="info"><b>${B.n}${B.cross?` <span class="chip">타국 ×${CROSS_MUL}</span>`:''}</b><span>${esc(B.d)}</span><span class="bfx">${fxStr(B.fx)}${B.full?` · ${B.fullMin?B.fullMin+'명 이상':'전원'} 시 ${fxStr(B.full)}`:''}${B.min?` · ${B.min}명 이상`:''}</span>
-    <div class="bmem">${B.ids.map(x=>`<span class="${S.gens[x]?'':'unown'}" title="${GMAP[x].name}">${seal(GMAP[x],'sm')}<small>${GMAP[x].name}</small></span>`).join('')}</div></div></div>`).join('')}</div>`;
+  <input type="search" class="gf-q" id="bond-q" value="${esc(bondQ)}" placeholder="장수 이름이나 인연 이름으로 검색" aria-label="인연 검색" autocomplete="off">
+  ${grp.map(([t,f])=>{const L=BONDS.filter(f);return L.length?`<div class="bgrp" data-bg><h3>${t} <span style="font-weight:400">· <span data-bgc>${L.filter(B=>!q||nm(B).includes(q)).length}</span>개</span></h3><div class="list">${L.map(card).join('')}</div></div>`:''}).join('')}
+  <p class="sub" id="bond-none" ${q&&!BONDS.some(B=>nm(B).includes(q))?'':'hidden'}>검색한 이름이 들어간 인연이 없어요.</p>`;
 }
+document.addEventListener('input',e=>{if(!e.target||e.target.id!=='bond-q')return;bondQ=e.target.value;const q=bondQ.trim();let any=false;
+  document.querySelectorAll('[data-bg]').forEach(g=>{let n=0;g.querySelectorAll('[data-bnm]').forEach(c=>{const ok=!q||c.dataset.bnm.includes(q);c.classList.toggle('gf-x',!ok);if(ok)n++});g.querySelector('[data-bgc]').textContent=n;g.hidden=!n;if(n)any=true});
+  const no=$('#bond-none');if(no)no.hidden=any});
+document.addEventListener('toggle',e=>{if(e.target&&e.target.classList&&e.target.classList.contains('btbl'))bondTbl=e.target.open},true);
 
 /* ---------------- 무장 ---------------- */
 // v3.0.4: 무장 탭 = 보유무장 + 도감
@@ -3526,16 +3621,16 @@ const DSORT={rar:'등급',str:'무력',int:'지력',lead:'통솔',spd:'속도',n
 function statCell(lab,v,max){return `<div class="dc"><small>${lab}</small><b class="num">${v}</b><span class="db"><i style="width:${Math.min(100,v/max*100)}%"></i></span></div>`}
 function vDex(){
   const ownedN=GENS.filter(g=>S.gens[g.id]).length, kinds=new Set(Object.keys(S.colMax||{}));
-  let h=`${genTopHtml()}<p class="sub">모든 장수와 보물의 기본 능력치예요. 보유한 것은 밝게, 아직 없는 것은 흐리게 표시돼요.</p>
-  <div class="seg" role="group"><button type="button" data-dt="gens" aria-pressed="${dexTab==='gens'}">장수 ${ownedN}/${GENS.length}</button><button type="button" data-dt="items" aria-pressed="${dexTab==='items'}">보물 ${kinds.size}/${ITEMS.length}</button><button type="button" data-dt="bonds" aria-pressed="${dexTab==='bonds'}">인연</button></div>`;
+  let h=`${genTopHtml()}<p class="sub">모든 장수와 보물을 모아 볼 수 있어요. 보유한 것은 밝게, 아직 없는 것은 흐리게 표시돼요.</p>
+  <div class="seg" role="group"><button type="button" data-dt="gens" aria-pressed="${dexTab==='gens'}">장수 ${ownedN}/${GENS.length}</button><button type="button" data-dt="bonds" aria-pressed="${dexTab==='bonds'}">인연</button><button type="button" data-dt="items" aria-pressed="${dexTab==='items'}">보물 ${kinds.size}/${ITEMS.length}</button></div>`;
   if(dexTab==='bonds')return h+bondsDexHtml();
   if(dexTab==='gens'){
     const F=GF.dex, dq=(F.q||'').trim();
     h+=gfHtml('dex',F,{sorts:DSORT,extra:[['보유','own',[['','전체'],['y','보유'],['n','미보유']]]]});
     const list=GENS.filter(g=>gfMatch(F,g)&&(!F.own||(F.own==='y')===!!S.gens[g.id])).sort((a,b)=>F.sort==='name'?a.name.localeCompare(b.name,'ko'):F.sort==='rar'?(b.rar-a.rar||(b.str+b.int+b.lead)-(a.str+a.int+a.lead)):(b[F.sort]-a[F.sort]||b.rar-a.rar));
     h+=`<p class="sub" style="margin:4px 0 8px"><span data-gfc="dex">${list.filter(g=>gfQ(dq,g)).length}</span>명</p>`;
-    h+=`<div class="list">${list.map(g=>{const own=S.gens[g.id];return `<button type="button" class="li dex ${own?'':'unown'}${gfQ(dq,g)?'':' gf-x'}" data-gfn="dex" data-nm="${gfNm(g)}" data-dexg="${g.id}">${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${FAC[g.fac]} · ${CLS[g.cls].g} ${CLS[g.cls].n} · ${esc(g.skill)}${own?' · 보유':''}${MODE==='shared'&&usageOf(g.id)?` · 사용률 ${Math.round(usageOf(g.id).pct*100)}%`:''}</span>
-      <div class="dst">${statCell('무력',g.str,100)}${statCell('지력',g.int,100)}${statCell('통솔',g.lead,100)}${statCell('속도',g.spd,100)}</div></div></button>`}).join('')}</div>`;
+    const sv=g=>DSORT[F.sort]&&g[F.sort]!=null&&F.sort!=='rar'&&F.sort!=='name'?`<div class="meta num">${DSORT[F.sort]} ${g[F.sort]}</div>`:'';
+    h+=list.length?`<div class="grid dexg">${list.map(g=>{const own=S.gens[g.id];return `<button type="button" class="gc ${own?'':'unown'}${gfQ(dq,g)?'':' gf-x'}" data-gfn="dex" data-nm="${gfNm(g)}" data-dexg="${g.id}" aria-label="${esc(g.name)}${own?' 보유':' 미보유'}">${seal(g)}<div class="nm">${esc(g.name)}</div><div class="stars r${g.rar}">${stars(g.rar)}</div><div class="meta"><span class="cls">${CLS[g.cls].g}</span><span>${FAC[g.fac]}</span></div>${sv(g)}</button>`}).join('')}</div>`:'<div class="empty-state"><b>將</b>조건에 맞는 장수가 없어요.</div>';
   } else {
     h+=colDexHtml();
   }
@@ -3661,7 +3756,7 @@ function openLabGen(side,i){labPk=[side,i];
    ${gfHtml('lab',F,{sorts:GF_SORT})}
    <p class="sub" style="margin:0 0 8px">★5는 ${MAX5}명까지 (지금 ${labN5(D)}명) · 이미 덱에 있는 장수를 고르면 자리를 바꿔요 · <span data-gfc="lab">${list.filter(x=>gfQ(q,x.b)).length}</span>명</p>
    <div class="list">${list.length?list.map(({b:g,p,u})=>{const at=D.s.findIndex(y=>y&&y.g===g.id),no=g.rar===5&&at<0&&full5;
-     return `<button type="button" class="li${gfQ(q,g)?'':' gf-x'}" data-gfn="lab" data-nm="${gfNm(g)}" style="text-align:left" data-labsetg="${side}:${i}:${g.id}" ${no?'disabled':''}>${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${FAC[g.fac]} · ${CLS[g.cls].g} ${CLS[g.cls].n} · 전투력 ${fmt(p)}${gfStat(F.sort,u)}${at>=0?` · 지금 ${at+1}번`:''}${no?' · ★5 가득':''}</span>${skLine(b)}</div></button>`}).join(''):'<div class="empty-state"><b>將</b>조건에 맞는 장수가 없어요.</div>'}</div>`);
+     return `<button type="button" class="li${gfQ(q,g)?'':' gf-x'}" data-gfn="lab" data-nm="${gfNm(g)}" style="text-align:left" data-labsetg="${side}:${i}:${g.id}" ${no?'disabled':''}>${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${FAC[g.fac]} · ${CLS[g.cls].g} ${CLS[g.cls].n} · 전투력 ${fmt(p)}${gfStat(F.sort,u)}${at>=0?` · 지금 ${at+1}번`:''}${no?' · ★5 가득':''}</span>${skLine(g)}</div></button>`}).join(''):'<div class="empty-state"><b>將</b>조건에 맞는 장수가 없어요.</div>'}</div>`);
 }
 function openLabItem(side,i,k){
   const D=labCur(side), x=D.s[i];if(!x)return;const g=GMAP[x.g], cur=x.i[k]||null;
@@ -4314,6 +4409,8 @@ const BT_SPD=[4,8,1,2], BT_SPD_K='sg_bt_speed';
 function btSpeed(){try{const v=+localStorage.getItem(BT_SPD_K);if(BT_SPD.includes(v))return v}catch(e){}return 4}
 function btSpeedSave(v){try{localStorage.setItem(BT_SPD_K,String(v))}catch(e){}}
 // 전투 연출 (v3.3.0): 흔들림 끄기 · 피해 그래프 상태는 기기에 기억해요
+function btCutin(){try{return localStorage.getItem('sg_cutin')==='1'}catch(e){return false}}
+function btCutinSave(on){try{localStorage.setItem('sg_cutin',on?'1':'0')}catch(e){}}
 function btNoShake(){try{return localStorage.getItem('sg_no_shake')==='1'}catch(e){return false}}
 function btNoShakeSave(on){try{localStorage.setItem('sg_no_shake',on?'1':'0')}catch(e){}}
 function btGraphOn(){try{return localStorage.getItem('sg_bt_graph')==='1'}catch(e){return false}}
@@ -4456,7 +4553,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
   const units=[res.init[0].map(u=>({...u})),res.init[1].map(u=>({...u}))];
   const SG=opts&&opts.siege, topK=SG?0:1, botK=1-topK;let waveNo=1;
   const buHtml=(k,u)=>{const fx=(FORM[u.form]&&FORM[u.form].fx[u.row])||{};const mk=fx.spd?`<i class="rk" title="속도 +${fx.spd}">⚡</i>`:u.rd>1?'<i class="rk up" title="받는 피해 증가">▲</i>':u.rd<1?'<i class="rk dn" title="받는 피해 감소">▼</i>':'';
-    return `<div class="bu${u.hp<=0?' dead':''}" id="bu-${k}-${u.slot}">${mk}${seal(u,'sm')}<div class="bn">${esc(u.name)}</div><div class="hp"><i style="width:${Math.max(0,u.hp/u.maxhp*100)}%"></i></div></div>`};
+    return `<div class="bu${u.hp<=0?' dead':''}" id="bu-${k}-${u.slot}">${mk}${seal(u,'sm')}<div class="bn">${esc(u.name)}</div><div class="hp"><i class="lag" style="width:${Math.max(0,u.hp/u.maxhp*100)}%"></i><i class="cur" style="width:${Math.max(0,u.hp/u.maxhp*100)}%"></i></div></div>`};
   const sideHtml=k=>{const top=k===topK;return (top?[2,1,0]:[0,1,2]).map(r=>{const rs=units[k].filter(u=>(u.row!=null?u.row:Math.min(2,Math.floor(u.slot/2)))===r).sort((a,b)=>a.slot-b.slot);
     return rs.length?`<div class="bt-line"><span class="bt-rl">${ROWN[r]}</span>${rs.map(u=>buHtml(k,u)).join('')}</div>`:''}).join('')};
   const sideForm=k=>{const u=units[k][0];if(!u||u.nof||!FORM[u.form])return '';return ` · ${FORM[u.form].n}${units[k].some(x=>x.adv)?' · <b style="color:var(--jade)">상성 우위</b>':''}`};
@@ -4485,15 +4582,26 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
   const fxc=(n,c,ms)=>{if(!n||btStill())return;n.classList.remove(c);void n.offsetWidth;n.classList.add(c);clearTimeout(n['_'+c]);n['_'+c]=setTimeout(()=>n.classList.remove(c),ms||600)};
   const fast=()=>speed>=4, quake=()=>{if(!btNoShake()&&!btStill())fxc($('.bt'),'quake',260)};
   const U=(s,i)=>units[s].find(x=>x.slot===i);
-  const paint=(s,i)=>{const u=U(s,i),n=$(`#bu-${s}-${i}`);if(!u||!n)return;n.querySelector('.hp i').style.width=(u.hp/u.maxhp*100)+'%';n.classList.toggle('dead',u.hp<=0)};
+  const paint=(s,i)=>{const u=U(s,i),n=$(`#bu-${s}-${i}`);if(!u||!n)return;const w=(u.hp/u.maxhp*100)+'%',c=n.querySelector('.hp i.cur'),l=n.querySelector('.hp i.lag');if(c)c.style.width=w;if(l){if(fast()||btStill()){l.style.transition='none';l.style.width=w;void l.offsetWidth;l.style.transition=''}else l.style.width=w}n.classList.toggle('dead',u.hp<=0)};
+  // 전투 연출 (v3.4.2): 타격 섬광·베기·넉백(A), 치명·처치 도장·파편(D), 전법 컷인(B, 설정)
+  const fxEl=(host,cls,ms,html,st)=>{if(!host||btStill())return null;const d=document.createElement('div');d.className=cls;d.setAttribute('aria-hidden','true');if(html)d.innerHTML=html;if(st)Object.assign(d.style,st);host.appendChild(d);setTimeout(()=>d.remove(),ms);return d};
+  const shatter=(n,slow)=>{const sl=n&&n.querySelector('.seal');if(!sl||btStill())return;const x=sl.offsetLeft,y=sl.offsetTop,D=slow?1100:650;
+    ['0 0,55% 0,40% 45%,0 60%','55% 0,100% 0,100% 40%,40% 45%','100% 40%,100% 100%,60% 100%,40% 45%','0 60%,40% 45%,60% 100%,0 100%'].forEach((p,k)=>{const c=sl.cloneNode(true);c.classList.add('shard');Object.assign(c.style,{left:x+'px',top:y+'px',clipPath:`polygon(${p})`});n.appendChild(c);
+      const ox=[-1,1,1,-1][k]*(16+Math.random()*14),oy=[-1,-1,1,1][k]*(12+Math.random()*12);c.animate([{transform:'none',opacity:1},{transform:`translate(${ox}px,${oy}px) rotate(${ox*2}deg)`,opacity:0}],{duration:D,easing:'cubic-bezier(.2,.7,.4,1)',fill:'forwards'});setTimeout(()=>c.remove(),D+30)});
+    for(let k=0;k<5;k++){const a=Math.random()*6.28;fxEl(n,'kink',D,'',{left:x+sl.offsetWidth/2-5+'px',top:y+sl.offsetHeight/2-5+'px','--x':Math.cos(a)*26+'px','--y':Math.sin(a)*20+'px','--z':1+Math.random()*1.6})}};
   const float=(s,i,txt,cls)=>{const n=$(`#bu-${s}-${i}`);if(!n)return;const f=document.createElement('span');f.className='dmg '+cls;f.textContent=txt;n.appendChild(f);setTimeout(()=>f.remove(),800)};
   const apply=(e,anim)=>{
     if(e.spawn){units[1]=e.units.map(u=>({...u}));renderSide(1);waveNo=e.spawn;const w=$('#wave-t');if(w)w.textContent=`제${waveNo}파`;if(anim){$('#bt-sk').textContent=`제${waveNo}파`;$('#bt-ln').textContent='적의 새 무리가 몰려와요 (더 강해졌어요)'}return}
     {const lc=[...(e.hits||[]),...(e.heals||[])].filter(h=>h.ch!=null).pop();if(lc)setCastle(lc.ch)}
     const a=e.tick?null:U(e.s,e.i);
     acc(e);let crit=false;
-    for(const h of e.hits||[]){const t=U(h.s,h.i);if(!t)continue;const was=t.hp;t.hp=h.hp;paint(h.s,h.i);if(anim){float(h.s,h.i,'-'+h.d,h.c?'c':(h.self||h.burn)?'b':'');if(h.c)crit=true;const n=$(`#bu-${h.s}-${h.i}`);
-      if(n){if(btStill()){n.classList.remove('hit');void n.offsetWidth;n.classList.add('hit')}else fxc(n,(h.burn||e.tick)?'burn':fast()?'flash':'hit',fast()?160:300);if(was>0&&h.hp<=0)fxc(n,'fall',650)}}}
+    for(const h of e.hits||[]){const t=U(h.s,h.i);if(!t)continue;const was=t.hp;t.hp=h.hp;paint(h.s,h.i);if(anim){float(h.s,h.i,'-'+h.d,(h.c?'c cx':(h.self||h.burn)?'b':'')+(h.burn||e.tick?'':' big'));if(h.c)crit=true;const n=$(`#bu-${h.s}-${h.i}`);
+      if(n){const tk=h.burn||e.tick,kill=was>0&&h.hp<=0;
+        if(btStill()){n.classList.remove('hit');void n.offsetWidth;n.classList.add('hit')}
+        else if(tk)fxc(n,'burn',fast()?160:300);
+        else{fxEl(n,'xburst',340);if(fast())fxc(n,'flash',160);else{fxc(n,'stop',80);setTimeout(()=>fxc(n,'kb',300),70);if(a&&(a.cls==='inf'||a.cls==='cav')&&!h.self)fxEl(n,'xslash',280,'',{'--a':(Math.random()<.5?-1:1)*(20+Math.random()*25)+'deg'})}}
+        if(h.c&&!tk){fxEl(n,'xstamp cr',fast()?450:700,'會心');if(!fast()){fxEl($('.bt'),'xvig',500);fxc($('.bt'),'zoom',220)}}
+        if(kill){const last=units[h.s].every(x=>x.hp<=0);fxc(n,'fall',650);shatter(n,last&&!fast());fxEl(n,'xstamp ko',fast()?500:800,'擊破')}}}}
     for(const h of e.heals||[]){const t=U(h.s,h.i);if(!t)continue;t.hp=h.hp;paint(h.s,h.i);if(anim&&h.h>0){float(h.s,h.i,'+'+h.h,'h');fxc($(`#bu-${h.s}-${h.i}`),'heal',500)}}
     if(anim)for(const st of e.stuns||[]){float(st.s,st.i,'기절','s');fxc($(`#bu-${st.s}-${st.i}`),'stun',600)}
     if(anim){
@@ -4561,7 +4669,13 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
   const finale=()=>{const bt=$('.bt');if(!bt||btStill()){timer=setTimeout(finish,500);return}
     const lost=!res.win&&!(opts&&(opts.replay||opts.verdict));quake();
     timer=setTimeout(()=>{if(tok!==btToken||fin)return;const o=document.createElement('div');o.className='bt-fin '+(lost?'l':'w');o.setAttribute('aria-hidden','true');bt.appendChild(o);timer=setTimeout(finish,750)},400)};
-  const step=()=>{if(tok!==btToken)return;if(idx>=res.ev.length){finale();return}apply(res.ev[idx++],true);timer=setTimeout(step,560/speed)};
+  const cutin=e=>{const a=U(e.s,e.i),bt=$('.bt');if(!a||!bt)return false;const o=fxEl(bt,'xcut',900,`${seal(a,'lg')}<div class="t"><small>${esc(a.name)} · 전법</small><b>${esc(e.sk)}</b></div>`);return !!o};
+  let cutAt=-1;
+  const step=()=>{if(tok!==btToken)return;if(idx>=res.ev.length){finale();return}const e=res.ev[idx];
+    if(e.sk&&!e.tick&&!e.skip&&cutAt!==idx&&btCutin()&&!fast()&&!btStill()&&U(e.s,e.i)&&cutin(e)){cutAt=idx;timer=setTimeout(step,780);return}
+    idx++;apply(e,true);
+    if(e.sk&&btCutin()&&!fast()){const hs=(e.hits||[]).filter(h=>!h.self);if(hs.length>1)fxEl($('.bt'),'xcombo',1200,`<b>${hs.length} HIT</b><span>${fmt(hs.reduce((x,h)=>x+h.d,0))}</span>`)}
+    timer=setTimeout(step,560/speed)};
   $('#bt-speed').onclick=()=>{speed=BT_SPD[(BT_SPD.indexOf(speed)+1)%BT_SPD.length];btSpeedSave(speed);$('#bt-speed').textContent=speed+'배속';const bt=$('.bt');if(bt){bt.classList.toggle('fast',speed>=4);bt.style.setProperty('--bd',Math.round(560/speed)+'ms')}};
   $('#bt-graph').onclick=()=>setGraph($('#bt-gr').hidden);$('#bt-gr').onclick=()=>setGraph(false);if(btGraphOn())setGraph(true);
   $('#bt-skip').onclick=finish;
