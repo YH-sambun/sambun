@@ -356,12 +356,24 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .colreq{display:flex;flex-wrap:wrap;gap:6px}.colreq .unown{opacity:.35}
 .labbox{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:12px}.labbox .slot{background:var(--panel2)}
 .labits{display:flex;gap:4px;margin-top:3px;align-items:center}.labits .ig .px{width:18px;height:18px}
-.wheel-wrap{position:relative;width:184px;height:184px;margin:16px auto 10px}
-.wheel{width:184px;height:184px;border-radius:50%;border:3px solid var(--bronze);position:relative;box-sizing:border-box;box-shadow:0 4px 14px rgba(0,0,0,.35)}
+.wheel-wrap{position:relative;width:224px;height:224px;margin:26px auto 18px}
+.wheel{width:224px;height:224px;border-radius:50%;border:0;position:relative;box-sizing:border-box;box-shadow:0 0 0 7px #3a2a14,0 0 0 9px var(--bronze),0 8px 22px rgba(0,0,0,.5)}
+.wheel::after{content:'';position:absolute;inset:0;border-radius:50%;pointer-events:none;background:repeating-conic-gradient(from 0deg,rgba(210,170,85,.7) 0 .7deg,transparent .7deg 45deg),radial-gradient(circle,rgba(255,240,200,.10) 0 30%,transparent 56%,rgba(0,0,0,.28) 100%)}
+.wheel span i{display:block;font-style:normal;font-family:var(--display);font-size:17px;line-height:18px;color:var(--bronze);font-weight:400}
+.wheel span.rare i{color:#ffd9a0;text-shadow:0 0 6px rgba(233,198,108,.8)}
+.wheel-lights{position:absolute;inset:0;pointer-events:none}
+.wheel-lights b{position:absolute;left:50%;top:50%;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:#f3d58e;box-shadow:0 0 5px 1px rgba(243,213,142,.7);opacity:.85}
+.wheel-wrap.spinning .wheel-lights b{animation:wlb .32s steps(1) infinite}.wheel-wrap.spinning .wheel-lights b:nth-child(2n){animation-delay:.16s}
+@keyframes wlb{0%{opacity:1}50%{opacity:.2}}
+.wheel-wrap.spinning .wheel-pin{animation:wpin .14s ease-in-out infinite;transform-origin:50% 0}
+@keyframes wpin{50%{transform:rotate(-16deg)}}
+.wheel-wrap.won .wheel{animation:wwon 1.4s ease-out}
+@keyframes wwon{0%{box-shadow:0 0 0 7px #3a2a14,0 0 0 9px var(--bronze),0 0 0 rgba(233,198,108,0)}30%{box-shadow:0 0 0 7px #3a2a14,0 0 0 9px #ffe2a0,0 0 34px 10px rgba(233,198,108,.75)}100%{box-shadow:0 0 0 7px #3a2a14,0 0 0 9px var(--bronze),0 8px 22px rgba(0,0,0,.5)}}
+html.work .wheel-lights,html.work .wheel span i{display:none}
 .wheel.spin{transition:transform 2.2s cubic-bezier(.15,.75,.2,1)}
-.wheel span{position:absolute;left:50%;top:50%;width:56px;margin:-8px 0 0 -28px;text-align:center;font-size:12px;font-weight:700;line-height:16px;color:var(--fg)}
-.wheel-pin{position:absolute;left:50%;top:-8px;margin-left:-9px;width:0;height:0;border-left:9px solid transparent;border-right:9px solid transparent;border-top:18px solid var(--bronze);filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
-.wheel-hub{position:absolute;left:50%;top:50%;width:42px;height:42px;margin:-21px 0 0 -21px;border-radius:50%;background:var(--bronze);color:#1a1206;display:grid;place-items:center;font-family:var(--display);font-size:18px}
+.wheel span{position:absolute;left:50%;top:50%;width:60px;margin:-17px 0 0 -30px;text-align:center;font-size:12px;font-weight:700;line-height:16px;color:var(--fg)}
+.wheel-pin{position:absolute;left:50%;top:-16px;margin-left:-11px;width:0;height:0;z-index:2;border-left:11px solid transparent;border-right:11px solid transparent;border-top:24px solid #f3d58e;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5))}
+.wheel-hub{position:absolute;left:50%;top:50%;width:50px;height:50px;margin:-25px 0 0 -25px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff1c4,var(--bronze) 45%,#7d6330 100%);box-shadow:0 0 0 3px #3a2a14,0 2px 8px rgba(0,0,0,.5);font-size:22px!important;color:#1a1206;display:grid;place-items:center;font-family:var(--display);font-size:18px}
 .li[disabled]{opacity:.45}
 .itm{position:relative}.itm .idp{position:absolute;right:0;bottom:0;font-size:11px;line-height:13px;padding:0 3px;border-radius:5px 0 8px 0;background:var(--bronze);color:#1a1206;font-family:var(--body);font-weight:700}
 .idp{color:var(--bronze);font-weight:700}
@@ -648,7 +660,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v4.0.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v4.0.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1623,10 +1635,8 @@ function bonusLine(info){if(!info)return '';const p=[...(info.ally?[`연합군 $
 function mkTroop(tr,cls){const b=TROOP_BASE[cls];return {name:tr[0],hz:tr[1],fac:tr[2],rar:2,cls,str:b[0],int:b[1],lead:b[2],spd:b[3],skill:DEF_SKILL[cls]}}
 function stageLv(n){return Math.min(MAXLV,1+Math.floor(n*.6)+(n%5===4?2:0))}
 // 55~59스테이지(12장, v4.0.1부터 번성 전투): 최상위권(전투력 약 30,000)에 맞춘 정예군. 적 전투력 약 18,000 → 30,000
-const STAGE_SC={55:4.34,56:4.49,57:4.16,58:4.99,59:3.29,
-  // v4.0.0 13~20장: 61스테이지 약 38,000에서 스테이지마다 약 1.7%씩, 보스는 15% 더. 100스테이지 보스 약 85,000
-  60:6.43,61:5.74,62:5.49,63:5.52,64:6.26,65:6.62,66:6.08,67:5.49,68:5.76,69:4.88,70:6.83,71:6.32,72:5.4,73:5.97,74:4.28,75:7.06,76:6.49,77:6.03,78:6.08,79:4.41,80:7.33,81:6.72,82:6.11,83:6.27,84:5.16,85:7.86,86:7.15,87:6.51,88:6.58,89:4.92,90:8.56,91:7.91,92:7.2,93:7.56,94:5.72,95:9.33,96:8.12,97:7.64,98:7.82,99:6.11
-};
+// v4.0.3: v4.0.1 장 순서 변경 뒤 어긋난 배율을 다시 맞추고, 13장 −10% → 20장 −28%로 낮춤(이릉 보스 약 42,000 · 100스테이지 보스 약 61,000)
+const STAGE_SC={55:4.34,56:4.563,57:4.232,58:5.21,59:3.339,60:5.779,61:4.987,62:4.562,63:4.696,64:3.757,65:5.779,66:5.157,67:4.93,68:4.966,69:5.639,70:5.785,71:5.317,72:4.932,73:4.97,74:3.605,75:5.797,76:5.321,77:4.833,78:4.96,79:3.882,80:5.829,81:5.302,82:4.537,83:4.89,84:3.795,85:6.049,86:5.502,87:5.009,88:5.063,89:3.787,90:6.366,91:5.882,92:5.354,93:5.623,94:4.253,95:6.7,96:5.83,97:5.484,98:5.615,99:4.388};
 const SKIP_R=1.2;
 const stagePow=n=>deckPower(stageSpecs(n));
 function skipCount(){const mine=mySpecs();if(!mine.some(Boolean))return 0;const mp=deckPower(mine);let n=S.stage,c=0;while(n<NSTAGE&&mp>=SKIP_R*stagePow(n)){c++;n++}return c}
@@ -2021,11 +2031,16 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='4.0.2';
+const GAME_VERSION='4.0.3';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'4.0.3',date:'2026-10-16',title:'13~20장 난이도 조정 · 룰렛 새 단장',reward:{ap:30},items:[
+  '지난 업데이트에서 장 순서를 바꾸면서 일부 스테이지의 적이 의도보다 강해졌어요. 특히 이릉대전 보스(화소연영)가 약 70,000으로 크게 올라 있었는데 이를 바로잡았어요.',
+  '13장부터 적을 전반적으로 약하게 했어요. 13장은 약 10%, 뒤로 갈수록 더 낮춰 20장은 약 28% 약해져요. 주요 보스 적 전투력: 화소연영 약 42,000 · 오장원 대치 약 52,000 · 최후의 결전 약 61,000.',
+  '남만 평정 보스(맹획의 땅)는 앞 장보다 약하게 꺾여 있던 걸 순서에 맞춰 약 44,500으로 올렸어요.',
+  '금화 룰렛이 새 단장했어요. 바퀴가 커지고 칸마다 글자 문양 · 칸 구분선 · 테두리 불빛이 생겼어요. 돌 때 불빛이 깜빡이고 바늘이 칸을 넘을 때마다 튕기며, 멈추면 바퀴가 빛나요.']},
  {v:'4.0.2',date:'2026-10-16',title:'도감 인연 효과 필터',reward:{ap:30},items:[
   '도감 인연 탭에 효과 필터가 생겼어요. 공격 · 체력 · 방어 · 속도 중 여러 개를 함께 고를 수 있고, 고른 효과 중 하나라도 주는 인연이 보여요.',
   '인연 탭에 \'타국 ×2\' 필터를 추가했어요. 켜면 서로 다른 나라 장수로 이루어진 타국 인연만 보여요.',
@@ -3115,6 +3130,7 @@ document.addEventListener('click',e=>{
 const RL_COST=1000, RL_DAILY=100;  // v3.5.0: 하루 20→100회
 const RL_K={gold:{n:'금',w:'금',u:''},food:{n:'군량',w:'군량',u:''},ap:{n:'나팔',w:'나팔',u:'개'},itk:{n:'보물 획득권',w:'보물권',u:'장'},gpk:{n:'장수 등용권',w:'장수권',u:'장'},gtk:{n:'장수 선택권',w:'장수선택',u:'장'},isk:{n:'보물 선택권',w:'보물선택',u:'장'},xtk:{n:'보물 강화도 교환권',w:'강화교환',u:'장'}};
 const RL_SEG=Object.keys(RL_K);
+const RL_GLY={gold:'金',food:'糧',ap:'角',itk:'寶',gpk:'將',gtk:'選',isk:'選',xtk:'萬'}, RL_RARE=k=>k==='gtk'||k==='isk'||k==='xtk';
 // v3.5.0: 확률 단위 ‱(1/10000). 보물 선택권 0.1%→0.5%, 보물 강화도 교환권 0.01% 신설 (군량 800에서 0.41%p 차감)
 const RL=[['gold',2000,1200],['gold',5000,200],['food',800,2009],['food',2000,1000],['food',6000,150],['ap',10,1500],['ap',30,300],['itk',5,1500],['itk',15,300],['gpk',5,1500],['gpk',15,260],['gtk',1,30],['isk',1,50],['xtk',1,1]];
 let rlRot=0, rlBusy=false;
@@ -3128,10 +3144,10 @@ const rlTxt=i=>{const[k,v]=RL[i];return `${RL_K[k].n} ${fmt(v)}${RL_K[k].u}`};
 const rlPct=w=>String(+(w/100).toFixed(2))+'%';
 function rouletteHtml(){
   const left=rlLeft(), seg=360/RL_SEG.length;
-  const grad=RL_SEG.map((k,i)=>`${k==='gtk'||k==='isk'||k==='xtk'?'#7a2a1e':i%2?'var(--panel2)':'#2a2018'} ${i*seg}deg ${(i+1)*seg}deg`).join(',');
+  const grad=RL_SEG.map((k,i)=>`${RL_RARE(k)?'#7a2a1e':i%2?'var(--panel2)':'#2a2018'} ${i*seg}deg ${(i+1)*seg}deg`).join(',');
   return `<div class="banner-card"><div class="big">輪盤</div><h2>금화 룰렛</h2>${infoP('roulette',`금 ${fmt(RL_COST)}에 1회 · 오늘 남은 횟수 <b class="num" style="color:var(--fg)">${left}</b>회`,`금 ${fmt(RL_COST)}으로 한 번 돌려 금·군량·나팔·보물 획득권·장수 등용권, 드물게 선택권을 받아요. 하루 ${RL_DAILY}회 · 오늘 남은 횟수 <b class="num" style="color:var(--fg)">${left}</b>회`,'margin:0')}
    <p class="sub" style="margin:4px 0 0">룰렛 소환권 <b class="num" style="color:var(--fg)">${S.rtk||0}</b>장 · 금 없이 1장에 1회, 하루 횟수와 별개예요</p>
-   <div class="wheel-wrap"><div class="wheel" id="wheel" style="background:conic-gradient(${grad});transform:rotate(${rlRot}deg)">${RL_SEG.map((k,i)=>`<span style="transform:rotate(${i*seg+seg/2}deg) translateY(-62px)">${RL_K[k].w}</span>`).join('')}</div><div class="wheel-pin" aria-hidden="true"></div><div class="wheel-hub" aria-hidden="true">金</div></div>
+   <div class="wheel-wrap"><div class="wheel" id="wheel" style="background:conic-gradient(${grad});transform:rotate(${rlRot}deg)">${RL_SEG.map((k,i)=>`<span class="${RL_RARE(k)?'rare':''}" style="transform:rotate(${i*seg+seg/2}deg) translateY(-74px)"><i>${RL_GLY[k]}</i>${RL_K[k].w}</span>`).join('')}</div><div class="wheel-lights" aria-hidden="true">${Array.from({length:16},(_,i)=>`<b style="transform:rotate(${i*22.5}deg) translateY(-120px)"></b>`).join('')}</div><div class="wheel-pin" aria-hidden="true"></div><div class="wheel-hub" aria-hidden="true">金</div></div>
    <div class="rates">${RL.map(([k,v,w],i)=>`<span${w<=50?' style="color:var(--bronze)"':''}>${rlTxt(i)} · ${rlPct(w)}</span>`).join('')}</div>
    <div class="row"><button type="button" class="btn ghost" data-rl="1" ${left<1||S.gold<RL_COST?'disabled':''}>1회 <b class="sl gold">金</b>${fmt(RL_COST)}</button><button type="button" class="btn" data-rl="10" ${left<10||S.gold<RL_COST*10?'disabled':''}>10회 <b class="sl gold">金</b>${fmt(RL_COST*10)}</button></div>
    <div class="row" style="margin-top:6px"><button type="button" class="btn ghost" data-rl="1" data-rlt="1" ${(S.rtk||0)<1?'disabled':''}>소환권 1회</button><button type="button" class="btn" data-rl="10" data-rlt="1" ${(S.rtk||0)<10?'disabled':''}>소환권 10회</button></div>
@@ -3151,9 +3167,9 @@ document.addEventListener('click',e=>{
   const seg=360/RL_SEG.length, si=RL_SEG.indexOf(RL[best][0]);rlRot=rlRot-(rlRot%360)+360*5+(360-(si*seg+seg/2));
   rlBusy=true;document.querySelectorAll('[data-rl]').forEach(x=>x.disabled=true);
   const w=$('#wheel'), still=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if(w){w.classList.add('spin');w.style.transform=`rotate(${rlRot}deg)`}
+  if(w){w.classList.add('spin');w.style.transform=`rotate(${rlRot}deg)`;if(!still)w.parentElement.classList.add('spinning')}
   const jp=jpPick(sum,n,tk);
-  setTimeout(()=>{rlBusy=false;if(view==='gacha')renderView();
+  setTimeout(()=>{rlBusy=false;if(view==='gacha'){renderView();const ww=document.querySelector('.wheel-wrap');if(ww&&!still){ww.classList.add('won');setTimeout(()=>ww.classList.remove('won'),1500)}}
     const fin=()=>{
     if(n===1&&!jp)toast(`룰렛 · ${rlTxt(best)}${big?' · 대박!':''}`);
     else if(n===1)openSheet(`<div class="sheet-h"><h2 style="margin:0">룰렛 대박!</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${jpBlock(jp)}
