@@ -121,6 +121,28 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 .chap-h .hz{font-family:var(--display);font-size:24px;color:var(--bronze)}
 .chap-h .ko{font-weight:700}
 .chap-h .pg{margin-left:auto;font-size:12px;color:var(--mute)}
+.track{display:flex;align-items:center;margin:12px 2px 2px}
+.track i{flex:1;height:2px;background:var(--line)}.track i.on{background:var(--bronze)}
+.dot{flex:none;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--line);background:var(--panel2);display:grid;place-items:center;font-size:11px;color:var(--mute);padding:0;font-family:var(--body);font-variant-numeric:tabular-nums}
+.dot.done{background:var(--bronze-d);border-color:var(--bronze);color:var(--fg)}
+.dot.next{border-color:var(--cinnabar);color:var(--fg);box-shadow:0 0 0 4px rgba(208,80,58,.18);animation:pulse 1.8s ease-in-out infinite}
+.dot.boss{width:34px;height:34px;font-family:var(--display);font-size:16px;border-width:3px;border-style:double}
+.dot:disabled{cursor:not-allowed}
+.crw{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12px}.crw .lab{color:var(--mute)}.crw .chip{font-size:12px}
+.owed{display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--bronze);border-radius:12px;padding:10px 12px;margin:0 0 10px}
+.owed div{flex:1;min-width:0}.owed b{display:block}.owed .btn{flex:none;white-space:nowrap}
+.folds{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+details.fold{background:var(--panel);border:1px solid var(--line);border-radius:12px}
+details.fold>summary{list-style:none;cursor:pointer;display:flex;align-items:baseline;gap:10px;padding:10px 14px}
+details.fold>summary::-webkit-details-marker{display:none}
+details.fold>summary .hz{font-family:var(--display);font-size:18px;color:var(--bronze)}
+details.fold>summary .ko{font-size:14px;min-width:0}
+details.fold>summary .st{margin-left:auto;font-size:12px;color:var(--jade);white-space:nowrap}
+details.fold>summary::after{content:'▾';color:var(--mute);font-size:12px}
+details.fold[open]>summary::after{transform:rotate(180deg)}
+details.fold .in{padding:0 14px 12px}
+.tokrow{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.tokrow.lock{opacity:.5}
+.tokrow .bar{height:4px;background:var(--panel2);border-radius:4px;margin-top:4px;overflow:hidden}.tokrow .bar i{display:block;height:100%;background:var(--bronze)}
 .nodes{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;position:relative}
 .node{aspect-ratio:1;max-width:100%;border-radius:50%;border:1.5px solid var(--line);background:var(--panel2);display:grid;place-items:center;font-family:var(--display);font-size:18px;color:var(--mute);padding:0}
 .node.done{background:var(--bronze-d);border-color:var(--bronze);color:var(--fg)}
@@ -362,6 +384,24 @@ input:focus-visible{outline:2px solid var(--bronze);outline-offset:1px}
 .nt{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}
 .nt-h{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
 .nt-h small{color:var(--mute);font-size:12px}
+.ib{flex:none;display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;margin-left:6px;padding:0;border-radius:50%;border:1px solid var(--bronze);background:transparent;color:var(--bronze);font:italic 700 11px/1 Georgia,serif;cursor:pointer;vertical-align:1px}
+.ib[aria-expanded="true"]{background:var(--bronze);color:var(--ink)}
+.info .i-f{display:none}.info.open .i-s{display:none}.info.open .i-f{display:inline}
+.afw{display:flex;align-items:flex-start;gap:2px}.afw>p{flex:1;min-width:0}
+.afw:not(.open)>p{display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+html.info-all .info .i-s{display:none}html.info-all .info .i-f{display:inline}html.info-all .afw>p{display:block}html.info-all .ib{display:none}
+summary.nt-h{cursor:pointer;list-style:none}summary.nt-h::-webkit-details-marker{display:none}
+summary.nt-h::after{content:'▾';color:var(--mute);font-size:12px;transition:transform .15s}details.nt[open]>summary.nt-h::after{transform:rotate(180deg)}
+details.nt:not([open]){padding:9px 12px}details.nt:not([open]) .nt-h b{font-weight:500;font-size:14px}
+.nt-rw{font-size:11px;padding:1px 6px;border-radius:6px;background:var(--cinnabar);color:#fff}
+.nt-all .btn{flex:none;white-space:nowrap}.nt-all{display:flex;align-items:center;gap:10px;justify-content:space-between;background:var(--panel2);border:1px solid var(--bronze);border-radius:12px;padding:10px 12px;margin:0 0 10px}
+.help-cats{display:flex;gap:6px;overflow-x:auto;padding:2px 0 8px;margin:0 -2px;scrollbar-width:none}.help-cats::-webkit-scrollbar{display:none}
+.help-cats button{flex:none;font:inherit;font-size:13px;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--panel2);color:var(--fg);cursor:pointer}
+.help-cats button[aria-pressed="true"]{background:var(--bronze);border-color:var(--bronze);color:var(--ink)}
+#help-q{width:100%;box-sizing:border-box;font:inherit;font-size:14px;padding:9px 12px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--fg);margin:2px 0 8px}
+.hl{border-bottom:1px solid var(--line)}.hl>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:10px 2px;font-size:14px;color:var(--fg)}
+.hl>summary::-webkit-details-marker{display:none}.hl>summary::after{content:'＋';margin-left:auto;color:var(--mute);font-size:13px}.hl[open]>summary::after{content:'－'}
+.hl>summary small{color:var(--mute);font-size:11px}.hl p{margin:0 2px 12px;font-size:13px;line-height:1.6;color:var(--fg)}
 .ver{font-family:var(--display);color:var(--bronze);font-size:15px}
 .nt ul{margin:8px 0 10px;padding-left:18px;font-size:13px;color:var(--fg);display:flex;flex-direction:column;gap:4px}
 
@@ -607,7 +647,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.7.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v4.0.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1208,7 +1248,16 @@ const CH_DEF=[
  ['서량 정벌','西涼',['서량철기','騎','qun'],'동관',['madai','machao'],['madai','machao','T:cav','T:arc','T:tac']],
  ['한중 공방','漢中',['위군','魏','wei'],'정군산',['xiahouyuan','dianwei','zhangliao'],['dianwei','xiahoudun','zhangliao','xiahouyuan','guojia']],
  ['이릉대전','夷陵',['오군','吳','wu'],'화소연영',['ganning','taishici','luxun'],['zhoutai','lingtong','ganning','taishici','luxun']],
- ['오장원','五丈原',['위군','魏','wei'],'천하통일',['zhangliao','xuchu','simayi'],['xiahoudun','xuchu','caocao','xiahouyuan','simayi']]
+ ['오장원','五丈原',['위군','魏','wei'],'오장원 대치',['zhangliao','xuchu','simayi'],['xiahoudun','xuchu','caocao','xiahouyuan','simayi']],
+ // v4.0.0: 13~20장 (61~100스테이지)
+ ['남만 평정','南蠻',['남만병','蠻','qun'],'맹획의 땅',['zhurong','zhangren'],['zhangren','T:inf','zhurong','T:arc','T:tac']],
+ ['합비 공방','合肥',['위군','魏','wei'],'소요진',['lidian','lejin','zhangliao'],['lidian','lejin','zhangliao','xunyu','T:tac']],
+ ['번성 전투','樊城',['형주군','蜀','shu'],'수엄칠군',['guanping','zhoucang','guanyu'],['guanping','zhoucang','guanyu','huangzhong','fazheng']],
+ ['가정 전투','街亭',['촉군','蜀','shu'],'가정',['weiyan','madai','liaohua'],['weiyan','zhaoyun','zhugeliang','yanyan','pangtong']],
+ ['진창 공방','陳倉',['위군','魏','wei'],'진창성',['haozhao','wenpin','caoren'],['haozhao','caoren','xiahouyuan','jiaxu','guojia']],
+ ['검각 돌파','劍閣',['위군','魏','wei'],'음평',['dengai','xuchu','dianwei'],['dengai','dianwei','xuchu','simayi','xunyu']],
+ ['건업 공략','建業',['오군','吳','wu'],'석두성',['xusheng','handang','lusu'],['xusheng','sunjian','lvmeng','sunshangxiang','zhouyu']],
+ ['천하통일','天下',['군웅','雄','qun'],'최후의 결전',['diaochan','xurong','zhangfei'],['lubu','guanyu','zhangfei','huangzhong','zhugeliang']]
 ];
 const TROOP_ROT=[['inf','inf','arc','arc','tac'],['inf','cav','inf','arc','arc'],['inf','cav','cav','arc','tac'],['inf','inf','cav','arc','tac']];
 const GEN_CNT=[0,1,2,2], CLS_ORD={inf:0,cav:1,arc:2,tac:3}, ENEMY_SCALE=.7;
@@ -1223,7 +1272,8 @@ const CH=CH_DEF.map(([n,hz,tr,boss,pool,bossRow])=>{
   return {n,hz,tr,boss,st};
 });
 const NSTAGE=CH.length*5, MAXLV=50, CAP_H=12, PVP_DAILY=10;
-const AP_CAP=240, AP_MS=3*60*1000, AP_COST=3, AP_WIN=0;  // 나팔: 3분에 1개, 도전 3개(지면 돌려받음)
+const AP_CAP=240, AP_MS=3*60*1000, AP_COST=3, AP_WIN=0;
+const stCost=n=>n%5===4?3:2;  // v4.0.0: 일반 스테이지 나팔 2개, 보스전 3개  // 나팔: 3분에 1개, 도전 3개(지면 돌려받음)
 const MAX5=3, NSLOT=6;
 const count5=(deck,skip)=>deck.filter((g,i)=>g&&i!==skip&&GMAP[g]&&GMAP[g].rar===5).length;
 const capFive=a=>{let n=0;return a.filter(s=>!(s&&s.g&&GMAP[s.g]&&GMAP[s.g].rar===5&&++n>MAX5))};
@@ -1566,9 +1616,12 @@ function bonusLine(info){if(!info)return '';const p=[...(info.ally?[`연합군 $
 
 /* ---------------- stages ---------------- */
 function mkTroop(tr,cls){const b=TROOP_BASE[cls];return {name:tr[0],hz:tr[1],fac:tr[2],rar:2,cls,str:b[0],int:b[1],lead:b[2],spd:b[3],skill:DEF_SKILL[cls]}}
-function stageLv(n){return 1+Math.floor(n*.6)+(n%5===4?2:0)}
+function stageLv(n){return Math.min(MAXLV,1+Math.floor(n*.6)+(n%5===4?2:0))}
 // 오장원(마지막 장): 최상위권(전투력 약 30,000)에 맞춘 정예군. 적 전투력 약 18,000 → 30,000
-const STAGE_SC={55:4.34,56:4.49,57:4.16,58:4.99,59:3.29};
+const STAGE_SC={55:4.34,56:4.49,57:4.16,58:4.99,59:3.29,
+  // v4.0.0 13~20장: 61스테이지 약 38,000에서 스테이지마다 약 1.7%씩, 보스는 15% 더. 100스테이지 보스 약 85,000
+  60:6.43,61:5.74,62:5.49,63:5.52,64:6.26,65:6.62,66:6.08,67:5.49,68:5.76,69:4.88,70:6.83,71:6.32,72:5.4,73:5.97,74:4.28,75:7.06,76:6.49,77:6.03,78:6.08,79:4.41,80:7.33,81:6.72,82:6.11,83:6.27,84:5.16,85:7.86,86:7.15,87:6.51,88:6.58,89:4.92,90:8.56,91:7.91,92:7.2,93:7.56,94:5.72,95:9.33,96:8.12,97:7.64,98:7.82,99:6.11
+};
 const SKIP_R=1.2;
 const stagePow=n=>deckPower(stageSpecs(n));
 function skipCount(){const mine=mySpecs();if(!mine.some(Boolean))return 0;const mp=deckPower(mine);let n=S.stage,c=0;while(n<NSTAGE&&mp>=SKIP_R*stagePow(n)){c++;n++}return c}
@@ -1596,7 +1649,7 @@ let PLAYERS=[], BATTLES=[];
 function newState(){
   return {v:1,gold:500,food:1000,last:Date.now(),stage:0,seq:1,
     gens:{liaohua:{lv:1,d:0,its:[]},lejin:{lv:1,d:0,its:[]},lidian:{lv:1,d:0,its:[]}},
-    slv:[1,1,1,1,1],items:[],itk:0,gpk:0,cpn:[],rl:{day:'',n:0},lab:labDefault(),colMax:{},raid:{day:'',n:0,claimed:[]},deck:['liaohua','lejin','lidian',null,null],decks:[{n:'진형 1',g:['liaohua','lejin','lidian',null,null]}],dk:0,defDk:0,pvp:{day:'',used:0},duel:{done:[],pruned:''},ap:AP_CAP,apT:Date.now(),att:{day:'',streak:0,total:0},notice:{read:[],claimed:[]},pity:{g:0,i:0},created:Date.now()};
+    slv:[1,1,1,1,1],items:[],itk:0,gpk:0,cpn:[],rl:{day:'',n:0},lab:labDefault(),colMax:{},raid:{day:'',n:0,claimed:[]},deck:['liaohua','lejin','lidian',null,null],decks:[{n:'진형 1',g:['liaohua','lejin','lidian',null,null]}],dk:0,defDk:0,pvp:{day:'',used:0},duel:{done:[],pruned:''},ap:AP_CAP,apT:Date.now(),att:{day:'',streak:0,total:0},notice:{read:[],claimed:[]},tok:{},tokd:{day:'',c:{}},bossRw:[],pity:{g:0,i:0},created:Date.now()};
 }
 function sanitize(s){
   const n=newState();
@@ -1622,6 +1675,11 @@ function sanitize(s){
   o.colMax={};if(s.colMax&&typeof s.colMax==='object')for(const[k,v]of Object.entries(s.colMax))if(IMAP[k])o.colMax[k]=Math.min(ITEM_MAXD,Math.max(0,v|0));
   for(const x of o.items)if(o.colMax[x.k]==null||x.d>o.colMax[x.k])o.colMax[x.k]=x.d;
   {const rl=s.rl&&typeof s.rl==='object'?s.rl:{};o.rl={day:String(rl.day||''),n:Math.max(0,rl.n|0)}}
+  // v4.0.0: 장수 증표(장수별), 오늘 보스별 증표 횟수, 받은 보스 첫 격파 보상(장 번호)
+  o.tok={};if(s.tok&&typeof s.tok==='object')for(const[k,v]of Object.entries(s.tok))if(GMAP[k]&&(v|0)>0)o.tok[k]=Math.min(9999,v|0);
+  {const t=s.tokd&&typeof s.tokd==='object'?s.tokd:{};o.tokd={day:String(t.day||''),c:{}};if(t.c&&typeof t.c==='object')for(const[k,v]of Object.entries(t.c))o.tokd.c[k]=Math.max(0,Math.min(TOK_DAILY,v|0))}
+  o.sgdone=Array.isArray(s.sgdone)?s.sgdone.filter(Number.isInteger).slice(-30):[];
+  o.bossRw=Array.isArray(s.bossRw)?[...new Set(s.bossRw.filter(x=>Number.isInteger(x)&&x>=0&&x<CH.length))]:[];
   // 진형 여러 개(최대 20): decks[k]={n:이름,g:[6자리],f:배치}, dk=지금 고른 진형, defDk=야전 방어 진형. deck은 지금 고른 진형의 사본
   const cleanDeck=a=>{let n5=0;const seen=new Set();return Array.from({length:NSLOT},(_,i)=>{const g=(Array.isArray(a)?a:[])[i];if(!g||!o.gens[g]||seen.has(g)||(GMAP[g].rar===5&&++n5>MAX5))return null;seen.add(g);return g})};
   o.decks=(Array.isArray(s.decks)&&s.decks.length?s.decks.slice(0,DECK_MAX):[{n:'진형 1',g:s.deck}]).map((d,k)=>({n:cleanName(d&&d.n)||'진형 '+(k+1),g:cleanDeck(d&&d.g),f:cleanForm(d&&d.f),i:d&&d.i&&typeof d.i==='object'?d.i:null}));
@@ -1633,7 +1691,8 @@ function sanitize(s){
   o.stage=Math.min(NSTAGE,Math.max(0,o.stage|0));
   o.ap=Number.isFinite(Number(s.ap))?Math.max(0,Math.min(999,Math.floor(Number(s.ap)))):AP_CAP;o.apT=Number(s.apT)||Date.now();
   const at=s.att&&typeof s.att==='object'?s.att:{};o.att={day:String(at.day||''),streak:Math.max(0,at.streak|0),total:Math.max(0,at.total|0)};
-  const nt=s.notice&&typeof s.notice==='object'?s.notice:{};const strs=a=>Array.isArray(a)?a.filter(x=>typeof x==='string').slice(-60):[];o.notice={read:strs(nt.read),claimed:strs(nt.claimed)};
+// v3.7.3: 공지가 60개를 넘어 가장 오래된 공지가 읽음 목록에서 밀려나 告 빨간 점이 안 꺼지던 문제 → 300개로
+  const nt=s.notice&&typeof s.notice==='object'?s.notice:{};const strs=a=>Array.isArray(a)?a.filter(x=>typeof x==='string').slice(-300):[];o.notice={read:strs(nt.read),claimed:strs(nt.claimed)};
   const du=s.duel&&typeof s.duel==='object'?s.duel:{};o.duel={done:strs(du.done).slice(-30),pruned:String(du.pruned||'')};
   const ids=new Set(o.items.map(x=>x.u));ITEM_DROP=0;
   const used=new Set(),kOf=u=>{const x=o.items.find(y=>y.u===u);return x?IMAP[x.k]:null};
@@ -1689,8 +1748,9 @@ function deckQuickHtml(lab,cb){deckQuickCb=cb||null;if(!S.decks||S.decks.length<
   return `<div class="chips deckbar" role="group" aria-label="${lab}" style="margin:6px 0"><span class="flab">${lab}</span>${S.decks.map((d,k)=>`<button type="button" data-dkq="${k}" aria-pressed="${k===S.dk}">${esc(deckName(k))}${k===S.defDk?' <small class="defmk">防</small>':''}</button>`).join('')}</div>`}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-dkq]');if(!b)return;e.stopPropagation();switchDeck(+b.dataset.dkq);const cb=deckQuickCb;if(cb)cb();else renderView()});
 function chaptersDone(){return Math.floor(S.stage/5)}
-function foodRateAt(st){return 60+4*st+25*Math.floor(st/5)}
-function goldRateAt(st){return 60+6*st+30*Math.floor(st/5)}  // v3.5.0: 2배
+// v4.0.0: 61스테이지부터는 오르는 폭을 절반으로
+function foodRateAt(st){const k=Math.min(st,60),e=Math.max(0,st-60);return 60+4*k+25*Math.floor(k/5)+2*e+Math.round(12.5*Math.max(0,Math.floor(st/5)-12))}
+function goldRateAt(st){const k=Math.min(st,60),e=Math.max(0,st-60);return 60+6*k+30*Math.floor(k/5)+3*e+15*Math.max(0,Math.floor(st/5)-12)}  // v3.5.0: 2배
 function foodRate(){return foodRateAt(S.stage)}
 function goldRate(){return goldRateAt(S.stage)}
 function pendingRes(){const h=Math.min(CAP_H,Math.max(0,(Date.now()-S.last)/3.6e6));return {f:Math.floor(h*foodRate()),g:Math.floor(h*goldRate()),h}}
@@ -1938,7 +1998,8 @@ function openSettings(first){
   {const nf=$('#name-form');if(nf&&!first)nf.insertAdjacentHTML('afterend',attRateHtml())}
   {const lo=$('#logout');if(lo&&!first){lo.insertAdjacentHTML('beforebegin',`<label class="row" style="gap:8px;margin:0 0 4px;font-size:14px"><input type="checkbox" id="no-shake" ${btNoShake()?'checked':''}> 전투 화면 흔들림 끄기</label><p class="sub" style="margin:0 0 12px">치명타·마지막 일격 때 화면이 흔들리지 않아요.</p>`);$('#no-shake').onchange=e=>{btNoShakeSave(e.target.checked);toast(e.target.checked?'전투 화면 흔들림을 껐어요':'전투 화면 흔들림을 켰어요')};
     lo.insertAdjacentHTML('beforebegin',`<label class="row" style="gap:8px;margin:0 0 4px;font-size:14px"><input type="checkbox" id="cutin-on" ${btCutin()?'checked':''}> 전법 컷인 보기</label><p class="sub" style="margin:0 0 12px">전법이 발동할 때 장수 인장과 전법 이름이 띠로 지나가요(전법마다 약 0.8초). 4배속 이상에서는 나오지 않아요.</p>`);$('#cutin-on').onchange=e=>{btCutinSave(e.target.checked);toast(e.target.checked?'전법 컷인을 켰어요':'전법 컷인을 껐어요')};
-    lo.insertAdjacentHTML('beforebegin',`<label class="row" style="gap:8px;margin:0 0 4px;font-size:14px"><input type="checkbox" id="fx-on" ${btFxOn()?'checked':''}> 전투 연출 항상 켜기</label><p class="sub" style="margin:0 0 12px">휴대폰의 '동작 줄이기'가 켜져 있어도 전투 연출(섬광·베기·도장·컷인)을 보여 줘요. 끄면 기기 설정을 따라요.</p>`);$('#fx-on').onchange=e=>{btFxOnSave(e.target.checked);toast(e.target.checked?'전투 연출을 항상 켜요':'전투 연출이 기기 설정을 따라요')}}}
+    lo.insertAdjacentHTML('beforebegin',`<label class="row" style="gap:8px;margin:0 0 4px;font-size:14px"><input type="checkbox" id="fx-on" ${btFxOn()?'checked':''}> 전투 연출 항상 켜기</label><p class="sub" style="margin:0 0 12px">휴대폰의 '동작 줄이기'가 켜져 있어도 전투 연출(섬광·베기·도장·컷인)을 보여 줘요. 끄면 기기 설정을 따라요.</p>`);$('#fx-on').onchange=e=>{btFxOnSave(e.target.checked);toast(e.target.checked?'전투 연출을 항상 켜요':'전투 연출이 기기 설정을 따라요')};
+    lo.insertAdjacentHTML('beforebegin',`${infoAllHtml()}<p class="sub" style="margin:0 0 12px">끄면 화면의 긴 설명이 한 줄로 접히고, 옆의 ⓘ를 눌러 펼쳐요.</p>`)}}
   const lg=$('#link-google');if(lg)lg.onclick=linkGoogle;
   $('#name-form').onsubmit=ev=>{ev.preventDefault();const v=cleanName($('#name-input').value);if(!v){toast('이름을 입력해 주세요');return}MYNAME=v;save();closeSheet();renderView();toast('이름을 저장했어요');if(first)setTimeout(runPopups,300)};
   const lo=$('#logout');
@@ -1954,11 +2015,28 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='3.7.3';
+const GAME_VERSION='4.0.0';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'4.0.0',date:'2026-10-16',title:'출정 개편 · 100스테이지 · 장수 증표 · 매일 수성전',reward:{ap:300},items:[
+  '출정이 20장 100스테이지로 늘었어요. 오장원 뒤에 남만 평정부터 천하통일까지 8개 장이 새로 열려요.',
+  '나팔은 일반 스테이지 2개, 보스전 3개로 바뀌었어요. 출정 화면은 작은 점으로 줄이고, 깬 장은 한 줄로 접었어요.',
+  '보스를 처음 깨면 등용권·획득권·소환권을, 소탕하면 보스 장수 증표를 받아요(보스마다 하루 5회). 증표를 모아 [증표함]에서 그 장수를 등용해요. 예전에 깬 보스 보상은 출정 화면 위 [모두 받기]로 받아요. 자세히: 도움말 › 전장 콘텐츠',
+  '원정군 모병에서 장수가 합류하면 그 장수 증표 3개를 받아요.',
+  '수성전이 매일 바뀌어요. 성이 16곳으로 늘었고(완성·가맹관·정군산·유수구·장사·맥성·북해), 매일 밤 10시에 3곳이 새로 열리고 순위도 매일 새로 시작해요. 다음 날 순위에 따라 그 성 수성 명장 증표(1위 30개 ~ 참여 5개)를 받아요.',
+  '업데이트 기념으로 나팔 300개를 드려요.']},
+ {v:'3.7.5',date:'2026-10-16',title:'긴 설명 접기',reward:{ap:30,rtk:100},items:[
+  '화면 곳곳의 긴 설명을 한 줄로 줄였어요. 옆의 ⓘ를 누르면 전체 설명이 펼쳐지고, 펼친 곳은 다음에도 펼쳐진 채로 보여요.',
+  '남은 횟수·장수 같은 숫자는 접혀도 그대로 보여요.',
+  '자세한 설명을 늘 보고 싶다면 도움말 맨 위나 내 정보에서 [화면 설명 항상 펼치기]를 켜세요.',
+  '업데이트 기념으로 나팔 30개와 룰렛 소환권 100장을 드려요.']},
+ {v:'3.7.4',date:'2026-10-16',title:'공지·도움말 정리 · 바로 다시 소환',reward:{ap:30,rtk:100},items:[
+  '공지는 최신 1개만 펼쳐지고, 지난 공지는 제목을 눌러 펼쳐요. 안 받은 보상은 맨 위 [모두 받기]로 한 번에 받아요.',
+  '도움말을 분류별로 골라 보고, 항목 이름을 눌러 펼쳐요. 검색칸에 낱말을 넣으면 관련 항목만 남아요.',
+  '등용·보물 획득·룰렛 결과 창에서 남은 획득권·소환권으로 바로 다시 뽑을 수 있어요. 자세히: 도움말 › 등용·재화',
+  '업데이트 기념으로 나팔 30개와 룰렛 소환권 100장을 드려요.']},
  {v:'3.7.3',date:'2026-10-16',title:'룰렛 대박 연출 · 자랑하기',reward:{ap:30,rtk:100},items:[
   '금화 룰렛에서 장수 선택권 · 보물 선택권 · 보물 강화도 교환권이 나오면 전용 연출이 나와요. 장수 선택권은 將, 보물 선택권은 寶 도장이 찍히고, 0.01% 보물 강화도 교환권은 붉은 빛줄기와 함께 萬 도장이 찍혀요.',
   '10회로 돌려 여러 장이 나오면 가장 귀한 것으로 연출이 한 번 나오고 ×2처럼 장수를 보여 줘요. 연출은 화면을 누르면 건너뛸 수 있어요.',
@@ -2406,7 +2484,7 @@ document.addEventListener('click',async e=>{
 });
 function bindCoupon(){const f=$('#cpn-form');if(!f)return;f.onsubmit=async ev=>{ev.preventDefault();const b=f.querySelector('button');b.disabled=true;const r=await redeemCoupon($('#cpn-input').value);b.disabled=false;const m=$('#cpn-msg');if(!m)return;m.textContent=r.ok?'받았어요 · '+r.ok:r.err;m.style.color=r.ok?'var(--bronze)':'var(--cinnabar)';if(r.ok){$('#cpn-input').value='';toast('쿠폰 보상 '+r.ok);fillCouponList()}}}
 function rewardText(r){const o=[];if(r.ap)o.push(`角 +${r.ap}`);if(r.food)o.push(`糧 +${fmt(r.food)}`);if(r.gold)o.push(`金 +${fmt(r.gold)}`);if(r.itk)o.push(`보물 획득권 ${r.itk}장`);if(r.gtk)o.push(`장수 선택권 ${r.gtk}장`);if(r.isk)o.push(`보물 선택권 ${r.isk}장`);if(r.gpk)o.push(`장수 등용권 ${r.gpk}장`);if(r.xtk)o.push(`보물 강화도 교환권 ${r.xtk}장`);if(r.rtk)o.push(`룰렛 소환권 ${r.rtk}장`);return o.join(' · ')}
-function updateDot(){const d=$('#notice-dot');if(!d)return;d.hidden=!(S&&((typeof PENDING!=='undefined'&&PENDING.length)||attDue()||NOTICES.some(n=>!S.notice.read.includes(n.v))||NOTICES.some(n=>n.reward&&!S.notice.claimed.includes(n.v))))}
+function updateDot(){const d=$('#notice-dot');if(!d)return;d.hidden=!(S&&((typeof PENDING!=='undefined'&&PENDING.length)||(typeof sgOwed==='function'&&sgOwed().length)||attDue()||NOTICES.some(n=>!S.notice.read.includes(n.v))||NOTICES.some(n=>n.reward&&!S.notice.claimed.includes(n.v))))}
 function attHtml(){
   const streak=S.att.day===kstYesterday()?S.att.streak+1:1, pos=(streak-1)%7+1, rw=ATT_RW7[pos-1][1];
   let boxes='';for(let k=1;k<=7;k++)boxes+=`<div class="ad ${k<pos?'done':''} ${k===pos?'today':''}" title="${rewardText(ATT_RW7[k-1][1])}"><small>${k}일</small><b>${ATT_RW7[k-1][0]}</b></div>`;
@@ -2425,23 +2503,35 @@ function bindAtt(after){
     after();
   };
 }
-function noticeHtml(n){
+// v3.7.4: 공지는 접어 두고(제목 한 줄) 눌러서 펼쳐요
+function noticeHtml(n,open){
   const claimed=S&&S.notice.claimed.includes(n.v);
-  return `<article class="nt"><div class="nt-h"><span class="ver">v${n.v}</span><b>${esc(n.title)}</b><span class="sp"></span><small>${n.date}</small></div>
+  return `<details class="nt"${open?' open':''}><summary class="nt-h"><span class="ver">v${n.v}</span><b>${esc(n.title)}</b><span class="sp"></span>${n.reward&&S&&!claimed?'<span class="nt-rw">보상</span>':''}<small>${n.date}</small></summary>
    <ul>${n.items.map(i=>`<li>${esc(i)}</li>`).join('')}</ul>
-   ${n.reward&&S?(claimed?`<div class="sub" style="margin:0">보상 받음 · ${rewardText(n.reward)}</div>`:`<button type="button" class="btn sm" data-nclaim="${n.v}">확인하고 보상 받기 · ${rewardText(n.reward)}</button>`):''}</article>`;
+   ${n.reward&&S?(claimed?`<div class="sub" style="margin:0">보상 받음 · ${rewardText(n.reward)}</div>`:`<button type="button" class="btn sm" data-nclaim="${n.v}">확인하고 보상 받기 · ${rewardText(n.reward)}</button>`):''}</details>`;
 }
-function markRead(list){if(!S)return;let ch=false;list.forEach(n=>{if(!S.notice.read.includes(n.v)){S.notice.read.push(n.v);ch=true}});if(ch){S.notice.read=S.notice.read.slice(-60);save()}updateDot()}
+function markRead(list){if(!S)return;let ch=false;list.forEach(n=>{if(!S.notice.read.includes(n.v)){S.notice.read.push(n.v);ch=true}});if(ch){S.notice.read=S.notice.read.slice(-300);save()}updateDot()}
 function openNotices(only){
   const list=only?NOTICES.filter(n=>n.v===only):NOTICES;
   openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${only?'새 소식':'공지'}</h2><div class="sub" style="margin:0">현재 버전 v${GAME_VERSION}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   ${S&&!only?attRateHtml():''}${S&&attDue()&&!only?attHtml():''}${S&&!only&&PENDING.length?duelRewardHtml():''}
-   <div class="list">${list.map(noticeHtml).join('')}</div>
+   ${S&&!only?attRateHtml():''}${S&&attDue()&&!only?attHtml():''}${S&&!only&&PENDING.length?duelRewardHtml():''}${S&&!only?sgRewardHtml():''}
+   ${S&&!only?ntClaimAllHtml():''}
+   <div class="list">${list.slice(0,only?list.length:NT_SHOW).map((n,i)=>noticeHtml(n,i===0)).join('')}</div>
+   ${!only&&list.length>NT_SHOW?`<div class="list" id="nt-more" hidden style="margin-top:8px">${list.slice(NT_SHOW).map(n=>noticeHtml(n,false)).join('')}</div><button type="button" class="btn ghost wide" id="nt-more-btn" style="margin-top:10px">지난 공지 더 보기 (${list.length-NT_SHOW}개)</button>`:''}
    ${only?`<button type="button" class="btn ghost wide" id="all-notices" style="margin-top:12px">지난 공지 모두 보기</button>`:''}`);
   markRead(list);
   bindAtt(()=>openNotices(only));
   const a=$('#all-notices');if(a)a.onclick=()=>openNotices();
+  const mb=$('#nt-more-btn');if(mb)mb.onclick=()=>{$('#nt-more').hidden=false;mb.remove()};
 }
+const NT_SHOW=10, RW_KEYS=['ap','food','gold','itk','gtk','isk','gpk','xtk','rtk'];
+const ntUnclaimed=()=>S?NOTICES.filter(n=>n.reward&&!S.notice.claimed.includes(n.v)):[];
+function ntClaimAllHtml(){
+  const L=ntUnclaimed();if(!L.length)return '';const sum={};L.forEach(n=>RW_KEYS.forEach(k=>{if(n.reward[k])sum[k]=(sum[k]||0)+n.reward[k]}));
+  return `<div class="nt-all"><div><b>받을 보상 ${L.length}개</b><div class="sub" style="margin:0">${rewardText(sum)}</div></div><button type="button" class="btn sm" data-nclaimall>모두 받기</button></div>`;
+}
+// 공지 보상 지급(한 번만). 받은 보상을 돌려줘요
+function ntClaim(n){if(!S||!n||!n.reward||S.notice.claimed.includes(n.v))return null;const r=n.reward;tickAP();RW_KEYS.forEach(k=>{if(r[k])S[k]=(S[k]||0)+r[k]});S.notice.claimed.push(n.v);return r}
 let popupsRan=false;
 function runPopups(){
   if(!S)return;{const k0=S.sat&&S.sat.k;attSeason();if(S.sat&&S.sat.k!==k0){save();renderTop()}if(ATT_RW_MSG){const m=ATT_RW_MSG;ATT_RW_MSG='';toast(m);setTimeout(()=>toast(m),3500)}}updateDot();
@@ -2451,9 +2541,11 @@ function runPopups(){
 document.addEventListener('click',e=>{
   if(e.target.closest('#notice-btn')){openNotices();return}
   const c=e.target.closest('[data-nclaim]');
-  if(c&&S){const n=NOTICES.find(x=>x.v===c.dataset.nclaim);if(!n||!n.reward||S.notice.claimed.includes(n.v))return;
-    const r=n.reward;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.gtk=(S.gtk||0)+(r.gtk||0);S.isk=(S.isk||0)+(r.isk||0);S.gpk=(S.gpk||0)+(r.gpk||0);S.xtk=(S.xtk||0)+(r.xtk||0);S.rtk=(S.rtk||0)+(r.rtk||0);S.notice.claimed.push(n.v);save();renderTop();updateDot();
-    c.outerHTML=`<div class="sub" style="margin:0">보상 받음 · ${rewardText(r)}</div>`;toast(`공지 보상 ${rewardText(r)}`)}
+  if(c&&S){const r=ntClaim(NOTICES.find(x=>x.v===c.dataset.nclaim));if(!r)return;save();renderTop();updateDot();
+    const d=c.closest('details'),bd=d&&d.querySelector('.nt-rw');bd&&bd.remove();
+    c.outerHTML=`<div class="sub" style="margin:0">보상 받음 · ${rewardText(r)}</div>`;toast(`공지 보상 ${rewardText(r)}`);const al=$('.nt-all');if(al){const h=ntClaimAllHtml();if(h)al.outerHTML=h;else al.remove()}return}
+  if(e.target.closest('[data-nclaimall]')&&S){const sum={};let k=0;ntUnclaimed().forEach(n=>{const r=ntClaim(n);if(r){k++;RW_KEYS.forEach(x=>{if(r[x])sum[x]=(sum[x]||0)+r[x]})}});
+    if(!k)return;save();renderTop();updateDot();toast(`공지 보상 ${k}개 · ${rewardText(sum)}`);openNotices()}
 });
 
 /* ---------------- render: shell ---------------- */
@@ -2471,13 +2563,46 @@ function renderTop(){
   duelTick();
 }
 $('#claim-btn').onclick=()=>{const p=pendingRes();if(p.f<1&&p.g<1)return;S.food+=p.f;S.gold+=p.g;S.last=Date.now();save();renderTop();toast(`군량 ${fmt(p.f)} · 금 ${fmt(p.g)} 징수`)};
-function focusNext(){const n=document.querySelector('.node.next');if(n)n.closest('.chap').scrollIntoView({block:'start'})}
+function focusNext(){const n=document.querySelector('.dot.next');if(n)n.closest('.chap').scrollIntoView({block:'start'})}
 $('#tabs').onclick=e=>{const b=e.target.closest('.tab');if(!b||!S)return;view=b.dataset.v;render();$('#view').scrollTop=0;if(view==='stage')focusNext()};
 
 
 /* ---------------- 돌파 표시 · 도움말 ---------------- */
 const maxD=r=>r===3?10:5;
 function dupHtml(d,lab,mx){d=d||0;mx=mx||5;if(isWork())return `<span class="dup" title="돌파 ${d}/${mx}" aria-label="돌파 ${d}/${mx}">${lab?'<small>돌파</small>':''}<b class="num">${d}/${mx}</b></span>`;const a=Math.min(d,5),b=Math.max(0,d-5);return `<span class="dup" title="돌파 ${d}/${mx}" aria-label="돌파 ${d}/${mx}">${lab?'<small>돌파</small>':''}${'◆'.repeat(a)}<i>${'◇'.repeat(5-a)}</i>${mx>5?`<span class="dup2">${'✦'.repeat(b)}<i>${'✧'.repeat(mx-5-b)}</i></span>`:''}</span>`}
+/* ---------------- 설명 접기 (v3.7.5) ----------------
+   화면 맨 위 설명은 한 줄 요약 + ⓘ(infoP), 그 밖에 두 줄을 넘는 안내(p.sub)는 한 줄로 접고 ⓘ로 펼쳐요.
+   펼친 곳은 기기에 기억하고, '화면 설명 항상 펼치기'를 켜면 모두 펼쳐 보여요. */
+const INFO_K='sg_info', INFO_ALL_K='sg_info_all';
+const infoSet=(()=>{try{return new Set(JSON.parse(localStorage.getItem(INFO_K)||'[]'))}catch(e){return new Set()}})();
+function infoSave(){try{localStorage.setItem(INFO_K,JSON.stringify([...infoSet].slice(-300)))}catch(e){}}
+function infoAll(){try{return localStorage.getItem(INFO_ALL_K)==='1'}catch(e){return false}}
+function infoAllSet(on){try{localStorage.setItem(INFO_ALL_K,on?'1':'0')}catch(e){}document.documentElement.classList.toggle('info-all',on)}
+document.documentElement.classList.toggle('info-all',infoAll());
+const infoAllHtml=()=>`<label class="row" style="gap:8px;margin:0 0 4px;font-size:14px"><input type="checkbox" data-infoall ${infoAll()?'checked':''}> 화면 설명 항상 펼치기</label>`;
+function infoP(key,sum,full,st){const on=infoSet.has(key);
+  return `<p class="sub info${on?' open':''}" data-info="${key}"${st?` style="${st}"`:''}><span class="i-s">${sum}</span><span class="i-f">${full}</span><button type="button" class="ib" data-ib aria-expanded="${on}" aria-label="설명 펼치기·접기">i</button></p>`}
+function foldScan(){
+  document.querySelectorAll('#view p.sub:not([data-fd]),#sheet p.sub:not([data-fd])').forEach(p=>{
+    if(p.classList.contains('info')||p.closest('.no-fold,.afw')||p.querySelector('button,input,select,textarea,a,label')){p.dataset.fd='x';return}
+    const h=p.clientHeight;if(!h)return;  // 접힌 영역 안이면 펼쳐질 때 다시 봐요
+    p.dataset.fd='1';const cs=getComputedStyle(p),lh=parseFloat(cs.lineHeight)||parseFloat(cs.fontSize)*1.5||20;
+    if(h<=lh*2.4)return;
+    const key='a:'+p.textContent.trim().slice(0,16), w=document.createElement('div');
+    w.className='afw'+(infoSet.has(key)?' open':'');w.dataset.key=key;p.replaceWith(w);w.appendChild(p);
+    const b=document.createElement('button');b.type='button';b.className='ib';b.dataset.afb='';b.textContent='i';b.setAttribute('aria-label','설명 펼치기·접기');b.setAttribute('aria-expanded',String(infoSet.has(key)));
+    b.style.marginTop=cs.marginTop;w.appendChild(b);
+  });
+}
+{let t=0;const q=()=>{if(t)return;t=requestAnimationFrame(()=>{t=0;foldScan()})};
+ new MutationObserver(q).observe(document.body,{childList:true,subtree:true});document.addEventListener('toggle',q,true);addEventListener('resize',()=>{});}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-ib],[data-afb]');if(!b)return;
+  const box=b.dataset.afb!=null?b.closest('.afw'):b.closest('[data-info]');if(!box)return;
+  const key=box.dataset.key||box.dataset.info, on=!box.classList.contains('open');
+  box.classList.toggle('open',on);b.setAttribute('aria-expanded',String(on));if(on)infoSet.add(key);else infoSet.delete(key);infoSave();
+});
+document.addEventListener('change',e=>{const c=e.target.closest('[data-infoall]');if(!c)return;infoAllSet(c.checked);toast(c.checked?'화면 설명을 항상 펼쳐 보여요':'긴 설명을 한 줄로 접어요')});
 const HELP=[
  {t:'기본 능력치',rows:[
   ['무력','물리 공격과 체력의 바탕이 돼요. 보병·기병·궁병의 공격력은 무력으로 정해져요.'],
@@ -2542,24 +2667,51 @@ const HELP=[
   ['전법 피해','전법으로 주는 피해가 늘어요.'],
   ['조건 효과','일부 보물은 특정 병종이 장착하면 추가 효과가 있어요. 장착 화면에 적용 여부가 표시돼요.'],
   ['보물 도감','보물마다 +0(보유)·+10·+25·+50에 처음 도달하면 영구 등록돼 모든 장수가 강해져요. 팔아도 등록은 남아요. 세트를 완성하면 추가 효과가 있고, 야전에도 적용돼요. 연무장에는 적용되지 않아요.'],
+  ['전투력','치명·흡혈·피해 감소·전법 피해도 전투력에 반영돼요.']]},
+ {t:'등용·재화',rows:[
   ['보물 획득권','보물 획득에 군량 대신 먼저 쓰여요. 1장이 1회예요.'],
+  ['장수 등용권','장수 등용에 군량 대신 먼저 쓰여요. 1장이 1회예요. 금화 룰렛과 출석 2일차에서 얻어요.'],
   ['천장','장수 등용과 보물 획득을 각각 누적 100회 할 때마다 장수 선택권·보물 선택권을 1장 드려요. ★5가 나와도 횟수는 그대로 이어져요.'],
   ['대량 소환','등용 탭의 [대량]에서 10회 단위로 한 번에 최대 300회까지 뽑아요. 획득권을 먼저 쓰고 모자란 만큼 군량으로 뽑으며, 10회마다 ★4 이상을 보장해요. 11회 이상은 결과를 요약해서 보여 줘요.'],
-  ['장수 등용권','장수 등용에 군량 대신 먼저 쓰여요. 1장이 1회예요. 금화 룰렛과 출석 2일차에서 얻어요.'],
-  ['원정군','전장 탭의 원정군. 무작위 ★3 장수 3명(레벨 고정 · 돌파·보물 없음)으로 3막을 돌파해요. 갈래길에서 전투·정예·주막·모병을 골라 가고 체력은 전투 사이에 이어져요. 하루 2회. 진행한 칸에 비례해 금, 정복 시 보물 선택권 1장.'],
-  ['천명의 탑','전장 탭의 천명탑. 내 진형으로 30층까지 올라가요. 층을 깨면 천명 3개 중 하나를 골라 쌓고, 지면 끝나요. 하루 3회. 깬 층에 비례해 금, 30층 돌파 시 장수 등용권 10장.'],
   ['금화 룰렛','등용 탭 아래. 금 1,000으로 돌려 금·군량·나팔·보물 획득권·장수 등용권·장수 선택권·보물 선택권 중 하나를 받아요. 하루 100회, 매일 밤 10시(한국 시간)에 다시 채워져요. 보물 선택권 0.5%, 보물 강화도 교환권 0.01%. 선택권 3종이 나오면 당첨 연출과 함께 자랑 링크·사진 저장 버튼이 나와요.'],
   ['룰렛 소환권','금 없이 금화 룰렛을 1장에 1회 돌려요. 1회·10회로 쓰고, 하루 100회 제한과 별개예요. 출석 4·5일차, 공지 보상, 쿠폰에서 얻어요.'],
   ['출석 보상','매일 밤 10시에 새로 받을 수 있어요. 7일 주기: 1일 나팔 50 · 2일 장수 등용권 20장 · 3일 보물 획득권 30장 · 4일 룰렛 소환권 30장 · 5일 룰렛 소환권 100장 · 6일 보물 선택권 1장 · 7일 보물 강화도 교환권 1장. 하루라도 빠지면 1일차부터 다시 시작해요.'],
   ['쿠폰','화면 위 券 버튼에서 쿠폰 목록(이름·보상·기한)을 보고 바로 받거나, 쿠폰 번호를 직접 입력할 수 있어요. 계정마다 한 번씩 받을 수 있어요.'],
-  ['토벌전','전장 탭의 토벌전. 3일마다 새 적 3명(Lv'+MAXLV+' · 돌파 최대 · 보물 +50, 체력 20배)이 나와요. 내 진형으로 10턴 싸워 준 피해가 모두의 게이지에 쌓이고, 25·50·75·100%마다 그 회차에 1번 이상 도전한 군주 모두가 보상을 받아요. 하루 3회. 기여 1~3위는 회차가 끝난 뒤 추가 보상. 보상은 다음 회차가 끝날 때까지 받을 수 있어요.'],
-  ['전투력','치명·흡혈·피해 감소·전법 피해도 전투력에 반영돼요.']]}
+  ['다시 뽑기','등용·보물 획득 결과 창에서 같은 종류 획득권이 남아 있으면 [등용권 1회]·[획득권 10회]처럼 획득권만 써서 바로 다시 뽑아요. 룰렛 결과 창에서도 룰렛 소환권이 남아 있으면 [소환권 1회]·[소환권 10회]로 바로 돌려요.']]},
+ {t:'전장 콘텐츠',rows:[
+  ['출정','일반 스테이지는 나팔 2개, 보스전(將)은 3개를 써요. 지면 돌려받아요. 1~20장, 모두 100스테이지예요. 깬 장은 제목 한 줄로 접히고, 눌러서 펼쳐요.'],
+  ['보스 첫 격파','장마다 보스를 처음 깨면 장수 등용권 5 · 보물 획득권 5 · 룰렛 소환권 10장을 받아요. 4·8·12·16장은 보물 선택권 1장, 10·20장은 장수 선택권 1장이 더 나와요. 예전에 깬 보스의 보상은 출정 화면 위 [모두 받기]로 받아요.'],
+  ['장수 증표','깬 보스를 소탕하거나 다시 이기면 그 장 보스 장수의 증표를 1개씩 받아요(보스마다 하루 5회). ★3 10개 · ★4 30개 · ★5 100개를 모으면 출정 화면의 [증표함]에서 그 장수를 1회 등용해요(새 장수면 획득, 있으면 돌파 +1). 증표는 장수별로 쌓여요. 원정군 모병 합류(3개)와 수성전 순위 보상으로도 받아요.'],
+  ['수성전','전장 탭의 수성전. 매일 밤 10시에 16곳 중 3곳이 열려요(이틀 연속 같은 성은 없어요). 성마다 하루 5판, 버틴 턴만큼 보상. 순위는 매일 새로 시작하고, 다음 날 그 성 수성 명장 증표를 받아요: 1위 30 · 2위 20 · 3위 15 · 4~10위 10 · 그 밖 5개. 공지 화면이나 수성전 화면에서 받아요.'],
+  ['원정군','전장 탭의 원정군. 무작위 ★3 장수 3명(레벨 고정 · 돌파·보물 없음)으로 3막을 돌파해요. 갈래길에서 전투·정예·주막·모병을 골라 가고 체력은 전투 사이에 이어져요. 하루 2회. 진행한 칸에 비례해 금, 정복 시 보물 선택권 1장.'],
+  ['천명의 탑','전장 탭의 천명탑. 내 진형으로 30층까지 올라가요. 층을 깨면 천명 3개 중 하나를 골라 쌓고, 지면 끝나요. 하루 3회. 깬 층에 비례해 금, 30층 돌파 시 장수 등용권 10장.'],
+  ['토벌전','전장 탭의 토벌전. 3일마다 새 적 3명(Lv'+MAXLV+' · 돌파 최대 · 보물 +50, 체력 20배)이 나와요. 내 진형으로 10턴 싸워 준 피해가 모두의 게이지에 쌓이고, 25·50·75·100%마다 그 회차에 1번 이상 도전한 군주 모두가 보상을 받아요. 하루 3회. 기여 1~3위는 회차가 끝난 뒤 추가 보상. 보상은 다음 회차가 끝날 때까지 받을 수 있어요.']]}
 ];
+// v3.7.4: 분류를 골라 보고, 항목 이름을 눌러 펼쳐요. 검색하면 모든 분류에서 찾아요
+let helpCat=0, helpAll=false;
 function openHelp(focus){
+  if(focus!=null&&HELP[focus])helpCat=focus;helpAll=false;
   openSheet(`<div class="sheet-h"><h2 style="margin:0">도움말</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   ${HELP.map((g,i)=>`<h3 id="help-${i}">${g.t}</h3><dl class="help">${g.rows.map(([k,v])=>`<dt>${k}</dt><dd>${esc(v)}</dd>`).join('')}</dl>`).join('')}`);
-  if(focus!=null){const el=document.getElementById('help-'+focus);if(el)el.scrollIntoView({block:'start'})}
+   ${infoAllHtml()}<p class="sub" style="margin:0 0 8px">끄면 화면의 긴 설명이 한 줄로 접히고, 옆의 ⓘ를 눌러 펼쳐요.</p>
+   <input id="help-q" type="search" placeholder="찾을 낱말 (예: 룰렛, 치명)" autocomplete="off" aria-label="도움말 검색">
+   <div class="help-cats" role="group" aria-label="도움말 분류">${HELP.map((g,i)=>`<button type="button" data-hcat="${i}" aria-pressed="${i===helpCat}">${g.t}</button>`).join('')}</div>
+   <div class="row" style="margin:0 0 4px"><span class="sub" style="margin:0" id="help-cnt"></span><span class="sp"></span><button type="button" class="btn ghost sm" id="help-all">모두 펼치기</button></div>
+   <div id="help-body"></div>`);
+  $('#help-q').oninput=helpBody;
+  $('#help-all').onclick=()=>{helpAll=!helpAll;helpBody()};
+  helpBody();
+  const c=document.querySelector(`[data-hcat="${helpCat}"]`);c&&c.scrollIntoView({block:'nearest',inline:'center'});
 }
+function helpBody(){
+  const b=$('#help-body');if(!b)return;const q=($('#help-q').value||'').trim().toLowerCase();
+  const gs=q?HELP.map(g=>({t:g.t,rows:g.rows.filter(([k,v])=>(k+' '+v).toLowerCase().includes(q))})).filter(g=>g.rows.length):[HELP[helpCat]];
+  const open=helpAll||!!q, n=gs.reduce((a,g)=>a+g.rows.length,0);
+  document.querySelectorAll('[data-hcat]').forEach(x=>x.setAttribute('aria-pressed',String(!q&&+x.dataset.hcat===helpCat)));
+  $('#help-cnt').textContent=q?`'${q}' 검색 결과 ${n}개`:`${HELP[helpCat].t} · ${n}개 항목`;
+  $('#help-all').textContent=helpAll?'모두 접기':'모두 펼치기';$('#help-all').hidden=!!q;
+  b.innerHTML=gs.length?gs.map(g=>`${q?`<h3 style="margin:12px 0 2px">${g.t}</h3>`:''}${g.rows.map(([k,v])=>`<details class="hl"${open?' open':''}><summary>${esc(k)}</summary><p>${esc(v)}</p></details>`).join('')}`).join(''):'<p class="sub" style="text-align:center;margin:20px 0">찾는 항목이 없어요.</p>';
+}
+document.addEventListener('click',e=>{const c=e.target.closest('[data-hcat]');if(c){helpCat=+c.dataset.hcat;const q=$('#help-q');if(q)q.value='';helpBody();$('#help-body')&&$('.sheet-body')&&($('.sheet-body').scrollTop=0)}});
 document.addEventListener('click',e=>{const h=e.target.closest('[data-help]');if(h){openHelp(h.dataset.help===''?null:+h.dataset.help)}});
 function seal(b,size=''){return `<div class="seal ${size} f-${b.fac} r${b.rar}" aria-hidden="true"><img class="px" src="${portrait(b)}" alt=""><span class="sc">${esc(String(b.name||'').slice(0,1))}</span></div>`}
 function renderView(){
@@ -2573,89 +2725,139 @@ function renderView(){
 /* ---------------- 출정 ---------------- */
 function vStage(){
   const nf=foodRateAt(S.stage+1), ng=goldRateAt(S.stage+1);
-  let h=`<h2>출정</h2><p class="sub">도전마다 나팔 ${AP_COST}개를 쓰고, 지면 돌려받아요. 3분마다 1개씩 채워져요(최대 ${AP_CAP}개). 스테이지를 깰수록 보상과 시간당 생산량이 늘고, 장을 평정하면 크게 뛰어요. 진척 ${S.stage}/${NSTAGE}</p>
+  let h=`<h2>출정</h2>${infoP('stage',`나팔 일반 2 · 보스 3 · 진척 ${S.stage}/${NSTAGE}`,`일반 스테이지는 나팔 2개, 보스전은 3개를 쓰고, 지면 돌려받아요. 3분마다 1개씩 채워져요(최대 ${AP_CAP}개). 스테이지를 깰수록 보상과 시간당 생산량이 늘고, 장을 평정하면 크게 뛰어요. 보스를 처음 깨면 보스 보상을, 소탕하면 보스 장수 증표를 받아요. 진척 ${S.stage}/${NSTAGE}`)}
   <div class="stats" style="grid-template-columns:1fr 1fr;margin-top:0"><div class="stat"><small>현재 시간당 생산</small><b>糧 ${foodRate()} · 金 ${goldRate()}</b></div><div class="stat"><small>다음 스테이지 평정 시</small><b>${S.stage>=NSTAGE?'최대치':`糧 ${nf} · 金 ${ng}`}</b></div></div>`;
   const cur=Math.min(CH.length-1,Math.floor(S.stage/5)), lockedN=CH.length-1-cur;
-  {const sk=S.stage<NSTAGE?skipCount():0;if(sk>0)h+=`<button type="button" class="btn wide red" id="auto-adv" style="margin:4px 0 8px" ${S.ap<AP_COST?'disabled':''}>자동 진군 · ${sk}개 스테이지 돌파 <b class="sl ap">角</b>${sk*AP_COST}</button><p class="sub" style="margin:0 0 10px;font-size:12px">내 진형 전투력이 적의 ${Math.round(SKIP_R*100)}% 이상인 스테이지는 전투 없이 돌파해요. 나팔이 모자라면 있는 만큼만 진행해요.</p>`}
-  if(S.stage>0)h+=`<button type="button" class="btn wide" data-stage="${S.stage-1}" style="margin:4px 0 12px">최근 평정 · ${esc(stageName(S.stage-1))} 소탕·재도전</button>`;
-  [cur,...CH.map((_,i)=>i).filter(i=>i<cur).reverse()].forEach(ci=>{const c=CH[ci];
-    const lo=ci*5, locked=S.stage<lo;
-    const done=Math.min(5,Math.max(0,S.stage-lo));
-    h+=`<section class="chap ${locked?'locked':''}"><div class="chap-h"><span class="hz">${c.hz}</span><span class="ko">${c.n}</span><span class="pg num">${done}/5</span></div><div class="nodes">`;
-    for(let k=0;k<5;k++){
-      const n=lo+k, st=n<S.stage?'done':n===S.stage?'next':'';
-      h+=`<button type="button" class="node ${st} ${k===4?'boss':''}" data-stage="${n}" ${n>S.stage?'disabled':''} aria-label="${esc(stageName(n))}">${k===4?'將':k+1}</button>`;
-    }
-    h+=`</div></section>`;
-  });
+  {const L=bossOwed();if(L.length){const sum=bossRwSum(L);h+=`<div class="owed"><div><b>밀린 보스 보상 ${L.length}개</b><span class="sub">${rewardText(sum)}</span></div><button type="button" class="btn sm" data-bossall>모두 받기</button></div>`}}
+  {const sk=S.stage<NSTAGE?skipCount():0;if(sk>0){const c=advCost(sk);h+=`<button type="button" class="btn wide red" id="auto-adv" style="margin:4px 0 8px" ${S.ap<stCost(S.stage)?'disabled':''}>자동 진군 · ${sk}개 스테이지 돌파 <b class="sl ap">角</b>${c}</button><p class="sub" style="margin:0 0 10px;font-size:12px">내 진형 전투력이 적의 ${Math.round(SKIP_R*100)}% 이상인 스테이지는 전투 없이 돌파해요. 나팔이 모자라면 있는 만큼만 진행해요.</p>`}}
+  h+=`<div class="row" style="gap:8px;margin:4px 0 12px">${S.stage>0?`<button type="button" class="btn" style="flex:1;min-width:0" data-stage="${S.stage-1}" title="${esc(stageName(S.stage-1))}">최근 평정 소탕·재도전</button>`:'<span class="sp"></span>'}<button type="button" class="btn ghost" style="flex:none" data-tokbox>증표함</button></div>`;
+  h+=chapCardHtml(cur,true);
+  const past=CH.map((_,i)=>i).filter(i=>i<cur).reverse();
+  if(past.length)h+=`<div class="folds">${past.map(ci=>chapCardHtml(ci,false)).join('')}</div>`;
   if(lockedN>0)h+=`<p class="sub" style="text-align:center">남은 ${lockedN}개 장은 지금 장을 평정하면 차례로 열려요.</p>`;
-  if(S.stage>=NSTAGE)h+=`<div class="empty-state"><b>天下統一</b>모든 스테이지를 평정했어요. 높은 단계부터 위에 보여요. 반복 출정으로 금을 모으고 대전에서 실력을 겨뤄 보세요.</div>`;
+  if(S.stage>=NSTAGE)h+=`<div class="empty-state"><b>天下統一</b>모든 스테이지를 평정했어요. 보스를 소탕해 증표를 모으고, 대전에서 실력을 겨뤄 보세요.</div>`;
   return h;
 }
+// v4.0.0: 장 카드. 지금 장은 펼쳐 두고, 지난 장은 제목 한 줄로 접어요
+function chapCardHtml(ci,open){
+  const c=CH[ci], lo=ci*5, done=Math.min(5,Math.max(0,S.stage-lo)), g=BOSS_TOK[ci], G=GMAP[g];
+  let tr='<div class="track">';
+  for(let k=0;k<5;k++){const n=lo+k, st=n<S.stage?'done':n===S.stage?'next':'';
+    if(k)tr+=`<i class="${n<=S.stage?'on':''}"></i>`;
+    tr+=`<button type="button" class="dot ${st} ${k===4?'boss':''}" data-stage="${n}" ${n>S.stage?'disabled':''} aria-label="${esc(stageName(n))} · 나팔 ${stCost(n)}">${k===4?'將':k+1}</button>`}
+  tr+='</div>';
+  const got=S.bossRw.includes(ci), cleared=S.stage>lo+4;
+  const rw=!got?`<div class="crw"><span class="lab">보스 첫 격파</span>${rewardText(BOSS_RW(ci)).split(' · ').map(t=>`<span class="chip">${t}</span>`).join('')}</div>`:'';
+  const tk=`<div class="crw"><span class="lab">보스 증표</span><span class="chip">${esc(G.name)} ${tokOf(g)}/${tokNeed(g)}</span>${cleared?`<span class="lab">오늘 ${tokToday(ci)}/${TOK_DAILY}</span>`:''}</div>`;
+  if(open)return `<section class="chap"><div class="chap-h"><span class="hz">${c.hz}</span><span class="ko">${c.n}</span><span class="pg num">${done}/5</span></div>${tr}${rw}${tk}</section>`;
+  return `<details class="fold"><summary><span class="hz">${c.hz}</span><span class="ko">${c.n}</span><span class="st">${done}/5 ✓${got?'':' · 보상 대기'}</span></summary><div class="in">${tr}${rw}${tk}</div></details>`;
+}
+/* ---------------- 보스 첫 격파 보상 · 장수 증표 (v4.0.0) ----------------
+   보스 첫 격파: 매 장 장수 등용권 5 · 보물 획득권 5 · 룰렛 소환권 10, 4·8·12·16장 보물 선택권 1, 10·20장 장수 선택권 1.
+   증표는 장수별로 쌓여요(어느 보스가 주는지 바뀌어도 모은 증표는 그대로). 보스마다 하루 5회까지 소탕·반복 승리로 1개씩. */
+const BOSS_TOK=['zhangjiao','dongzhuo','yuanshu','gaoshun','yuanshao','caocao','zhouyu','sunquan','machao','xiahouyuan','luxun','simayi','zhurong','zhangliao','guanyu','zhugeliang','haozhao','dengai','sunjian','lubu'];
+const TOK_NEED={3:10,4:30,5:100}, TOK_DAILY=5;
+const tokNeed=g=>TOK_NEED[GMAP[g].rar]||30;
+const tokOf=g=>(S.tok&&S.tok[g])|0;
+function tokToday(ci){return S.tokd&&S.tokd.day===kstDay()?(S.tokd.c[ci]|0):0}
+// 보스 ci에서 k회 반복 승리·소탕 → 오늘 남은 만큼 증표. 받은 개수를 돌려줘요
+function tokGain(ci,k){const d=kstDay();if(!S.tokd||S.tokd.day!==d)S.tokd={day:d,c:{}};const t=Math.max(0,Math.min(k,TOK_DAILY-(S.tokd.c[ci]|0)));if(t){S.tokd.c[ci]=(S.tokd.c[ci]|0)+t;const g=BOSS_TOK[ci];S.tok[g]=Math.min(9999,tokOf(g)+t)}return t}
+// 장수 1회 등용(등용과 같은 규칙): 새 장수 · 돌파 +1 · 돌파 최대면 금
+function grantGen(g){const r=GMAP[g].rar, own=S.gens[g];
+  if(!own){S.gens[g]={lv:1,d:0,its:[]};return 'NEW'}
+  if(own.d<maxD(r)){own.d++;return own.d>5?`한계돌파 ${own.d}`:`돌파 ${own.d}`}
+  S.gold+=DUP_GOLD[r];return `金 +${fmt(DUP_GOLD[r])}`}
+function BOSS_RW(ci){const r={gpk:5,itk:5,rtk:10};if([3,7,11,15].includes(ci))r.isk=1;if([9,19].includes(ci))r.gtk=1;return r}
+const bossOwed=()=>CH.map((_,i)=>i).filter(i=>S.stage>i*5+4&&!S.bossRw.includes(i));
+function bossRwSum(L){const sum={};L.forEach(ci=>{const r=BOSS_RW(ci);for(const k in r)sum[k]=(sum[k]||0)+r[k]});return sum}
+function bossClaim(L){L=L.filter(ci=>!S.bossRw.includes(ci));if(!L.length)return null;const sum=bossRwSum(L);for(const k in sum)S[k]=(S[k]||0)+sum[k];S.bossRw.push(...L);return sum}
+// 스테이지 n을 처음 깼을 때 보스였으면 그 장 보상을 바로 줘요
+function bossFirst(n){if(n%5!==4)return null;return bossClaim([Math.floor(n/5)])}
+const advCost=k=>{let c=0;for(let i=0;i<k;i++)c+=stCost(S.stage+i);return c};
+function openTokens(){
+  const top=Math.min(CH.length-1,Math.floor(S.stage/5));
+  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">증표함</h2><div class="sub" style="margin:0">보스를 소탕하면 그 보스 장수의 증표를 받아요 · 보스마다 하루 ${TOK_DAILY}회</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <div class="list">${BOSS_TOK.map((g,ci)=>{const G=GMAP[g],have=tokOf(g),need=tokNeed(g),open=S.stage>ci*5+4;
+     return `<div class="tokrow${ci>top?' lock':''}">${seal(G,'sm')}<div style="flex:1;min-width:0"><b>${esc(G.name)} <small class="sub">${'★'.repeat(G.rar)}</small></b><div class="sub" style="margin:0">${ci+1}장 ${esc(CH[ci].n)} · ${open?`오늘 ${tokToday(ci)}/${TOK_DAILY}`:'보스를 깨면 열려요'}</div><div class="bar"><i style="width:${Math.min(100,have/need*100)}%"></i></div></div><div style="text-align:right;flex:none"><div class="num" style="font-size:13px">${have}/${need}</div><button type="button" class="btn sm" data-tokx="${g}" ${have>=need?'':'disabled'}>등용</button></div></div>`}).join('')}</div>`);
+}
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-tokbox]')){openTokens();return}
+  const x=e.target.closest('[data-tokx]');if(x&&!x.disabled){const g=x.dataset.tokx,need=tokNeed(g);if(tokOf(g)<need)return;S.tok[g]-=need;const tag=grantGen(g);save();renderTop();renderView();toast(`${GMAP[g].name} 등용 · ${tag}`);openTokens();return}
+  if(e.target.closest('[data-bossall]')){const sum=bossClaim(bossOwed());if(!sum)return;save();renderTop();renderView();toast(`보스 보상 · ${rewardText(sum)}`);return}
+});
 document.addEventListener('click',e=>{
   const n=e.target.closest('[data-stage]');if(n&&!n.disabled){openStage(+n.dataset.stage);return}
 });
 function openStage(n){
   tickAP();
-  const foe=stageSpecs(n), mine=mySpecs(), first=n>=S.stage, rw=stageReward(n,first);
+  const foe=stageSpecs(n), mine=mySpecs(), first=n>=S.stage, rw=stageReward(n,first), AC=stCost(n), boss=n%5===4, ci=Math.floor(n/5), bg=BOSS_TOK[ci];
   const fp=deckPower(foe), mp=deckPower(mine);
   openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${esc(stageName(n))}</h2><div class="sub" style="margin:0">적 레벨 ${stageLv(n)}${STAGE_SC[n]?' · 정예군':''}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <h3>적 진형 · ${FORM[stageForm(n)].n} <small class="sub">${FORM[stageForm(n)].r.join('-')}</small></h3><div class="row" style="gap:6px;margin:-4px 0 8px">${formVsHtml(curForm(),stageForm(n))}<button type="button" class="chip" data-formtab>상성표</button></div><div class="reveal six">${foe.map(s=>{const b=baseOf(s);return `<div class="rv" style="animation:none">${seal(b,'sm')}<div class="nm">${esc(b.name)}</div><div class="cls">${CLS[b.cls].g} ${CLS[b.cls].n}</div></div>`}).join('')}</div>
   ${deckQuickHtml('출전 진형',()=>openStage(n))}<div class="stats" style="grid-template-columns:1fr 1fr"><div class="stat"><small>적 전투력</small><b>${fmt(fp)}</b></div><div class="stat"><small>내 전투력</small><b style="color:${mp>=fp?'var(--jade)':'var(--cinnabar)'}">${fmt(mp)}</b></div></div>
   <div class="row" style="margin-bottom:14px"><span class="sub" style="margin:0">${first?'첫 승리 보상':'반복 보상'}</span><span class="sp"></span><span class="coin"><b class="sl gold">金</b>${fmt(rw.gold)}</span><span class="coin"><b class="sl food">糧</b>${fmt(rw.food)}</span></div>
+  ${boss?`<div class="row" style="margin:-6px 0 12px;gap:6px">${first&&!S.bossRw.includes(ci)?`<span class="chip">보스 첫 격파 · ${rewardText(BOSS_RW(ci))}</span>`:''}<span class="chip">${esc(GMAP[bg].name)} 증표 ${tokOf(bg)}/${tokNeed(bg)}${n<S.stage?` · 오늘 ${tokToday(ci)}/${TOK_DAILY}`:''}</span></div>`:''}
   ${n<S.stage?sweepHtml(n):''}
   ${first&&mine.some(Boolean)&&mp>=SKIP_R*fp?`<p class="sub" style="margin:0 0 6px;color:var(--jade)">내 전투력이 적의 ${Math.round(SKIP_R*100)}% 이상이라 전투 없이 돌파해요.</p>`:''}
-  <button type="button" class="btn wide red" id="go" ${mine.some(Boolean)&&S.ap>=AP_COST?'':'disabled'}>${first&&mine.some(Boolean)&&mp>=SKIP_R*fp?'돌파 (전투 생략)':'출진'} <b class="sl ap">角</b>${AP_COST}</button>
-  ${S.ap<AP_COST?`<p class="sub" style="margin-top:8px">나팔이 부족해요 (${S.ap}/${AP_COST}). 3분마다 1개씩 채워지고, 지면 돌려받아요.</p>`:''}
+  <button type="button" class="btn wide red" id="go" ${mine.some(Boolean)&&S.ap>=AC?'':'disabled'}>${first&&mine.some(Boolean)&&mp>=SKIP_R*fp?'돌파 (전투 생략)':'출진'} <b class="sl ap">角</b>${AC}</button>
+  ${S.ap<AC?`<p class="sub" style="margin-top:8px">나팔이 부족해요 (${S.ap}/${AC}). 3분마다 1개씩 채워지고, 지면 돌려받아요.</p>`:''}
   ${mine.some(Boolean)?'':'<p class="sub" style="margin-top:8px">둔영 탭에서 장수를 먼저 편성하세요.</p>'}`);
   if(n<S.stage)bindSweep(n);
   $('#go').onclick=()=>{
     closeSheet();
-    tickAP();if(S.ap<AP_COST){toast('나팔이 부족해요');return}
-    S.ap-=AP_COST;
-    if(n>=S.stage&&mp>=SKIP_R*fp){const r=stageReward(n,true);S.gold+=r.gold;S.food+=r.food;S.stage=n+1;save();renderTop();renderView();toast(`${stageName(n)} 돌파 (전투 생략) · 金 +${fmt(r.gold)} · 糧 +${fmt(r.food)}`);return}
+    tickAP();if(S.ap<AC){toast('나팔이 부족해요');return}
+    S.ap-=AC;
+    if(n>=S.stage&&mp>=SKIP_R*fp){const r=stageReward(n,true);S.gold+=r.gold;S.food+=r.food;S.stage=n+1;const br=bossFirst(n);save();renderTop();renderView();toast(`${stageName(n)} 돌파 (전투 생략) · 金 +${fmt(r.gold)} · 糧 +${fmt(r.food)}`);if(br)setTimeout(()=>toast(`보스 첫 격파 보상 · ${rewardText(br)}`),2300);return}
     const res=simulate(mine,foe,(Math.random()*2**31)|0);
     let rwText=null;
-    if(res.win){const f=n>=S.stage;const r=stageReward(n,f);S.gold+=r.gold;S.food+=r.food;if(f)S.stage=n+1;rwText=r}else S.ap+=AP_COST;
+    let extra='';
+    if(res.win){const f=n>=S.stage;const r=stageReward(n,f);S.gold+=r.gold;S.food+=r.food;if(f)S.stage=n+1;rwText=r;
+      if(f){const br=bossFirst(n);if(br)extra=`<p class="sub" style="margin:6px 0 0;color:var(--bronze)">보스 첫 격파 보상 · ${rewardText(br)}</p>`}
+      else if(boss){const t=tokGain(ci,1);extra=`<p class="sub" style="margin:6px 0 0">${esc(GMAP[bg].name)} 증표 ${t?'+1':'(오늘 횟수를 다 썼어요)'} · ${tokOf(bg)}/${tokNeed(bg)}</p>`}}
+    else S.ap+=AC;
     save();renderTop();
-    playBattle(res,stageName(n),'아군','적군',()=>res.win?rewardHtml(rwText):`<p class="sub">사용한 나팔 ${AP_COST}개는 돌려받았어요. 장수를 강화하거나 진형을 바꿔 다시 도전하세요.</p>`);
+    playBattle(res,stageName(n),'아군','적군',()=>res.win?rewardHtml(rwText)+extra:`<p class="sub">사용한 나팔 ${AC}개는 돌려받았어요. 장수를 강화하거나 진형을 바꿔 다시 도전하세요.</p>`);
   };
 }
 
 function autoAdvance(){
   tickAP();const mine=mySpecs();if(!mine.some(Boolean)){toast('진형을 먼저 편성하세요');return}
   const mp=deckPower(mine), from=S.stage;let g=0,f=0;
-  while(S.stage<NSTAGE&&S.ap>=AP_COST&&mp>=SKIP_R*stagePow(S.stage)){S.ap-=AP_COST;const r=stageReward(S.stage,true);S.gold+=r.gold;S.food+=r.food;g+=r.gold;f+=r.food;S.stage++}
-  const c=S.stage-from;if(!c){toast(S.ap<AP_COST?'나팔이 부족해요':'전투 없이 돌파할 수 있는 스테이지가 없어요');return}
+  let used=0;const brs=[];
+  while(S.stage<NSTAGE&&S.ap>=stCost(S.stage)&&mp>=SKIP_R*stagePow(S.stage)){const ac=stCost(S.stage);S.ap-=ac;used+=ac;const r=stageReward(S.stage,true);S.gold+=r.gold;S.food+=r.food;g+=r.gold;f+=r.food;const br=bossFirst(S.stage);if(br)brs.push(br);S.stage++}
+  const c=S.stage-from;if(!c){toast(S.ap<stCost(S.stage)?'나팔이 부족해요':'전투 없이 돌파할 수 있는 스테이지가 없어요');return}
   save();renderTop();renderView();
-  const stop=S.stage>=NSTAGE?'모든 스테이지를 평정했어요!':S.ap<AP_COST&&mp>=SKIP_R*stagePow(S.stage)?'나팔이 모자라 여기서 멈췄어요.':`다음 ${esc(stageName(S.stage))}은(는) 적 전투력 ${fmt(stagePow(S.stage))}이라 직접 싸워야 해요.`;
+  const stop=S.stage>=NSTAGE?'모든 스테이지를 평정했어요!':S.ap<stCost(S.stage)&&mp>=SKIP_R*stagePow(S.stage)?'나팔이 모자라 여기서 멈췄어요.':`다음 ${esc(stageName(S.stage))}은(는) 적 전투력 ${fmt(stagePow(S.stage))}이라 직접 싸워야 해요.`;
   openSheet(`<div class="sheet-h"><h2 style="margin:0">자동 진군</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <p style="margin:0 0 8px"><b>${c}개 스테이지</b>를 돌파했어요 (${esc(stageName(from))} → ${esc(stageName(S.stage-1))})</p>
-   <div class="row" style="gap:6px;margin-bottom:10px"><span class="coin"><b class="sl gold">金</b>+${fmt(g)}</span><span class="coin"><b class="sl food">糧</b>+${fmt(f)}</span><span class="sub" style="margin:0">나팔 ${c*AP_COST}개 사용</span></div>
+   <div class="row" style="gap:6px;margin-bottom:10px"><span class="coin"><b class="sl gold">金</b>+${fmt(g)}</span><span class="coin"><b class="sl food">糧</b>+${fmt(f)}</span><span class="sub" style="margin:0">나팔 ${used}개 사용</span></div>${brs.length?`<p class="sub" style="margin:0 0 8px;color:var(--bronze)">보스 첫 격파 보상 ${brs.length}개 · ${rewardText(brs.reduce((o,r)=>{for(const k in r)o[k]=(o[k]||0)+r[k];return o},{}))}</p>`:''}
    <p class="sub" style="margin:0">${stop}</p>`);
 }
 document.addEventListener('click',e=>{if(e.target.closest('#auto-adv'))autoAdvance()});
 /* ---------------- 소탕 ---------------- */
 let swN=1;
-const swMax=()=>Math.floor(S.ap/AP_COST);
+let swStage=0;
+const swMax=()=>Math.floor(S.ap/stCost(swStage));
 function sweepHtml(n){
-  const mx=swMax();swN=Math.max(1,Math.min(swN,mx||1));const r=stageReward(n,false);
-  return `<div class="sweep-box"><div class="row"><b>소탕</b><span class="sub" style="margin:0">전투 없이 반복 보상을 바로 받아요 · 1회 角 ${AP_COST}</span></div>
-   ${mx<1?`<p class="sub" style="margin:6px 0 0">나팔이 부족해요 (${S.ap}/${AP_COST}).</p>`:`
+  swStage=n;const AC=stCost(n), mx=swMax();swN=Math.max(1,Math.min(swN,mx||1));const r=stageReward(n,false);
+  return `<div class="sweep-box"><div class="row"><b>소탕</b><span class="sub" style="margin:0">전투 없이 반복 보상을 바로 받아요 · 1회 角 ${AC}${n%5===4?` · 보스 증표는 하루 ${TOK_DAILY}회`:''}</span></div>
+   ${mx<1?`<p class="sub" style="margin:6px 0 0">나팔이 부족해요 (${S.ap}/${AC}).</p>`:`
    <div class="row" style="margin-top:8px"><div class="stepper"><button type="button" data-sw="-1" aria-label="한 번 줄이기">−</button><b id="sw-n" class="num">${swN}</b><button type="button" data-sw="1" aria-label="한 번 늘리기">+</button></div>
     <button type="button" class="btn ghost sm" data-sw="max">최대 ${mx}회</button><span class="sp"></span><span class="sub num" id="sw-r" style="margin:0">金 +${fmt(r.gold*swN)} · 糧 +${fmt(r.food*swN)}</span></div>
-   <button type="button" class="btn wide" id="sw-go" style="margin-top:8px">소탕 ${swN}회 · 角 ${AP_COST*swN}</button>`}</div>`;
+   <button type="button" class="btn wide" id="sw-go" style="margin-top:8px">소탕 ${swN}회 · 角 ${AC*swN}</button>`}</div>`;
 }
 function bindSweep(n){
   const box=document.querySelector('.sweep-box');if(!box)return;
-  const r=stageReward(n,false);
-  const upd=()=>{const mx=swMax();swN=Math.max(1,Math.min(swN,mx));$('#sw-n').textContent=swN;$('#sw-r').textContent=`金 +${fmt(r.gold*swN)} · 糧 +${fmt(r.food*swN)}`;$('#sw-go').textContent=`소탕 ${swN}회 · 角 ${AP_COST*swN}`};
+  const r=stageReward(n,false), AC=stCost(n);swStage=n;
+  const upd=()=>{const mx=swMax();swN=Math.max(1,Math.min(swN,mx));$('#sw-n').textContent=swN;$('#sw-r').textContent=`金 +${fmt(r.gold*swN)} · 糧 +${fmt(r.food*swN)}`;$('#sw-go').textContent=`소탕 ${swN}회 · 角 ${AC*swN}`};
   box.querySelectorAll('[data-sw]').forEach(b=>b.onclick=()=>{const v=b.dataset.sw;swN=v==='max'?swMax():swN+Number(v);upd()});
   const go=$('#sw-go');
   if(go)go.onclick=()=>{
     tickAP();const k=Math.min(swN,swMax());if(k<1){toast('나팔이 부족해요');return}
-    S.ap-=AP_COST*k;S.gold+=r.gold*k;S.food+=r.food*k;save();renderTop();
-    toast(`소탕 ${k}회 완료 · 金 +${fmt(r.gold*k)} · 糧 +${fmt(r.food*k)}`);openStage(n);
+    S.ap-=AC*k;S.gold+=r.gold*k;S.food+=r.food*k;
+    let tt='';if(n%5===4){const ci=Math.floor(n/5),g=BOSS_TOK[ci],t=tokGain(ci,k);tt=` · ${GMAP[g].name} 증표 +${t}`}
+    save();renderTop();
+    toast(`소탕 ${k}회 완료 · 金 +${fmt(r.gold*k)} · 糧 +${fmt(r.food*k)}${tt}`);openStage(n);
   };
 }
 
@@ -2752,12 +2954,12 @@ const DUP_GOLD={3:100,4:150,5:500};  // v3.5.0: 룰렛 100회 금 환류 상쇄�
 const GCOST={1:100,10:900}, ICOST={1:80,10:720};
 function vGacha(){
   const rates=`<div class="rates"><span class="r5">★★★★★ 3%</span><span class="r4">★★★★ 15%</span><span class="r3">★★★ 82%</span></div>`;
-  return `<h2>등용</h2><p class="sub">시간마다 쌓이는 군량으로 장수와 보물을 얻어요. 10회마다 ★4 이상 하나를 보장하고, ${PITY_N}회마다 선택권 1장을 드려요(천장).</p>
+  return `<h2>등용</h2>${infoP('gacha','군량으로 장수와 보물을 얻어요',`시간마다 쌓이는 군량으로 장수와 보물을 얻어요. 10회마다 ★4 이상 하나를 보장하고, ${PITY_N}회마다 선택권 1장을 드려요(천장).`)}
   ${S.gtk||S.isk?`<div class="banner-card"><div class="big">選</div><h2>선택권</h2><p class="sub" style="margin:0 0 8px">원하는 장수·보물을 골라 받아요. 이미 있으면 돌파·강화 +1.</p><div class="row" style="gap:8px"><button type="button" class="btn" data-tkopen="g" ${S.gtk?'':'disabled'}>장수 선택권 ${S.gtk||0}장</button><button type="button" class="btn" data-tkopen="i" ${S.isk?'':'disabled'}>보물 선택권 ${S.isk||0}장</button></div></div>`:''}
-  <div class="banner-card"><div class="big">募將</div><h2>장수 등용</h2><p class="sub" style="margin:0">같은 장수가 나오면 돌파 단계가 올라 능력치가 6%씩 오릅니다(최대 5단계, ★3은 한계돌파로 10단계). 돌파를 다 채운 뒤 중복은 금(★3 200 · ★4 300 · ★5 1,000)으로 바뀌어요.</p>${rates}
+  <div class="banner-card"><div class="big">募將</div><h2>장수 등용</h2>${infoP('pull-g','중복이면 돌파 +1 (능력치 +6%)','같은 장수가 나오면 돌파 단계가 올라 능력치가 6%씩 오릅니다(최대 5단계, ★3은 한계돌파로 10단계). 돌파를 다 채운 뒤 중복은 금(★3 200 · ★4 300 · ★5 1,000)으로 바뀌어요.','margin:0')}${rates}
    ${S.gpk?`<p class="sub" style="margin:0 0 8px"><b class="sl gold">券</b> 장수 등용권 <b class="num" style="color:var(--fg)">${S.gpk}</b>장 · 군량보다 먼저 쓰여요</p>`:''}
    ${pullBtns('g')}</div>
-  <div class="banner-card"><div class="big">寶庫</div><h2>보물 획득</h2><p class="sub" style="margin:0">보물 ${ITEMS.length}종. 장수마다 3개까지 장착해요. 무기·명마는 1개씩이고, 무기는 병종마다 쓸 수 있는 종류가 정해져 있어요. 같은 보물이 또 나오면 돌파 +1, 최대 +${ITEM_MAXD}.</p>${rates}
+  <div class="banner-card"><div class="big">寶庫</div><h2>보물 획득</h2>${infoP('pull-i',`보물 ${ITEMS.length}종 · 장수마다 3개 장착`,`보물 ${ITEMS.length}종. 장수마다 3개까지 장착해요. 무기·명마는 1개씩이고, 무기는 병종마다 쓸 수 있는 종류가 정해져 있어요. 같은 보물이 또 나오면 돌파 +1, 최대 +${ITEM_MAXD}.`,'margin:0')}${rates}
    ${S.itk?`<p class="sub" style="margin:0 0 8px"><b class="sl gold">券</b> 보물 획득권 <b class="num" style="color:var(--fg)">${S.itk}</b>장 · 군량보다 먼저 쓰여요</p>`:''}
    ${pullBtns('i')}</div>${rouletteHtml()}`;
 }
@@ -2830,7 +3032,7 @@ function openPullResult(kind,out,got,noTk){
   const head=`<div class="sheet-h"><h2 style="margin:0">${kind==='g'?'등용 결과':'획득한 보물'} <small class="sub" style="font-weight:400">${n}회</small></h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    ${got?`<div class="pity-hit" role="status">천장 달성! ${P.sn} +${got}장 · 등용 탭 위 선택권에서 써요</div>`:''}`;
   const foot=`<div class="pity" style="margin-top:12px"><span>천장 <b class="num">${pc}</b>/${PITY_N}</span><div class="bar"><i style="width:${pc/PITY_N*100}%;background:var(--bronze)"></i></div></div>
-   <div class="row" style="margin-top:12px;gap:8px">${canPull(kind,n,noTk)&&n>1?`<button type="button" class="btn ghost" data-again="${kind}${n}${noTk?'f':''}">${n}회 더</button>`:''}<button type="button" class="btn ghost" style="flex:1" data-close>확인</button></div>`;
+   ${againHtml(kind,n,noTk)}`;
   if(n<=10){out.sort((a,b)=>b.rar-a.rar);openSheet(`${head}<div class="reveal">${out.map((x,i)=>pullCard(kind,x,i)).join('')}</div>${foot}`);return}
   // 11회 이상: ★5는 카드로, ★4·★3은 같은 것끼리 묶어서
   const grp=r=>{const m=new Map();out.filter(x=>x.rar===r).forEach(x=>{const g=m.get(x.id)||{x,c:0};g.c++;g.x=x;m.set(x.id,g)});return [...m.values()].sort((a,b)=>b.c-a.c)};
@@ -2843,6 +3045,14 @@ function openPullResult(kind,out,got,noTk){
    <h3 style="margin:14px 0 6px">★4 · ${cnt(4)}개</h3>${tiles(4)}
    <details class="p3"><summary>★3 · ${cnt(3)}개 보기</summary>${tiles(3)}</details>
    ${foot}`);
+}
+// v3.7.4: 결과 창에서 남은 획득권으로 바로 다시 뽑기(획득권만 써요). 획득권이 없으면 예전처럼 군량 'N회 더'
+function againHtml(kind,n,noTk){
+  const P=PK[kind], tk=S[P.tk]||0, w=P.tn.split(' ')[1];
+  if(tk>0){const m=Math.min(10,tk);
+    return `<p class="sub" style="margin:12px 0 0;text-align:center">남은 ${P.tn} <b class="num" style="color:var(--fg)">${fmt(tk)}</b>장</p>
+     <div class="row" style="margin-top:8px;gap:8px"><button type="button" class="btn ghost" data-again="${kind}1">${w} 1회</button>${m>1?`<button type="button" class="btn" data-again="${kind}${m}">${w} ${m}회</button>`:''}<button type="button" class="btn ghost" style="flex:1" data-close>확인</button></div>`}
+  return `<div class="row" style="margin-top:12px;gap:8px">${canPull(kind,n,noTk)&&n>1?`<button type="button" class="btn ghost" data-again="${kind}${n}${noTk?'f':''}">${n}회 더</button>`:''}<button type="button" class="btn ghost" style="flex:1" data-close>확인</button></div>`;
 }
 // ★5 연출: 화면이 어두워지고 금빛 섬광·빛줄기·天 도장 (업무 모드·동작 줄이기에서는 없음)
 function r5Fx(kind,done){
@@ -2867,6 +3077,10 @@ const RL_SEG=Object.keys(RL_K);
 // v3.5.0: 확률 단위 ‱(1/10000). 보물 선택권 0.1%→0.5%, 보물 강화도 교환권 0.01% 신설 (군량 800에서 0.41%p 차감)
 const RL=[['gold',2000,1200],['gold',5000,200],['food',800,2009],['food',2000,1000],['food',6000,150],['ap',10,1500],['ap',30,300],['itk',5,1500],['itk',15,300],['gpk',5,1500],['gpk',15,260],['gtk',1,30],['isk',1,50],['xtk',1,1]];
 let rlRot=0, rlBusy=false;
+// v3.7.4: 룰렛 결과 창에서 남은 소환권으로 바로 다시 돌리기
+function rlAgainHtml(){const t=S.rtk||0, m=Math.min(10,t);
+  return `${t>0?`<p class="sub" style="margin:14px 0 0;text-align:center">남은 룰렛 소환권 <b class="num" style="color:var(--fg)">${fmt(t)}</b>장</p>`:''}
+   <div class="row" style="margin-top:${t>0?8:16}px;gap:8px">${t>0?`<button type="button" class="btn ghost" data-rl="1" data-rlt="1">소환권 1회</button>${m>1?`<button type="button" class="btn" data-rl="${m}" data-rlt="1">소환권 ${m}회</button>`:''}`:''}<button type="button" class="btn ghost" style="flex:1" data-close>확인</button></div>`}
 function rlLeft(){return S.rl.day===kstDay()?Math.max(0,RL_DAILY-S.rl.n):RL_DAILY}
 function rlRoll(){let r=Math.random()*10000;for(let i=0;i<RL.length;i++){r-=RL[i][2];if(r<0)return i}return 2}
 const rlTxt=i=>{const[k,v]=RL[i];return `${RL_K[k].n} ${fmt(v)}${RL_K[k].u}`};
@@ -2874,7 +3088,7 @@ const rlPct=w=>String(+(w/100).toFixed(2))+'%';
 function rouletteHtml(){
   const left=rlLeft(), seg=360/RL_SEG.length;
   const grad=RL_SEG.map((k,i)=>`${k==='gtk'||k==='isk'||k==='xtk'?'#7a2a1e':i%2?'var(--panel2)':'#2a2018'} ${i*seg}deg ${(i+1)*seg}deg`).join(',');
-  return `<div class="banner-card"><div class="big">輪盤</div><h2>금화 룰렛</h2><p class="sub" style="margin:0">금 ${fmt(RL_COST)}으로 한 번 돌려 금·군량·나팔·보물 획득권·장수 등용권, 드물게 선택권을 받아요. 하루 ${RL_DAILY}회 · 오늘 남은 횟수 <b class="num" style="color:var(--fg)">${left}</b>회</p>
+  return `<div class="banner-card"><div class="big">輪盤</div><h2>금화 룰렛</h2>${infoP('roulette',`금 ${fmt(RL_COST)}에 1회 · 오늘 남은 횟수 <b class="num" style="color:var(--fg)">${left}</b>회`,`금 ${fmt(RL_COST)}으로 한 번 돌려 금·군량·나팔·보물 획득권·장수 등용권, 드물게 선택권을 받아요. 하루 ${RL_DAILY}회 · 오늘 남은 횟수 <b class="num" style="color:var(--fg)">${left}</b>회`,'margin:0')}
    <p class="sub" style="margin:4px 0 0">룰렛 소환권 <b class="num" style="color:var(--fg)">${S.rtk||0}</b>장 · 금 없이 1장에 1회, 하루 횟수와 별개예요</p>
    <div class="wheel-wrap"><div class="wheel" id="wheel" style="background:conic-gradient(${grad});transform:rotate(${rlRot}deg)">${RL_SEG.map((k,i)=>`<span style="transform:rotate(${i*seg+seg/2}deg) translateY(-62px)">${RL_K[k].w}</span>`).join('')}</div><div class="wheel-pin" aria-hidden="true"></div><div class="wheel-hub" aria-hidden="true">金</div></div>
    <div class="rates">${RL.map(([k,v,w],i)=>`<span${w<=50?' style="color:var(--bronze)"':''}>${rlTxt(i)} · ${rlPct(w)}</span>`).join('')}</div>
@@ -2884,7 +3098,8 @@ function rouletteHtml(){
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-rl]');if(!b||b.disabled||rlBusy)return;
-  const n=+b.dataset.rl, tk=!!b.dataset.rlt;
+  const n=+b.dataset.rl, tk=!!b.dataset.rlt;if(!(n>=1&&n<=10))return;
+  if(b.closest('#sheet'))closeSheet();
   if(tk){if((S.rtk||0)<n){toast('룰렛 소환권이 부족해요');return}}
   else{if(rlLeft()<n){toast('오늘 룰렛 횟수가 부족해요');return}if(S.gold<RL_COST*n){toast('금이 부족해요');return}}
   const d=kstDay();if(S.rl.day!==d)S.rl={day:d,n:0};
@@ -2901,11 +3116,11 @@ document.addEventListener('click',e=>{
     const fin=()=>{
     if(n===1&&!jp)toast(`룰렛 · ${rlTxt(best)}${big?' · 대박!':''}`);
     else if(n===1)openSheet(`<div class="sheet-h"><h2 style="margin:0">룰렛 대박!</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${jpBlock(jp)}
-      <div class="row" style="margin-top:12px"><button type="button" class="btn ghost wide" data-close>확인</button></div>`);
+      ${rlAgainHtml()}`);
     else openSheet(`<div class="sheet-h"><h2 style="margin:0">룰렛 ${n}회 결과</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
       ${jp?jpBlock(jp)+'<h3>나온 칸</h3>':''}<div class="chips">${res.map(i=>`<span class="chip"${RL[i][2]<=300?' style="border-color:var(--bronze);color:var(--bronze)"':''}>${rlTxt(i)}</span>`).join('')}</div>
       <h3>받은 보상</h3><div class="stats" style="grid-template-columns:1fr 1fr;margin-top:6px">${RL_SEG.filter(k=>sum[k]).map(k=>`<div class="stat"><small>${RL_K[k].n}</small><b>+${fmt(sum[k])}${RL_K[k].u}</b></div>`).join('')}<div class="stat"><small>${tk?'쓴 소환권':'쓴 금'}</small><b>-${tk?n+'장':fmt(RL_COST*n)}</b></div></div>
-      <div class="row" style="margin-top:16px"><button type="button" class="btn ghost wide" data-close>확인</button></div>`);
+      ${rlAgainHtml()}`);
     };
     if(jp&&!btStill())jpFx(jp,fin);else fin();
   },w&&!still?2300:50);
@@ -2927,7 +3142,7 @@ const jpWhen=ts=>{try{return new Date(ts).toLocaleString('ko-KR',{timeZone:'Asia
 const jpId=id=>id?'#'+String(id).slice(0,8):'이 기기 플레이';
 function jpCardHtml(o){
   const K=JP_K[o.k], nm=esc(cleanName(o.nm)||'이름 모를 군주');
-  const how=`금화 룰렛 ${o.n===10?'10회':'1회'}${o.t?' · 소환권':''}`;
+  const how=`금화 룰렛 ${o.n|0||1}회${o.t?' · 소환권':''}`;
   const ex=(o.e||[]).filter(x=>JP_K[x[0]]).map(x=>`${JP_K[x[0]][1]} ${x[1]|0}장`).join(' · ');
   return `<div class="jpc${o.k==='xtk'?' x':''}"><div class="jp-h">金 貨 輪 盤</div><div class="jp-st">${K[0]}</div>
    <div class="jp-w">${K[1]}${o.c>1?' ×'+(o.c|0):''}</div><div class="jp-p">확률 ${jpRate(o.k)}${o.k==='xtk'?' · 만분의 일':''}</div>
@@ -2968,7 +3183,7 @@ function openBragFromHash(){
   const m=location.hash.match(/^#j=([A-Za-z0-9_-]+)$/);if(!m)return false;
   let o;try{o=JSON.parse(b64d(m[1]))}catch(e){return false}
   if(!o||!JP_K[o.k])return false;
-  o={v:String(o.v||'').slice(0,12),k:o.k,c:Math.min(10,Math.max(1,o.c|0)),n:o.n===10?10:1,t:o.t?1:0,nm:cleanName(o.nm),id:typeof o.id==='string'?o.id.slice(0,40):'',ts:Number(o.ts)||Date.now(),
+  o={v:String(o.v||'').slice(0,12),k:o.k,c:Math.min(10,Math.max(1,o.c|0)),n:Math.min(10,Math.max(1,o.n|0)),t:o.t?1:0,nm:cleanName(o.nm),id:typeof o.id==='string'?o.id.slice(0,40):'',ts:Number(o.ts)||Date.now(),
      e:Array.isArray(o.e)?o.e.filter(x=>Array.isArray(x)&&JP_K[x[0]]&&x[0]!==o.k).slice(0,2).map(x=>[x[0],Math.min(10,Math.max(1,x[1]|0))]):undefined};
   JP_LAST=o;
   const show=()=>{const ov=document.createElement('div');ov.className='jpo';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');
@@ -2984,7 +3199,7 @@ function vDeck(){
   if(deckMode==='lab')return `<div class="row"><h2>둔영</h2></div>`+deckSegHtml()+vLab();
   const specs=mySpecs();
   const isDef=S.defDk===S.dk;
-  let h=`<div class="row"><div><h2>둔영</h2><p class="sub" style="margin:0">고른 진형으로 출정·토벌전·야전 공격을 하고, <span class="defmk">防</span> 진형이 야전 방어에 쓰여요. ★5 장수는 진형마다 ${MAX5}명까지(지금 ${count5(S.deck)}명). 자리 레벨(Lv)과 보물은 모든 진형이 함께 써요.</p></div></div>${deckSegHtml()}
+  let h=`<div class="row"><div><h2>둔영</h2>${infoP('deck',`공격 진형 · <span class="defmk">防</span> 야전 방어 · ★5 ${count5(S.deck)}/${MAX5}명`,`고른 진형으로 출정·토벌전·야전 공격을 하고, <span class="defmk">防</span> 진형이 야전 방어에 쓰여요. ★5 장수는 진형마다 ${MAX5}명까지(지금 ${count5(S.deck)}명). 자리 레벨(Lv)과 보물은 모든 진형이 함께 써요.`,'margin:0')}</div></div>${deckSegHtml()}
   <div class="chips deckbar" role="group" aria-label="진형 선택" style="margin:10px 0 6px">${S.decks.map((d,k)=>`<button type="button" data-dk="${k}" aria-pressed="${k===S.dk}">${esc(deckName(k))}${k===S.defDk?' <small class="defmk">防</small>':''}</button>`).join('')}${S.decks.length<DECK_MAX?'<button type="button" data-dkadd>＋ 새 진형</button>':''}</div>
   <div class="chips" role="group" aria-label="배치" style="margin:4px 0 2px"><span class="flab">배치</span>${Object.entries(FORM).map(([k,F2])=>`<button type="button" data-form="${k}" aria-pressed="${curForm()===k}" title="${esc(F2.d)} · ${esc(formAdvTxt(k))}">${F2.n} <small>${F2.r.join('-')}</small></button>`).join('')}<button type="button" data-formtab aria-label="진형 상성표">상성 ?</button></div>
   <p class="sub" style="font-size:12px;margin:0 0 8px">${FORM[curForm()].d}<br>상성: ${formAdvTxt(curForm())}</p>
@@ -3202,7 +3417,7 @@ document.addEventListener('click',e=>{
 /* ---------------- 수성전 (v2.0.0) ----------------
    내 진형이 성을 지켜요. 적이 내 장수를 때린 피해는 성 체력에서 빠지고, 내 장수는 쓰러지지 않아요(회복·흡혈은 30% 효율로 성 체력 회복).
    적 무리를 모두 쓰러뜨리면 다음 무리가 1.35배 강해져서 들어와요. 성이 무너질 때까지 버틴 턴만큼 보상.
-   성 9곳 중 매주 3곳이 열리고(일요일 밤 10시 기준, 2주 연속 같은 성은 나오지 않음), 성마다 그 주의 적 성향이 정해져요.
+   v4.0.0: 성 16곳 중 매일 3곳이 열리고(밤 10시 기준, 이틀 연속 같은 성은 나오지 않음), 성마다 그날의 적 성향이 정해져요.
    보상(1턴당, 시간당 생산량 대비)은 성마다 난이도(시뮬레이션 평균 턴)를 반영한 배율을 곱했어요. 보물 획득권은 군량 1.5%와 같은 가치(1장=군량 80). */
 const SIEGE={
   hefei:{n:'합비',hz:'合肥',boss:'sunquan',def:['zhangliao'],rw:{gold:.06},d:'215년 장료가 손권의 대군을 막아 낸 성. 손권과 장수들이 몰려와요.'},
@@ -3213,7 +3428,15 @@ const SIEGE={
   sishui:{n:'사수관',hz:'汜水關',boss:'sunjian',def:['huaxiong'],rw:{itk:.0165},d:'연의에서 동탁군 화웅이 손견을 물리친 관문.'},
   luocheng:{n:'낙성',hz:'雒城',boss:'liubei',def:['liuxun'],rw:{gold:.03,food:.0075},d:'214년 유순이 유비군을 1년 가까이 막아 낸 성. 방통이 이곳에서 전사했어요.'},
   xiapi:{n:'하비',hz:'下邳',boss:'caocao',def:['lubu','chengong','gaoshun'],rw:{gold:.069},d:'198년 여포가 조조의 포위를 버티다 함락된 성.'},
-  yijing:{n:'역경',hz:'易京',boss:'yuanshao',def:['gongsunzan'],rw:{itk:.0158},d:'199년 공손찬이 성채를 쌓고 원소에 맞서 버틴 곳.'}
+  yijing:{n:'역경',hz:'易京',boss:'yuanshao',def:['gongsunzan'],rw:{itk:.0158},d:'199년 공손찬이 성채를 쌓고 원소에 맞서 버틴 곳.'},
+  // v4.0.0: 매일 수성전에 맞춰 7곳 추가 (모두 16곳)
+  wancheng:{n:'완성',hz:'宛城',boss:'caocao',def:['jiaxu'],rw:{gold:.069},d:'197년 가후의 계책으로 장수가 조조의 대군을 물리친 성.'},
+  jiameng:{n:'가맹관',hz:'葭萌關',boss:'machao',def:['zhangfei'],rw:{food:.0165},d:'214년 장비가 마초와 밤새 맞붙으며 지켜 낸 관문.'},
+  dingjun:{n:'정군산',hz:'定軍山',boss:'huangzhong',def:['xiahouyuan'],rw:{gold:.06},d:'219년 하후연이 한중을 지키다 황충의 기습을 받은 산.'},
+  ruxu:{n:'유수구',hz:'濡須口',boss:'caoren',def:['lvmeng'],rw:{itk:.0165},d:'여몽이 쌓은 유수오. 오가 조조·조인의 공격을 여러 번 막아 낸 곳.'},
+  changsha:{n:'장사',hz:'長沙',boss:'guanyu',def:['huangzhong'],rw:{food:.0165},d:'209년 황충이 장사를 지키며 관우와 일기토를 벌인 성.'},
+  maicheng:{n:'맥성',hz:'麥城',boss:'lvmeng',def:['guanyu'],rw:{gold:.033,food:.0083},d:'219년 형주를 잃은 관우가 마지막까지 버틴 작은 성.'},
+  beihai:{n:'북해',hz:'北海',boss:'zhangjiao',def:['taishici'],rw:{itk:.0158},d:'태사자가 황건적에게 포위된 공융을 구하러 달려간 성.'}
 };
 const SIEGE_K=4, SIEGE_DAILY=5, SIEGE_MAXR=150, SIEGE_HEAL=.3, SIEGE_BASE=.8, SIEGE_GROW=1.35, SIEGE_HERO=.10;
 const SIEGE_EPOCH=Date.UTC(2026,9,11,15);   // 2026-10-12(월) 0시 KST
@@ -3222,6 +3445,12 @@ const TEND={any:{n:'무작위',d:'모든 병종이 섞여 와요'},inf:{n:'보�
 const RES_L={gold:['金','금'],food:['糧','군량'],itk:['券','보물 획득권']};
 const siegeCdMin=t=>Math.min(120,10+Math.max(0,t-1)*110/99);
 const weekIdx=(t=Date.now())=>Math.floor((t-SIEGE_EPOCH+(t>=RESET_CUT?2*3600e3:0))/(7*864e5));  // v3.7.2: 일요일 22시
+// v4.0.0: 수성전은 매일 밤 10시에 성 3곳이 바뀌어요(이틀 연속 같은 성 없음). sDay = 2026-10-12부터 센 날 번호
+const sDay=(d=kstDay())=>Math.round((Date.parse(d)-Date.parse('2026-10-12'))/864e5);
+const sDayLabel=i=>{const a=new Date(Date.parse('2026-10-12')+i*864e5);return `${a.getUTCMonth()+1}/${a.getUTCDate()}`};
+const SG_FROM=4;  // 매일 수성전 순위 보상은 10/16부터
+const SIEGE_TOK={hefei:'zhangliao',xiaopei:'liubei',chencang:'haozhao',fancheng:'caoren',jiangling:'caoren',sishui:'huaxiong',luocheng:'liuxun',xiapi:'lubu',yijing:'gongsunzan',wancheng:'jiaxu',jiameng:'zhangfei',dingjun:'xiahouyuan',ruxu:'lvmeng',changsha:'huangzhong',maicheng:'guanyu',beihai:'taishici'};
+const sgRankTok=r=>r===1?30:r===2?20:r===3?15:r<=10?10:5;
 const weekRange=w=>{const a=new Date(SIEGE_EPOCH+w*7*864e5+9*3600e3),b=new Date(a.getTime()+6*864e5);return `${a.getUTCMonth()+1}/${a.getUTCDate()}~${b.getUTCMonth()+1}/${b.getUTCDate()}`};
 let _sweek={};
 function siegeWeek(w){
@@ -3237,16 +3466,22 @@ function siegeWeek(w){
   }
   return _sweek[w];
 }
-function siegeState(){const d=kstDay(),w=weekIdx();if(!S.siege||typeof S.siege!=='object')S.siege={};const s=S.siege;
-  if(s.day!==d){s.day=d;s.n={}}if(!s.n)s.n={};if(!s.cd)s.cd={};if(s.w!==w){s.w=w;s.wb={}}if(!s.wb)s.wb={};return s}
+function siegeState(){const d=kstDay(),w=sDay();if(!S.siege||typeof S.siege!=='object')S.siege={};const s=S.siege;
+  if(s.day!==d){s.day=d;s.n={}}if(!s.n)s.n={};if(!s.cd)s.cd={};if(s.w!==w){if(s.wb&&Object.keys(s.wb).length)s.prev={w:s.w,wb:s.wb};s.w=w;s.wb={}}if(!s.wb)s.wb={};return s}
 function cleanSpecs(a){return capFive((Array.isArray(a)?a:[]).slice(0,NSLOT).filter(s=>s&&GMAP[s.g]).map(s=>({g:s.g,lv:Math.min(MAXLV,Math.max(1,s.lv|0)),d:Math.min(maxD(GMAP[s.g].rar),Math.max(0,s.d|0)),i:itemsOf(s.i).map(o=>o.it.id+':'+o.d),p:Number.isInteger(s.p)&&s.p>=0&&s.p<NSLOT?s.p:undefined,f:formKey(s.f)||undefined})))}
 function cleanRec(x){if(!x||typeof x!=='object')return null;const t=Math.min(SIEGE_MAXR,Math.max(0,x.t|0));if(!t)return null;return {t,hp:Math.min(100,Math.max(0,x.hp|0)),d:cleanSpecs(x.d)}}
 function cleanSiege(x){if(!x||typeof x!=='object')return {};const o={day:typeof x.day==='string'?x.day:'',w:Number.isInteger(x.w)?x.w:-1,n:{},cd:{},wb:{}};
-  for(const k of Object.keys(SIEGE)){o.n[k]=Math.min(SIEGE_DAILY,Math.max(0,(x.n&&x.n[k])|0));const c=Number(x.cd&&x.cd[k])||0;if(c)o.cd[k]=Math.min(c,Date.now()+121*60000);const r=cleanRec(x.wb&&x.wb[k]);if(r)o.wb[k]=r}return o}
+  for(const k of Object.keys(SIEGE)){o.n[k]=Math.min(SIEGE_DAILY,Math.max(0,(x.n&&x.n[k])|0));const c=Number(x.cd&&x.cd[k])||0;if(c)o.cd[k]=Math.min(c,Date.now()+121*60000);const r=cleanRec(x.wb&&x.wb[k]);if(r)o.wb[k]=r}
+  if(x.prev&&Number.isInteger(x.prev.w)){const pw={};for(const k of Object.keys(SIEGE)){const r=cleanRec(x.prev.wb&&x.prev.wb[k]);if(r)pw[k]=r}if(Object.keys(pw).length)o.prev={w:x.prev.w,wb:pw}}
+  return o}
 // 공개 문서에 넣는 이번 주 기록 (기록을 깰 때만 바뀌어요)
-function siegePub(){const s=S&&S.siege,r={};if(s&&s.w===weekIdx()&&s.wb)for(const[k,v]of Object.entries(s.wb))r[k]={t:v.t,hp:v.hp,d:v.d};return {w:weekIdx(),r,a:attPub(),t:S&&S.tw&&S.tw.w===weekIdx()&&S.tw.best?{w:S.tw.w,f:S.tw.best}:null,e:S&&S.ex&&S.ex.w===weekIdx()&&S.ex.best?{w:S.ex.w,f:S.ex.best}:null}}
+function siegePub(){const s=S&&S.siege,r={},td=sDay();if(s&&s.w===td&&s.wb)for(const[k,v]of Object.entries(s.wb))r[k]={t:v.t,hp:v.hp,d:v.d};
+  // v4.0.0: 어제 기록(pr)도 함께 올려 다음 날 순위 정산에 써요
+  let pr=null;{const P=s&&(s.w===td-1?{w:s.w,wb:s.wb}:s.prev&&s.prev.w===td-1?s.prev:null);if(P){const rr={};for(const[k,v]of Object.entries(P.wb||{}))rr[k]={t:v.t,hp:v.hp,d:v.d};pr={sd:P.w,r:rr}}}
+  return {w:weekIdx(),sd:td,r,pr,a:attPub(),t:S&&S.tw&&S.tw.w===weekIdx()&&S.tw.best?{w:S.tw.w,f:S.tw.best}:null,e:S&&S.ex&&S.ex.w===weekIdx()&&S.ex.best?{w:S.ex.w,f:S.ex.best}:null}}
 function cleanSg(x){if(!x||typeof x!=='object'||!Number.isInteger(x.w))return null;const r={};for(const k of Object.keys(SIEGE)){const v=cleanRec(x.r&&x.r[k]);if(v)r[k]=v}
-  const a=x.a&&typeof x.a.k==='string'&&typeof x.a.f==='string'?{k:x.a.k.slice(0,4),n:Math.max(0,Math.min(400,x.a.n|0)),f:x.a.f.slice(0,10)}:null;const t=x.t&&Number.isInteger(x.t.w)?{w:x.t.w,f:Math.max(0,Math.min(30,x.t.f|0))}:null;const e=x.e&&Number.isInteger(x.e.w)?{w:x.e.w,f:Math.max(0,Math.min(21,x.e.f|0))}:null;return {w:x.w,r,a,t,e}}
+  const sd=Number.isInteger(x.sd)?x.sd:null;let pr=null;if(x.pr&&Number.isInteger(x.pr.sd)){const rr={};for(const k of Object.keys(SIEGE)){const v=cleanRec(x.pr.r&&x.pr.r[k]);if(v)rr[k]=v}pr={sd:x.pr.sd,r:rr}}
+  const a=x.a&&typeof x.a.k==='string'&&typeof x.a.f==='string'?{k:x.a.k.slice(0,4),n:Math.max(0,Math.min(400,x.a.n|0)),f:x.a.f.slice(0,10)}:null;const t=x.t&&Number.isInteger(x.t.w)?{w:x.t.w,f:Math.max(0,Math.min(30,x.t.f|0))}:null;const e=x.e&&Number.isInteger(x.e.w)?{w:x.e.w,f:Math.max(0,Math.min(21,x.e.f|0))}:null;return {w:x.w,sd,r,pr,a,t,e}}
 function siegeWave(key,seed,lv,itd,tend){
   const C=SIEGE[key];
   return n=>{const r=mulberry(seed*977+n*131);const pool=Object.keys(GMAP).filter(g=>g!==C.boss&&(!tend||tend==='any'||GMAP[g].cls===tend));const pick=[C.boss];let n5=GMAP[C.boss].rar===5?1:0,guard=0;
@@ -3268,48 +3503,65 @@ function siegeReward(key,t){const r=siegeRate(key),o={};for(const[k,v]of Object.
 const rwText=o=>Object.entries(o).map(([k,v])=>`<span class="coin"><b class="sl ${k==='itk'?'gold':k}">${RES_L[k][0]}</b>+${fmt(v)}</span>`).join(' ');
 const rateText=o=>Object.entries(o).map(([k,v])=>`${RES_L[k][0]} ${k==='itk'?(v>=1?fmt(Math.round(v*10)/10):`${Math.max(1,Math.round(1/v))}턴당 1장`):fmt(Math.round(v*10)/10)}`).join(' · ');
 function hms(ms){const t=Math.max(0,Math.ceil(ms/1000)),h=Math.floor(t/3600),m=Math.floor(t%3600/60),s=t%60;return (h?h+':'+String(m).padStart(2,'0'):m)+':'+String(s).padStart(2,'0')}
-function siegeRank(key){
-  const w=weekIdx(), rows=[];
-  (PLAYERS||[]).forEach(p=>{if(p.id===UID)return;const v=p.sg&&p.sg.w===w&&p.sg.r[key];if(v)rows.push({id:p.id,...v})});
-  const me=S.siege&&S.siege.w===w&&S.siege.wb[key];if(me)rows.push({id:UID||'me',...me,me:1});
+// v4.0.0: 날 번호 day의 순위 (오늘이면 sg.r, 어제면 sg.pr)
+function sgRecOf(sg,day,key){if(!sg)return null;if(sg.sd===day)return sg.r&&sg.r[key];if(sg.pr&&sg.pr.sd===day)return sg.pr.r&&sg.pr.r[key];return null}
+function siegeRank(key,day=sDay()){
+  const rows=[];
+  (PLAYERS||[]).forEach(p=>{if(p.id===UID)return;const v=sgRecOf(p.sg,day,key);if(v)rows.push({id:p.id,...v})});
+  const s=S.siege, my=s&&(s.w===day?s.wb:s.prev&&s.prev.w===day?s.prev.wb:null), me=my&&my[key];if(me)rows.push({id:UID||'me',...me,me:1});
   return rows.sort((a,b)=>b.t-a.t||b.hp-a.hp);
 }
+// 지난 수성전 순위 보상(증표). 서버 모드에서만, 날마다 한 번
+function sgOwed(){
+  if(MODE!=='shared'||!S||!S.siege)return [];const td=sDay(), s=S.siege, out=[];
+  const days=[s.w,s.prev&&s.prev.w].filter(d=>Number.isInteger(d)&&d<td&&d>=SG_FROM&&!(S.sgdone||[]).includes(d));
+  for(const d of [...new Set(days)]){const L=[];for(const key of siegeWeek(d).keys){const rk=siegeRank(key,d), i=rk.findIndex(r=>r.me);if(i<0)continue;L.push({key,rank:i+1,total:rk.length,n:sgRankTok(i+1),g:SIEGE_TOK[key]})}if(L.length)out.push({d,L})}
+  return out;
+}
+function sgRewardHtml(){return sgOwed().map(o=>`<div class="att-card"><div class="row"><b>${sDayLabel(o.d)} 수성전 순위 보상</b></div>
+   ${o.L.map(x=>`<div class="sub" style="margin:4px 0 0">${SIEGE[x.key].n} ${x.rank}위 (${x.total}명) · ${esc(GMAP[x.g].name)} 증표 ${x.n}개</div>`).join('')}
+   <button type="button" class="btn wide" style="margin-top:8px" data-sgclaim="${o.d}">보상 받기 · 증표 ${o.L.reduce((a,x)=>a+x.n,0)}개</button></div>`).join('')}
+document.addEventListener('click',e=>{const c=e.target.closest('[data-sgclaim]');if(!c||!S)return;const d=+c.dataset.sgclaim, o=sgOwed().find(x=>x.d===d);if(!o)return;
+  if(!S.sgdone)S.sgdone=[];o.L.forEach(x=>{S.tok[x.g]=Math.min(9999,tokOf(x.g)+x.n)});S.sgdone.push(d);S.sgdone=S.sgdone.slice(-30);save();renderTop();updateDot();
+  toast(`수성전 보상 · ${o.L.map(x=>`${GMAP[x.g].name} 증표 +${x.n}`).join(' · ')}`);const card=c.closest('.att-card');if(card)card.remove();if(view==='pvp')renderView()});
 function vSiege(){
-  const st=siegeState(), w=weekIdx(), W=siegeWeek(w), N=siegeWeek(w+1), P=siegeParams();
+  const st=siegeState(), w=sDay(), W=siegeWeek(w), N=siegeWeek(w+1), P=siegeParams();
   let h=`<p class="sub">성을 지키는 싸움이에요. 적이 내 장수를 때린 피해는 <b style="color:var(--fg)">성 체력</b>에서 빠지고 내 장수는 쓰러지지 않아요. 적 무리를 물리치면 다음 무리가 ${SIEGE_GROW}배 강해져서 몰려와요. 버틴 턴만큼 보상을 받아요(최대 ${SIEGE_MAXR}턴).</p>
+   ${sgRewardHtml()}
    ${deckQuickHtml('수비 진형')}
    <div class="stats" style="grid-template-columns:1fr 1fr;margin:6px 0 10px"><div class="stat"><small>성 체력 (전투력 × ${SIEGE_K})</small><b>${fmt(P.hp)}</b></div><div class="stat"><small>배치</small><b>${FORM[curForm()].n}</b></div></div>
-   <div class="row" style="margin:0 0 8px"><h3 style="margin:0">이번 주 수성전</h3><span class="sp"></span><span class="chip">${weekRange(w)}</span></div>`;
+   <div class="row" style="margin:0 0 8px"><h3 style="margin:0">오늘 수성전</h3><span class="sp"></span><span class="chip">${sDayLabel(w)}</span></div>`;
   for(const key of W.keys){
     const C=SIEGE[key], cd=(st.cd[key]||0)-Date.now(), used=st.n[key]||0, left=SIEGE_DAILY-used, boss=GMAP[C.boss], hero=siegeHero(key), best=st.wb[key], rk=siegeRank(key), myR=rk.findIndex(r=>r.me);
     const tn=W.tend[key];
     h+=`<div class="banner-card" style="margin-bottom:12px"><div class="big">${C.hz}</div><div class="row" style="flex-wrap:nowrap">${seal(boss,'sm')}<div style="min-width:0"><h2 style="margin:0">${C.n} <span class="chip">${TEND[tn].n}</span></h2><div class="sub" style="margin:0">${esc(C.d)}</div></div></div>
      ${C.def.length?`<p class="sub" style="margin:6px 0 0;font-size:12px">수성 명장: ${C.def.map(g=>`<b style="color:${S.deck.includes(g)?'var(--jade)':'var(--mute)'}">${esc(GMAP[g].name)}</b>`).join(' · ')} — 진형에 있으면 성 체력 +${SIEGE_HERO*100}%${hero.length?' (적용 중)':''}</p>`:''}
-     <div class="stats" style="grid-template-columns:repeat(3,1fr);margin:10px 0"><div class="stat"><small>1턴 보상</small><b style="font-size:13px">${rateText(siegeRate(key))}</b></div><div class="stat"><small>오늘</small><b>${used}/${SIEGE_DAILY}</b></div><div class="stat"><small>이번 주 내 기록</small><b>${best?best.t+'턴':'-'}${myR>=0?` <small style="display:inline;color:var(--mute)">${myR+1}위</small>`:''}</b></div></div>
+     <p class="sub" style="margin:4px 0 0;font-size:12px">순위 보상: ${esc(GMAP[SIEGE_TOK[key]].name)} 증표 1위 30 · 2위 20 · 3위 15 · 4~10위 10 · 그 밖 5개 (다음 날 받기)</p>
+     <div class="stats" style="grid-template-columns:repeat(3,1fr);margin:10px 0"><div class="stat"><small>1턴 보상</small><b style="font-size:13px">${rateText(siegeRate(key))}</b></div><div class="stat"><small>오늘</small><b>${used}/${SIEGE_DAILY}</b></div><div class="stat"><small>오늘 내 기록</small><b>${best?best.t+'턴':'-'}${myR>=0?` <small style="display:inline;color:var(--mute)">${myR+1}위</small>`:''}</b></div></div>
      <div class="row" style="gap:8px;flex-wrap:nowrap"><button type="button" class="btn ghost" data-srank="${key}">순위 ${rk.length?`(${rk.length})`:''}</button>
      ${left<=0?`<button type="button" class="btn" style="flex:1" disabled>오늘 도전을 모두 했어요</button>`:cd>0?`<button type="button" class="btn" style="flex:1" disabled>다시 도전까지 <span data-scd="${st.cd[key]}">${hms(cd)}</span></button>`:`<button type="button" class="btn red" style="flex:1" data-siege="${key}" ${P.mine.some(Boolean)?'':'disabled'}>${C.n} 지키기</button>`}</div></div>`;
   }
-  h+=`<div class="labbox" style="margin-bottom:10px"><div class="row"><h3 style="margin:0">다음 주 예고</h3><span class="sp"></span><span class="chip">${weekRange(w+1)}</span></div>
+  h+=`<div class="labbox" style="margin-bottom:10px"><div class="row"><h3 style="margin:0">내일 예고</h3><span class="sp"></span><span class="chip">${sDayLabel(w+1)}</span></div>
     <div class="list" style="margin-top:8px">${N.keys.map(k=>{const C=SIEGE[k];return `<div class="li">${seal(GMAP[C.boss],'sm')}<div class="info"><b>${C.n} <span class="chip">${TEND[N.tend[k]].n}</span></b><span>${esc(GMAP[C.boss].name)} 공격 · ${Object.keys(C.rw).map(r=>RES_L[r][1]).join('+')}${C.def.length?` · 수성 명장 ${C.def.map(g=>GMAP[g].name).join('·')}`:''}</span></div></div>`}).join('')}</div>
     <p class="sub" style="margin:6px 0 0;font-size:12px">미리 진형과 보물을 준비해 두세요. 적 성향에 맞춰 상성이 좋은 병종을 넣으면 오래 버텨요.</p></div>
-   <p class="sub" style="font-size:12px">재도전 대기: 버틴 턴에 비례해 1턴 10분 ~ 100턴 이상 2시간. 성마다 하루 ${SIEGE_DAILY}판. 순위는 매주 일요일 밤 10시에 새로 시작하고, 버틴 턴이 같으면 남은 성 체력이 많은 쪽이 위예요. 적은 고정 장수 1명 + 그 주 성향에 맞는 무작위 장수 5명이고, 레벨은 내 진형 평균, 보물은 무작위(강화는 내 보물 평균까지)예요.</p>`;
+   <p class="sub" style="font-size:12px">재도전 대기: 버틴 턴에 비례해 1턴 10분 ~ 100턴 이상 2시간. 성마다 하루 ${SIEGE_DAILY}판. 순위는 매일 밤 10시에 새로 시작하고, 다음 날 순위에 따라 수성 명장 증표(1위 30 · 2위 20 · 3위 15 · 4~10위 10 · 그 밖 5개)를 받아요. 버틴 턴이 같으면 남은 성 체력이 많은 쪽이 위예요. 적은 고정 장수 1명 + 그 주 성향에 맞는 무작위 장수 5명이고, 레벨은 내 진형 평균, 보물은 무작위(강화는 내 보물 평균까지)예요.</p>`;
   return h;
 }
 function openSiegeRank(key,sel){
-  const C=SIEGE[key], rk=siegeRank(key), w=weekIdx();
+  const C=SIEGE[key], rk=siegeRank(key), w=sDay();
   const det=sel!=null&&rk[sel]?rk[sel]:null;
-  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${C.n} 수성전 순위</h2><div class="sub" style="margin:0">${weekRange(w)} · ${TEND[siegeWeek(w).tend[key]]?TEND[siegeWeek(w).tend[key]].n:''}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${C.n} 수성전 순위</h2><div class="sub" style="margin:0">${sDayLabel(w)} · ${TEND[siegeWeek(w).tend[key]]?TEND[siegeWeek(w).tend[key]].n:''}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    ${rk.length?`<div class="list">${rk.map((r,i)=>`<button type="button" class="li ${r.me?'me':''}" data-srk="${key}:${i}" style="text-align:left;${i===sel?'border-color:var(--bronze)':''}"><span class="rank">${i+1}</span><div class="info"><b ${r.me?'':`data-uid="${esc(r.id)}"`}>${r.me?'나':'…'}</b><span>${r.t}턴${r.t>=SIEGE_MAXR?' · 끝까지 지킴':''} · 남은 성 체력 ${r.hp}% · ${FORM[cleanForm(r.d[0]&&r.d[0].f)].n}</span></div></button>`).join('')}</div>`:'<div class="empty-state"><b>守</b>이번 주 기록이 아직 없어요.</div>'}
    ${det?`<h3>수비 진형 · ${FORM[cleanForm(det.d[0]&&det.d[0].f)].n}</h3><div class="list">${det.d.map((s,k)=>{const b=GMAP[s.g],its=itemsOf(s.i),pp=s.p!=null?s.p:k;return `<div class="li" style="align-items:flex-start">${seal(b,'sm')}<div class="info"><b>${pp+1}번 ${posOf(pp,cleanForm(s.f))} · ${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span></b><span>${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${s.lv} · ${dupHtml(s.d,1,maxD(b.rar))}</span><span>${its.length?its.map(({it,d})=>`${esc(it.name)}${d?' +'+d:''}`).join(' · '):'보물 없음'}</span></div></div>`}).join('')}</div>`:rk.length?'<p class="sub" style="margin-top:8px">군주를 누르면 수비 진형과 보물을 볼 수 있어요.</p>':''}`);
   if(typeof fillNames==='function')fillNames();
 }
 function siegeGo(key){
-  const C=SIEGE[key], st=siegeState(), W=siegeWeek(weekIdx());
-  if(!W.keys.includes(key)){toast('이번 주에 열린 성이 아니에요');return}
+  const C=SIEGE[key], st=siegeState(), W=siegeWeek(sDay());
+  if(!W.keys.includes(key)){toast('오늘 열린 성이 아니에요');return}
   if((st.n[key]||0)>=SIEGE_DAILY){toast('오늘 도전을 모두 했어요');return}
   if((st.cd[key]||0)>Date.now()){toast('아직 재도전 대기 중이에요');return}
   const P=siegeParams(key);if(!P.mine.some(Boolean)){toast('진형을 먼저 편성하세요');return}
-  const seed=seedOf('siege',UID,weekIdx(),key,kstDay(),st.n[key]||0), wave=siegeWave(key,seed,P.lv,P.itd,W.tend[key]);
+  const seed=seedOf('siege',UID,sDay(),key,kstDay(),st.n[key]||0), wave=siegeWave(key,seed,P.lv,P.itd,W.tend[key]);
   const res=simulate(P.mine,wave(1),seed,{rounds:SIEGE_MAXR,siege:{hp:P.hp,wave}});
   const t=res.turns, hpPct=Math.round(Math.max(0,res.castle)/res.castleMax*100), rw=siegeReward(key,t), cdm=siegeCdMin(t);
   const old=st.wb[key], better=!old||t>old.t||(t===old.t&&hpPct>old.hp);
@@ -3319,7 +3571,7 @@ function siegeGo(key){
     save();renderTop()};
   playBattle(res,`${C.n} 수성전`,'수비군 (내 진형)',`공격군 · ${GMAP[C.boss].name}`,()=>`<p class="sub">${t}턴 동안 버텼어요 · 제${res.waves}파까지${res.win?' · 끝까지 지켜 냈어요':''}${P.hero?' · 수성 명장 효과':''}</p>
      <div class="row" style="justify-content:center;gap:6px">${rwText(rw)}</div>
-     <p class="sub">${better?'<b style="color:var(--bronze)">이번 주 최고 기록!</b> · ':''}다음 도전까지 ${Math.round(cdm)}분 · 오늘 ${st.n[key]}/${SIEGE_DAILY}</p>`,{siege:{max:P.hp},verdict:{stamp:'守',lab:`${t}턴 수성`},commit});
+     <p class="sub">${better?'<b style="color:var(--bronze)">오늘 최고 기록!</b> · ':''}다음 도전까지 ${Math.round(cdm)}분 · 오늘 ${st.n[key]}/${SIEGE_DAILY}</p>`,{siege:{max:P.hp},verdict:{stamp:'守',lab:`${t}턴 수성`},commit});
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-siege]');if(b&&!b.disabled){siegeGo(b.dataset.siege);return}
@@ -4400,7 +4652,7 @@ function twRank(){const w=weekIdx(),rows=[];(PLAYERS||[]).forEach(p=>{if(p.id===
 const tmChip=id=>{const m=TMAP[id];return `<span class="chip" title="${esc(m.d)}" style="border-color:${TM_T[m.t][1]};color:${TM_T[m.t][1]}">${esc(m.n)}</span>`};
 function vTower(){
   const s=twState(),R=s.run,P=siegeParams(null),left=TW_DAILY-s.n,rk=twRank(),myR=rk.findIndex(r=>r.me);
-  let h=`<div class="banner-card"><div class="big">天命</div><h2>천명의 탑</h2><p class="sub" style="margin:0">내 진형으로 ${TW_MAX}층까지 올라요. 층을 깰 때마다 천명 3개 중 하나를 골라 쌓고, 한 번 지면 끝나요. 적은 내 전투력에 맞춰 층마다 8%씩 강해지고 5층마다 보스가 나와요.</p>
+  let h=`<div class="banner-card"><div class="big">天命</div><h2>천명의 탑</h2>${infoP('tower',`내 진형으로 ${TW_MAX}층까지 · 지면 끝`,`내 진형으로 ${TW_MAX}층까지 올라요. 층을 깰 때마다 천명 3개 중 하나를 골라 쌓고, 한 번 지면 끝나요. 적은 내 전투력에 맞춰 층마다 8%씩 강해지고 5층마다 보스가 나와요.`,'margin:0')}
    <div class="stats" style="grid-template-columns:repeat(3,1fr);margin:10px 0"><div class="stat"><small>오늘 도전</small><b>${s.n}/${TW_DAILY}</b></div><div class="stat"><small>이번 주 최고</small><b>${s.best?s.best+'층':'-'}${myR>=0?` <small style="display:inline;color:var(--mute)">${myR+1}위</small>`:''}</b></div><div class="stat"><small>30층 돌파</small><b style="font-size:13px">장수 등용권 ${TW_CLEAR_GPK}장</b></div></div>`;
   if(!R){
     h+=`<button type="button" class="btn red wide" data-tw="start" ${left<=0||!P.mine.some(Boolean)?'disabled':''}>${left<=0?'오늘 도전을 모두 했어요':`도전 시작 · 남은 ${left}회`}</button>
@@ -4436,6 +4688,7 @@ document.addEventListener('click',e=>{
    적 전투력 = 그 막 레벨 ★3 3명 평균 × 0.6 × 1.07^(누적 줄-1), 정예 ×1.3, 보스 ×1.4.
    보상: 금 = 시간당 금 × 12 × (진행 칸 ÷ 21), 정복 시 보물 선택권 1장. 순위 = players.sg.e {w, f: 진행 칸}.
    시뮬레이션(실제 함수, 900판): 1막 돌파 88% · 2막 돌파 64% · 정복 6%, 진행 칸 중간값 17. */
+const EX_TOK=3;  // v4.0.0: 모병으로 합류한 장수의 증표
 const EX_DAILY=2, EX_ROWS=7, EX_MAX=21, EX_GOLD_H=12, EX_CLEAR_ISK=1;
 const EX_LV=[20,30,40], EX_CH=[0,1,6], EX_A=.6, EX_B=1.07, EX_EM=1.3, EX_BM=1.4;
 const EX_INN=.5, EX_REV=.3, EX_EHEAL=.1, EX_FULLHEAL=.25;
@@ -4535,7 +4788,7 @@ function exNode(col){const s=exState(),R=s.run;if(!R||R.of)return;
   playBattle(res,title,'원정군',foeLab,()=>html,{});
 }
 function exPick(id){const R=exState().run;if(!R||!R.of||!R.of.ids.includes(id))return;
-  if(R.of.k==='tm'){R.tm.push(id);toast(`천명 · ${TMAP[id].n}`)}else{if(R.p.length<NSLOT)R.p.push({g:id,h:1});toast(`${GMAP[id].name} 합류`)}
+  if(R.of.k==='tm'){R.tm.push(id);toast(`천명 · ${TMAP[id].n}`)}else{if(R.p.length<NSLOT)R.p.push({g:id,h:1});S.tok[id]=Math.min(9999,tokOf(id)+EX_TOK);toast(`${GMAP[id].name} 합류 · 증표 +${EX_TOK} (${tokOf(id)}/${tokNeed(id)})`)}
   R.of=null;save();renderView()}
 function exRank(){const w=weekIdx(),rows=[];(PLAYERS||[]).forEach(p=>{if(p.id===UID)return;const e=p.sg&&p.sg.e;if(e&&e.w===w&&e.f)rows.push({id:p.id,f:e.f})});
   const s=S.ex;if(s&&s.w===w&&s.best)rows.push({id:UID||'me',f:s.best,me:1});return rows.sort((a,b)=>b.f-a.f)}
@@ -4549,7 +4802,7 @@ function exPartyHtml(R){return `<div class="list">${exParty({...R,p:R.p.slice()}
   return `<div class="li"${m.h<=0?' style="opacity:.5"':''}>${seal(b,'sm')}<div class="info"><b>${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span></b><span>${CLS[b.cls].g} ${CLS[b.cls].n} · Lv ${EX_LV[R.a]} · ${m.h>0?`체력 ${Math.round(m.h*100)}%`:'쓰러짐 (주막에서 부활)'}</span><div class="hp" style="height:5px;background:var(--panel2);border-radius:3px;margin-top:4px;overflow:hidden"><i style="display:block;height:100%;width:${Math.round(m.h*100)}%;background:${m.h>.5?'var(--jade)':m.h>.25?'var(--bronze)':'var(--cinnabar)'}"></i></div></div></div>`}).join('')}</div>`}
 function vExpedition(){
   const s=exState(),R=s.run,left=EX_DAILY-s.n,rk=exRank(),myR=rk.findIndex(r=>r.me);
-  let h=`<div class="banner-card"><div class="big">遠征</div><h2>원정군</h2><p class="sub" style="margin:0">무작위 ★3 장수 3명으로 황건적의 난 → 반동탁 연합 → 적벽대전을 돌파해요. 갈래길에서 전투·정예·주막·모병을 골라 가고, 체력은 전투가 끝나도 그대로 이어져요. 천명은 천명의 탑과 같아요. 처음 출발할 때는 같은 주에 모두 같은 지도·적·시작 장수이고, [처음부터 다시하기]를 하면 새 지도·새 장수가 나와요.</p>
+  let h=`<div class="banner-card"><div class="big">遠征</div><h2>원정군</h2>${infoP('exp','★3 장수 3명으로 3막을 돌파해요','무작위 ★3 장수 3명으로 황건적의 난 → 반동탁 연합 → 적벽대전을 돌파해요. 갈래길에서 전투·정예·주막·모병을 골라 가고, 체력은 전투가 끝나도 그대로 이어져요. 천명은 천명의 탑과 같아요. 처음 출발할 때는 같은 주에 모두 같은 지도·적·시작 장수이고, [처음부터 다시하기]를 하면 새 지도·새 장수가 나와요.','margin:0')}
    <div class="stats" style="grid-template-columns:repeat(3,1fr);margin:10px 0"><div class="stat"><small>오늘 원정</small><b>${s.n}/${EX_DAILY}</b></div><div class="stat"><small>이번 주 최고</small><b>${s.best?exProg(s.best):'-'}${myR>=0?` <small style="display:inline;color:var(--mute)">${myR+1}위</small>`:''}</b></div><div class="stat"><small>정복 보상</small><b style="font-size:13px">보물 선택권 ${EX_CLEAR_ISK}장</b></div></div>`;
   if(!R){
     h+=`<button type="button" class="btn red wide" data-ex="start" ${left<=0?'disabled':''}>${left<=0?'오늘 원정을 모두 했어요':`원정 출발 · 남은 ${left}회`}</button>
