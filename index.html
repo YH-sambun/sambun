@@ -591,7 +591,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.7.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.7.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1395,7 +1395,10 @@ const isWork=()=>document.documentElement.classList.contains('work');
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 function mulberry(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 const seedOf=(...a)=>{let h=2166136261;for(const c of a.join('|'))h=Math.imul(h^c.charCodeAt(0),16777619);return (h>>>0)%2147483647};
-const kstDay=()=>new Date(Date.now()+9*3600e3).toISOString().slice(0,10);
+// v3.7.2: 일일 리셋 KST 22시. 2026-10-16 22시부터 적용(그날은 0시~22시로 짧게 끝나고, 날짜 표기는 다음 날로 넘어가요).
+const RESET_CUT=Date.parse('2026-10-16T22:00:00+09:00'), RESET_DAY0='2026-10-17';
+const resetDay=ms=>new Date(ms+(ms>=RESET_CUT?11:9)*3600e3).toISOString().slice(0,10);
+const kstDay=()=>resetDay(Date.now());
 let toastT;
 function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2200)}
 
@@ -1595,7 +1598,7 @@ function sanitize(s){
     if(!y){const n={u:String(x.u),k:x.k,d:Math.min(ITEM_MAXD,Math.max(0,x.d|0)),n:Math.max(0,x.n|0),g:Math.max(0,Number(x.g)||0)};if(x.lk)n.lk=true;by[x.k]=n;o.items.push(n)}
     else{const k=Math.min(ITEM_MAXD-y.d,1+(x.d|0));y.d+=k;y.n+=k;y.g+=Math.max(0,Number(x.g)||0);if(x.lk)y.lk=true}}}
   o.itk=Math.max(0,Math.min(9999,s.itk|0));o.gpk=Math.max(0,Math.min(9999,s.gpk|0));
-  o.gtk=Math.max(0,Math.min(999,s.gtk|0));o.isk=Math.max(0,Math.min(999,s.isk|0));o.xtk=Math.max(0,Math.min(999,s.xtk|0));
+  o.gtk=Math.max(0,Math.min(999,s.gtk|0));o.isk=Math.max(0,Math.min(999,s.isk|0));o.xtk=Math.max(0,Math.min(999,s.xtk|0));o.rtk=Math.max(0,Math.min(9999,s.rtk|0));
   {const p=s.pity&&typeof s.pity==='object'?s.pity:{};o.pity={g:Math.max(0,Math.min(99,p.g|0)),i:Math.max(0,Math.min(99,p.i|0))}}o.sat=cleanSat(s.sat);o.satLast=s.satLast&&typeof s.satLast==='object'?{k:String(s.satLast.k||'').slice(0,4),n:s.satLast.n|0,pct:s.satLast.pct|0,rw:s.satLast.rw?1:0}:null;
   o.cpn=Array.isArray(s.cpn)?s.cpn.filter(x=>typeof x==='string'&&x.length===64).slice(-300):[];
   o.lab=labClean(s.lab);
@@ -1935,10 +1938,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='3.7.1';
-const ATT_AP=30, ATT_BONUS_FOOD=500;
+const GAME_VERSION='3.7.2';
+// v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
+const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.7.2',date:'2026-10-16',title:'일일 리셋 밤 10시 · 룰렛 소환권 · 출석 보상 개편',reward:{ap:30,rtk:100},items:[
+  '자정까지 리셋 기다려서 도파민 폭발하고 싶은 직장인을 위해 일일 리셋 시간을 밤 10시로 변경했습니다. 룰렛 돌리려고 졸린데 버티지 마세요.',
+  '10월 16일(금) 밤 10시부터 매일 밤 10시(한국 시간)에 하루가 바뀌어요. 금화 룰렛 100회, 결투 도전 횟수, 출석, 토벌전·공성전·천명탑·원정군 하루 횟수, 쿠폰 기한이 모두 밤 10시 기준이에요. 16일은 0시~밤 10시로 짧게 끝나요.',
+  '결투 일일 순위는 밤 10시까지의 결투로 정하고, 정산 보상은 지금처럼 다음 날 오전 9시에 받아요. 공성전·천명탑·원정군 주간 순위는 일요일 밤 10시에 새로 시작해요.',
+  '새 아이템 \'룰렛 소환권\': 금 없이 금화 룰렛을 1장에 1회 돌려요. 룰렛 카드의 [소환권 1회]·[소환권 10회]로 쓰고, 하루 100회 제한과 별개예요.',
+  '출석 보상이 7일 주기로 바뀌었어요. 1일 나팔 50 · 2일 장수 등용권 20장 · 3일 보물 획득권 30장 · 4일 룰렛 소환권 30장 · 5일 룰렛 소환권 100장 · 6일 보물 선택권 1장 · 7일 보물 강화도 교환권 1장. 지금 이어 오던 연속 출석 일수는 그대로 이어져요.',
+  '업데이트 기념으로 나팔 30개와 룰렛 소환권 100장(룰렛 100회)을 드려요. 공지를 확인하면 받아요.']},
  {v:'3.7.1',date:'2026-10-15',title:'진형 자리 끌어다 바꾸기 · 연무장 ⇄',reward:{ap:30},items:[
   '둔영 진형과 연무장 덱에서 장수 카드를 다른 자리로 끌어다 놓으면 두 장수가 자리를 바꿔요. 빈 자리에 놓으면 그 자리로 옮겨요. PC는 마우스로 바로 끌고, 폰은 카드를 잠깐 누르고 있다가 끌어요.',
   '연무장 덱에도 둔영처럼 ⇄ 버튼이 생겼어요. ⇄를 누른 뒤 다른 자리를 누르면 맞바꾸고, 빈 자리를 누르면 그 자리로 옮겨요. 한 칸씩 옮기던 ▲▼는 ⇄로 바뀌었어요.',
@@ -2321,7 +2332,7 @@ const NOTICES=[
  {v:'1.0.0',date:'2026-10-13',title:'연합 삼국지 · 창천토벌 첫 공개',items:[
   '30개 스테이지, 장수·보물 등용, 5인 진형, 군주 간 비동기 대전을 시작했어요.']}
 ];
-const kstYesterday=()=>new Date(Date.now()+9*3600e3-864e5).toISOString().slice(0,10);
+const kstYesterday=()=>new Date(Date.parse(kstDay())-864e5).toISOString().slice(0,10);
 const attDue=()=>!!S&&S.att.day!==kstDay();
 // 쿠폰: 코드는 대문자로 바꾼 뒤 'cc:'를 붙여 SHA-256으로만 저장해서, 소스를 열어도 쿠폰 번호가 보이지 않아요
 const COUPONS={
@@ -2336,12 +2347,12 @@ async function redeemCoupon(raw){
   let cp=COUPONS[h];
   if(!cp&&typeof FS!=='undefined'&&FS&&MODE==='shared'){
     try{const d=await FS.collection('coupons').doc(code).get();
-      if(d.exists){const v=d.data()||{},n=(k,mx)=>Math.max(0,Math.min(mx,Math.floor(Number(v[k])||0)));cp={t:String(v.title||'쿠폰').slice(0,40),r:{food:n('food',100000),gold:n('gold',1000000),ap:n('ap',500),itk:n('itk',500),gtk:n('gtk',100),isk:n('isk',100),gpk:n('gpk',500),xtk:n('xtk',10)},until:String(v.until||'')}}}
+      if(d.exists){const v=d.data()||{},n=(k,mx)=>Math.max(0,Math.min(mx,Math.floor(Number(v[k])||0)));cp={t:String(v.title||'쿠폰').slice(0,40),r:{food:n('food',100000),gold:n('gold',1000000),ap:n('ap',500),itk:n('itk',500),gtk:n('gtk',100),isk:n('isk',100),gpk:n('gpk',500),xtk:n('xtk',10),rtk:n('rtk',100)},until:String(v.until||'')}}}
     catch(e){return {err:'쿠폰을 확인하지 못했어요. 잠시 후 다시 시도해 주세요'}}}
   if(!cp)return {err:'없는 쿠폰 번호예요'};
   if(cp.until&&kstDay()>cp.until)return {err:`기간이 끝난 쿠폰이에요 (${cp.until}까지)`};
   if(S.cpn.includes(h))return {err:'이미 사용한 쿠폰이에요'};
-  const r=cp.r;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.gtk=(S.gtk||0)+(r.gtk||0);S.isk=(S.isk||0)+(r.isk||0);S.gpk=(S.gpk||0)+(r.gpk||0);S.xtk=(S.xtk||0)+(r.xtk||0);S.cpn.push(h);save();renderTop();renderView();
+  const r=cp.r;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.gtk=(S.gtk||0)+(r.gtk||0);S.isk=(S.isk||0)+(r.isk||0);S.gpk=(S.gpk||0)+(r.gpk||0);S.xtk=(S.xtk||0)+(r.xtk||0);S.rtk=(S.rtk||0)+(r.rtk||0);S.cpn.push(h);save();renderTop();renderView();
   return {ok:`${cp.t} · ${rewardText(r)}`};
 }
 function couponHtml(){return `<div class="stat" style="text-align:left;margin:0 0 12px"><small style="font-size:12px">쿠폰 입력</small><form id="cpn-form" class="row" style="margin-top:6px"><input id="cpn-input" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="쿠폰 번호" aria-label="쿠폰 번호" style="flex:1;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--fg);font:inherit"><button class="btn" type="submit">사용</button></form><div id="cpn-msg" class="sub" style="margin:6px 0 0" role="status"></div></div>`}
@@ -2351,7 +2362,7 @@ async function couponList(){
   if(typeof FS!=='undefined'&&FS&&MODE==='shared'){try{const q=await FS.collection('coupons').get();
     for(const d of q.docs){const v=d.data()||{};if(v.hidden)continue;const code=String(d.id).toUpperCase();if(L.some(x=>x.code===code))continue;
       const n=(k,mx)=>Math.max(0,Math.min(mx,Math.floor(Number(v[k])||0)));
-      L.push({code,t:String(v.title||'쿠폰').slice(0,40),r:{food:n('food',100000),gold:n('gold',1000000),ap:n('ap',500),itk:n('itk',500),gtk:n('gtk',100),isk:n('isk',100),gpk:n('gpk',500),xtk:n('xtk',10)},until:String(v.until||''),h:await sha256hex('cc:'+code)})}}catch(e){}}
+      L.push({code,t:String(v.title||'쿠폰').slice(0,40),r:{food:n('food',100000),gold:n('gold',1000000),ap:n('ap',500),itk:n('itk',500),gtk:n('gtk',100),isk:n('isk',100),gpk:n('gpk',500),xtk:n('xtk',10),rtk:n('rtk',100)},until:String(v.until||''),h:await sha256hex('cc:'+code)})}}catch(e){}}
   return L;
 }
 async function fillCouponList(){
@@ -2371,23 +2382,23 @@ document.addEventListener('click',async e=>{
   const g=e.target.closest('[data-cpnget]');if(g&&!g.disabled){g.disabled=true;const r=await redeemCoupon(g.dataset.cpnget);toast(r.ok?'쿠폰 보상 '+r.ok:r.err);fillCouponList()}
 });
 function bindCoupon(){const f=$('#cpn-form');if(!f)return;f.onsubmit=async ev=>{ev.preventDefault();const b=f.querySelector('button');b.disabled=true;const r=await redeemCoupon($('#cpn-input').value);b.disabled=false;const m=$('#cpn-msg');if(!m)return;m.textContent=r.ok?'받았어요 · '+r.ok:r.err;m.style.color=r.ok?'var(--bronze)':'var(--cinnabar)';if(r.ok){$('#cpn-input').value='';toast('쿠폰 보상 '+r.ok);fillCouponList()}}}
-function rewardText(r){const o=[];if(r.ap)o.push(`角 +${r.ap}`);if(r.food)o.push(`糧 +${fmt(r.food)}`);if(r.gold)o.push(`金 +${fmt(r.gold)}`);if(r.itk)o.push(`보물 획득권 ${r.itk}장`);if(r.gtk)o.push(`장수 선택권 ${r.gtk}장`);if(r.isk)o.push(`보물 선택권 ${r.isk}장`);if(r.gpk)o.push(`장수 등용권 ${r.gpk}장`);if(r.xtk)o.push(`보물 강화도 교환권 ${r.xtk}장`);return o.join(' · ')}
+function rewardText(r){const o=[];if(r.ap)o.push(`角 +${r.ap}`);if(r.food)o.push(`糧 +${fmt(r.food)}`);if(r.gold)o.push(`金 +${fmt(r.gold)}`);if(r.itk)o.push(`보물 획득권 ${r.itk}장`);if(r.gtk)o.push(`장수 선택권 ${r.gtk}장`);if(r.isk)o.push(`보물 선택권 ${r.isk}장`);if(r.gpk)o.push(`장수 등용권 ${r.gpk}장`);if(r.xtk)o.push(`보물 강화도 교환권 ${r.xtk}장`);if(r.rtk)o.push(`룰렛 소환권 ${r.rtk}장`);return o.join(' · ')}
 function updateDot(){const d=$('#notice-dot');if(!d)return;d.hidden=!(S&&((typeof PENDING!=='undefined'&&PENDING.length)||attDue()||NOTICES.some(n=>!S.notice.read.includes(n.v))||NOTICES.some(n=>n.reward&&!S.notice.claimed.includes(n.v))))}
 function attHtml(){
-  const streak=S.att.day===kstYesterday()?S.att.streak+1:1, pos=(streak-1)%7+1, bonus=pos===7;
-  let boxes='';for(let k=1;k<=7;k++)boxes+=`<div class="ad ${k<pos?'done':''} ${k===pos?'today':''}"><small>${k}일</small><b>${k===7?'糧':'角'}</b></div>`;
+  const streak=S.att.day===kstYesterday()?S.att.streak+1:1, pos=(streak-1)%7+1, rw=ATT_RW7[pos-1][1];
+  let boxes='';for(let k=1;k<=7;k++)boxes+=`<div class="ad ${k<pos?'done':''} ${k===pos?'today':''}" title="${rewardText(ATT_RW7[k-1][1])}"><small>${k}일</small><b>${ATT_RW7[k-1][0]}</b></div>`;
   return `<div class="att-card"><div class="row"><b>출석 보상</b><span class="sp"></span><span class="sub" style="margin:0">연속 ${streak}일째</span></div>
    <div class="att">${boxes}</div>
-   <button type="button" class="btn wide" id="att-claim">오늘 출석하고 받기 · 角 +${ATT_AP}${bonus?` · 糧 +${ATT_BONUS_FOOD}`:''}</button></div>`;
+   <button type="button" class="btn wide" id="att-claim">오늘 출석하고 받기 · ${rewardText(rw)}</button></div>`;
 }
 function bindAtt(after){
   const b=$('#att-claim');if(!b)return;
   b.onclick=()=>{
     if(!attDue())return;
-    const streak=S.att.day===kstYesterday()?S.att.streak+1:1, bonus=(streak-1)%7+1===7;
+    const streak=S.att.day===kstYesterday()?S.att.streak+1:1, r=ATT_RW7[(streak-1)%7][1];
     attSeason();S.att={day:kstDay(),streak,total:(S.att.total||0)+1};S.sat.n++;
-    tickAP();S.ap+=ATT_AP;if(bonus)S.food+=ATT_BONUS_FOOD;
-    save();renderTop();toast(`출석 ${streak}일째 · 나팔 +${ATT_AP}${bonus?` · 군량 +${ATT_BONUS_FOOD}`:''}`);
+    tickAP();for(const[k,v]of Object.entries(r))S[k]=(S[k]||0)+v;
+    save();renderTop();toast(`출석 ${streak}일째 · ${rewardText(r)}`);
     after();
   };
 }
@@ -2418,7 +2429,7 @@ document.addEventListener('click',e=>{
   if(e.target.closest('#notice-btn')){openNotices();return}
   const c=e.target.closest('[data-nclaim]');
   if(c&&S){const n=NOTICES.find(x=>x.v===c.dataset.nclaim);if(!n||!n.reward||S.notice.claimed.includes(n.v))return;
-    const r=n.reward;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.gtk=(S.gtk||0)+(r.gtk||0);S.isk=(S.isk||0)+(r.isk||0);S.gpk=(S.gpk||0)+(r.gpk||0);S.xtk=(S.xtk||0)+(r.xtk||0);S.notice.claimed.push(n.v);save();renderTop();updateDot();
+    const r=n.reward;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.gtk=(S.gtk||0)+(r.gtk||0);S.isk=(S.isk||0)+(r.isk||0);S.gpk=(S.gpk||0)+(r.gpk||0);S.xtk=(S.xtk||0)+(r.xtk||0);S.rtk=(S.rtk||0)+(r.rtk||0);S.notice.claimed.push(n.v);save();renderTop();updateDot();
     c.outerHTML=`<div class="sub" style="margin:0">보상 받음 · ${rewardText(r)}</div>`;toast(`공지 보상 ${rewardText(r)}`)}
 });
 
@@ -2511,10 +2522,12 @@ const HELP=[
   ['보물 획득권','보물 획득에 군량 대신 먼저 쓰여요. 1장이 1회예요.'],
   ['천장','장수 등용과 보물 획득을 각각 누적 100회 할 때마다 장수 선택권·보물 선택권을 1장 드려요. ★5가 나와도 횟수는 그대로 이어져요.'],
   ['대량 소환','등용 탭의 [대량]에서 10회 단위로 한 번에 최대 300회까지 뽑아요. 획득권을 먼저 쓰고 모자란 만큼 군량으로 뽑으며, 10회마다 ★4 이상을 보장해요. 11회 이상은 결과를 요약해서 보여 줘요.'],
-  ['장수 등용권','장수 등용에 군량 대신 먼저 쓰여요. 1장이 1회예요. 금화 룰렛에서 얻어요.'],
+  ['장수 등용권','장수 등용에 군량 대신 먼저 쓰여요. 1장이 1회예요. 금화 룰렛과 출석 2일차에서 얻어요.'],
   ['원정군','전장 탭의 원정군. 무작위 ★3 장수 3명(레벨 고정 · 돌파·보물 없음)으로 3막을 돌파해요. 갈래길에서 전투·정예·주막·모병을 골라 가고 체력은 전투 사이에 이어져요. 하루 2회. 진행한 칸에 비례해 금, 정복 시 보물 선택권 1장.'],
   ['천명의 탑','전장 탭의 천명탑. 내 진형으로 30층까지 올라가요. 층을 깨면 천명 3개 중 하나를 골라 쌓고, 지면 끝나요. 하루 3회. 깬 층에 비례해 금, 30층 돌파 시 장수 등용권 10장.'],
-  ['금화 룰렛','등용 탭 아래. 금 1,000으로 돌려 금·군량·나팔·보물 획득권·장수 등용권·장수 선택권·보물 선택권 중 하나를 받아요. 하루 100회, 매일 0시(한국 시간)에 다시 채워져요. 보물 선택권 0.5%, 보물 강화도 교환권 0.01%.'],
+  ['금화 룰렛','등용 탭 아래. 금 1,000으로 돌려 금·군량·나팔·보물 획득권·장수 등용권·장수 선택권·보물 선택권 중 하나를 받아요. 하루 100회, 매일 밤 10시(한국 시간)에 다시 채워져요. 보물 선택권 0.5%, 보물 강화도 교환권 0.01%.'],
+  ['룰렛 소환권','금 없이 금화 룰렛을 1장에 1회 돌려요. 1회·10회로 쓰고, 하루 100회 제한과 별개예요. 출석 4·5일차, 공지 보상, 쿠폰에서 얻어요.'],
+  ['출석 보상','매일 밤 10시에 새로 받을 수 있어요. 7일 주기: 1일 나팔 50 · 2일 장수 등용권 20장 · 3일 보물 획득권 30장 · 4일 룰렛 소환권 30장 · 5일 룰렛 소환권 100장 · 6일 보물 선택권 1장 · 7일 보물 강화도 교환권 1장. 하루라도 빠지면 1일차부터 다시 시작해요.'],
   ['쿠폰','화면 위 券 버튼에서 쿠폰 목록(이름·보상·기한)을 보고 바로 받거나, 쿠폰 번호를 직접 입력할 수 있어요. 계정마다 한 번씩 받을 수 있어요.'],
   ['토벌전','전장 탭의 토벌전. 3일마다 새 적 3명(Lv'+MAXLV+' · 돌파 최대 · 보물 +50, 체력 20배)이 나와요. 내 진형으로 10턴 싸워 준 피해가 모두의 게이지에 쌓이고, 25·50·75·100%마다 그 회차에 1번 이상 도전한 군주 모두가 보상을 받아요. 하루 3회. 기여 1~3위는 회차가 끝난 뒤 추가 보상. 보상은 다음 회차가 끝날 때까지 받을 수 있어요.'],
   ['전투력','치명·흡혈·피해 감소·전법 피해도 전투력에 반영돼요.']]}
@@ -2633,9 +2646,9 @@ function usageHtml(gid){
 /* ---------------- 야전 일일 정산 ---------------- */
 const DUEL_REWARD=[1620,900,720], DUEL_REWARD_REST=300, DUEL_KEEP_DAYS=10, DUEL_SETTLE_HOUR=9, DUEL_START='2026-10-13';
 const DAY_MS=864e5;
-const dayStart=d=>Date.parse(d+'T00:00:00+09:00');
-const dayOf=ms=>new Date(ms+9*3600e3).toISOString().slice(0,10);
-const settleAt=d=>dayStart(d)+DAY_MS+DUEL_SETTLE_HOUR*3600e3;
+const dayStart=d=>Date.parse(d+'T00:00:00+09:00')-(d>=RESET_DAY0?2*3600e3:0);  // v3.7.2: 22시 시작
+const dayOf=resetDay;
+const settleAt=d=>Date.parse(d+'T00:00:00+09:00')+DAY_MS+DUEL_SETTLE_HOUR*3600e3;  // 다음 날 오전 9시 그대로
 const pastDays=n=>Array.from({length:n},(_,i)=>dayOf(Date.now()-(i+1)*DAY_MS));
 const duelReward=rank=>rank<=3?DUEL_REWARD[rank-1]:DUEL_REWARD_REST;
 const validBattle=b=>b&&typeof b.att==='string'&&typeof b.def==='string'&&typeof b.win==='boolean'&&Number.isFinite(Number(b.at));
@@ -2654,7 +2667,7 @@ async function loadDaily(d){
   const ref=FS.collection('daily').doc(d);
   const snap=await ref.get();
   if(snap.exists)return DAILY[d]=cleanDaily(snap.data());
-  const q=await FS.collection('battles').where('at','>=',dayStart(d)).where('at','<',dayStart(d)+DAY_MS).limit(1000).get();
+  const q=await FS.collection('battles').where('at','>=',dayStart(d)).where('at','<',dayStart(new Date(Date.parse(d)+DAY_MS).toISOString().slice(0,10))).limit(1000).get();
   const rank=rankDay(q.docs.map(x=>x.data()).filter(validBattle)).map(r=>{const p=PLAYERS.find(x=>x.id===r.id);return {...r,name:r.id===UID?MYNAME:(p&&p.name)||''}});
   const final=Date.now()>=settleAt(d), v={day:d,rank,final};
   if(final){
@@ -2839,18 +2852,22 @@ function rouletteHtml(){
   const left=rlLeft(), seg=360/RL_SEG.length;
   const grad=RL_SEG.map((k,i)=>`${k==='gtk'||k==='isk'||k==='xtk'?'#7a2a1e':i%2?'var(--panel2)':'#2a2018'} ${i*seg}deg ${(i+1)*seg}deg`).join(',');
   return `<div class="banner-card"><div class="big">輪盤</div><h2>금화 룰렛</h2><p class="sub" style="margin:0">금 ${fmt(RL_COST)}으로 한 번 돌려 금·군량·나팔·보물 획득권·장수 등용권, 드물게 선택권을 받아요. 하루 ${RL_DAILY}회 · 오늘 남은 횟수 <b class="num" style="color:var(--fg)">${left}</b>회</p>
+   <p class="sub" style="margin:4px 0 0">룰렛 소환권 <b class="num" style="color:var(--fg)">${S.rtk||0}</b>장 · 금 없이 1장에 1회, 하루 횟수와 별개예요</p>
    <div class="wheel-wrap"><div class="wheel" id="wheel" style="background:conic-gradient(${grad});transform:rotate(${rlRot}deg)">${RL_SEG.map((k,i)=>`<span style="transform:rotate(${i*seg+seg/2}deg) translateY(-62px)">${RL_K[k].w}</span>`).join('')}</div><div class="wheel-pin" aria-hidden="true"></div><div class="wheel-hub" aria-hidden="true">金</div></div>
    <div class="rates">${RL.map(([k,v,w],i)=>`<span${w<=50?' style="color:var(--bronze)"':''}>${rlTxt(i)} · ${rlPct(w)}</span>`).join('')}</div>
    <div class="row"><button type="button" class="btn ghost" data-rl="1" ${left<1||S.gold<RL_COST?'disabled':''}>1회 <b class="sl gold">金</b>${fmt(RL_COST)}</button><button type="button" class="btn" data-rl="10" ${left<10||S.gold<RL_COST*10?'disabled':''}>10회 <b class="sl gold">金</b>${fmt(RL_COST*10)}</button></div>
-   <p class="sub" style="margin:8px 0 0">매일 0시(한국 시간)에 횟수가 다시 채워져요. 받은 선택권은 등용 탭 맨 위에서 써요.</p></div>`;
+   <div class="row" style="margin-top:6px"><button type="button" class="btn ghost" data-rl="1" data-rlt="1" ${(S.rtk||0)<1?'disabled':''}>소환권 1회</button><button type="button" class="btn" data-rl="10" data-rlt="1" ${(S.rtk||0)<10?'disabled':''}>소환권 10회</button></div>
+   <p class="sub" style="margin:8px 0 0">매일 밤 10시(한국 시간)에 횟수가 다시 채워져요. 받은 선택권은 등용 탭 맨 위에서 써요.</p></div>`;
 }
 document.addEventListener('click',e=>{
   const b=e.target.closest('[data-rl]');if(!b||b.disabled||rlBusy)return;
-  const n=+b.dataset.rl;if(rlLeft()<n){toast('오늘 룰렛 횟수가 부족해요');return}if(S.gold<RL_COST*n){toast('금이 부족해요');return}
+  const n=+b.dataset.rl, tk=!!b.dataset.rlt;
+  if(tk){if((S.rtk||0)<n){toast('룰렛 소환권이 부족해요');return}}
+  else{if(rlLeft()<n){toast('오늘 룰렛 횟수가 부족해요');return}if(S.gold<RL_COST*n){toast('금이 부족해요');return}}
   const d=kstDay();if(S.rl.day!==d)S.rl={day:d,n:0};
   const res=Array.from({length:n},rlRoll), sum={};
   for(const i of res){const[k,v]=RL[i];sum[k]=(sum[k]||0)+v}
-  S.gold-=RL_COST*n;tickAP();for(const[k,v]of Object.entries(sum))S[k]=(S[k]||0)+v;S.rl.n+=n;save();renderTop();
+  if(tk)S.rtk-=n;else S.gold-=RL_COST*n;tickAP();for(const[k,v]of Object.entries(sum))S[k]=(S[k]||0)+v;if(!tk)S.rl.n+=n;save();renderTop();
   const best=res.reduce((a,i)=>RL[i][2]<RL[a][2]?i:a,res[0]), big=RL[best][2]<=300;
   const seg=360/RL_SEG.length, si=RL_SEG.indexOf(RL[best][0]);rlRot=rlRot-(rlRot%360)+360*5+(360-(si*seg+seg/2));
   rlBusy=true;document.querySelectorAll('[data-rl]').forEach(x=>x.disabled=true);
@@ -2860,7 +2877,7 @@ document.addEventListener('click',e=>{
     if(n===1)toast(`룰렛 · ${rlTxt(best)}${big?' · 대박!':''}`);
     else openSheet(`<div class="sheet-h"><h2 style="margin:0">룰렛 ${n}회 결과</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
       <div class="chips">${res.map(i=>`<span class="chip"${RL[i][2]<=300?' style="border-color:var(--bronze);color:var(--bronze)"':''}>${rlTxt(i)}</span>`).join('')}</div>
-      <h3>받은 보상</h3><div class="stats" style="grid-template-columns:1fr 1fr;margin-top:6px">${RL_SEG.filter(k=>sum[k]).map(k=>`<div class="stat"><small>${RL_K[k].n}</small><b>+${fmt(sum[k])}${RL_K[k].u}</b></div>`).join('')}<div class="stat"><small>쓴 금</small><b>-${fmt(RL_COST*n)}</b></div></div>
+      <h3>받은 보상</h3><div class="stats" style="grid-template-columns:1fr 1fr;margin-top:6px">${RL_SEG.filter(k=>sum[k]).map(k=>`<div class="stat"><small>${RL_K[k].n}</small><b>+${fmt(sum[k])}${RL_K[k].u}</b></div>`).join('')}<div class="stat"><small>${tk?'쓴 소환권':'쓴 금'}</small><b>-${tk?n+'장':fmt(RL_COST*n)}</b></div></div>
       <div class="row" style="margin-top:16px"><button type="button" class="btn ghost wide" data-close>확인</button></div>`);
   },w&&!still?2300:50);
 });
@@ -3088,7 +3105,7 @@ document.addEventListener('click',e=>{
 /* ---------------- 수성전 (v2.0.0) ----------------
    내 진형이 성을 지켜요. 적이 내 장수를 때린 피해는 성 체력에서 빠지고, 내 장수는 쓰러지지 않아요(회복·흡혈은 30% 효율로 성 체력 회복).
    적 무리를 모두 쓰러뜨리면 다음 무리가 1.35배 강해져서 들어와요. 성이 무너질 때까지 버틴 턴만큼 보상.
-   성 9곳 중 매주 3곳이 열리고(월요일 0시 기준, 2주 연속 같은 성은 나오지 않음), 성마다 그 주의 적 성향이 정해져요.
+   성 9곳 중 매주 3곳이 열리고(일요일 밤 10시 기준, 2주 연속 같은 성은 나오지 않음), 성마다 그 주의 적 성향이 정해져요.
    보상(1턴당, 시간당 생산량 대비)은 성마다 난이도(시뮬레이션 평균 턴)를 반영한 배율을 곱했어요. 보물 획득권은 군량 1.5%와 같은 가치(1장=군량 80). */
 const SIEGE={
   hefei:{n:'합비',hz:'合肥',boss:'sunquan',def:['zhangliao'],rw:{gold:.06},d:'215년 장료가 손권의 대군을 막아 낸 성. 손권과 장수들이 몰려와요.'},
@@ -3107,7 +3124,7 @@ const SIEGE_WEEK0=['hefei','xiaopei','chencang'];
 const TEND={any:{n:'무작위',d:'모든 병종이 섞여 와요'},inf:{n:'보병 위주',d:'보병이 몰려와요'},cav:{n:'기병 위주',d:'기병이 몰려와요'},arc:{n:'궁병 위주',d:'궁병이 몰려와요'},tac:{n:'책사 위주',d:'책사가 몰려와요'}};
 const RES_L={gold:['金','금'],food:['糧','군량'],itk:['券','보물 획득권']};
 const siegeCdMin=t=>Math.min(120,10+Math.max(0,t-1)*110/99);
-const weekIdx=(t=Date.now())=>Math.floor((t-SIEGE_EPOCH)/(7*864e5));
+const weekIdx=(t=Date.now())=>Math.floor((t-SIEGE_EPOCH+(t>=RESET_CUT?2*3600e3:0))/(7*864e5));  // v3.7.2: 일요일 22시
 const weekRange=w=>{const a=new Date(SIEGE_EPOCH+w*7*864e5+9*3600e3),b=new Date(a.getTime()+6*864e5);return `${a.getUTCMonth()+1}/${a.getUTCDate()}~${b.getUTCMonth()+1}/${b.getUTCDate()}`};
 let _sweek={};
 function siegeWeek(w){
@@ -3178,7 +3195,7 @@ function vSiege(){
   h+=`<div class="labbox" style="margin-bottom:10px"><div class="row"><h3 style="margin:0">다음 주 예고</h3><span class="sp"></span><span class="chip">${weekRange(w+1)}</span></div>
     <div class="list" style="margin-top:8px">${N.keys.map(k=>{const C=SIEGE[k];return `<div class="li">${seal(GMAP[C.boss],'sm')}<div class="info"><b>${C.n} <span class="chip">${TEND[N.tend[k]].n}</span></b><span>${esc(GMAP[C.boss].name)} 공격 · ${Object.keys(C.rw).map(r=>RES_L[r][1]).join('+')}${C.def.length?` · 수성 명장 ${C.def.map(g=>GMAP[g].name).join('·')}`:''}</span></div></div>`}).join('')}</div>
     <p class="sub" style="margin:6px 0 0;font-size:12px">미리 진형과 보물을 준비해 두세요. 적 성향에 맞춰 상성이 좋은 병종을 넣으면 오래 버텨요.</p></div>
-   <p class="sub" style="font-size:12px">재도전 대기: 버틴 턴에 비례해 1턴 10분 ~ 100턴 이상 2시간. 성마다 하루 ${SIEGE_DAILY}판. 순위는 매주 월요일 0시에 새로 시작하고, 버틴 턴이 같으면 남은 성 체력이 많은 쪽이 위예요. 적은 고정 장수 1명 + 그 주 성향에 맞는 무작위 장수 5명이고, 레벨은 내 진형 평균, 보물은 무작위(강화는 내 보물 평균까지)예요.</p>`;
+   <p class="sub" style="font-size:12px">재도전 대기: 버틴 턴에 비례해 1턴 10분 ~ 100턴 이상 2시간. 성마다 하루 ${SIEGE_DAILY}판. 순위는 매주 일요일 밤 10시에 새로 시작하고, 버틴 턴이 같으면 남은 성 체력이 많은 쪽이 위예요. 적은 고정 장수 1명 + 그 주 성향에 맞는 무작위 장수 5명이고, 레벨은 내 진형 평균, 보물은 무작위(강화는 내 보물 평균까지)예요.</p>`;
   return h;
 }
 function openSiegeRank(key,sel){
@@ -4008,7 +4025,7 @@ let RAIDS=[], raidUnsub=null, raidBusy=false;
 const dayNum=d=>Math.round(Date.parse(d+'T00:00:00Z')/864e5);
 const raidCyc=()=>Math.floor((dayNum(kstDay())-dayNum(RAID_EPOCH))/RAID_DAYS);
 const raidStartDay=c=>new Date((dayNum(RAID_EPOCH)+c*RAID_DAYS)*864e5).toISOString().slice(0,10);
-const raidEndMs=c=>Date.parse(raidStartDay(c)+'T00:00:00+09:00')+RAID_DAYS*864e5;
+const raidEndMs=c=>dayStart(raidStartDay(c))+RAID_DAYS*864e5;
 const RDB=()=>(typeof FS!=='undefined'&&FS)?FS:(typeof DB!=='undefined'&&DB)?DB:null;
 function raidBoss(c){
   const rng=mulberry(((c+1)*2654435761)%2147483647);
@@ -4494,7 +4511,7 @@ function vPvp(){
     return h;
   }
   const st=standings(), me=st[UID]||{aw:0,al:0,dw:0,dl:0};
-  h+=`<p class="sub">공격 승리 3점, 방어 성공 1점. 오늘(자정까지) 한 번 이상 도전한 군주가 순위에 오르고, 다음 날 오전 9시에 정산 보상을 받아요. 1위 糧 ${fmt(DUEL_REWARD[0])} · 2위 ${fmt(DUEL_REWARD[1])} · 3위 ${fmt(DUEL_REWARD[2])} · 그 외 ${fmt(DUEL_REWARD_REST)}</p>
+  h+=`<p class="sub">공격 승리 3점, 방어 성공 1점. 오늘(밤 10시까지) 한 번 이상 도전한 군주가 순위에 오르고, 다음 날 오전 9시에 정산 보상을 받아요. 1위 糧 ${fmt(DUEL_REWARD[0])} · 2위 ${fmt(DUEL_REWARD[1])} · 3위 ${fmt(DUEL_REWARD[2])} · 그 외 ${fmt(DUEL_REWARD_REST)}</p>
   <div class="recbox"><div class="stat"><small>오늘 공격</small><b>${me.aw}승 ${me.al}패</b></div><div class="stat"><small>오늘 방어</small><b>${me.dw}승 ${me.dl}패</b></div><div class="stat"><small>남은 도전</small><b>${ticketsLeft()}/${PVP_DAILY}</b></div></div>`;
   const ranked=rankDay(BATTLES), rk={};ranked.forEach((r,i)=>rk[r.id]=i+1);
   const rows=PLAYERS.map(p=>({...p,power:deckPower(p.deck),r:st[p.id]||{aw:0,al:0,dw:0,dl:0}}));
