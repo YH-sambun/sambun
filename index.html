@@ -408,6 +408,10 @@ button.sbar.on .sn{color:var(--bronze);font-weight:700}
 .rowgrp small{font-size:12px;color:var(--mute)}
 .slot.swsel{border-color:var(--bronze);box-shadow:0 0 0 2px var(--bronze) inset}
 .slot.swtgt{border-color:var(--bronze-d)}
+.slot[data-slot],.slot[data-labslot]{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.slot.dgsrc{opacity:.35}.slot.dgover{border-color:var(--bronze);box-shadow:0 0 0 2px var(--bronze) inset}
+.dgghost{position:fixed;z-index:60;pointer-events:none;opacity:.9;box-shadow:0 8px 24px rgba(0,0,0,.5);transform:rotate(-1.5deg);margin:0}
+body.dragging,body.dragging *{cursor:grabbing!important}
 .slot .info .skl{display:block;margin-top:2px;color:var(--fg);opacity:.8;white-space:normal;overflow-wrap:anywhere}
 .res-top{display:flex;align-items:center;gap:12px;justify-content:center}
 .res-top .stamp{font-size:30px;width:56px;height:56px;border-width:3px;border-radius:10px;flex:none}
@@ -587,7 +591,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.7.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.7.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1226,7 +1230,11 @@ const ROWN=['선봉','중견','후위'];
 const pctS=v=>(v>0?'+':'−')+Math.round(Math.abs(v)*100)+'%';
 function rowFxTxt(f,r){const x=FORM[cleanForm(f)].fx[r]||{},t=[];if(x.atk)t.push('공격 '+pctS(x.atk));if(x.def)t.push('방어 '+pctS(x.def));if(x.spd)t.push('속도 +'+x.spd);if(x.rd)t.push('받는 피해 '+pctS(x.rd));return t.join(' · ')}
 const skLine=b=>{const k=skillOf(b);return k?`<span class="skl">전법 · ${esc(k.n)} — ${esc(k.d||'')}</span>`:''};
-let swapFrom=-1;
+let swapFrom=-1, labSw=null;
+// 둔영 진형 두 자리 맞바꾸기 (⇄·끌어다 놓기 공용)
+function deckSwap(i,j){if(i===j)return;const a=S.deck[i],b=S.deck[j];if(!a&&!b)return;[S.deck[i],S.deck[j]]=[b,a];save();toast(a&&b?`${GMAP[a].name} ↔ ${GMAP[b].name} 자리를 바꿨어요`:`${GMAP[a||b].name}을(를) ${(a?j:i)+1}번 자리로 옮겼어요`)}
+// 연무장 덱 두 자리 맞바꾸기
+function labSwap(sd,i,j){if(i===j)return;const s=labCur(sd).s,a=s[i],b=s[j];if(!a&&!b)return;[s[i],s[j]]=[b,a];labSimOut='';save();toast(a&&b?`${GMAP[a.g].name} ↔ ${GMAP[b.g].name} 자리를 바꿨어요`:`${GMAP[(a||b).g].name}을(를) ${(a?j:i)+1}번 자리로 옮겼어요`)}
 const cleanForm=f=>formKey(f)||DEF_FORM;
 const rowOf=(slot,f)=>{const r=FORM[cleanForm(f)].r;return slot<r[0]?0:slot<r[0]+r[1]?1:2};
 const posOf=(i,f)=>ROWN[rowOf(i,f===undefined?curForm():f)];
@@ -1927,10 +1935,14 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='3.7.0';
+const GAME_VERSION='3.7.1';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.7.1',date:'2026-10-15',title:'진형 자리 끌어다 바꾸기 · 연무장 ⇄',reward:{ap:30},items:[
+  '둔영 진형과 연무장 덱에서 장수 카드를 다른 자리로 끌어다 놓으면 두 장수가 자리를 바꿔요. 빈 자리에 놓으면 그 자리로 옮겨요. PC는 마우스로 바로 끌고, 폰은 카드를 잠깐 누르고 있다가 끌어요.',
+  '연무장 덱에도 둔영처럼 ⇄ 버튼이 생겼어요. ⇄를 누른 뒤 다른 자리를 누르면 맞바꾸고, 빈 자리를 누르면 그 자리로 옮겨요. 한 칸씩 옮기던 ▲▼는 ⇄로 바뀌었어요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'3.7.0',date:'2026-10-15',title:'나라별 밸런스 · 새 장수 6명 · 새 인연 12개',reward:{ap:30,gtk:5},items:[
   '나라별 밸런스를 맞췄어요. 줄어든 수치 없이 올리기와 추가만 했어요. 위 진영 보너스와 촉 인연은 그대로예요.',
   '진영 보너스(3·4·5명 이상): 촉 체력 8/13/19% → 10/16/22%, 방어 3/5/8% 추가 · 오 공격 7/12/18% → 8/14/22%, 속도 6/10/15 → 6/10/18 · 군웅 방어 12/20/28% → 15/22/28%, 공격·체력 4/8/11% → 5/8/11%(★3 추가 효과는 그대로).',
@@ -2886,8 +2898,7 @@ document.addEventListener('click',e=>{
   if(e.target.closest('[data-swx]')){swapFrom=-1;renderView();return}
   if(e.target.closest('[data-dkmenu]')){openDeckMenu();return}
   if(swapFrom>=0){const sl2=e.target.closest('[data-slot]');if(sl2&&!e.target.closest('[data-slv]')){e.stopPropagation();const i=swapFrom,j=+sl2.dataset.slot;swapFrom=-1;
-    if(i!==j){const a=S.deck[i],b=S.deck[j];[S.deck[i],S.deck[j]]=[b,a];save();toast(a&&b?`${GMAP[a].name} ↔ ${GMAP[b].name} 자리를 바꿨어요`:`${GMAP[a||b].name}을(를) ${(a?j:i)+1}번 자리로 옮겼어요`)}
-    renderView();return}}
+    deckSwap(i,j);renderView();return}}
   const sv=e.target.closest('[data-slv]');if(sv){e.stopPropagation();openSlotLv(+sv.dataset.slv);return}
   const cl=e.target.closest('[data-clr]');if(cl){e.stopPropagation();const k=+cl.dataset.clr,g=S.deck[k];S.deck[k]=null;save();renderView();if(g)toast(`${GMAP[g].name}을(를) 진형에서 뺐어요`);return}
   const sl=e.target.closest('[data-slot]');if(sl){openSlotPicker(+sl.dataset.slot);return}
@@ -3840,11 +3851,13 @@ const labSpecs=D=>D.s.map((x,i)=>x?{g:x.g,lv:D.lv||MAXLV,d:maxD(GMAP[x.g].rar),i
 const labN5=(D,skip)=>D.s.filter((x,j)=>x&&j!==skip&&GMAP[x.g].rar===5).length;
 function labSlotHtml(side,D,specs,i){
   const pos=`<div class="pos">${i+1}<small>${posOf(i,D.f)}</small></div>`, x=D.s[i];
-  if(!x)return `<div class="slot empty" role="button" tabindex="0" data-labslot="${side}:${i}">${pos}<div class="info"><b>빈 자리</b><span>눌러서 장수 편성</span></div></div>`;
+  const on=labSw&&labSw.sd===side, cls=on?(labSw.i===i?' swsel':' swtgt'):'';
+  const swb=`<button type="button" class="sw" data-labsw="${side}:${i}" aria-label="${i+1}번 자리 맞바꾸기" aria-pressed="${on&&labSw.i===i}">⇄</button>`;
+  if(!x)return `<div class="slot empty${cls}" role="button" tabindex="0" data-labslot="${side}:${i}">${pos}<div class="info"><b>빈 자리</b><span>${on&&labSw.i!==i?'눌러서 이 자리로 옮기기':'눌러서 장수 편성'}</span></div>${on?'':`<div class="mv">${swb}</div>`}</div>`;
   const g=GMAP[x.g];
-  return `<div class="slot" role="button" tabindex="0" data-labslot="${side}:${i}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${CLS[g.cls].g} ${CLS[g.cls].n} · ${FAC[g.fac]} · 전투력 ${fmt(specPower(specs[i]))}</span>
+  return `<div class="slot${cls}" role="button" tabindex="0" data-labslot="${side}:${i}">${pos}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span></b><span>${CLS[g.cls].g} ${CLS[g.cls].n} · ${FAC[g.fac]} · 전투력 ${fmt(specPower(specs[i]))}</span>
    <span class="labits">${x.i.length?x.i.map(k=>{const it=IMAP[k];return `<span class="ig r${it.rar}" title="${esc(it.name)}">${itemImg(it)}</span>`}).join(''):'보물 없음'}</span></div>
-   <div class="mv"><button type="button" data-labmv="${side}:${i}:-1" aria-label="앞으로" ${i===0?'disabled':''}>▲</button><button type="button" data-labmv="${side}:${i}:1" aria-label="뒤로" ${i===NSLOT-1?'disabled':''}>▼</button></div></div>`;
+   <div class="mv">${swb}</div></div>`;
 }
 function labBoxHtml(side){
   const arr=S.lab[side], k=side==='atk'?S.lab.ai:S.lab.di, D=arr[k], specs=labSpecs(D);
@@ -3855,6 +3868,7 @@ function labBoxHtml(side){
    <div class="chips" role="group" aria-label="배치"><span class="flab">배치</span>${Object.entries(FORM).map(([k,F2])=>`<button type="button" data-labf="${side}:${k}" aria-pressed="${cleanForm(D.f)===k}" title="${esc(F2.d)} · ${esc(formAdvTxt(k))}">${F2.n}</button>`).join('')}<button type="button" data-formtab aria-label="진형 상성표">상성 ?</button></div>
    <div class="row" style="gap:6px;margin:0 0 8px"><button type="button" class="btn sm" data-labrec="${side}">추천 편성</button><button type="button" class="btn ghost sm" data-labname="${side}">이름 바꾸기</button></div>
    ${teamBoxHtml(specs,1)}
+   ${labSw&&labSw.sd===side?`<div class="row" style="gap:8px;margin:4px 0"><span class="sub" style="margin:0;color:var(--bronze)">${labSw.i+1}번 ${D.s[labSw.i]?esc(GMAP[D.s[labSw.i].g].name):'빈 자리'}와 맞바꿀 자리를 누르세요</span><span class="sp"></span><button type="button" class="btn ghost sm" data-labswx>취소</button></div>`:''}
    ${D.s.map((_,i)=>labSlotHtml(side,D,specs,i)).join('')}
    <div class="row" style="gap:6px;flex-wrap:wrap"><button type="button" class="btn ghost sm" data-labfill="${side}">무작위 편성</button><button type="button" class="btn ghost sm" data-labcopy="${side}">내 진형 복사</button><button type="button" class="btn ghost sm" data-labapply="${side}">내 진형에 적용</button><button type="button" class="btn ghost sm" data-dcode="${side}">덱코드</button><span class="sp"></span><button type="button" class="btn ghost sm" data-labclear="${side}">비우기</button></div></div>`;
 }
@@ -3919,6 +3933,7 @@ function openLabItem(side,i,k){
 let labClearArm=null;
 document.addEventListener('click',e=>{
   const t=e.target;
+  if(labSw&&t.closest('[data-labk],[data-labfill],[data-labclear],[data-labcopy],[data-labrec],[data-deckm]'))labSw=null;
   const dm=t.closest('[data-deckm]');if(dm){deckMode=dm.dataset.deckm;renderView();$('#view').scrollTop=0;return}
   const pm=t.closest('[data-pvpm]');if(pm){pvpMode=pm.dataset.pvpm;renderView();return}
   const lk=t.closest('[data-labk]');if(lk){const[sd,k]=lk.dataset.labk.split(':');S.lab[sd==='atk'?'ai':'di']=+k;labSimOut='';save();renderView();return}
@@ -3930,8 +3945,10 @@ document.addEventListener('click',e=>{
   const lc=t.closest('[data-labcopy]');if(lc){copyMyDeckToLab(lc.dataset.labcopy);save();renderView();toast('내 진형의 장수·보물·배치·레벨을 복사했어요');return}
   const lx=t.closest('[data-labclear]');if(lx){const sd=lx.dataset.labclear;if(labClearArm!==sd){labClearArm=sd;lx.textContent='한 번 더 누르면 비워요';lx.classList.add('red');setTimeout(()=>{if(labClearArm===sd){labClearArm=null;if(view==='pvp')renderView()}},2500);return}
     labClearArm=null;labCur(sd).s=Array(NSLOT).fill(null);labSimOut='';save();renderView();return}
-  const mv=t.closest('[data-labmv]');if(mv){e.stopPropagation();const[sd,a,d]=mv.dataset.labmv.split(':');const i=+a,j=i+ +d;if(j<0||j>=NSLOT)return;const s=labCur(sd).s;[s[i],s[j]]=[s[j],s[i]];save();renderView();return}
-  const ls=t.closest('[data-labslot]');if(ls){const[sd,i]=ls.dataset.labslot.split(':');openLabSlot(sd,+i);return}
+  const lsw=t.closest('[data-labsw]');if(lsw){e.stopPropagation();const[sd,a]=lsw.dataset.labsw.split(':');labSw=labSw&&labSw.sd===sd&&labSw.i===+a?null:{sd,i:+a};renderView();return}
+  if(t.closest('[data-labswx]')){labSw=null;renderView();return}
+  const ls=t.closest('[data-labslot]');if(ls&&labSw){const[sd,i]=ls.dataset.labslot.split(':');if(sd===labSw.sd){e.stopPropagation();const a=labSw.i;labSw=null;labSwap(sd,a,+i);renderView();return}}
+  if(ls){const[sd,i]=ls.dataset.labslot.split(':');openLabSlot(sd,+i);return}
   const lg=t.closest('[data-labgen]');if(lg){const[sd,i]=lg.dataset.labgen.split(':');openLabGen(sd,+i);return}
   const lr=t.closest('[data-labrm]');if(lr){const[sd,i]=lr.dataset.labrm.split(':');labCur(sd).s[+i]=null;labSimOut='';save();closeSheet();renderView();return}
   const lfa=t.closest('[data-labfac]');if(lfa){const[sd,i,f]=lfa.dataset.labfac.split(':');labFac=f;openLabGen(sd,+i);return}
@@ -3949,6 +3966,37 @@ document.addEventListener('click',e=>{
   if(t.closest('#lab-sim')){const a=labSpecs(labCur('atk')),b=labSpecs(labCur('def'));let w=0;const N=100;for(let s=1;s<=N;s++)if(simulate(a,b,s*7919,WAR_OPT).win)w++;
     labSimOut=`<small style="font-size:12px">${esc(labCur('atk').n)} → ${esc(labCur('def').n)} · ${N}판 모의전</small><b class="num" style="font-size:22px">공격 승률 ${w}%</b><div class="bar"><i style="width:${w}%;background:var(--bronze)"></i></div>`;renderView();return}
 });
+// v3.7.1: 진형 자리 끌어다 놓기. 마우스는 6px 움직이면 바로, 터치는 0.3초 누르고 있으면 끌기 시작해요(그 전에 움직이면 스크롤)
+(()=>{
+  let D=null,sup=0;
+  const key=el=>el.dataset.slot!=null?{k:'d',i:+el.dataset.slot}:{k:'l',sd:el.dataset.labslot.split(':')[0],i:+el.dataset.labslot.split(':')[1]};
+  const same=(a,b)=>a.k===b.k&&(a.k==='d'||a.sd===b.sd);
+  const filled=el=>!el.classList.contains('empty');
+  const start=()=>{D.on=1;const r=D.el.getBoundingClientRect(),g=D.el.cloneNode(true);g.classList.add('dgghost');g.classList.remove('swsel','swtgt');g.removeAttribute('data-slot');g.removeAttribute('data-labslot');
+    g.style.width=r.width+'px';g.style.left=r.left+'px';g.style.top=r.top+'px';D.dx=D.x-r.left;D.dy=D.y-r.top;document.body.appendChild(g);D.g=g;D.el.classList.add('dgsrc');document.body.classList.add('dragging');if(navigator.vibrate&&D.t)try{navigator.vibrate(15)}catch(_){}};
+  const over=(d,x,y)=>{const el=document.elementFromPoint(x,y),t=el&&el.closest('[data-slot],[data-labslot]');return t&&t!==d.el&&same(key(t),d.k)?t:null};
+  const end=drop=>{if(!D)return;clearTimeout(D.tm);const d=D;D=null;if(!d.on)return;sup=1;setTimeout(()=>sup=0,0);d.g&&d.g.remove();document.body.classList.remove('dragging');document.querySelectorAll('.dgsrc,.dgover').forEach(x=>x.classList.remove('dgsrc','dgover'));
+    if(!drop)return;const t=over(d,d.lx,d.ly);if(!t)return;const b=key(t);
+    if(d.k.k==='d'){swapFrom=-1;deckSwap(d.k.i,b.i)}else{labSw=null;labSwap(d.k.sd,d.k.i,b.i)}renderView()};
+  document.addEventListener('pointerdown',e=>{
+    if(D||e.button>0)return;const el=e.target.closest('[data-slot],[data-labslot]');if(!el||!filled(el)||e.target.closest('button,a,input,[data-slv]')||el.closest('#sheet'))return;
+    D={el,k:key(el),x:e.clientX,y:e.clientY,lx:e.clientX,ly:e.clientY,t:e.pointerType!=='mouse',on:0,id:e.pointerId};
+    if(D.t)D.tm=setTimeout(()=>{if(D&&!D.on)start()},300);
+  });
+  document.addEventListener('pointermove',e=>{
+    if(!D||e.pointerId!==D.id)return;D.lx=e.clientX;D.ly=e.clientY;const m=Math.hypot(e.clientX-D.x,e.clientY-D.y);
+    if(!D.on){if(D.t){if(m>8){clearTimeout(D.tm);D=null}return}if(m<6)return;start()}
+    D.g.style.left=(e.clientX-D.dx)+'px';D.g.style.top=(e.clientY-D.dy)+'px';
+    const t=over(D,e.clientX,e.clientY);document.querySelectorAll('.dgover').forEach(x=>{if(x!==t)x.classList.remove('dgover')});if(t)t.classList.add('dgover');
+  });
+  document.addEventListener('pointerup',e=>{if(D&&e.pointerId===D.id)end(1)});
+  document.addEventListener('pointercancel',e=>{if(D&&e.pointerId===D.id)end(0)});
+  document.addEventListener('touchmove',e=>{if(D&&D.on)e.preventDefault()},{passive:false});
+  document.addEventListener('contextmenu',e=>{if(D&&D.t)e.preventDefault()});
+  document.addEventListener('dragstart',e=>{if(e.target.closest&&e.target.closest('[data-slot],[data-labslot]'))e.preventDefault()});
+  // 끌기가 끝난 직후 따라오는 click(자리 편성 창 열기)은 무시해요
+  document.addEventListener('click',e=>{if(sup){sup=0;e.stopPropagation();e.preventDefault()}},true);
+})();
 document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.matches('[data-labslot]')){e.preventDefault();const[sd,i]=e.target.dataset.labslot.split(':');openLabSlot(sd,+i)}});
 /* ---------------- 토벌전 보스 (3일 회차 · 공동 게이지) ----------------
    회차마다 모든 군주가 같은 적 3명(Lv40 · 돌파 5 · 보물 3개 +50, 인연 적용)을 상대해요.
