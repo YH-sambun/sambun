@@ -228,6 +228,10 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 @keyframes stamp{from{transform:scale(2.2) rotate(-8deg);opacity:0}}
 .rw{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
 
+#upd{position:fixed;left:50%;top:calc(8px + env(safe-area-inset-top));transform:translateX(-50%);z-index:25;width:calc(100% - 24px);max-width:440px;display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--bronze);border-radius:12px;padding:10px 12px;font-size:13px;color:var(--fg);box-shadow:0 6px 20px rgba(0,0,0,.35)}
+#upd[hidden]{display:none}
+#upd span{flex:1}
+#ver{cursor:pointer}
 #toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--line);color:var(--fg);padding:9px 14px;border-radius:10px;font-size:13px;z-index:40;opacity:0;transition:opacity .2s;pointer-events:none;max-width:calc(100% - 32px);text-align:center}
 #toast.on{opacity:1}
 .loading{display:grid;place-items:center;height:60%;color:var(--mute);font-family:var(--display);font-size:20px}
@@ -422,7 +426,7 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver">v3.2.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.2.4</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1487,6 +1491,24 @@ async function checkRemote(){
 // 화면을 닫거나 다른 앱으로 넘어갈 때 기다리지 않고 바로 저장, 돌아오면 최신 기록 확인
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden'){if(dirty||saveT)flush()}else{checkRemote();if(MODE==='shared'&&S&&Date.now()-lastPubAt>6*3600e3){lastPub='';save()}}});
 window.addEventListener('pagehide',()=>{if(dirty||saveT)flush()});
+// 새 버전 확인 (v3.2.4): 홈 화면 앱처럼 새로고침이 없는 환경에서도 최신 빌드를 받도록
+const APP_VER=(document.getElementById('ver')||{}).textContent||'';let updAt=0,updBusy=false;
+async function appUpdate(){if(updBusy)return;updBusy=true;toast('저장하고 새 버전을 불러와요');
+  try{if(typeof flush==='function'&&(dirty||saveT))await Promise.race([flush(),new Promise(r=>setTimeout(r,2500))])}catch(e){}
+  try{await fetch(location.pathname,{cache:'reload'})}catch(e){}
+  location.reload()}
+async function checkUpdate(force){
+  if(!/^https?:$/.test(location.protocol)||!APP_VER)return;if(!force&&Date.now()-updAt<60e3)return;updAt=Date.now();
+  try{const t=await (await fetch(location.pathname+'?vc='+Date.now(),{cache:'no-store'})).text(),m=t.match(/id="ver"[^>]*>(v[\d.]+)</);
+    if(m&&m[1]!==APP_VER){let b=document.getElementById('upd');if(!b){b=document.createElement('div');b.id='upd';b.setAttribute('role','status');document.body.appendChild(b)}
+      b.innerHTML=`<span>새 버전이 나왔어요 · ${esc(m[1])}</span><button type="button" class="btn sm" id="upd-go">지금 업데이트</button><button type="button" class="x" id="upd-x" aria-label="닫기">✕</button>`;b.hidden=false;
+      $('#upd-go').onclick=appUpdate;$('#upd-x').onclick=()=>{b.hidden=true}}}catch(e){}}
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')checkUpdate()});
+window.addEventListener('pageshow',()=>checkUpdate());
+setInterval(()=>{if(document.visibilityState==='visible')checkUpdate()},10*60e3);
+setTimeout(()=>checkUpdate(true),3000);
+document.addEventListener('click',e=>{if(e.target.closest('#ver'))appUpdate()});
+document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.target.id==='ver'){e.preventDefault();appUpdate()}});
 window.addEventListener('pageshow',e=>{if(e.persisted)checkRemote()});
 document.addEventListener('click',e=>{if(e.target.closest('#save-st')){if(conflictData)openConflict();else checkRemote()}});
 async function writeRetry(fn){try{return await fn()}catch(e){if(e&&e.code==='unavailable'){await new Promise(r=>setTimeout(r,500+Math.random()*700));return fn()}throw e}}
@@ -1633,6 +1655,11 @@ const GAME_VERSION='3.2.2';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.2.4',date:'2026-10-15',title:'홈 화면 앱 자동 업데이트',reward:{ap:30,gpk:10},items:[
+  '홈 화면에 추가한 앱처럼 새로고침 버튼이 없는 곳에서도 새 버전을 받을 수 있어요. 앱을 열거나 다른 앱에 갔다 돌아올 때 새 버전을 확인하고, 있으면 화면 위에 [지금 업데이트] 안내가 떠요.',
+  '[지금 업데이트]를 누르면 진행 상황을 먼저 저장한 뒤 새 버전을 불러와요.',
+  '맨 위의 버전 글자(v3.2.4)를 누르면 언제든 새로고침돼요.',
+  '업데이트 기념으로 나팔 30개와 장수 등용권 10장(장수 소환 10회)을 드려요. 공지를 확인하면 받아요.']},
  {v:'3.2.3',date:'2026-10-15',title:'전투 화면 편의 개선',reward:{ap:30},items:[
   '진형 화면에서 장수의 전법 설명이 두 줄에서 잘리지 않고 끝까지 보여요. 모바일에서도 긴 전법 설명을 모두 읽을 수 있어요.',
   '전투 배속 버튼을 누르면 4배속 → 8배속 → 1배속 → 2배속 순서로 바뀌어요. 마지막으로 고른 배속을 기억해서 다음 전투도 그 배속으로 시작해요(처음은 4배속).',
