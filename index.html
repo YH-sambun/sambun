@@ -587,7 +587,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.6.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.7.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -694,7 +694,13 @@ const GENS_RAW=[
  ['fazheng','법정','法正','shu',4,'tac',45,94,76,78],
  ['hansui','한수','韓遂','qun',4,'inf',76,78,84,72],
  ['jianyong','간옹','簡雍','shu',3,'tac',44,80,72,72],
- ['yufan','우번','虞翻','wu',3,'tac',42,85,70,72]
+ ['yufan','우번','虞翻','wu',3,'tac',42,85,70,72],
+ ['jiaxu','가후','賈詡','wei',5,'tac',35,97,85,80,'완살'],
+ ['lvmeng','여몽','呂蒙','wu',5,'inf',86,88,92,80,'백의도강'],
+ ['lusu','노숙','魯肅','wu',4,'tac',40,92,84,74],
+ ['xurong','서영','徐榮','qun',5,'cav',88,72,90,86,'형양의 추격'],
+ ['zhangren','장임','張任','qun',4,'arc',84,70,80,82],
+ ['mateng','마등','馬騰','qun',4,'inf',86,62,86,74]
 ];
 const GENS=GENS_RAW.map(r=>({id:r[0],name:r[1],hz:r[2],fac:r[3],rar:r[4],cls:r[5],str:r[6],int:r[7],lead:r[8],spd:r[9],skill:r[10]||DEF_SKILL[r[5]]}));
 const GMAP=Object.fromEntries(GENS.map(g=>[g.id,g]));
@@ -767,7 +773,13 @@ const SK={
  hansui:{n:'관서 연합',d:'맨 앞 적에게 2.0배 피해, 아군 전체가 받는 전법 피해 2턴 -40%',tg:'front',m:2,buff:{to:'all',sr:.4,dur:2}},
  jianyong:{n:'성도 설득',d:'적 전체 공격 2턴 -15%, 체력이 가장 낮은 아군 체력 10% 회복',tg:'none',deb:{to:'all',atk:-.15,dur:2},heal:{to:'low',p:.1}},
  yufan:{n:'역경의 점복',d:'적 전체 0.4배 피해, 각 25% 확률로 1턴 기절',tg:'all',m:.4,stun:.25},
- yuanshu:{n:'옥새의 위세',d:'아군 전체 공격 2턴 +35%, 자신 방어 2턴 -10%',tg:'none',buff:[{to:'all',atk:.35,dur:2},{to:'self',def:-.1,dur:2}]}
+ yuanshu:{n:'옥새의 위세',d:'아군 전체 공격 2턴 +35%, 자신 방어 2턴 -10%',tg:'none',buff:[{to:'all',atk:.35,dur:2},{to:'self',def:-.1,dur:2}]},
+ jiaxu:{n:'완살',d:'적 전체 0.5배 피해, 적 전체 공격·방어 2턴 -20%',tg:'all',m:.5,deb:{to:'all',atk:-.2,def:-.2,dur:2}},
+ lvmeng:{n:'백의도강',d:'맨 뒤 적에게 3.2배 피해, 50% 확률로 1턴 기절, 자신 방어 2턴 +20%',tg:'back',m:3.2,stun:.5,buff:{to:'self',def:.2,dur:2}},
+ lusu:{n:'노숙의 중재',d:'아군 전체 체력 6% 회복, 아군 전체 공격 2턴 +12%',tg:'none',heal:{to:'all',p:.06},buff:{to:'all',atk:.12,dur:2}},
+ xurong:{n:'형양의 추격',d:'맨 앞 적을 2번 베어 각 2.2배 피해, 맞은 적 공격 2턴 -15%',tg:'front',h:2,m:2.2,deb:{to:'hit',atk:-.15,dur:2}},
+ zhangren:{n:'낙봉파의 매복',d:'맨 뒤 적에게 3.4배 치명타 확정',tg:'back',m:3.4,crit:1},
+ mateng:{n:'서량의 맹주',d:'맨 앞 적에게 2.4배 피해, 아군 전체 공격 2턴 +15%',tg:'front',m:2.4,buff:{to:'all',atk:.15,dur:2}}
 };
 const DEF_SK={
  inf:{n:'철벽',d:'맨 앞 적 1.4배 피해, 자신 체력 18% 회복',tg:'front',m:1.4,heal:{to:'self',p:.18}},
@@ -783,9 +795,9 @@ GENS.forEach(g=>{g.skill=skillOf(g).n});
 // 진영 보너스: 같은 진영(★3 이상) 3명 / 4명 / 5명
 const FAC_BONUS={
  wei:[{atk:.10,def:.04},{atk:.18,def:.07},{atk:.28,def:.10}],
- shu:[{hp:.08},{hp:.13},{hp:.19}],
- wu:[{atk:.07,spd:6},{atk:.12,spd:10},{atk:.18,spd:15}],
- qun:[{def:.12,atk:.04,hp:.04,r3:{atk:.01,hp:.01}},{def:.20,atk:.08,hp:.08,r3:{atk:.02,hp:.02}},{def:.28,atk:.11,hp:.11,r3:{atk:.03,hp:.03}}]
+ shu:[{hp:.10,def:.03},{hp:.16,def:.05},{hp:.22,def:.08}],
+ wu:[{atk:.08,spd:6},{atk:.14,spd:10},{atk:.22,spd:18}],
+ qun:[{def:.15,atk:.05,hp:.05,r3:{atk:.01,hp:.01}},{def:.22,atk:.08,hp:.08,r3:{atk:.02,hp:.02}},{def:.28,atk:.11,hp:.11,r3:{atk:.03,hp:.03}}]
 };
 // 인연: ids 전원이 진형에 있으면 발동(min이 있으면 그 수 이상, full은 전원일 때 효과)
 const BONDS=[
@@ -802,10 +814,10 @@ const BONDS=[
  {n:'신정의 맹약',ids:['sunce','taishici'],fx:{atk:.12,spd:5},d:'일기토 끝에 주군과 신하가 된 두 사람'},
  {n:'원수에서 전우로',ids:['ganning','lingtong'],fx:{atk:.10,def:.10},d:'원수였으나 합비에서 서로를 구한 두 장수'},
  {n:'불굴의 호위',ids:['sunquan','zhoutai'],fx:{def:.20,hp:.10},d:'온몸의 상처로 손권을 지킨 주태'},
- {n:'하비의 최후',ids:['lubu','chengong','gaoshun'],fx:{atk:.10,def:.15},d:'하비성에서 끝까지 함께한 여포군'},
- {n:'하북의 쌍벽',ids:['yanliang','wenchou'],fx:{atk:.15},d:'원소군을 대표한 두 맹장'},
- {n:'의부자',ids:['dongzhuo','lubu'],fx:{hp:.15},d:'적토마로 맺어진 동탁과 여포'},
- {n:'원씨 형제',ids:['yuanshao','yuanshu'],fx:{atk:.08,hp:.08},d:'사세삼공 명문가의 두 형제'},
+ {n:'하비의 최후',ids:['lubu','chengong','gaoshun'],fx:{atk:.17,def:.24},d:'하비성에서 끝까지 함께한 여포군'},
+ {n:'하북의 쌍벽',ids:['yanliang','wenchou'],fx:{atk:.19},d:'원소군을 대표한 두 맹장'},
+ {n:'의부자',ids:['dongzhuo','lubu'],fx:{hp:.22},d:'적토마로 맺어진 동탁과 여포'},
+ {n:'원씨 형제',ids:['yuanshao','yuanshu'],fx:{atk:.12,hp:.12},d:'사세삼공 명문가의 두 형제'},
  {n:'발탁의 은혜',ids:['simayi','dengai'],fx:{def:.15,atk:.10},d:'사마의가 발탁한 둔전의 장수 등애'},
  {n:'건업의 수호',ids:['sunquan','xusheng'],fx:{def:.15,hp:.10},d:'가짜 성벽으로 위군을 물러나게 한 서성과 손권'},
  {n:'화용도의 의리',ids:['guanyu','caocao'],fx:{atk:.10,def:.10},d:'적벽에서 패한 조조를 화용도에서 놓아준 관우'},
@@ -818,7 +830,7 @@ const BONDS=[
  {n:'죽마고우',ids:['caocao','yuanshao'],fx:{atk:.08,def:.08},d:'어린 시절 함께 자랐으나 관도에서 맞선 조조와 원소'},
  {n:'진궁의 결별',ids:['caocao','chengong'],fx:{atk:.08,spd:5},d:'조조를 따르다 떠나 여포의 책사가 된 진궁'},
  {n:'숙명의 라이벌',ids:['zhugeliang','simayi'],fx:{atk:.15},d:'오장원에서 맞선 두 지략가'},
- {n:'연환지계',ids:['diaochan','lubu','dongzhuo'],fx:{atk:.12,def:.08},d:'왕윤의 계책으로 여포와 동탁 사이를 갈라놓은 초선'},
+ {n:'연환지계',ids:['diaochan','lubu','dongzhuo'],fx:{atk:.19,def:.09},d:'왕윤의 계책으로 여포와 동탁 사이를 갈라놓은 초선'},
  {n:'강동의 손씨',ids:['sunjian','sunce','sunquan'],min:2,fx:{atk:.10},full:{atk:.15,hp:.10},d:'강동을 일군 손견과 두 아들. 2명이면 발동하고 3명 전원이면 효과가 커져요'},
  {n:'양인의 결전',ids:['sunjian','huaxiong'],fx:{atk:.08},d:'반동탁 연합 때 양인에서 맞붙은 손견과 화웅'},
  {n:'자오곡의 계책',ids:['weiyan','zhugeliang'],fx:{atk:.10,hp:.05},d:'자오곡 기습을 두고 다툰 위연과 제갈량'},
@@ -829,14 +841,14 @@ const BONDS=[
  {n:'강동의 노장',ids:['sunjian','chengpu','huanggai','handang'],min:2,fx:{hp:.10},full:{hp:.10,def:.12,atk:.05},d:'손견 때부터 손씨 삼대를 섬긴 정보·황개·한당. 2명 이상이면 발동, 4명 전원이면 효과가 커져요'},
  {n:'반하의 일기토',ids:['zhaoyun','wenchou'],fx:{atk:.08},d:'반하에서 일기토를 벌인 조운과 문추'},
  {n:'여포군의 두 장수',ids:['gaoshun','zhangliao'],fx:{def:.08},d:'여포 아래에서 함진영과 기병을 이끈 고순과 장료'},
- {n:'원술의 대장',ids:['yuanshu','jiling'],fx:{atk:.10,hp:.08},d:'원술군을 이끈 대장 기령'},
+ {n:'원술의 대장',ids:['yuanshu','jiling'],fx:{atk:.14,hp:.09},d:'원술군을 이끈 대장 기령'},
  {n:'촉의 노장',ids:['yanyan','huangzhong'],fx:{atk:.12},d:'나이를 잊고 활을 당긴 두 노장 엄안과 황충'},
  {n:'파군의 의리',ids:['yanyan','zhangfei'],fx:{def:.10,atk:.08},d:'파군에서 사로잡힌 엄안의 기개에 장비가 결박을 풀어 준 인연'},
  {n:'귀순한 충신',ids:['wenpin','caocao'],fx:{def:.10,hp:.05},d:'유표의 장수였던 문빙을 조조가 믿고 강하를 맡긴 인연'},
  {n:'강하 공방',ids:['wenpin','ganning'],fx:{def:.08},d:'강하를 지킨 문빙과 이를 노린 감녕'},
  {n:'진창 공방',ids:['haozhao','zhugeliang'],fx:{def:.12},d:'진창에서 제갈량의 대군을 막아 낸 학소'},
  {n:'백마의 인연',ids:['gongsunzan','zhaoyun'],fx:{atk:.08,hp:.08},d:'백마의종을 이끈 공손찬과 그 아래에 있던 조운'},
- {n:'계교의 숙적',ids:['gongsunzan','yuanshao'],fx:{atk:.10},d:'계교에서 맞붙고 역경에서 끝을 본 공손찬과 원소'},
+ {n:'계교의 숙적',ids:['gongsunzan','yuanshao'],fx:{atk:.14},d:'계교에서 맞붙고 역경에서 끝을 본 공손찬과 원소'},
  {n:'제갈 형제',ids:['zhugejin','zhugeliang'],fx:{hp:.10,def:.06},d:'오와 촉으로 갈라 섬긴 형 제갈근과 아우 제갈량'},
  {n:'손권의 신뢰',ids:['zhugejin','sunquan'],fx:{hp:.08},d:'손권이 끝까지 믿은 오의 원로 제갈근'},
  {n:'낙성 공방',ids:['liuxun','pangtong'],fx:{atk:.10},d:'낙성을 지킨 유순과 그곳에서 쓰러진 방통'},
@@ -850,7 +862,19 @@ const BONDS=[
  {n:'정군산',ids:['fazheng','huangzhong'],fx:{atk:.12},d:'법정의 계책으로 황충이 정군산에서 하후연을 베었어요'},
  {n:'관서 연합군',ids:['hansui','machao'],fx:{atk:.08,hp:.06},d:'조조에 맞서 관서 군벌을 모은 한수와 마초'},
  {n:'죽마고우',ids:['jianyong','liubei'],fx:{hp:.12},d:'탁군 시절부터 유비를 따른 오랜 벗 간옹'},
- {n:'강동의 직언',ids:['yufan','sunce'],fx:{atk:.10},d:'손책이 아낀 직언의 선비 우번'}
+ {n:'강동의 직언',ids:['yufan','sunce'],fx:{atk:.10},d:'손책이 아낀 직언의 선비 우번'},
+ {n:'사수관의 선봉',ids:['dongzhuo','huaxiong'],fx:{atk:.12,def:.09},d:'동탁의 명으로 사수관을 지킨 선봉 화웅'},
+ {n:'동탁의 서량군',ids:['dongzhuo','huaxiong','xurong'],fx:{atk:.19,def:.14},d:'반동탁 연합군을 막아 선 동탁 휘하의 서량 장수들'},
+ {n:'서량 연합',ids:['mateng','hansui'],fx:{atk:.14,hp:.12},d:'의형제를 맺고 서량을 함께 다스린 마등과 한수'},
+ {n:'낙성 수비',ids:['zhangren','liuxun'],fx:{def:.14,hp:.09},d:'유비군에 맞서 낙성을 끝까지 지킨 장임과 유순'},
+ {n:'형주 탈취',ids:['lvmeng','luxun'],fx:{atk:.17},d:'백의도강으로 관우의 형주를 빼앗은 여몽과 육손'},
+ {n:'괄목상대',ids:['lvmeng','lusu'],fx:{atk:.12,hp:.09},d:'노숙이 다시 본 여몽은 더 이상 오하아몽이 아니었어요'},
+ {n:'오의 사대도독',ids:['zhouyu','lusu','lvmeng','luxun'],min:2,fullMin:4,fx:{atk:.09},full:{atk:.24,hp:.14},s5x:1,d:'주유·노숙·여몽·육손으로 이어진 오의 대도독. 2명 이상이면 발동하고 4명 전원이면 효과가 커져요'},
+ {n:'난세의 독사',ids:['jiaxu','caocao'],fx:{atk:.12,def:.09},d:'완성에서 조조를 궁지에 몰았다가 그의 책사가 된 가후'},
+ {n:'마씨 부자',ids:['mateng','machao'],fx:{atk:.11,hp:.06},d:'서량의 맹주 마등과 그 아들 마초'},
+ {n:'낙봉파',ids:['zhangren','pangtong'],fx:{atk:.10},d:'낙봉파에서 장임의 화살에 쓰러진 봉추 방통'},
+ {n:'형주의 함락',ids:['lvmeng','guanyu'],fx:{atk:.07,def:.05},d:'여몽의 기습으로 형주를 잃고 맥성에서 최후를 맞은 관우'},
+ {n:'형양의 패배',ids:['xurong','caocao'],fx:{atk:.09},d:'형양에서 동탁군을 쫓던 조조를 크게 무찌른 서영'}
 ];
 
 // 서로 다른 진영 장수로 이루어진 인연(타국 인연)은 효과가 CROSS_MUL배
@@ -1237,7 +1261,9 @@ const TRAIT={
  lejin:TR('helm','none',{}),lidian:TR('band','goatee',{}),chengpu:TR('helm','long',{old:1}),huanggai:TR('helm','bushy',{old:1}),zhoutai:TR('band','stubble',{sk:'d',fierce:1}),
  lingtong:TR('band','none',{}),gaoshun:TR('helm','goatee',{fierce:1}),chengong:TR('scholar','goatee',{robe:1}),huaxiong:TR('helm','bushy',{fierce:1}),yanliang:TR('helm','bushy',{sk:'d',fierce:1}),
  dengai:TR('helm','goatee',{}),xusheng:TR('helm','goatee',{}),wenchou:TR('helm','goatee',{fierce:1}),jiling:TR('helm','bushy',{}),yuanshu:TR('crown','goatee',{gold:1}),wenpin:TR('helm','goatee',{}),yanyan:TR('helm','long',{old:1,fierce:1}),caoren:TR('helm','bushy',{}),zhoucang:TR('band','bushy',{sk:'d',fierce:1}),sunshangxiang:TR('lady','none',{fem:1,dress:['#d0503a','#8f2f22']}),haozhao:TR('helm','goatee',{fierce:1}),gongsunzan:TR('helm','stubble',{white:1}),zhugejin:TR('scholar','long',{robe:1}),xunyu:TR('scholar','goatee',{robe:1}),fazheng:TR('scholar','thin',{robe:1}),hansui:TR('helm','long',{old:1}),jianyong:TR('scholar','stubble',{robe:1}),yufan:TR('scholar','goatee',{robe:1,old:1}),liuxun:TR('helm','none',{}),handang:TR('band','goatee',{}),
- sunjian:TR('helm','goatee',{fierce:1}),diaochan:TR('lady','none',{fem:1,robe:1,dress:['#e48aa8','#b05a78']}),zhurong:TR('tribal','none',{fem:1,sk:'d',fierce:1})
+ sunjian:TR('helm','goatee',{fierce:1}),diaochan:TR('lady','none',{fem:1,robe:1,dress:['#e48aa8','#b05a78']}),zhurong:TR('tribal','none',{fem:1,sk:'d',fierce:1}),
+ jiaxu:TR('scholar','thin',{robe:1,old:1}),lvmeng:TR('helm','goatee',{fierce:1}),lusu:TR('scholar','goatee',{robe:1}),
+ xurong:TR('helm','bushy',{fierce:1}),zhangren:TR('band','goatee',{}),mateng:TR('helm','long',{old:1})
 };
 function pxGrid(n,s){const c=document.createElement('canvas');c.width=c.height=n*s;const x=c.getContext('2d');return {c,p:(col,i,j,w=1,h=1)=>{if(!col||w<=0||h<=0)return;x.fillStyle=col;x.fillRect(i*s,j*s,w*s,h*s)}}}
 function portrait(b){
@@ -1901,10 +1927,21 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='3.6.3';
+const GAME_VERSION='3.7.0';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.7.0',date:'2026-10-15',title:'나라별 밸런스 · 새 장수 6명 · 새 인연 12개',reward:{ap:30,gtk:5},items:[
+  '나라별 밸런스를 맞췄어요. 줄어든 수치 없이 올리기와 추가만 했어요. 위 진영 보너스와 촉 인연은 그대로예요.',
+  '진영 보너스(3·4·5명 이상): 촉 체력 8/13/19% → 10/16/22%, 방어 3/5/8% 추가 · 오 공격 7/12/18% → 8/14/22%, 속도 6/10/15 → 6/10/18 · 군웅 방어 12/20/28% → 15/22/28%, 공격·체력 4/8/11% → 5/8/11%(★3 추가 효과는 그대로).',
+  '새 장수 6명이 등용에 추가됐어요: ★5 가후(위·책사), ★5 여몽(오·보병), ★4 노숙(오·책사), ★5 서영(군웅·기병), ★4 장임(군웅·궁병), ★4 마등(군웅·보병). 노숙·장임·마등은 원정군의 시작 장수와 모병 후보로도 나와요.',
+  '가후 \'완살\': 적 전체 0.5배 피해, 적 전체 공격·방어 2턴 -20%. 여몽 \'백의도강\': 맨 뒤 적 3.2배 피해, 50% 확률로 1턴 기절, 자신 방어 2턴 +20%. 노숙 \'노숙의 중재\': 아군 전체 체력 6% 회복, 아군 전체 공격 2턴 +12%.',
+  '서영 \'형양의 추격\': 맨 앞 적을 2번 베어 각 2.2배 피해, 맞은 적 공격 2턴 -15%. 장임 \'낙봉파의 매복\': 맨 뒤 적에게 3.4배 치명타 확정. 마등 \'서량의 맹주\': 맨 앞 적 2.4배 피해, 아군 전체 공격 2턴 +15%.',
+  '새 인연 12개: 사수관의 선봉(동탁·화웅), 동탁의 서량군(동탁·화웅·서영), 서량 연합(마등·한수), 낙성 수비(장임·유순), 형주 탈취(여몽·육손), 괄목상대(여몽·노숙), 오의 사대도독(주유·노숙·여몽·육손, 2명부터 발동), 난세의 독사(가후·조조), 마씨 부자(마등·마초), 낙봉파(장임·방통), 형주의 함락(여몽·관우), 형양의 패배(서영·조조).',
+  '군웅 인연 상향: 하비의 최후 공격 5→8%·방어 7→12%, 연환지계 공격 6→9%·방어 3→5%, 의부자 체력 7→10%, 원씨 형제 3→5%, 하북의 쌍벽 공격 6→8%, 원술의 대장 공격 4→6%·체력 3→4%, 계교의 숙적 공격 4→6%.',
+  '모의전 기준(보물 +50·야전) 한 나라로만 짠 진형의 승률 격차가 9%p → 3%p로 줄었어요. 나라 진형끼리 붙었을 때도 38~64% → 45~58%로 고르게 바뀌었어요.',
+  '★5 장수가 3명 늘어 등용에서 특정 ★5 장수가 나올 확률은 조금 낮아져요. ★5가 나올 확률 자체는 그대로예요.',
+  '업데이트 기념으로 나팔 30개와 장수 선택권 5장을 드려요. 공지를 확인하면 받아요. 선택권은 등용 탭 맨 위에서 써요.']},
  {v:'3.6.3',date:'2026-10-15',title:'스테이지 · 토벌전 금 보상 2배',reward:{ap:30},items:[
   'v3.5.0에서 방치 금화가 2배가 됐는데 스테이지와 토벌전 금 보상은 그대로여서 함께 올렸어요. 공성전·천명의 탑·원정군은 방치 금화에 맞춰 이미 2배가 되어 있어요.',
   '스테이지 첫 돌파와 소탕(다시 싸우기 포함)의 금 보상이 2배예요. 예: 마지막 스테이지 첫 돌파 금 2,500 → 5,000, 소탕 1회 367 → 734. 군량 보상은 그대로예요.',
