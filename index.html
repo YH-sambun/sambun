@@ -587,7 +587,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.6.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.6.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1899,10 +1899,14 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='3.6.0';
+const GAME_VERSION='3.6.1';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.6.1',date:'2026-10-15',title:'진형 편성 창에서 바로 보물 교체',reward:{ap:30},items:[
+  '둔영에서 진형 자리를 눌러 여는 편성 창에 그 장수의 보물 3칸이 바로 보여요. 칸을 누르면 보물 변경 창이 열리고, 고르거나 해제하면 다시 편성 창으로 돌아와요. 무장 탭에 가지 않아도 장수 교체와 무기 교체를 한 창에서 할 수 있어요.',
+  '보물 줄 제목에 지금 어느 진형 기준으로 저장되는지 함께 보여 줘요. 전투 규칙과 능력치는 바뀌지 않았어요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'3.6.0',date:'2026-10-15',title:'돌격창 · 낭아봉 · 등갑 개편',reward:{ap:30,itk:100},items:[
   '새 ★4 창 \'돌격창\'(공격 14 · 속도 3 · 기병 착용 시 공격 +10): 기병이 끼면 일반 공격이 적이 있는 줄(선봉·중견·후열)마다 무작위 1명에게 공격력의 50% 피해를 줘요. 빈 줄은 건너뛰고, 도발 중인 장수가 있는 줄은 그 장수를 때려요. 보병이 끼면 능력치만 적용돼요. 모의전에서 ★4 기병 무기 중 가장 세고 ★5 청룡언월도·방천화극보다는 아래예요.',
   '새 무기 종류 \'둔기\'와 보병 전용 ★4 \'낭아봉\'(공격 13 · 방어 3): 일반 공격이 맞으면 그 적의 방어가 2턴 동안 10% 내려가요(중첩 없음, 다시 맞으면 지속만 갱신). 아군 전체가 그 적을 때릴 때 이득을 봐요. 둔기는 보병만 장착할 수 있어요.',
@@ -2910,11 +2914,16 @@ document.addEventListener('input',e=>{const i=e.target.closest&&e.target.closest
   document.querySelectorAll(`[data-gfn="${k}"]`).forEach(el=>{const ok=!q||el.dataset.nm.includes(q);el.classList.toggle('gf-x',!ok);if(ok)n++});document.querySelectorAll(`[data-gfc="${k}"]`).forEach(x=>x.textContent=n)});
 document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.dataset&&d.dataset.gfd)GF[d.dataset.gfd].more=d.open},true);
 let pickSlot=0;
+// v3.6.1: 편성 창에서 바로 보물 교체 (고른 뒤 편성 창으로 돌아옴)
+let eqRet=null;
+function slotGearHtml(gid,i){const st=S.gens[gid];if(!st)return '';
+  return `<p class="sub" style="margin:0 0 4px"><b>보물</b> · ${st.its.length}/${ITEM_SLOTS}칸 · ${esc(deckName(S.dk))} 기준</p><div class="list" style="margin-bottom:12px">${Array.from({length:ITEM_SLOTS},(_,k)=>{const x=st.its[k]&&S.items.find(y=>y.u===st.its[k]),iv=x&&IMAP[x.k];
+    return `<button type="button" class="li" style="text-align:left" data-equip="${gid}:${iv?k:st.its.length}" data-eqfrom="${i}">${iv?`${itemTile(iv,x.d)}<div class="info"><b>${esc(iv.name)}${x.d?` <span class="pc">+${x.d}</span>`:''}</b><span>${fxText(iv,x.d,GMAP[gid])}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>빈 칸</b><span>눌러서 보물 장착</span></div>`}<span class="btn ghost sm">${iv?'변경':'장착'}</span></button>`}).join('')}</div>`}
 function openSlotPicker(i){pickSlot=i;
   const cur=S.deck[i], F=GF.pick, lv=slotLv(i), q=(F.q||'').trim();
   const list=Object.keys(S.gens).filter(g=>g!==cur&&gfMatch(F,GMAP[g])).map(g=>{const s=specOf(g,lv);return {g,b:GMAP[g],p:specPower(s),u:mkUnit(s,0,0)}}).sort(gfCmp(F.sort));
   openSheet(`<div class="sheet-h"><div><h2 style="margin:0">${i+1}번 ${posOf(i)} 편성</h2><div class="sub" style="margin:0">이 자리 Lv ${lv}로 싸워요</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-  ${cur?`<button type="button" class="btn ghost wide" data-setslot="${i}:" style="margin-bottom:10px">${esc(GMAP[cur].name)} 빼기</button>`:''}
+  ${cur?`<button type="button" class="btn ghost wide" data-setslot="${i}:" style="margin-bottom:10px">${esc(GMAP[cur].name)} 빼기</button>${slotGearHtml(cur,i)}`:''}
   ${gfHtml('pick',F,{sorts:GF_SORT})}
   <p class="sub" style="margin:0 0 8px">★5 장수는 진형에 ${MAX5}명까지 넣을 수 있어요 (지금 ${count5(S.deck)}명) · <span data-gfc="pick">${list.filter(x=>gfQ(q,x.b)).length}</span>명</p>
   <div class="list">${list.length?list.map(({g,b,p,u})=>{const at=S.deck.indexOf(g);return `<button type="button" class="li${gfQ(q,b)?'':' gf-x'}" data-gfn="pick" data-nm="${gfNm(b)}" data-setslot="${i}:${g}" ${b.rar===5&&at<0&&count5(S.deck,i)>=MAX5?'disabled':''} style="text-align:left">${seal(b,'sm')}<div class="info"><b>${esc(b.name)} <span class="stars r${b.rar}">${stars(b.rar)}</span></b><span>${CLS[b.cls].g} ${CLS[b.cls].n} · ${FAC[b.fac]} · 전투력 ${fmt(p)}${gfStat(F.sort,u)}${at>=0?` · 현재 ${at+1}번`:''}</span>${skLine(b)}</div></button>`}).join(''):'<div class="empty-state"><b>將</b>조건에 맞는 장수가 없어요.</div>'}</div>`);
@@ -3628,7 +3637,7 @@ document.addEventListener('click',e=>{
   if(s){const u=s.dataset.sell;
     if(sellArm!==u){sellArm=u;s.textContent='한 번 더 누르면 판매';s.classList.add('red');setTimeout(()=>{if(sellArm===u){sellArm=null;renderView()}},2500);return}
     const x=S.items.find(i=>i.u===u);if(!x)return;const g=sellPrice(x);S.items=S.items.filter(i=>i.u!==u);S.gold+=g;sellArm=null;save();renderTop();renderView();if(s.closest('#sheet'))closeSheet();toast(`${IMAP[x.k].name} 판매 · 金 +${g}`);return}
-  const g=e.target.closest('[data-gen]');if(g){openGen(g.dataset.gen);return}
+  const g=e.target.closest('[data-gen]');if(g){eqRet=null;openGen(g.dataset.gen);return}
 });
 function openGen(gid){
   const b=GMAP[gid], st=S.gens[gid], s=specOf(gid), u=mkUnit(s,0,0);
@@ -3683,12 +3692,12 @@ document.addEventListener('click',e=>{
   const l=e.target.closest('[data-lvup]');
   const d=e.target.closest('[data-deckt]');
   if(d){const g=d.dataset.deckt,at=S.deck.indexOf(g);if(at>=0)S.deck[at]=null;else{if(GMAP[g].rar===5&&count5(S.deck)>=MAX5){toast(`★5 장수는 진형에 ${MAX5}명까지 넣을 수 있어요`);return}const e2=S.deck.indexOf(null);if(e2<0){toast('진형이 가득 찼어요. 둔영 탭에서 자리를 비워 주세요.');return}S.deck[e2]=g}save();openGen(g);renderView();return}
-  const q=e.target.closest('[data-equip]');if(q){const[g,k]=q.dataset.equip.split(':');openEquip(g,+k||0);return}
+  const q=e.target.closest('[data-equip]');if(q){const[g,k]=q.dataset.equip.split(':');eqRet=q.dataset.eqfrom!=null?+q.dataset.eqfrom:null;openEquip(g,+k||0);return}
   const p=e.target.closest('[data-puton]');
   if(p&&!p.disabled){const[g,ks,u]=p.dataset.puton.split(':'),k=+ks,st=S.gens[g],cur=st.its[k];
     if(u){const kO=v=>{const x=S.items.find(y=>y.u===v);return x?IMAP[x.k]:null},why=itemWhy(GMAP[g].cls,kO(u),st.its.filter(v=>v!==cur).map(kO));if(why){toast(why);return}const h=itemHolder(u);if(h)S.gens[h].its=S.gens[h].its.filter(x=>x!==u)}
     const a=st.its.slice(),at=cur?a.indexOf(cur):-1;if(u){if(at>=0)a[at]=u;else a.push(u)}else if(at>=0)a.splice(at,1);
-    st.its=a.filter(Boolean).slice(0,ITEM_SLOTS);save();openGen(g);renderView();return}
+    st.its=a.filter(Boolean).slice(0,ITEM_SLOTS);save();if(eqRet!=null&&S.deck[eqRet]===g)openSlotPicker(eqRet);else openGen(g);renderView();return}
 });
 function openEquip(gid,k){
   const st=S.gens[gid],b=GMAP[gid],cur=st.its[k]||null,kOf=u=>{const x=S.items.find(y=>y.u===u);return x?IMAP[x.k]:null};
