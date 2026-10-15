@@ -276,6 +276,8 @@ html.work .rv.x5::before,html.work .rv.x5::after,html.work .rv.x5 .spk{display:n
 .bt-line .bu{flex:1 1 0;max-width:100px;padding:5px 3px 4px;gap:2px}
 .bt-rl{position:absolute;left:0;top:50%;transform:translateY(-50%);font-size:11px;color:var(--mute)}
 .bu .rk{position:absolute;left:5px;top:3px;font-style:normal;font-size:11px;color:var(--r5);line-height:1}
+.bu .rv{position:absolute;right:5px;top:3px;font-style:normal;font-size:11px;color:var(--cinnabar);line-height:1}
+.xphase.r b{color:#e0b24a;text-shadow:0 0 12px rgba(224,178,74,.55)}
 .bu .rk.up{color:var(--cinnabar)}.bu .rk.dn{color:var(--jade)}
 .bt-top .bu.act{transform:translateY(4px)}.bt-bot .bu.act{transform:translateY(-4px)}
 .bt-log{min-height:56px}
@@ -662,7 +664,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v4.1.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v4.2.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -969,6 +971,29 @@ function fxStr(v){const o=[];if(v.atk)o.push(`공격 +${Math.round(v.atk*100)}%`
 function facStr(v){return fxStr(v)+(v.r3?` · ★3 장수 추가 ${fxStr(v.r3)}`:'')}
 function bondActive(B,ids){const have=B.ids.filter(x=>ids.has(x)).length;return have>=(B.min||B.ids.length)}
 function bondFx(B,ids){return B.full&&B.ids.filter(x=>ids.has(x)).length>=(B.fullMin||B.ids.length)?B.full:B.fx}
+// 숙적(v4.2.0): 상대 진형에 숙적이 있으면 두 장수 모두 공격·방어·속도 +3%, 숙적 수만큼 겹쳐 최대 3명(+9%)
+const RIVALS=[
+ ['zhugeliang','simayi','오장원'],['zhugeliang','haozhao','진창'],['zhugeliang','xiahoudun','박망파'],['zhugeliang','zhurong','남만'],
+ ['guanyu','lvmeng','형주'],['guanyu','caoren','번성'],['guanyu','yujin','칠군 수몰'],['guanyu','yanliang','백마'],['guanyu','lubu','호뢰관'],
+ ['zhangfei','lubu','호뢰관'],['zhangfei','machao','가맹관'],['zhangfei','yanyan','파군'],['zhangfei','jiling','서주'],
+ ['liubei','luxun','이릉'],['liubei','zhangjiao','황건'],['huangzhong','xiahouyuan','정군산'],['fazheng','xiahouyuan','정군산'],
+ ['zhaoyun','wenchou','반하'],['pangtong','zhangren','낙봉파'],['madai','weiyan','남정'],
+ ['caocao','yuanshao','관도'],['caocao','lubu','하비'],['caocao','machao','동관'],['caocao','mateng','허도'],['caocao','dongzhuo','암살 시도'],
+ ['caocao','xurong','형양'],['caocao','chengong','결별'],['caocao','zhouyu','적벽'],['caocao','huanggai','고육계'],
+ ['zhangliao','sunquan','합비'],['zhangliao','taishici','합비'],['xuchu','machao','위수 일기토'],['dianwei','jiaxu','완성'],['xiahoudun','gaoshun','소패'],
+ ['caoren','zhouyu','강릉'],['sunjian','huaxiong','양인'],['sunjian','dongzhuo','반동탁'],['sunjian','xurong','양동'],
+ ['sunce','taishici','신정 일기토'],['ganning','lingtong','부친의 원수'],['gongsunzan','yuanshao','계교']
+];
+const RIVAL_P=.03, RIVAL_MAX=3, RIVAL_OF={};
+RIVALS.forEach(([a,b])=>{(RIVAL_OF[a]=RIVAL_OF[a]||new Set()).add(b);(RIVAL_OF[b]=RIVAL_OF[b]||new Set()).add(a)});
+function rivalsOf(id){return RIVALS.filter(R=>R[0]===id||R[1]===id).map(R=>({o:R[0]===id?R[1]:R[0],w:R[2]}))}
+// 양쪽 진형을 보고 숙적 대면 버프를 다시 맞춰요(파마다 다시 계산). 맞붙은 쌍 [아군 이름, 적 이름]을 돌려줘요
+function applyRivals(T){const pairs=[];
+  [0,1].forEach(k=>T[k].forEach(u=>{const R=u.id&&RIVAL_OF[u.id];const foes=R?T[1-k].filter(x=>x.id&&R.has(x.id)):[];const n=Math.min(RIVAL_MAX,foes.length);
+    if(k===0)foes.forEach(x=>pairs.push([u.name,x.name]));
+    if(n===(u.rvN||0))return;if(!u.rv0)u.rv0={atk:u.atk,def:u.def,spd:u.spd};const m=1+RIVAL_P*n;
+    u.atk=Math.round(u.rv0.atk*m);u.def=Math.round(u.rv0.def*m);u.spd=Math.round(u.rv0.spd*m*10)/10;u.rvN=n}));
+  return pairs}
 // 연합군: ★3 이상 장수의 나라가 3개국 이상이면 진형 전원(★3 이상)에게 적용
 const VOL_BONUS={1:{atk:.04,hp:.04},2:{atk:.07,hp:.07},3:{atk:.10,hp:.10}};
 const ALLY_BONUS={3:{atk:.05,hp:.05,def:.05},4:{atk:.08,hp:.08,def:.08}};
@@ -1545,9 +1570,10 @@ function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:op
   if(opt&&opt.tm)twApply(T[0],opt.tm);
   // 원정군: 자리별 시작 체력 비율(전투 사이 체력 이월)
   if(opt&&opt.hp0)T[0].forEach(u=>{const r=opt.hp0[u.slot];if(r!=null)u.hp=Math.max(1,Math.min(u.maxhp,Math.round(u.maxhp*r)))});
+  const RP=applyRivals(T);
   T.forEach(tm=>tm.forEach(u=>{if(u.ax&&u.ax.first)u.acts=1;const pg=u.sk&&u.sk.pguard;if(pg)u.pg=pg.n+(tm.some(x=>x.id===pg.pref)?1:0)}));
   const init=[T[0].map(u=>({...u})),T[1].map(u=>({...u}))];
-  const ev=[], alive=k=>k===0&&C?C.hp>0:T[k].some(x=>x.hp>0);
+  const ev=RP.length?[{phase:'숙적',r:0,pairs:RP,hits:[],heals:[],notes:[]}]:[], alive=k=>k===0&&C?C.hp>0:T[k].some(x=>x.hp>0);
   const dmgTo=(t,d,e,extra)=>{if(C&&t.side===0){C.hp=Math.max(0,C.hp-d);e.hits.push({s:0,i:t.slot,d,hp:t.hp,ch:C.hp,...extra});return}
     if(t.grd&&t.grdT>0&&t.grd!==t&&t.grd.hp>0&&t.hp-d<=0){const gd=t.grd;t.grd=null;t.grdT=0;e.notes.push(`${gd.name}이(가) ${t.name} 대신 맞음`);dmgTo(gd,d,e,extra);return}
     if(t.hp-d<=0&&!t.pgOn){const gd=T[t.side].find(x=>x!==t&&x.pg>0&&x.hp>0&&!x.pgOn);if(gd){gd.pg--;e.notes.push(`${gd.name}이(가) ${t.name} 대신 맞음`);gd.pgOn=1;dmgTo(gd,Math.max(1,Math.round(d*(1-gd.sk.pguard.red))),e,extra);gd.pgOn=0;return}}
@@ -1622,7 +1648,7 @@ function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:op
     });
     if(W&&!C&&r>=PLG_T0){const pr=Math.min(PLG_CAP,PLG_K*(r-PLG_T0+1));[...T[0],...T[1]].forEach(u=>{if(u.hp<=0)return;const d=Math.max(1,Math.round(u.maxhp*pr));u.hp=Math.max(0,u.hp-d);tick.hits.push({s:u.side,i:u.slot,d,hp:u.hp,burn:1,plg:1})});if(!tick.notes.includes('역병'))tick.notes.push('역병')}
     if(tick.hits.length)ev.push(tick);
-    if(C&&C.hp>0&&!T[1].some(x=>x.hp>0)){waves++;const nb=buildTeam(opt.siege.wave(waves),1,fA);T[1]=nb.us;ev.push({spawn:waves,units:nb.us.map(u=>({...u})),hits:[],heals:[],notes:[]})}
+    if(C&&C.hp>0&&!T[1].some(x=>x.hp>0)){waves++;const nb=buildTeam(opt.siege.wave(waves),1,fA);T[1]=nb.us;const rp=applyRivals(T);ev.push({spawn:waves,units:nb.us.map(u=>({...u})),hits:[],heals:[],notes:[]});if(rp.length)ev.push({phase:'숙적',r:RR,pairs:rp,rv0:Object.fromEntries(T[0].map(u=>[u.slot,u.rvN||0])),hits:[],heals:[],notes:[]})}
   }
   if(C)return {win:C.hp>0,siege:1,turns:RR,waves,castle:C.hp,castleMax:C.max,ev,init,bonus:[A.info,B.info]};
   let win;
@@ -2033,11 +2059,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='4.1.0';
+const GAME_VERSION='4.2.0';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'4.2.0',date:'2026-10-16',title:'숙적 시스템',reward:{ap:30},items:[
+  '역사 속 숙적 41쌍이 생겼어요. 제갈량 ⚔ 사마의, 관우 ⚔ 여몽, 황충 ⚔ 하후연, 조조 ⚔ 원소 등이에요.',
+  '상대 진형에 내 장수의 숙적이 있으면 \'숙적 대면\'이 발동해 두 장수 모두 공격·방어·속도 +3%를 받아요. 숙적이 여럿이면 그 수만큼 겹쳐 최대 3명(+9%)까지예요.',
+  '출정·결투·수성전·원정군 등 모든 전투에 적용되고, 상대 장수도 똑같이 받아요. 같은 편에 있으면 숙적 효과는 없고, 이릉·정군산처럼 인연이 있는 쌍은 인연이 발동해요.',
+  '전투가 시작될 때 숙적 대면 연출이 나오고, 버프를 받은 장수 카드 오른쪽 위에 ⚔ 표시가 붙어요(2명 이상이면 ⚔2·⚔3).',
+  '장수 상세에 숙적 목록이, 도감 › 인연 맨 아래에 숙적 전체 표가 생겼어요.',
+  '업데이트 기념으로 나팔 30개를 드려요.']},
  {v:'4.1.0',date:'2026-10-16',title:'장수 역할 태그 · 역할로 골라 편성',reward:{ap:30},items:[
   '모든 장수에 역할 태그가 생겼어요. 🛡수호(도발·호위·불굴 등 버티기) · 🩹회복(아군 회복) · ⚔맹장(강한 전법 피해) · 📜책략(아군 강화·적 약화·기절·해제) 4가지예요.',
   '역할은 각 장수의 전법으로 정해져요. 두 가지 역할을 함께 하는 장수(예: 제갈량 맹장+책략, 허저 수호+맹장, 순욱 회복+책략)는 태그가 2개 붙고, 두 번째 태그는 옅게 보여요.',
@@ -2674,6 +2707,7 @@ const HELP=[
   ['기병 사냥','궁병의 일반 공격은 기병을 먼저 노려요. 기병이 없으면 체력 비율이 가장 낮은 적을 노려요.'],
   ['기병 전법','기병은 전법을 자주 쓰는 대신 전법 위력이 75%로 적용돼요.'],
   ['치명타','공격마다 치명 확률(기본 10%, 최대 60%)로 치명타가 터지고, 그때 피해에 치명 피해 배율(기본 150%, 최대 300%)을 곱해요. 확정 치명 전법도 같은 배율을 써요. 피해는 매번 ±10% 범위에서 흔들려요.'],
+  ['숙적','상대 진형에 내 장수의 숙적이 있으면 두 장수 모두 공격·방어·속도 +3%를 받아요. 숙적 수만큼 겹쳐 최대 3명(+9%)까지예요. 숙적 41쌍은 도감 › 인연 아래와 장수 상세에서 볼 수 있어요.'],
   ['도발','도발 중인 장수가 있으면 상대의 단일 대상 공격이 그 장수에게 향해요.'],
   ['행동 순서','속도가 빠른 장수부터 행동해요. 속도가 같으면 매 턴 무작위로 순서를 정해요.'],
   ['판정','출정·원정군·탑은 25턴, 야전·연무장은 30턴 안에 결판이 나지 않으면 남은 체력 비율이 높은 쪽이 이겨요.'],
@@ -3999,6 +4033,8 @@ function teamBoxHtml(specs,all){
   if(info.nn===2)hints.unshift(`<li class="hint">연합군: 다른 나라 ★3 이상 장수 1명 추가 시 발동</li>`);
   return `<div class="tbox"><b class="tb-h">진영·인연 효과</b>${li.length?`<ul>${li.join('')}</ul>`:'<p class="sub" style="margin:4px 0 0">같은 진영 장수를 3명 이상 넣거나 인연이 있는 장수를 함께 넣으면 능력치가 올라요.</p>'}${hints.length?`<ul>${hints.join('')}</ul>`:''}</div>`;
 }
+function rivalsOfHtml(id){const rs=rivalsOf(id);if(!rs.length)return '';
+  return `<h3>숙적 <span style="font-weight:400">· 상대 진형에 있으면 두 장수 모두 공격·방어·속도 +${Math.round(RIVAL_P*100)}%</span></h3><div class="list">${rs.map(r=>`<div class="li" style="display:block"><b>${GMAP[r.o].name}</b> <span class="sub">· ${esc(r.w)}${BONDS.some(B=>B.ids.length===2&&B.ids.includes(id)&&B.ids.includes(r.o))?' · 같은 편이면 인연':''}</span></div>`).join('')}</div>`}
 function bondsOfHtml(id){
   const bs=BONDS.filter(B=>B.ids.includes(id));if(!bs.length)return '';
   return `<h3>인연</h3><div class="list">${bs.map(B=>`<div class="li" style="display:block"><b>${B.n}</b> <span class="sub">· ${fxStr(B.fx)}${B.full?` (${B.fullMin?B.fullMin+'명 이상':'전원'} ${fxStr(B.full)})`:''}</span><div class="sub" style="margin:2px 0 0">${B.ids.map(x=>GMAP[x].name).join(' · ')}${B.min?` 중 ${B.min}명 이상`:''}</div></div>`).join('')}</div>`;
@@ -4024,6 +4060,8 @@ function bondsDexHtml(){
   <div class="chips" role="group" aria-label="인연 효과 필터" style="margin-top:8px"><span class="flab">효과</span>${Object.entries(BFX_K).map(([k,l])=>`<button type="button" data-bfk="${k}" aria-pressed="${bondFk.includes(k)}">${l} <span class="num">${BONDS.filter(B=>B.fk.has(k)&&(!bondX||B.cross)).length}</span></button>`).join('')}<button type="button" data-bfk="x" aria-pressed="${bondX}">타국 ×${CROSS_MUL} <span class="num">${BONDS.filter(B=>B.cross).length}</span></button>${bondFk.length||bondX?'<button type="button" data-bfk="">초기화</button>':''}</div>
   ${bondFk.length||bondX?`<p class="sub" style="margin:0 0 6px">${[bondFk.length?`${bondFk.map(k=>BFX_K[k]).join(' · ')} 중 하나라도 주는`:'',bondX?'타국':''].filter(Boolean).join(' ')} 인연 <b>${BONDS.filter(B=>bfxOk(B,bondFk,bondX)).length}</b>종</p>`:''}
   ${grp.map(([t,f])=>{const L=BONDS.filter(B=>f(B)&&bfxOk(B,bondFk,bondX)),c=L.filter(B=>!q||nm(B).includes(q)).length;return L.length?`<div class="bgrp" data-bg ${c?'':'hidden'}><h3>${t} <span style="font-weight:400">· <span data-bgc>${L.filter(B=>!q||nm(B).includes(q)).length}</span>개</span></h3><div class="list">${L.map(card).join('')}</div></div>`:''}).join('')}
+  <details class="p3" style="margin-top:12px"><summary>숙적 ${RIVALS.length}쌍 · 상대 진형에 있으면 두 장수 모두 공격·방어·속도 +${Math.round(RIVAL_P*100)}%</summary><p class="sub" style="margin:6px 0">숙적 수만큼 겹쳐 최대 ${RIVAL_MAX}명(+${Math.round(RIVAL_P*RIVAL_MAX*100)}%)까지 받아요. 같은 편에 있으면 숙적 효과는 없어요.</p>
+  <div style="overflow-x:auto"><table class="dtab"><tbody>${RIVALS.map(([a,b,w])=>`<tr><td>${GMAP[a].name} ⚔ ${GMAP[b].name}</td><td>${esc(w)}</td></tr>`).join('')}</tbody></table></div></details>
   <p class="sub" id="bond-none" ${BONDS.some(B=>bfxOk(B,bondFk,bondX)&&(!q||nm(B).includes(q)))?'hidden':''}>조건에 맞는 인연이 없어요.</p>`;
 }
 document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-bfk]');if(!b)return;const k=b.dataset.bfk;
@@ -4160,7 +4198,7 @@ function openGen(gid){
    <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · ${inDeck?`${at+1}번 자리 Lv ${slotLv(at)}`:`진형 밖 · Lv ${s.lv} 기준`}</div>${dupHtml(st.d,1,maxD(b.rar))}</div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <div class="row" style="margin-top:8px"><span class="sub" style="margin:0">능력치</span><button type="button" class="qh" data-help="1" aria-label="능력치 도움말">?</button></div><div class="stats" style="margin-top:4px"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
   <div class="sub" style="margin:2px 0 6px">치명 ${Math.round(u.cr*100)}% · 치명 피해 ${Math.round(u.cd*100)}%${u.ls?` · 흡혈 ${Math.round(u.ls*1000)/10}%`:''}${u.dr?` · 피해 감소 ${Math.round(u.dr*1000)/10}%`:''}${u.skp?` · 전법 피해 +${Math.round(u.skp*1000)/10}%`:''}</div>${usageHtml(gid)}<div class="row sub" style="margin:0 0 4px">무력 ${b.str} · 지력 ${b.int} · 통솔 ${b.lead}<span class="sp"></span>전투력 <b style="color:var(--bronze)">${fmt(unitPower(u))}</b></div>
-  <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. ${cdText(b.cls)} 발동.</p>${bondsOfHtml(b.id)}
+  <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. ${cdText(b.cls)} 발동.</p>${bondsOfHtml(b.id)}${rivalsOfHtml(b.id)}
   <h3>보물 <span style="font-weight:400">· ${st.its.length}/${ITEM_SLOTS}칸 · 명마는 1개까지 · ${inDeck?esc(deckName(S.dk))+' 기준':'진형 밖'}</span></h3>
   <div class="list" style="margin-bottom:12px">${Array.from({length:ITEM_SLOTS},(_,k)=>{const x=st.its[k]&&S.items.find(i=>i.u===st.its[k]),iv=x&&IMAP[x.k];return `<div class="li">${iv?`${itemTile(iv,x.d)}<div class="info"><b>${esc(iv.name)}${x.d?` <span class="pc">+${x.d}</span>`:''}</b><span>${fxText(iv,x.d,b)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>빈 칸</b><span>보물을 장착할 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-equip="${gid}:${iv?k:st.its.length}">${iv?'변경':'장착'}</button></div>`}).join('')}</div>
   <h3>레벨</h3><div class="lvbox"><p class="sub" style="margin:0">레벨은 장수가 아니라 진형의 자리마다 정해져요. ${inDeck?`지금 ${at+1}번 자리(Lv ${slotLv(at)})에 있어요.`:`진형 밖이라 가장 높은 자리 레벨(Lv ${s.lv}) 기준으로 능력치를 보여 줘요.`}</p>${inDeck?`<button type="button" class="btn ghost wide" data-slv="${at}" style="margin-top:8px">${at+1}번 자리 레벨 조정</button>`:''}</div>
@@ -4256,7 +4294,7 @@ function openDex(id){
   ${usageHtml(id)}<h3>전투 능력치 (보물 미장착 기준)</h3>
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>Lv 1</th><th>Lv ${MAXLV} · 돌파 5</th></tr></thead><tbody>
   ${row('체력',fmt(a.maxhp),fmt(z.maxhp))}${row('공격',fmt(a.atk),fmt(z.atk))}${row('방어',fmt(a.def),fmt(z.def))}${row('속도',a.spd,z.spd)}${row('전투력',fmt(unitPower(a)),fmt(unitPower(z)))}</tbody></table></div>
-  <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. ${cdText(b.cls)} 발동.</p>${bondsOfHtml(b.id)}
+  <h3>전법 · ${esc(b.skill)}</h3><p class="sub">${esc(skillOf(b).d)}. ${cdText(b.cls)} 발동.</p>${bondsOfHtml(b.id)}${rivalsOfHtml(b.id)}
   ${own?`<button type="button" class="btn ghost wide" data-gen="${id}">내 장수 화면으로</button>`:`<p class="sub">등용 탭의 장수 등용에서 얻을 수 있어요.</p>`}`);
 }
 document.addEventListener('click',e=>{
@@ -5209,8 +5247,8 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
   const tok=++btToken;BT_HIDE_SIDE=opts&&opts.hideFoe?(opts.hideFoe===2?2:1):-1;
   const units=[res.init[0].map(u=>({...u})),res.init[1].map(u=>({...u}))];
   const SG=opts&&opts.siege, topK=SG?0:1, botK=1-topK;let waveNo=1;
-  const buHtml=(k,u)=>{const fx=(FORM[u.form]&&FORM[u.form].fx[u.row])||{};const mk=fx.spd?`<i class="rk" title="속도 +${fx.spd}">⚡</i>`:u.rd>1?'<i class="rk up" title="받는 피해 증가">▲</i>':u.rd<1?'<i class="rk dn" title="받는 피해 감소">▼</i>':'';
-    return `<div class="bu${u.hp<=0?' dead':''}" id="bu-${k}-${u.slot}">${mk}${seal(u,'sm')}<div class="bn">${esc(u.name)}</div><div class="hp"><i class="lag" style="width:${Math.max(0,u.hp/u.maxhp*100)}%"></i><i class="cur" style="width:${Math.max(0,u.hp/u.maxhp*100)}%"></i></div></div>`};
+  const buHtml=(k,u)=>{const fx=(FORM[u.form]&&FORM[u.form].fx[u.row])||{};const mk=fx.spd?`<i class="rk" title="속도 +${fx.spd}">⚡</i>`:u.rd>1?'<i class="rk up" title="받는 피해 증가">▲</i>':u.rd<1?'<i class="rk dn" title="받는 피해 감소">▼</i>':'';const rv=u.rvN?`<i class="rv" title="숙적 대면 · 공격·방어·속도 +${Math.round(RIVAL_P*u.rvN*100)}%">⚔${u.rvN>1?u.rvN:''}</i>`:'';
+    return `<div class="bu${u.hp<=0?' dead':''}" id="bu-${k}-${u.slot}">${mk}${rv}${seal(u,'sm')}<div class="bn">${esc(u.name)}</div><div class="hp"><i class="lag" style="width:${Math.max(0,u.hp/u.maxhp*100)}%"></i><i class="cur" style="width:${Math.max(0,u.hp/u.maxhp*100)}%"></i></div></div>`};
   const sideHtml=k=>{const top=k===topK;return (top?[2,1,0]:[0,1,2]).map(r=>{const rs=units[k].filter(u=>(u.row!=null?u.row:Math.min(2,Math.floor(u.slot/2)))===r).sort((a,b)=>a.slot-b.slot);
     return rs.length?`<div class="bt-line"><span class="bt-rl">${ROWN[r]}</span>${rs.map(u=>buHtml(k,u)).join('')}</div>`:''}).join('')};
   const sideForm=k=>{const u=units[k][0];if(!u||u.nof||!FORM[u.form])return '';return ` · ${FORM[u.form].n}${units[k].some(x=>x.adv)?' · <b style="color:var(--jade)">상성 우위</b>':''}`};
@@ -5248,6 +5286,9 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     for(let k=0;k<5;k++){const a=Math.random()*6.28;fxEl(n,'kink',D,'',{left:x+sl.offsetWidth/2-5+'px',top:y+sl.offsetHeight/2-5+'px','--x':Math.cos(a)*26+'px','--y':Math.sin(a)*20+'px','--z':1+Math.random()*1.6})}};
   const float=(s,i,txt,cls)=>{const n=$(`#bu-${s}-${i}`);if(!n)return;const f=document.createElement('span');f.className='dmg '+cls;f.textContent=txt;n.appendChild(f);setTimeout(()=>f.remove(),800)};
   const apply=(e,anim)=>{
+    if(e.phase==='숙적'){if(e.rv0){units[0].forEach(u=>{if(e.rv0[u.slot]!=null)u.rvN=e.rv0[u.slot]});renderSide(0)}
+      if(anim){const pr=e.pairs.slice(0,3).map(([a,b])=>`${a} ⚔ ${b}`).join(' · ')+(e.pairs.length>3?` 외 ${e.pairs.length-3}쌍`:'');$('#bt-sk').textContent='숙적 대면';fxc($('#bt-sk'),'slam',fast()?220:420);$('#bt-ln').textContent=`${pr} · 두 장수 모두 공격·방어·속도 +${Math.round(RIVAL_P*100)}% (숙적 수만큼, 최대 +${Math.round(RIVAL_P*RIVAL_MAX*100)}%)`;
+        const bt=$('.bt');if(bt&&!btStill()){const o=document.createElement('div');o.className='xphase r';o.setAttribute('aria-hidden','true');o.innerHTML=`<b>숙적</b><small>${esc(e.pairs[0][0])} ⚔ ${esc(e.pairs[0][1])}</small>`;bt.appendChild(o);setTimeout(()=>o.remove(),fast()?700:1100)}}return}
     if(e.phase){if(anim){$('#bt-sk').textContent=e.phase;fxc($('#bt-sk'),'slam',fast()?220:420);$('#bt-ln').textContent=e.phase==='격전'?`${e.r}턴 · 양쪽 주는 피해가 매 턴 늘고 회복은 줄어요`:`${e.r}턴 · 양쪽 매 턴 끝에 최대 체력의 일부가 깎여요`;const bt=$('.bt');if(bt&&!btStill()){const o=document.createElement('div');o.className='xphase '+(e.phase==='격전'?'w':'p');o.setAttribute('aria-hidden','true');o.innerHTML=`<b>${e.phase}</b><small>${e.r}턴</small>`;bt.appendChild(o);setTimeout(()=>o.remove(),fast()?700:1100)}}return}
     if(e.spawn){units[1]=e.units.map(u=>({...u}));renderSide(1);waveNo=e.spawn;const w=$('#wave-t');if(w)w.textContent=`제${waveNo}파`;if(anim){$('#bt-sk').textContent=`제${waveNo}파`;$('#bt-ln').textContent='적의 새 무리가 몰려와요 (더 강해졌어요)'}return}
     {const lc=[...(e.hits||[]),...(e.heals||[])].filter(h=>h.ch!=null).pop();if(lc)setCastle(lc.ch)}
