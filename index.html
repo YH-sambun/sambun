@@ -94,6 +94,7 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:10px}
 .gc{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;min-width:0}
+.gc>.dup{margin-top:auto}
 .gc .nm{font-weight:700;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .gc .meta{font-size:12px;color:var(--mute);display:flex;gap:6px;align-items:center}
 .gc.in-deck{border-color:var(--bronze-d)}
@@ -664,7 +665,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v4.2.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v4.2.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -2059,11 +2060,13 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='4.2.0';
+const GAME_VERSION='4.2.1';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'4.2.1',date:'2026-10-16',title:'무장 카드 돌파 줄 맞춤',reward:{ap:30},items:[
+  '무장 탭 카드의 돌파 ◆ 줄과 아래 줄(레벨 · 출전 · 병종)을 카드 아래쪽에 맞췄어요. 역할 태그가 2개인 장수가 섞여 있어도 같은 줄 카드끼리 높이가 맞아요.']},
  {v:'4.2.0',date:'2026-10-16',title:'숙적 시스템',reward:{ap:30},items:[
   '역사 속 숙적 41쌍이 생겼어요. 제갈량 ⚔ 사마의, 관우 ⚔ 여몽, 황충 ⚔ 하후연, 조조 ⚔ 원소 등이에요.',
   '상대 진형에 내 장수의 숙적이 있으면 \'숙적 대면\'이 발동해 두 장수 모두 공격·방어·속도 +3%를 받아요. 숙적이 여럿이면 그 수만큼 겹쳐 최대 3명(+9%)까지예요.',
