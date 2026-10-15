@@ -184,6 +184,22 @@ details.p3{margin-top:12px}details.p3 summary{cursor:pointer;font-size:14px;font
 @keyframes r5ray{from{opacity:0;transform:scale(.3)}to{opacity:1;transform:none}}
 @keyframes r5flash{0%{opacity:0}12%{opacity:1}100%{opacity:.25}}
 @keyframes r5stamp{from{opacity:0;transform:scale(3) rotate(-14deg)}to{opacity:1;transform:rotate(-6deg)}}
+.r5fx.jp-x{animation:r5in .2s ease-out,quake .5s .2s 3}
+.r5fx.jp-x .r5-rays{background:repeating-conic-gradient(rgba(214,72,48,.34) 0 6deg,transparent 6deg 12deg,rgba(233,198,108,.3) 12deg 18deg,transparent 18deg 24deg)}
+.r5fx.jp-x .r5-stamp{color:#ff5a3c;font-size:140px;text-shadow:0 0 24px rgba(255,90,60,.9),0 0 70px rgba(233,198,108,.7)}
+.jpc{position:relative;padding:18px 16px 14px;border-radius:14px;background:radial-gradient(circle at 50% 0,#4a2a16 0,#1b1410 70%);border:2px solid #e9c66c;color:#fff6d0;text-align:center;overflow:hidden}
+.jpc.x{border-color:#ff5a3c;background:radial-gradient(circle at 50% 0,#5a1a12 0,#1b1010 70%)}
+.jpc .jp-st{font:900 64px/1 var(--display);color:#e9c66c;text-shadow:0 0 16px rgba(233,198,108,.7);transform:rotate(-6deg);margin:4px 0 8px}
+.jpc.x .jp-st{color:#ff5a3c;text-shadow:0 0 16px rgba(255,90,60,.8)}
+.jpc .jp-h{font-size:12px;letter-spacing:.2em;opacity:.7}
+.jpc .jp-w{font-size:19px;font-weight:800;margin:2px 0}
+.jpc .jp-p{font-size:13px;color:#e9c66c}.jpc.x .jp-p{color:#ff8a6c}
+.jpc .jp-m{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;margin:12px auto 0;max-width:260px;text-align:left;font-size:12px}
+.jpc .jp-m dt{opacity:.6}.jpc .jp-m dd{margin:0;font-weight:700;word-break:break-all}
+.jpc .jp-f{margin-top:10px;font-size:10px;opacity:.45;letter-spacing:.1em}
+.jpo{position:fixed;inset:0;z-index:61;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(4,6,6,.95);animation:r5in .25s ease-out}
+.jpo-in{width:100%;max-width:360px}
+html.work .jpc{background:var(--panel);color:var(--fg);border-color:var(--line)}html.work .jpc .jp-st,html.work .jpc .jp-p{color:var(--fg);text-shadow:none}
 html.work .rv.x5::before,html.work .rv.x5::after,html.work .rv.x5 .spk{display:none}html.work .rv.x5{border:1px solid var(--r5);overflow:visible}html.work .rv.x5 .seal,html.work .rv.x5 .itm{animation:none}
 
 /* lists */
@@ -591,7 +607,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.7.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.7.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1812,7 +1828,7 @@ function authMsg(e){
 }
 
 async function boot(){
-  const replay=openReplayFromHash();
+  const replay=openReplayFromHash()||openBragFromHash();
   if(!configured()||!window.firebase){
     MODE='local';S=sanitize(lsLoad());
     setBanner(configured()?'서버에 연결하지 못해 이 기기에만 저장 중이에요.':'서버 설정 전이라 이 기기에만 저장돼요. (관리자: index.html의 FIREBASE_CONFIG를 채워 주세요)');
@@ -1938,11 +1954,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='3.7.2';
+const GAME_VERSION='3.7.3';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.7.3',date:'2026-10-16',title:'룰렛 대박 연출 · 자랑하기',reward:{ap:30,rtk:100},items:[
+  '금화 룰렛에서 장수 선택권 · 보물 선택권 · 보물 강화도 교환권이 나오면 전용 연출이 나와요. 장수 선택권은 將, 보물 선택권은 寶 도장이 찍히고, 0.01% 보물 강화도 교환권은 붉은 빛줄기와 함께 萬 도장이 찍혀요.',
+  '10회로 돌려 여러 장이 나오면 가장 귀한 것으로 연출이 한 번 나오고 ×2처럼 장수를 보여 줘요. 연출은 화면을 누르면 건너뛸 수 있어요.',
+  '연출이 끝나면 당첨 카드가 나와요. [자랑 링크]로 친구에게 링크를 보내면, 받은 사람도 같은 연출과 당첨 카드를 볼 수 있어요. [나도 돌리러 가기]를 누르면 바로 룰렛으로 가요.',
+  '[사진 저장]을 누르면 이름 · 아이디 · 당첨 날짜와 시각이 들어간 당첨 카드를 사진으로 저장해요. 카카오톡에 사진으로 보내 자랑하세요.',
+  '업무 모드와 기기 동작 줄이기에서는 연출 없이 당첨 카드만 보여 줘요.',
+  '업데이트 기념으로 나팔 30개와 룰렛 소환권 100장(룰렛 100회)을 드려요. 공지를 확인하면 받아요.']},
  {v:'3.7.2',date:'2026-10-16',title:'일일 리셋 밤 10시 · 룰렛 소환권 · 출석 보상 개편',reward:{ap:30,rtk:100},items:[
   '자정까지 리셋 기다려서 도파민 폭발하고 싶은 직장인을 위해 일일 리셋 시간을 밤 10시로 변경했습니다. 룰렛 돌리려고 졸린데 버티지 마세요.',
   '10월 16일(금) 밤 10시부터 매일 밤 10시(한국 시간)에 하루가 바뀌어요. 금화 룰렛 100회, 결투 도전 횟수, 출석, 토벌전·공성전·천명탑·원정군 하루 횟수, 쿠폰 기한이 모두 밤 10시 기준이에요. 16일은 0시~밤 10시로 짧게 끝나요.',
@@ -2525,7 +2548,7 @@ const HELP=[
   ['장수 등용권','장수 등용에 군량 대신 먼저 쓰여요. 1장이 1회예요. 금화 룰렛과 출석 2일차에서 얻어요.'],
   ['원정군','전장 탭의 원정군. 무작위 ★3 장수 3명(레벨 고정 · 돌파·보물 없음)으로 3막을 돌파해요. 갈래길에서 전투·정예·주막·모병을 골라 가고 체력은 전투 사이에 이어져요. 하루 2회. 진행한 칸에 비례해 금, 정복 시 보물 선택권 1장.'],
   ['천명의 탑','전장 탭의 천명탑. 내 진형으로 30층까지 올라가요. 층을 깨면 천명 3개 중 하나를 골라 쌓고, 지면 끝나요. 하루 3회. 깬 층에 비례해 금, 30층 돌파 시 장수 등용권 10장.'],
-  ['금화 룰렛','등용 탭 아래. 금 1,000으로 돌려 금·군량·나팔·보물 획득권·장수 등용권·장수 선택권·보물 선택권 중 하나를 받아요. 하루 100회, 매일 밤 10시(한국 시간)에 다시 채워져요. 보물 선택권 0.5%, 보물 강화도 교환권 0.01%.'],
+  ['금화 룰렛','등용 탭 아래. 금 1,000으로 돌려 금·군량·나팔·보물 획득권·장수 등용권·장수 선택권·보물 선택권 중 하나를 받아요. 하루 100회, 매일 밤 10시(한국 시간)에 다시 채워져요. 보물 선택권 0.5%, 보물 강화도 교환권 0.01%. 선택권 3종이 나오면 당첨 연출과 함께 자랑 링크·사진 저장 버튼이 나와요.'],
   ['룰렛 소환권','금 없이 금화 룰렛을 1장에 1회 돌려요. 1회·10회로 쓰고, 하루 100회 제한과 별개예요. 출석 4·5일차, 공지 보상, 쿠폰에서 얻어요.'],
   ['출석 보상','매일 밤 10시에 새로 받을 수 있어요. 7일 주기: 1일 나팔 50 · 2일 장수 등용권 20장 · 3일 보물 획득권 30장 · 4일 룰렛 소환권 30장 · 5일 룰렛 소환권 100장 · 6일 보물 선택권 1장 · 7일 보물 강화도 교환권 1장. 하루라도 빠지면 1일차부터 다시 시작해요.'],
   ['쿠폰','화면 위 券 버튼에서 쿠폰 목록(이름·보상·기한)을 보고 바로 받거나, 쿠폰 번호를 직접 입력할 수 있어요. 계정마다 한 번씩 받을 수 있어요.'],
@@ -2873,14 +2896,88 @@ document.addEventListener('click',e=>{
   rlBusy=true;document.querySelectorAll('[data-rl]').forEach(x=>x.disabled=true);
   const w=$('#wheel'), still=matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(w){w.classList.add('spin');w.style.transform=`rotate(${rlRot}deg)`}
+  const jp=jpPick(sum,n,tk);
   setTimeout(()=>{rlBusy=false;if(view==='gacha')renderView();
-    if(n===1)toast(`룰렛 · ${rlTxt(best)}${big?' · 대박!':''}`);
+    const fin=()=>{
+    if(n===1&&!jp)toast(`룰렛 · ${rlTxt(best)}${big?' · 대박!':''}`);
+    else if(n===1)openSheet(`<div class="sheet-h"><h2 style="margin:0">룰렛 대박!</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${jpBlock(jp)}
+      <div class="row" style="margin-top:12px"><button type="button" class="btn ghost wide" data-close>확인</button></div>`);
     else openSheet(`<div class="sheet-h"><h2 style="margin:0">룰렛 ${n}회 결과</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-      <div class="chips">${res.map(i=>`<span class="chip"${RL[i][2]<=300?' style="border-color:var(--bronze);color:var(--bronze)"':''}>${rlTxt(i)}</span>`).join('')}</div>
+      ${jp?jpBlock(jp)+'<h3>나온 칸</h3>':''}<div class="chips">${res.map(i=>`<span class="chip"${RL[i][2]<=300?' style="border-color:var(--bronze);color:var(--bronze)"':''}>${rlTxt(i)}</span>`).join('')}</div>
       <h3>받은 보상</h3><div class="stats" style="grid-template-columns:1fr 1fr;margin-top:6px">${RL_SEG.filter(k=>sum[k]).map(k=>`<div class="stat"><small>${RL_K[k].n}</small><b>+${fmt(sum[k])}${RL_K[k].u}</b></div>`).join('')}<div class="stat"><small>${tk?'쓴 소환권':'쓴 금'}</small><b>-${tk?n+'장':fmt(RL_COST*n)}</b></div></div>
       <div class="row" style="margin-top:16px"><button type="button" class="btn ghost wide" data-close>확인</button></div>`);
+    };
+    if(jp&&!btStill())jpFx(jp,fin);else fin();
   },w&&!still?2300:50);
 });
+/* ---------------- 룰렛 대박 연출 · 자랑하기 (v3.7.3) ----------------
+   장수 선택권 將 · 보물 선택권 寶 · 보물 강화도 교환권 萬(붉은 연출). 10회에서 여러 장이면 가장 귀한 것 기준.
+   자랑 링크는 주소 #j= 에 당첨 정보를 담아요(서버 기록 대조 없음). */
+const JP_K={xtk:['萬','보물 강화도 교환권'],gtk:['將','장수 선택권'],isk:['寶','보물 선택권']};
+let JP_LAST=null;
+const jpRate=k=>{const r=RL.find(x=>x[0]===k);return r?rlPct(r[2]):''};
+function jpPick(sum,n,tk){
+  const ks=Object.keys(JP_K).filter(k=>sum[k]);if(!ks.length)return null;
+  const k=ks.sort((a,b)=>RL.find(x=>x[0]===a)[2]-RL.find(x=>x[0]===b)[2])[0];
+  const o={v:GAME_VERSION,k,c:sum[k],n,t:tk?1:0,nm:MYNAME||'',id:UID||'',ts:Date.now()};
+  const ex=ks.filter(x=>x!==k).map(x=>[x,sum[x]]);if(ex.length)o.e=ex;
+  return o;
+}
+const jpWhen=ts=>{try{return new Date(ts).toLocaleString('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false})}catch(e){return new Date(ts).toLocaleString()}};
+const jpId=id=>id?'#'+String(id).slice(0,8):'이 기기 플레이';
+function jpCardHtml(o){
+  const K=JP_K[o.k], nm=esc(cleanName(o.nm)||'이름 모를 군주');
+  const how=`금화 룰렛 ${o.n===10?'10회':'1회'}${o.t?' · 소환권':''}`;
+  const ex=(o.e||[]).filter(x=>JP_K[x[0]]).map(x=>`${JP_K[x[0]][1]} ${x[1]|0}장`).join(' · ');
+  return `<div class="jpc${o.k==='xtk'?' x':''}"><div class="jp-h">金 貨 輪 盤</div><div class="jp-st">${K[0]}</div>
+   <div class="jp-w">${K[1]}${o.c>1?' ×'+(o.c|0):''}</div><div class="jp-p">확률 ${jpRate(o.k)}${o.k==='xtk'?' · 만분의 일':''}</div>
+   ${ex?`<div class="jp-p" style="margin-top:4px;opacity:.85">함께 나옴 · ${esc(ex)}</div>`:''}
+   <dl class="jp-m"><dt>이름</dt><dd>${nm}</dd><dt>아이디</dt><dd>${esc(jpId(o.id))}</dd><dt>날짜</dt><dd>${esc(jpWhen(o.ts))}</dd><dt>방법</dt><dd>${how}</dd></dl>
+   <div class="jp-f">연합 삼국지 · v${esc(String(o.v||''))}</div></div>`;
+}
+function jpBlock(o){JP_LAST=o;
+  return `<div id="jp-card" style="margin:6px 0 10px">${jpCardHtml(o)}</div>
+   <div class="share-row"><button type="button" class="btn" data-jpl>자랑 링크</button><button type="button" class="btn ghost" data-jpi>사진 저장</button></div>
+   <div id="share-fallback" hidden style="width:100%;margin-top:8px"><p class="sub" style="margin:0 0 4px">아래 내용을 길게 눌러 복사한 뒤 카카오톡에 붙여넣으세요.</p><textarea readonly></textarea></div>`;
+}
+function jpFx(o,done){
+  const K=JP_K[o.k], el=document.createElement('div');el.className='r5fx'+(o.k==='xtk'?' jp-x':'');el.setAttribute('role','status');
+  el.innerHTML=`<div class="r5-rays"></div><div class="r5-flash"></div><div class="r5-stamp">${K[0]}</div><div class="r5-txt">${K[1]} 당첨${o.c>1?' ×'+(o.c|0):''}<small>확률 ${jpRate(o.k)}${o.k==='xtk'?' · 만분의 일':''} · 눌러서 건너뛰기</small></div>`;
+  let fin=false;const end=()=>{if(fin)return;fin=true;clearTimeout(t);el.remove();done()};
+  el.addEventListener('click',end);document.body.appendChild(el);const t=setTimeout(end,o.k==='xtk'?2600:2000);
+}
+function jpUrl(o){
+  const p={v:o.v,k:o.k,c:o.c,n:o.n,t:o.t,nm:o.nm,id:o.id,ts:o.ts};if(o.e)p.e=o.e;
+  return location.origin+location.pathname+'#j='+b64e(JSON.stringify(p));
+}
+async function jpShareLink(o){
+  const url=jpUrl(o), nm=cleanName(o.nm)||'이름 모를 군주', text=`[연합 삼국지] ${nm}님이 금화 룰렛에서 ${JP_K[o.k][1]}${o.c>1?' ×'+o.c:''}을(를) 뽑았어요! (확률 ${jpRate(o.k)})`;
+  if(navigator.share){try{await navigator.share({title:'연합 삼국지 룰렛 대박',text,url});return}catch(e){if(e&&e.name==='AbortError')return}}
+  try{await navigator.clipboard.writeText(text+'\n'+url);toast('자랑 링크를 복사했어요. 카카오톡 대화창에 붙여넣어 보내세요.')}
+  catch(e){const box=$('#share-fallback');if(box){box.hidden=false;const t=box.querySelector('textarea');t.value=text+'\n'+url;t.select()}}
+}
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-jpl]')){if(JP_LAST)jpShareLink(JP_LAST);return}
+  if(e.target.closest('[data-jpi]')){const c=$('#jp-card .jpc');if(c&&JP_LAST)shareImage(c,null,{t:'연합 삼국지 룰렛 대박',f:'yeonhap-samguk-roulette.png',w:'당첨 사진'});return}
+  if(e.target.closest('[data-jpgo]')){const ov=e.target.closest('.jpo');ov&&ov.remove();try{history.replaceState(null,'',location.pathname+location.search)}catch(x){}
+    view='gacha';if(S&&typeof render==='function'){render();setTimeout(()=>{const r=$('#wheel');r&&r.scrollIntoView({block:'center'})},60)}return}
+  if(e.target.closest('[data-jpx]')){const ov=e.target.closest('.jpo');ov&&ov.remove();try{history.replaceState(null,'',location.pathname+location.search)}catch(x){}return}
+});
+// 받은 자랑 링크 열기: 같은 연출 → 당첨 카드
+function openBragFromHash(){
+  const m=location.hash.match(/^#j=([A-Za-z0-9_-]+)$/);if(!m)return false;
+  let o;try{o=JSON.parse(b64d(m[1]))}catch(e){return false}
+  if(!o||!JP_K[o.k])return false;
+  o={v:String(o.v||'').slice(0,12),k:o.k,c:Math.min(10,Math.max(1,o.c|0)),n:o.n===10?10:1,t:o.t?1:0,nm:cleanName(o.nm),id:typeof o.id==='string'?o.id.slice(0,40):'',ts:Number(o.ts)||Date.now(),
+     e:Array.isArray(o.e)?o.e.filter(x=>Array.isArray(x)&&JP_K[x[0]]&&x[0]!==o.k).slice(0,2).map(x=>[x[0],Math.min(10,Math.max(1,x[1]|0))]):undefined};
+  JP_LAST=o;
+  const show=()=>{const ov=document.createElement('div');ov.className='jpo';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');
+    ov.innerHTML=`<div class="jpo-in"><p class="sub" style="text-align:center;color:#fff6d0;margin:0 0 10px">${esc(cleanName(o.nm)||'이름 모를 군주')}님이 금화 룰렛에서 뽑았어요!</p><div id="jp-card">${jpCardHtml(o)}</div>
+     <div class="share-row" style="margin-top:12px"><button type="button" class="btn" data-jpgo>나도 돌리러 가기</button><button type="button" class="btn ghost" data-jpi>사진 저장</button><button type="button" class="btn ghost" data-jpx>닫기</button></div></div>`;
+    document.body.appendChild(ov);const f=ov.querySelector('button');f&&f.focus({preventScroll:true})};
+  if(!btStill())jpFx(o,show);else show();
+  return true;
+}
 
 /* ---------------- 진형 ---------------- */
 function vDeck(){
@@ -4736,16 +4833,17 @@ async function shareLink(sh,win){
   catch(e){const box=$('#share-fallback');if(box){box.hidden=false;const t=box.querySelector('textarea');t.value=text+'\n'+url;t.select()}}
 }
 function loadScript(src){return new Promise((ok,no)=>{if(document.querySelector(`script[src="${src}"]`))return ok();const s=document.createElement('script');s.src=src;s.onload=ok;s.onerror=no;document.head.appendChild(s)})}
-async function shareImage(node,sh){
-  toast('결과 이미지를 만드는 중…');
+async function shareImage(node,sh,io){
+  io=io||{t:'연합 삼국지 야전 결과',f:'yeonhap-samguk-result.png',w:'결과 이미지'};
+  toast(io.w+'를 만드는 중…');
   try{
     await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js');
     const cv=await window.html2canvas(node,{backgroundColor:getComputedStyle(document.body).backgroundColor,scale:2,ignoreElements:el=>el.classList&&el.classList.contains('no-cap')});
     const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
-    const file=new File([blob],'yeonhap-samguk-result.png',{type:'image/png'});
-    if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:'연합 삼국지 야전 결과'});return}catch(e){if(e&&e.name==='AbortError')return}}
+    const file=new File([blob],io.f,{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],title:io.t});return}catch(e){if(e&&e.name==='AbortError')return}}
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;document.body.appendChild(a);a.click();a.remove();
-    toast('결과 이미지를 저장했어요. 카카오톡에서 사진으로 보내세요.');
+    toast(io.w+'를 저장했어요. 카카오톡에서 사진으로 보내세요.');
   }catch(e){toast('이미지를 만들지 못했어요. 휴대폰 화면 캡처를 이용해 주세요.')}
 }
 function openReplayFromHash(){
