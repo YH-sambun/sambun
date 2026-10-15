@@ -647,7 +647,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v4.0.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v4.0.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1237,6 +1237,7 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-colt]');if
 const TROOP_BASE={inf:[62,30,60,62],cav:[68,28,55,80],arc:[60,35,52,72],tac:[30,62,55,68]};
 // 장 이름, 한자, 일반 병사[이름, 글자, 세력], 보스전 이름, 등장 장수, 보스전 진형
 const CH_DEF=[
+ // v4.0.1: 역사 순서 (합비 215 → 한중·번성 219 → 이릉 222 → 남만 225 → 가정 228 → 진창 229 → 오장원 234 → 검각 263 → 건업 280)
  ['황건적의 난','黃巾',['황건적','賊','qun'],'장각 토벌',[],['T:inf','T:inf','T:cav','T:arc','zhangjiao']],
  ['반동탁 연합','虎牢',['서량병','兵','qun'],'호뢰관',['huaxiong','dongzhuo'],['huaxiong','lubu','dongzhuo','T:arc','T:tac']],
  ['군웅할거','群雄',['원술군','兵','qun'],'수춘',['jiling','yuanshu'],['jiling','T:inf','yuanshu','T:arc','T:tac']],
@@ -1246,15 +1247,14 @@ const CH_DEF=[
  ['적벽대전','赤壁',['오군','吳','wu'],'동남풍',['zhoutai','huanggai','chengpu'],['huanggai','zhoutai','chengpu','ganning','zhouyu']],
  ['형주 쟁탈','荊州',['강동군','吳','wu'],'강릉',['lingtong','ganning','taishici'],['lingtong','sunce','ganning','taishici','sunquan']],
  ['서량 정벌','西涼',['서량철기','騎','qun'],'동관',['madai','machao'],['madai','machao','T:cav','T:arc','T:tac']],
- ['한중 공방','漢中',['위군','魏','wei'],'정군산',['xiahouyuan','dianwei','zhangliao'],['dianwei','xiahoudun','zhangliao','xiahouyuan','guojia']],
- ['이릉대전','夷陵',['오군','吳','wu'],'화소연영',['ganning','taishici','luxun'],['zhoutai','lingtong','ganning','taishici','luxun']],
- ['오장원','五丈原',['위군','魏','wei'],'오장원 대치',['zhangliao','xuchu','simayi'],['xiahoudun','xuchu','caocao','xiahouyuan','simayi']],
- // v4.0.0: 13~20장 (61~100스테이지)
- ['남만 평정','南蠻',['남만병','蠻','qun'],'맹획의 땅',['zhurong','zhangren'],['zhangren','T:inf','zhurong','T:arc','T:tac']],
  ['합비 공방','合肥',['위군','魏','wei'],'소요진',['lidian','lejin','zhangliao'],['lidian','lejin','zhangliao','xunyu','T:tac']],
+ ['한중 공방','漢中',['위군','魏','wei'],'정군산',['xiahouyuan','dianwei','zhangliao'],['dianwei','xiahoudun','zhangliao','xiahouyuan','guojia']],
  ['번성 전투','樊城',['형주군','蜀','shu'],'수엄칠군',['guanping','zhoucang','guanyu'],['guanping','zhoucang','guanyu','huangzhong','fazheng']],
+ ['이릉대전','夷陵',['오군','吳','wu'],'화소연영',['ganning','taishici','luxun'],['zhoutai','lingtong','ganning','taishici','luxun']],
+ ['남만 평정','南蠻',['남만병','蠻','qun'],'맹획의 땅',['zhurong','zhangren'],['zhangren','T:inf','zhurong','T:arc','T:tac']],
  ['가정 전투','街亭',['촉군','蜀','shu'],'가정',['weiyan','madai','liaohua'],['weiyan','zhaoyun','zhugeliang','yanyan','pangtong']],
  ['진창 공방','陳倉',['위군','魏','wei'],'진창성',['haozhao','wenpin','caoren'],['haozhao','caoren','xiahouyuan','jiaxu','guojia']],
+ ['오장원','五丈原',['위군','魏','wei'],'오장원 대치',['zhangliao','xuchu','simayi'],['xiahoudun','xuchu','caocao','xiahouyuan','simayi']],
  ['검각 돌파','劍閣',['위군','魏','wei'],'음평',['dengai','xuchu','dianwei'],['dengai','dianwei','xuchu','simayi','xunyu']],
  ['건업 공략','建業',['오군','吳','wu'],'석두성',['xusheng','handang','lusu'],['xusheng','sunjian','lvmeng','sunshangxiang','zhouyu']],
  ['천하통일','天下',['군웅','雄','qun'],'최후의 결전',['diaochan','xurong','zhangfei'],['lubu','guanyu','zhangfei','huangzhong','zhugeliang']]
@@ -1617,7 +1617,7 @@ function bonusLine(info){if(!info)return '';const p=[...(info.ally?[`연합군 $
 /* ---------------- stages ---------------- */
 function mkTroop(tr,cls){const b=TROOP_BASE[cls];return {name:tr[0],hz:tr[1],fac:tr[2],rar:2,cls,str:b[0],int:b[1],lead:b[2],spd:b[3],skill:DEF_SKILL[cls]}}
 function stageLv(n){return Math.min(MAXLV,1+Math.floor(n*.6)+(n%5===4?2:0))}
-// 오장원(마지막 장): 최상위권(전투력 약 30,000)에 맞춘 정예군. 적 전투력 약 18,000 → 30,000
+// 55~59스테이지(12장, v4.0.1부터 번성 전투): 최상위권(전투력 약 30,000)에 맞춘 정예군. 적 전투력 약 18,000 → 30,000
 const STAGE_SC={55:4.34,56:4.49,57:4.16,58:4.99,59:3.29,
   // v4.0.0 13~20장: 61스테이지 약 38,000에서 스테이지마다 약 1.7%씩, 보스는 15% 더. 100스테이지 보스 약 85,000
   60:6.43,61:5.74,62:5.49,63:5.52,64:6.26,65:6.62,66:6.08,67:5.49,68:5.76,69:4.88,70:6.83,71:6.32,72:5.4,73:5.97,74:4.28,75:7.06,76:6.49,77:6.03,78:6.08,79:4.41,80:7.33,81:6.72,82:6.11,83:6.27,84:5.16,85:7.86,86:7.15,87:6.51,88:6.58,89:4.92,90:8.56,91:7.91,92:7.2,93:7.56,94:5.72,95:9.33,96:8.12,97:7.64,98:7.82,99:6.11
@@ -1678,6 +1678,7 @@ function sanitize(s){
   // v4.0.0: 장수 증표(장수별), 오늘 보스별 증표 횟수, 받은 보스 첫 격파 보상(장 번호)
   o.tok={};if(s.tok&&typeof s.tok==='object')for(const[k,v]of Object.entries(s.tok))if(GMAP[k]&&(v|0)>0)o.tok[k]=Math.min(9999,v|0);
   {const t=s.tokd&&typeof s.tokd==='object'?s.tokd:{};o.tokd={day:String(t.day||''),c:{}};if(t.c&&typeof t.c==='object')for(const[k,v]of Object.entries(t.c))o.tokd.c[k]=Math.max(0,Math.min(TOK_DAILY,v|0))}
+  {const t=s.tshop&&typeof s.tshop==='object'?s.tshop:{};o.tshop={d:Number.isInteger(t.d)?t.d:-1,b:{}};if(t.b&&typeof t.b==='object')for(const[k,v]of Object.entries(t.b))if(GMAP[k])o.tshop.b[k]=Math.max(0,Math.min(TSHOP_MAX,v|0))}
   o.sgdone=Array.isArray(s.sgdone)?s.sgdone.filter(Number.isInteger).slice(-30):[];
   o.bossRw=Array.isArray(s.bossRw)?[...new Set(s.bossRw.filter(x=>Number.isInteger(x)&&x>=0&&x<CH.length))]:[];
   // 진형 여러 개(최대 20): decks[k]={n:이름,g:[6자리],f:배치}, dk=지금 고른 진형, defDk=야전 방어 진형. deck은 지금 고른 진형의 사본
@@ -2015,11 +2016,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='4.0.0';
+const GAME_VERSION='4.0.1';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'4.0.1',date:'2026-10-16',title:'출정 역사 순서 · 증표 상점',reward:{ap:30},items:[
+  '출정 20장을 역사 순서로 다시 놓았어요. 합비 공방 → 한중 → 번성 → 이릉 → 남만 → 가정 → 진창 → 오장원 → 검각 → 건업 → 천하통일. 난이도는 스테이지 번호대로라 진척 번호는 그대로이고, 깬 장의 이름만 바뀌어 보일 수 있어요.',
+  '증표함이 전체 장수를 보여 줘요. 원정군에서 모은 증표도 여기서 써요. 장수마다 얻는 곳이 적혀 있어요.',
+  '증표함에 오늘의 증표 상점이 생겼어요. 매일 밤 10시에 4명(★3 2 · ★4 1 · ★5 1)이 바뀌고, 금으로 장수마다 하루 10개까지 사요.',
+  '원정군에서 막을 돌파하면 파티 전원 증표를 받아요: 1막 +2 · 2막 +3 · 정복 +5개.',
+  '원정군 난이도를 다시 맞췄어요. 적이 조금 약해져 정복 확률이 약 6%에서 20%로 올라요(1막 돌파 약 90% · 2막 돌파 약 75%).',
+  '원정군·천명의 탑 이번 주 순위에 정복(클리어) 횟수가 표시돼요. 같은 기록이면 횟수가 많은 쪽이 위예요.']},
  {v:'4.0.0',date:'2026-10-16',title:'출정 개편 · 100스테이지 · 장수 증표 · 매일 수성전',reward:{ap:300},items:[
   '출정이 20장 100스테이지로 늘었어요. 오장원 뒤에 남만 평정부터 천하통일까지 8개 장이 새로 열려요.',
   '나팔은 일반 스테이지 2개, 보스전 3개로 바뀌었어요. 출정 화면은 작은 점으로 줄이고, 깬 장은 한 줄로 접었어요.',
@@ -2679,9 +2687,9 @@ const HELP=[
   ['쿠폰','화면 위 券 버튼에서 쿠폰 목록(이름·보상·기한)을 보고 바로 받거나, 쿠폰 번호를 직접 입력할 수 있어요. 계정마다 한 번씩 받을 수 있어요.'],
   ['다시 뽑기','등용·보물 획득 결과 창에서 같은 종류 획득권이 남아 있으면 [등용권 1회]·[획득권 10회]처럼 획득권만 써서 바로 다시 뽑아요. 룰렛 결과 창에서도 룰렛 소환권이 남아 있으면 [소환권 1회]·[소환권 10회]로 바로 돌려요.']]},
  {t:'전장 콘텐츠',rows:[
-  ['출정','일반 스테이지는 나팔 2개, 보스전(將)은 3개를 써요. 지면 돌려받아요. 1~20장, 모두 100스테이지예요. 깬 장은 제목 한 줄로 접히고, 눌러서 펼쳐요.'],
+  ['출정','일반 스테이지는 나팔 2개, 보스전(將)은 3개를 써요. 지면 돌려받아요. 1~20장, 모두 100스테이지이고 역사 순서(황건적의 난 → … → 오장원 → 검각 → 건업 → 천하통일)예요. 깬 장은 제목 한 줄로 접히고, 눌러서 펼쳐요.'],
   ['보스 첫 격파','장마다 보스를 처음 깨면 장수 등용권 5 · 보물 획득권 5 · 룰렛 소환권 10장을 받아요. 4·8·12·16장은 보물 선택권 1장, 10·20장은 장수 선택권 1장이 더 나와요. 예전에 깬 보스의 보상은 출정 화면 위 [모두 받기]로 받아요.'],
-  ['장수 증표','깬 보스를 소탕하거나 다시 이기면 그 장 보스 장수의 증표를 1개씩 받아요(보스마다 하루 5회). ★3 10개 · ★4 30개 · ★5 100개를 모으면 출정 화면의 [증표함]에서 그 장수를 1회 등용해요(새 장수면 획득, 있으면 돌파 +1). 증표는 장수별로 쌓여요. 원정군 모병 합류(3개)와 수성전 순위 보상으로도 받아요.'],
+  ['장수 증표','깬 보스를 소탕하거나 다시 이기면 그 장 보스 장수의 증표를 1개씩 받아요(보스마다 하루 5회). ★3 10개 · ★4 30개 · ★5 100개를 모으면 출정 화면의 [증표함]에서 그 장수를 1회 등용해요(새 장수면 획득, 있으면 돌파 +1). 증표는 장수별로 쌓여요. 원정군(모병 합류 3개, 1막 돌파 2 · 2막 돌파 3 · 정복 5개씩 파티 전원), 수성전 순위 보상, 증표함의 증표 상점(매일 4명, 금으로 장수마다 하루 10개)에서도 받아요. 증표함은 출정 화면 [최근 평정 소탕·재도전] 옆에 있어요.'],
   ['수성전','전장 탭의 수성전. 매일 밤 10시에 16곳 중 3곳이 열려요(이틀 연속 같은 성은 없어요). 성마다 하루 5판, 버틴 턴만큼 보상. 순위는 매일 새로 시작하고, 다음 날 그 성 수성 명장 증표를 받아요: 1위 30 · 2위 20 · 3위 15 · 4~10위 10 · 그 밖 5개. 공지 화면이나 수성전 화면에서 받아요.'],
   ['원정군','전장 탭의 원정군. 무작위 ★3 장수 3명(레벨 고정 · 돌파·보물 없음)으로 3막을 돌파해요. 갈래길에서 전투·정예·주막·모병을 골라 가고 체력은 전투 사이에 이어져요. 하루 2회. 진행한 칸에 비례해 금, 정복 시 보물 선택권 1장.'],
   ['천명의 탑','전장 탭의 천명탑. 내 진형으로 30층까지 올라가요. 층을 깨면 천명 3개 중 하나를 골라 쌓고, 지면 끝나요. 하루 3회. 깬 층에 비례해 금, 30층 돌파 시 장수 등용권 10장.'],
@@ -2755,7 +2763,7 @@ function chapCardHtml(ci,open){
 /* ---------------- 보스 첫 격파 보상 · 장수 증표 (v4.0.0) ----------------
    보스 첫 격파: 매 장 장수 등용권 5 · 보물 획득권 5 · 룰렛 소환권 10, 4·8·12·16장 보물 선택권 1, 10·20장 장수 선택권 1.
    증표는 장수별로 쌓여요(어느 보스가 주는지 바뀌어도 모은 증표는 그대로). 보스마다 하루 5회까지 소탕·반복 승리로 1개씩. */
-const BOSS_TOK=['zhangjiao','dongzhuo','yuanshu','gaoshun','yuanshao','caocao','zhouyu','sunquan','machao','xiahouyuan','luxun','simayi','zhurong','zhangliao','guanyu','zhugeliang','haozhao','dengai','sunjian','lubu'];
+const BOSS_TOK=['zhangjiao','dongzhuo','yuanshu','gaoshun','yuanshao','caocao','zhouyu','sunquan','machao','zhangliao','xiahouyuan','guanyu','luxun','zhurong','zhugeliang','haozhao','simayi','dengai','sunjian','lubu'];
 const TOK_NEED={3:10,4:30,5:100}, TOK_DAILY=5;
 const tokNeed=g=>TOK_NEED[GMAP[g].rar]||30;
 const tokOf=g=>(S.tok&&S.tok[g])|0;
@@ -2774,12 +2782,35 @@ function bossClaim(L){L=L.filter(ci=>!S.bossRw.includes(ci));if(!L.length)return
 // 스테이지 n을 처음 깼을 때 보스였으면 그 장 보상을 바로 줘요
 function bossFirst(n){if(n%5!==4)return null;return bossClaim([Math.floor(n/5)])}
 const advCost=k=>{let c=0;for(let i=0;i<k;i++)c+=stCost(S.stage+i);return c};
+// v4.0.1: 증표 상점. 매일 밤 10시에 전체 장수 중 4명(★3 2 · ★4 1 · ★5 1), 장수마다 하루 10개까지 금으로 사요
+const TOK_PRICE={3:300,4:600,5:1500}, TSHOP_MAX=10;
+const _tshop={};
+function tshopList(d=sDay()){if(_tshop[d])return _tshop[d];const r=mulberry(70001+d*104729),pick=[];
+  for(const[rar,n]of[[3,2],[4,1],[5,1]]){const pool=GENS.filter(g=>g.rar===rar).map(g=>g.id);for(let i=0;i<n&&pool.length;i++)pick.push(pool.splice(Math.floor(r()*pool.length),1)[0])}
+  return _tshop[d]=pick}
+function tshopState(){const d=sDay();if(!S.tshop||S.tshop.d!==d)S.tshop={d,b:{}};return S.tshop}
+const tshopLeft=g=>TSHOP_MAX-((tshopState().b[g])|0);
+// 장수마다 증표를 얻는 곳
+function tokSrc(g){const o=[];const ci=BOSS_TOK.indexOf(g);if(ci>=0)o.push(`${ci+1}장 보스`);const sg=Object.keys(SIEGE).filter(k=>SIEGE_TOK[k]===g).map(k=>SIEGE[k].n);if(sg.length)o.push(`수성전 ${sg.join('·')}`);if(GMAP[g].rar===3)o.push('원정군');o.push('상점');return o.join(' · ')}
+let tokTab='have';
 function openTokens(){
-  const top=Math.min(CH.length-1,Math.floor(S.stage/5));
-  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">증표함</h2><div class="sub" style="margin:0">보스를 소탕하면 그 보스 장수의 증표를 받아요 · 보스마다 하루 ${TOK_DAILY}회</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   <div class="list">${BOSS_TOK.map((g,ci)=>{const G=GMAP[g],have=tokOf(g),need=tokNeed(g),open=S.stage>ci*5+4;
-     return `<div class="tokrow${ci>top?' lock':''}">${seal(G,'sm')}<div style="flex:1;min-width:0"><b>${esc(G.name)} <small class="sub">${'★'.repeat(G.rar)}</small></b><div class="sub" style="margin:0">${ci+1}장 ${esc(CH[ci].n)} · ${open?`오늘 ${tokToday(ci)}/${TOK_DAILY}`:'보스를 깨면 열려요'}</div><div class="bar"><i style="width:${Math.min(100,have/need*100)}%"></i></div></div><div style="text-align:right;flex:none"><div class="num" style="font-size:13px">${have}/${need}</div><button type="button" class="btn sm" data-tokx="${g}" ${have>=need?'':'disabled'}>등용</button></div></div>`}).join('')}</div>`);
+  const top=Math.min(CH.length-1,Math.floor(S.stage/5)), shop=tshopList();tshopState();
+  const row=g=>{const G=GMAP[g],have=tokOf(g),need=tokNeed(g);
+    return `<div class="tokrow">${seal(G,'sm')}<div style="flex:1;min-width:0"><b>${esc(G.name)} <small class="sub">${'★'.repeat(G.rar)}</small></b><div class="sub" style="margin:0;font-size:12px">${tokSrc(g)}</div><div class="bar"><i style="width:${Math.min(100,have/need*100)}%"></i></div></div><div style="text-align:right;flex:none"><div class="num" style="font-size:13px">${have}/${need}</div><button type="button" class="btn sm" data-tokx="${g}" ${have>=need?'':'disabled'}>등용</button></div></div>`};
+  const shopRow=g=>{const G=GMAP[g],pr=TOK_PRICE[G.rar],left=tshopLeft(g),k=Math.max(0,Math.min(left,Math.floor(S.gold/pr)));
+    return `<div class="tokrow">${seal(G,'sm')}<div style="flex:1;min-width:0"><b>${esc(G.name)} <small class="sub">${'★'.repeat(G.rar)}</small></b><div class="sub" style="margin:0;font-size:12px">개당 金 ${fmt(pr)} · 오늘 남은 ${left}개 · 보유 ${tokOf(g)}/${tokNeed(g)}</div></div><div class="row" style="gap:4px;flex:none"><button type="button" class="btn ghost sm" data-tbuy="${g}:1" ${left>0&&S.gold>=pr?'':'disabled'}>1개</button><button type="button" class="btn sm" data-tbuy="${g}:${k}" ${k>1?'':'disabled'}>${k>1?k+'개':'최대'}</button></div></div>`};
+  const all=GENS.map(g=>g.id), list=tokTab==='have'?all.filter(g=>tokOf(g)>0).sort((a,b)=>tokOf(b)/tokNeed(b)-tokOf(a)/tokNeed(a)):all.slice().sort((a,b)=>GMAP[b].rar-GMAP[a].rar);
+  openSheet(`<div class="sheet-h"><div><h2 style="margin:0">증표함</h2><div class="sub" style="margin:0">★3 10개 · ★4 30개 · ★5 100개를 모으면 그 장수를 1회 등용해요</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <div class="row" style="margin:0 0 4px"><h3 style="margin:0">오늘의 증표 상점</h3><span class="sp"></span><span class="chip">${sDayLabel(sDay())} · 밤 10시 교체</span></div>
+   <div class="list">${shop.map(shopRow).join('')}</div>
+   <div class="help-cats" role="group" aria-label="증표 목록" style="margin-top:14px"><button type="button" data-toktab="have" aria-pressed="${tokTab==='have'}">증표 있는 장수</button><button type="button" data-toktab="all" aria-pressed="${tokTab==='all'}">전체 장수</button></div>
+   <div class="list">${list.length?list.map(row).join(''):'<p class="sub" style="text-align:center;margin:16px 0">아직 모은 증표가 없어요. 보스 소탕 · 수성전 순위 · 원정군 · 상점에서 모아요.</p>'}</div>`);
 }
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-toktab]');if(t){tokTab=t.dataset.toktab;openTokens();return}
+  const b=e.target.closest('[data-tbuy]');if(b&&!b.disabled){const[g,n]=b.dataset.tbuy.split(':');if(!tshopList().includes(g))return;const pr=TOK_PRICE[GMAP[g].rar], k=Math.max(0,Math.min(+n,tshopLeft(g),Math.floor(S.gold/pr)));if(!k)return;
+    S.gold-=pr*k;const st=tshopState();st.b[g]=(st.b[g]|0)+k;S.tok[g]=Math.min(9999,tokOf(g)+k);save();renderTop();toast(`${GMAP[g].name} 증표 +${k} · 金 -${fmt(pr*k)}`);openTokens();return}
+});
 document.addEventListener('click',e=>{
   if(e.target.closest('[data-tokbox]')){openTokens();return}
   const x=e.target.closest('[data-tokx]');if(x&&!x.disabled){const g=x.dataset.tokx,need=tokNeed(g);if(tokOf(g)<need)return;S.tok[g]-=need;const tag=grantGen(g);save();renderTop();renderView();toast(`${GMAP[g].name} 등용 · ${tag}`);openTokens();return}
@@ -3478,10 +3509,10 @@ function cleanSiege(x){if(!x||typeof x!=='object')return {};const o={day:typeof 
 function siegePub(){const s=S&&S.siege,r={},td=sDay();if(s&&s.w===td&&s.wb)for(const[k,v]of Object.entries(s.wb))r[k]={t:v.t,hp:v.hp,d:v.d};
   // v4.0.0: 어제 기록(pr)도 함께 올려 다음 날 순위 정산에 써요
   let pr=null;{const P=s&&(s.w===td-1?{w:s.w,wb:s.wb}:s.prev&&s.prev.w===td-1?s.prev:null);if(P){const rr={};for(const[k,v]of Object.entries(P.wb||{}))rr[k]={t:v.t,hp:v.hp,d:v.d};pr={sd:P.w,r:rr}}}
-  return {w:weekIdx(),sd:td,r,pr,a:attPub(),t:S&&S.tw&&S.tw.w===weekIdx()&&S.tw.best?{w:S.tw.w,f:S.tw.best}:null,e:S&&S.ex&&S.ex.w===weekIdx()&&S.ex.best?{w:S.ex.w,f:S.ex.best}:null}}
+  return {w:weekIdx(),sd:td,r,pr,a:attPub(),t:S&&S.tw&&S.tw.w===weekIdx()&&S.tw.best?{w:S.tw.w,f:S.tw.best,c:S.tw.c|0}:null,e:S&&S.ex&&S.ex.w===weekIdx()&&S.ex.best?{w:S.ex.w,f:S.ex.best,c:S.ex.c|0}:null}}
 function cleanSg(x){if(!x||typeof x!=='object'||!Number.isInteger(x.w))return null;const r={};for(const k of Object.keys(SIEGE)){const v=cleanRec(x.r&&x.r[k]);if(v)r[k]=v}
   const sd=Number.isInteger(x.sd)?x.sd:null;let pr=null;if(x.pr&&Number.isInteger(x.pr.sd)){const rr={};for(const k of Object.keys(SIEGE)){const v=cleanRec(x.pr.r&&x.pr.r[k]);if(v)rr[k]=v}pr={sd:x.pr.sd,r:rr}}
-  const a=x.a&&typeof x.a.k==='string'&&typeof x.a.f==='string'?{k:x.a.k.slice(0,4),n:Math.max(0,Math.min(400,x.a.n|0)),f:x.a.f.slice(0,10)}:null;const t=x.t&&Number.isInteger(x.t.w)?{w:x.t.w,f:Math.max(0,Math.min(30,x.t.f|0))}:null;const e=x.e&&Number.isInteger(x.e.w)?{w:x.e.w,f:Math.max(0,Math.min(21,x.e.f|0))}:null;return {w:x.w,sd,r,pr,a,t,e}}
+  const a=x.a&&typeof x.a.k==='string'&&typeof x.a.f==='string'?{k:x.a.k.slice(0,4),n:Math.max(0,Math.min(400,x.a.n|0)),f:x.a.f.slice(0,10)}:null;const t=x.t&&Number.isInteger(x.t.w)?{w:x.t.w,f:Math.max(0,Math.min(30,x.t.f|0)),c:Math.max(0,Math.min(99,x.t.c|0))}:null;const e=x.e&&Number.isInteger(x.e.w)?{w:x.e.w,f:Math.max(0,Math.min(21,x.e.f|0)),c:Math.max(0,Math.min(99,x.e.c|0))}:null;return {w:x.w,sd,r,pr,a,t,e}}
 function siegeWave(key,seed,lv,itd,tend){
   const C=SIEGE[key];
   return n=>{const r=mulberry(seed*977+n*131);const pool=Object.keys(GMAP).filter(g=>g!==C.boss&&(!tend||tend==='any'||GMAP[g].cls===tend));const pick=[C.boss];let n5=GMAP[C.boss].rar===5?1:0,guard=0;
@@ -4618,9 +4649,9 @@ function twEnemy(w,fl,myP,lv,itd){
 }
 function cleanTw(x){if(!x||typeof x!=='object')return {};const R=x.run&&typeof x.run==='object'?x.run:null;
   const ids=a=>(Array.isArray(a)?a:[]).filter(i=>TMAP[i]).slice(0,TW_MAX);
-  return {day:typeof x.day==='string'?x.day:'',n:Math.max(0,Math.min(TW_DAILY,x.n|0)),w:Number.isInteger(x.w)?x.w:-1,best:Math.max(0,Math.min(TW_MAX,x.best|0)),
+  return {day:typeof x.day==='string'?x.day:'',n:Math.max(0,Math.min(TW_DAILY,x.n|0)),w:Number.isInteger(x.w)?x.w:-1,best:Math.max(0,Math.min(TW_MAX,x.best|0)),c:Math.max(0,Math.min(99,x.c|0)),
     run:R?{fl:Math.max(1,Math.min(TW_MAX,R.fl|0)),p:Math.max(0,Number(R.p)||0),tm:ids(R.tm),of:Array.isArray(R.of)?ids(R.of).slice(0,3):null}:null}}
-function twState(){const d=kstDay(),w=weekIdx();if(!S.tw||typeof S.tw!=='object'||!('n' in S.tw))S.tw=cleanTw(S.tw);const s=S.tw;if(s.day!==d){s.day=d;s.n=0}if(s.w!==w){s.w=w;s.best=0}if(s.run===undefined)s.run=null;return s}
+function twState(){const d=kstDay(),w=weekIdx();if(!S.tw||typeof S.tw!=='object'||!('n' in S.tw))S.tw=cleanTw(S.tw);const s=S.tw;if(s.day!==d){s.day=d;s.n=0}if(s.w!==w){s.w=w;s.best=0;s.c=0}if(s.run===undefined)s.run=null;return s}
 const twGold=c=>Math.round(goldRate()*TW_GOLD_H*c/TW_MAX);
 function twOffer(R){
   const deck=S.deck.filter(Boolean).map(g=>GMAP[g]), cc={}, fc={};deck.forEach(b=>{cc[b.cls]=(cc[b.cls]||0)+1;fc[b.fac]=(fc[b.fac]||0)+1});
@@ -4631,7 +4662,7 @@ function twOffer(R){
   return out;
 }
 function twEnd(cleared,why){const s=twState(), gold=twGold(cleared), clear=cleared>=TW_MAX;
-  S.gold+=gold;if(clear)S.gpk=(S.gpk||0)+TW_CLEAR_GPK;const better=cleared>(s.best||0);if(better)s.best=cleared;s.run=null;save();renderTop();
+  S.gold+=gold;if(clear){S.gpk=(S.gpk||0)+TW_CLEAR_GPK;s.c=(s.c|0)+1}const better=cleared>(s.best||0);if(better)s.best=cleared;s.run=null;save();renderTop();
   return `<div class="row" style="justify-content:center;gap:6px">${gold?`<span class="coin"><b class="sl gold">金</b>+${fmt(gold)}</span>`:''}${clear?`<span class="coin"><b class="sl gold">券</b>장수 등용권 +${TW_CLEAR_GPK}</span>`:''}</div>
    <p class="sub">${why} · ${cleared}층까지 돌파${better?' · <b style="color:var(--bronze)">이번 주 최고 기록!</b>':''}</p>`}
 function twStart(){const s=twState();if(s.run)return;if(s.n>=TW_DAILY){toast('오늘 도전을 모두 했어요');return}
@@ -4647,8 +4678,8 @@ function twFight(){const s=twState(),R=s.run;if(!R||R.of)return;
   playBattle(res,`천명의 탑 ${fl}층`,'내 진형',`${fl}층${boss?' · '+GMAP[boss].name:''} 수비군`,()=>html,{});
 }
 function twPick(id){const R=twState().run;if(!R||!R.of||!R.of.includes(id))return;R.tm.push(id);R.of=null;save();renderView();toast(`천명 · ${TMAP[id].n}`)}
-function twRank(){const w=weekIdx(),rows=[];(PLAYERS||[]).forEach(p=>{if(p.id===UID)return;const t=p.sg&&p.sg.t;if(t&&t.w===w&&t.f)rows.push({id:p.id,f:t.f})});
-  const s=S.tw;if(s&&s.w===w&&s.best)rows.push({id:UID||'me',f:s.best,me:1});return rows.sort((a,b)=>b.f-a.f)}
+function twRank(){const w=weekIdx(),rows=[];(PLAYERS||[]).forEach(p=>{if(p.id===UID)return;const t=p.sg&&p.sg.t;if(t&&t.w===w&&t.f)rows.push({id:p.id,f:t.f,c:t.c|0})});
+  const s=S.tw;if(s&&s.w===w&&s.best)rows.push({id:UID||'me',f:s.best,c:s.c|0,me:1});return rows.sort((a,b)=>b.f-a.f||b.c-a.c)}
 const tmChip=id=>{const m=TMAP[id];return `<span class="chip" title="${esc(m.d)}" style="border-color:${TM_T[m.t][1]};color:${TM_T[m.t][1]}">${esc(m.n)}</span>`};
 function vTower(){
   const s=twState(),R=s.run,P=siegeParams(null),left=TW_DAILY-s.n,rk=twRank(),myR=rk.findIndex(r=>r.me);
@@ -4669,7 +4700,7 @@ function vTower(){
      <p class="sub" style="margin:8px 0 0">지금 그만두면 ${fl-1}층 기준 금 +${fmt(twGold(fl-1))}. 도전 중에 진형을 바꿔도 되지만, 적은 도전 중 가장 높았던 내 전투력에 맞춰져요.</p></div>`;
   }
   h+=`<div class="labbox" style="margin-top:12px"><div class="row"><h3 style="margin:0">이번 주 순위</h3><span class="sp"></span><span class="chip">${weekRange(weekIdx())}</span></div>
-   ${rk.length?`<div class="list" style="margin-top:8px">${rk.slice(0,20).map((r,i)=>`<div class="li ${r.me?'me':''}"><span class="rank">${i+1}</span><div class="info"><b ${r.me?'':`data-uid="${esc(r.id)}"`}>${r.me?'나':'…'}</b><span>${r.f}층${r.f>=TW_MAX?' · 정복':''}</span></div></div>`).join('')}</div>`:'<p class="sub" style="margin:8px 0 0">이번 주 기록이 아직 없어요.</p>'}</div>`;
+   ${rk.length?`<div class="list" style="margin-top:8px">${rk.slice(0,20).map((r,i)=>`<div class="li ${r.me?'me':''}"><span class="rank">${i+1}</span><div class="info"><b ${r.me?'':`data-uid="${esc(r.id)}"`}>${r.me?'나':'…'}</b><span>${r.f}층${r.f>=TW_MAX?` · 클리어 ${r.c||1}회`:''}</span></div></div>`).join('')}</div>`:'<p class="sub" style="margin:8px 0 0">이번 주 기록이 아직 없어요.</p>'}</div>`;
   setTimeout(()=>{if(typeof fillNames==='function')fillNames()});
   return h;
 }
@@ -4685,12 +4716,16 @@ document.addEventListener('click',e=>{
    하루 2회. 무작위 ★3 장수 3명(주간·회차 공통 시드)으로 3막(황건 → 반동탁 → 적벽)을 진행.
    막마다 7줄 × 3칸 갈래길: 1줄 전투, 2~5줄 전투·정예·주막·모병, 6줄 주막, 7줄 보스.
    레벨 고정(1막 20 · 2막 30 · 3막 40), 돌파 0, 보물 없음. 체력은 전투 사이에 이어져요.
-   적 전투력 = 그 막 레벨 ★3 3명 평균 × 0.6 × 1.07^(누적 줄-1), 정예 ×1.3, 보스 ×1.4.
+   적 전투력 = 그 막 레벨 ★3 3명 평균 × 0.57 × 1.071^(누적 줄-1), 정예 ×1.3, 보스 ×1.4.
    보상: 금 = 시간당 금 × 12 × (진행 칸 ÷ 21), 정복 시 보물 선택권 1장. 순위 = players.sg.e {w, f: 진행 칸}.
-   시뮬레이션(실제 함수, 900판): 1막 돌파 88% · 2막 돌파 64% · 정복 6%, 진행 칸 중간값 17. */
+   시뮬레이션(실제 함수, 900판): 1막 돌파 88% · 2막 돌파 64% · 정복 6%, 진행 칸 중간값 17.
+   v4.0.1 재계산(실제 함수, 1800판, 모병·주막 우선 경로): 1막 돌파 89% · 2막 돌파 76% · 정복 20%, 진행 칸 중간값 20.
+   v4.0.1 순위 = 최고 기록 → 이번 주 정복 횟수(c) 순. */
 const EX_TOK=3;  // v4.0.0: 모병으로 합류한 장수의 증표
+const EX_ACT_TOK=[2,3,5];  // v4.0.1: 1막 돌파 +2 · 2막 돌파 +3 · 정복 +5 (그때 파티 전원)
+function exActTok(R,act){const k=EX_ACT_TOK[act]||0;if(!k)return '';const gs=[...new Set(R.p.map(m=>m.g))].filter(g=>GMAP[g]);gs.forEach(g=>{S.tok[g]=Math.min(9999,tokOf(g)+k)});return `<p class="sub" style="margin:4px 0 0;color:var(--bronze)">파티 ${gs.length}명 증표 +${k}개씩 (${gs.map(g=>GMAP[g].name).join('·')})</p>`}
 const EX_DAILY=2, EX_ROWS=7, EX_MAX=21, EX_GOLD_H=12, EX_CLEAR_ISK=1;
-const EX_LV=[20,30,40], EX_CH=[0,1,6], EX_A=.6, EX_B=1.07, EX_EM=1.3, EX_BM=1.4;
+const EX_LV=[20,30,40], EX_CH=[0,1,6], EX_A=.57, EX_B=1.071, EX_EM=1.3, EX_BM=1.4;
 const EX_INN=.5, EX_REV=.3, EX_EHEAL=.1, EX_FULLHEAL=.25;
 const EX_W={bt:45,el:20,inn:15,rc:20};
 const EX_T={bt:['전투','戰','var(--fg)'],el:['정예','精','var(--cinnabar)'],inn:['주막','酒','var(--jade)'],rc:['모병','募','var(--bronze)'],boss:['보스','將','var(--cinnabar)']};
@@ -4738,11 +4773,11 @@ function cleanEx(x){if(!x||typeof x!=='object')return {};const R=x.run&&typeof x
     const of=R.of&&typeof R.of==='object'&&(R.of.k==='tm'||R.of.k==='rc')&&Array.isArray(R.of.ids)?{k:R.of.k,ids:R.of.ids.filter(i=>R.of.k==='tm'?TMAP[i]:GMAP[i]).slice(0,3)}:null;
     if(p.length)run={w:Number.isInteger(R.w)?R.w:-1,at:Math.max(1,Math.min(EX_DAILY,R.at|0)),a:Math.max(0,Math.min(2,R.a|0)),r:Math.max(0,Math.min(EX_ROWS-1,R.r|0)),c:Number.isInteger(R.c)&&R.c>=0&&R.c<3?R.c:-1,
       v:Math.max(0,R.v|0),path:(Array.isArray(R.path)?R.path:[]).map(v=>v|0).slice(0,EX_ROWS),p,tm:ids(R.tm),of:of&&of.ids.length?of:null,sc:Math.max(0,Math.min(EX_MAX,R.sc|0))}}
-  return {day:typeof x.day==='string'?x.day:'',n:Math.max(0,Math.min(EX_DAILY,x.n|0)),w:Number.isInteger(x.w)?x.w:-1,best:Math.max(0,Math.min(EX_MAX,x.best|0)),run}}
-function exState(){const d=kstDay(),w=weekIdx();if(!S.ex||typeof S.ex!=='object'||!('n' in S.ex))S.ex=cleanEx(S.ex);const s=S.ex;if(s.day!==d){s.day=d;s.n=0}if(s.w!==w){s.w=w;s.best=0}if(s.run===undefined)s.run=null;return s}
+  return {day:typeof x.day==='string'?x.day:'',n:Math.max(0,Math.min(EX_DAILY,x.n|0)),w:Number.isInteger(x.w)?x.w:-1,best:Math.max(0,Math.min(EX_MAX,x.best|0)),c:Math.max(0,Math.min(99,x.c|0)),run}}
+function exState(){const d=kstDay(),w=weekIdx();if(!S.ex||typeof S.ex!=='object'||!('n' in S.ex))S.ex=cleanEx(S.ex);const s=S.ex;if(s.day!==d){s.day=d;s.n=0}if(s.w!==w){s.w=w;s.best=0;s.c=0}if(s.run===undefined)s.run=null;return s}
 const exGold=c=>Math.round(goldRate()*EX_GOLD_H*c/EX_MAX);
 function exEnd(cleared,why){const s=exState(),gold=exGold(cleared),clear=cleared>=EX_MAX;
-  S.gold+=gold;if(clear)S.isk=(S.isk||0)+EX_CLEAR_ISK;const better=cleared>(s.best||0);if(better)s.best=cleared;s.run=null;save();renderTop();
+  S.gold+=gold;if(clear){S.isk=(S.isk||0)+EX_CLEAR_ISK;s.c=(s.c|0)+1}const better=cleared>(s.best||0);if(better)s.best=cleared;s.run=null;save();renderTop();
   return `<div class="row" style="justify-content:center;gap:6px">${gold?`<span class="coin"><b class="sl gold">金</b>+${fmt(gold)}</span>`:''}${clear?`<span class="coin"><b class="sl gold">寶</b>보물 선택권 +${EX_CLEAR_ISK}</span>`:''}</div>
    <p class="sub">${why} · ${cleared}/${EX_MAX}칸 진행${better?' · <b style="color:var(--bronze)">이번 주 최고 기록!</b>':''}</p>`}
 function exStart(){const s=exState();if(s.run)return;if(s.n>=EX_DAILY){toast('오늘 원정을 모두 했어요');return}
@@ -4779,19 +4814,19 @@ function exNode(col){const s=exState(),R=s.run;if(!R||R.of)return;
   res.fin.forEach(f=>{const x=sp.find(y=>y.p===f.slot);if(x)x._m.h=Math.round(f.hp/f.max*1000)/1000});
   const C=CH[EX_CH[R.a]], title=`원정군 ${R.a+1}막 ${row+1}줄 · ${EX_T[t][0]}`, foeLab=t==='boss'?`${C.n} · ${C.boss}`:`${C.n} ${EX_T[t][0]} 부대`;let html;
   if(!res.win)html=exEnd(R.sc,`${R.a+1}막 ${row+1}줄에서 패배`);
-  else if(t==='boss'&&R.a>=2){R.sc++;html=exEnd(EX_MAX,'원정 정복!')}
+  else if(t==='boss'&&R.a>=2){R.sc++;const tk=exActTok(R,2);html=exEnd(EX_MAX,'원정 정복!')+tk}
   else{
     if(t==='boss'){R.p.forEach(m=>m.h=1)}else if(t==='el')R.p.forEach(m=>{if(m.h>0)m.h=Math.min(1,m.h+EX_EHEAL)});
     R.of={k:'tm',ids:exTmOffer(R,t)};
-    if(t==='boss'){R.sc++;R.a++;R.r=0;R.c=-1;R.path=[]}else exAdvance(R,col);
-    save();html=`<p class="sub">${t==='boss'?`${C.n} 돌파! 전원 체력을 회복하고 다음 막으로 가요.`:'승리! 천명을 골라 계속 진군하세요.'}</p>`}
+    let tk='';if(t==='boss'){tk=exActTok(R,R.a);R.sc++;R.a++;R.r=0;R.c=-1;R.path=[]}else exAdvance(R,col);
+    save();html=`<p class="sub">${t==='boss'?`${C.n} 돌파! 전원 체력을 회복하고 다음 막으로 가요.`:'승리! 천명을 골라 계속 진군하세요.'}</p>${tk}`}
   playBattle(res,title,'원정군',foeLab,()=>html,{});
 }
 function exPick(id){const R=exState().run;if(!R||!R.of||!R.of.ids.includes(id))return;
   if(R.of.k==='tm'){R.tm.push(id);toast(`천명 · ${TMAP[id].n}`)}else{if(R.p.length<NSLOT)R.p.push({g:id,h:1});S.tok[id]=Math.min(9999,tokOf(id)+EX_TOK);toast(`${GMAP[id].name} 합류 · 증표 +${EX_TOK} (${tokOf(id)}/${tokNeed(id)})`)}
   R.of=null;save();renderView()}
-function exRank(){const w=weekIdx(),rows=[];(PLAYERS||[]).forEach(p=>{if(p.id===UID)return;const e=p.sg&&p.sg.e;if(e&&e.w===w&&e.f)rows.push({id:p.id,f:e.f})});
-  const s=S.ex;if(s&&s.w===w&&s.best)rows.push({id:UID||'me',f:s.best,me:1});return rows.sort((a,b)=>b.f-a.f)}
+function exRank(){const w=weekIdx(),rows=[];(PLAYERS||[]).forEach(p=>{if(p.id===UID)return;const e=p.sg&&p.sg.e;if(e&&e.w===w&&e.f)rows.push({id:p.id,f:e.f,c:e.c|0})});
+  const s=S.ex;if(s&&s.w===w&&s.best)rows.push({id:UID||'me',f:s.best,c:s.c|0,me:1});return rows.sort((a,b)=>b.f-a.f||b.c-a.c)}
 const exProg=f=>f>=EX_MAX?'정복':f%EX_ROWS===0?`${f/EX_ROWS}막 돌파`:`${Math.floor(f/EX_ROWS)+1}막 ${f%EX_ROWS}줄`;
 function exMapHtml(R){
   const map=exMap(exK(R),R.a),reach=R.r===0?[0,1,2]:(map[R.r-1][R.c]||{to:[]}).to;
@@ -4825,7 +4860,7 @@ function vExpedition(){
      <p class="sub" style="margin:8px 0 0">지금 그만두면 금 +${fmt(exGold(R.sc))}.</p></div>`;
   }
   h+=`<div class="labbox" style="margin-top:12px"><div class="row"><h3 style="margin:0">이번 주 순위</h3><span class="sp"></span><span class="chip">${weekRange(weekIdx())}</span></div>
-   ${rk.length?`<div class="list" style="margin-top:8px">${rk.slice(0,20).map((r,i)=>`<div class="li ${r.me?'me':''}"><span class="rank">${i+1}</span><div class="info"><b ${r.me?'':`data-uid="${esc(r.id)}"`}>${r.me?'나':'…'}</b><span>${exProg(r.f)}</span></div></div>`).join('')}</div>`:'<p class="sub" style="margin:8px 0 0">이번 주 기록이 아직 없어요.</p>'}</div>`;
+   ${rk.length?`<div class="list" style="margin-top:8px">${rk.slice(0,20).map((r,i)=>`<div class="li ${r.me?'me':''}"><span class="rank">${i+1}</span><div class="info"><b ${r.me?'':`data-uid="${esc(r.id)}"`}>${r.me?'나':'…'}</b><span>${exProg(r.f)}${r.f>=EX_MAX?` ${r.c||1}회`:''}</span></div></div>`).join('')}</div>`:'<p class="sub" style="margin:8px 0 0">이번 주 기록이 아직 없어요.</p>'}</div>`;
   setTimeout(()=>{if(typeof fillNames==='function')fillNames()});
   return h;
 }
