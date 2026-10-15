@@ -587,7 +587,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.5.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.5.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1891,10 +1891,13 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='3.5.0';
+const GAME_VERSION='3.5.1';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.5.1',date:'2026-10-15',title:'쿠폰으로 보물 강화도 교환권 지급',reward:{ap:30},items:[
+  '이제 쿠폰 보상으로 보물 강화도 교환권을 받을 수 있어요. 교환권이 들어간 쿠폰은 券 버튼의 쿠폰 목록에서 바로 받거나 쿠폰 번호를 입력해 받아요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'3.5.0',date:'2026-10-15',title:'야전 격전 · 역병 · ★4 장신구 개편 · 금화 경제 조정',reward:{ap:30,xtk:1},items:[
   '야전·연무장 전투가 30턴으로 늘고, 비슷한 전력끼리도 결판이 나도록 두 규칙이 생겼어요. 모의전에서는 비슷한 전력끼리 78%가 판정으로 끝났는데, 이제는 30턴 안에 거의 모두 전멸로 끝나요.',
   '격전(13턴부터): 양쪽 모두 주는 피해가 매 턴 12%씩 누적으로 늘고, 회복·흡혈은 10%씩 줄어요.',
@@ -2254,12 +2257,12 @@ async function redeemCoupon(raw){
   let cp=COUPONS[h];
   if(!cp&&typeof FS!=='undefined'&&FS&&MODE==='shared'){
     try{const d=await FS.collection('coupons').doc(code).get();
-      if(d.exists){const v=d.data()||{},n=(k,mx)=>Math.max(0,Math.min(mx,Math.floor(Number(v[k])||0)));cp={t:String(v.title||'쿠폰').slice(0,40),r:{food:n('food',100000),gold:n('gold',1000000),ap:n('ap',500),itk:n('itk',500),gtk:n('gtk',100),isk:n('isk',100),gpk:n('gpk',500)},until:String(v.until||'')}}}
+      if(d.exists){const v=d.data()||{},n=(k,mx)=>Math.max(0,Math.min(mx,Math.floor(Number(v[k])||0)));cp={t:String(v.title||'쿠폰').slice(0,40),r:{food:n('food',100000),gold:n('gold',1000000),ap:n('ap',500),itk:n('itk',500),gtk:n('gtk',100),isk:n('isk',100),gpk:n('gpk',500),xtk:n('xtk',10)},until:String(v.until||'')}}}
     catch(e){return {err:'쿠폰을 확인하지 못했어요. 잠시 후 다시 시도해 주세요'}}}
   if(!cp)return {err:'없는 쿠폰 번호예요'};
   if(cp.until&&kstDay()>cp.until)return {err:`기간이 끝난 쿠폰이에요 (${cp.until}까지)`};
   if(S.cpn.includes(h))return {err:'이미 사용한 쿠폰이에요'};
-  const r=cp.r;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.gtk=(S.gtk||0)+(r.gtk||0);S.isk=(S.isk||0)+(r.isk||0);S.gpk=(S.gpk||0)+(r.gpk||0);S.cpn.push(h);save();renderTop();renderView();
+  const r=cp.r;tickAP();S.ap+=r.ap||0;S.food+=r.food||0;S.gold+=r.gold||0;S.itk=(S.itk||0)+(r.itk||0);S.gtk=(S.gtk||0)+(r.gtk||0);S.isk=(S.isk||0)+(r.isk||0);S.gpk=(S.gpk||0)+(r.gpk||0);S.xtk=(S.xtk||0)+(r.xtk||0);S.cpn.push(h);save();renderTop();renderView();
   return {ok:`${cp.t} · ${rewardText(r)}`};
 }
 function couponHtml(){return `<div class="stat" style="text-align:left;margin:0 0 12px"><small style="font-size:12px">쿠폰 입력</small><form id="cpn-form" class="row" style="margin-top:6px"><input id="cpn-input" maxlength="40" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="쿠폰 번호" aria-label="쿠폰 번호" style="flex:1;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--fg);font:inherit"><button class="btn" type="submit">사용</button></form><div id="cpn-msg" class="sub" style="margin:6px 0 0" role="status"></div></div>`}
@@ -2269,7 +2272,7 @@ async function couponList(){
   if(typeof FS!=='undefined'&&FS&&MODE==='shared'){try{const q=await FS.collection('coupons').get();
     for(const d of q.docs){const v=d.data()||{};if(v.hidden)continue;const code=String(d.id).toUpperCase();if(L.some(x=>x.code===code))continue;
       const n=(k,mx)=>Math.max(0,Math.min(mx,Math.floor(Number(v[k])||0)));
-      L.push({code,t:String(v.title||'쿠폰').slice(0,40),r:{food:n('food',100000),gold:n('gold',1000000),ap:n('ap',500),itk:n('itk',500),gtk:n('gtk',100),isk:n('isk',100),gpk:n('gpk',500)},until:String(v.until||''),h:await sha256hex('cc:'+code)})}}catch(e){}}
+      L.push({code,t:String(v.title||'쿠폰').slice(0,40),r:{food:n('food',100000),gold:n('gold',1000000),ap:n('ap',500),itk:n('itk',500),gtk:n('gtk',100),isk:n('isk',100),gpk:n('gpk',500),xtk:n('xtk',10)},until:String(v.until||''),h:await sha256hex('cc:'+code)})}}catch(e){}}
   return L;
 }
 async function fillCouponList(){
@@ -2413,7 +2416,7 @@ const HELP=[
   ['병종별 무기','보병: 검·도끼·창·극 / 기병: 창·극·언월도·검 / 궁병: 활·검 / 책사: 부채·여의. 서책은 책사만 장착할 수 있어요. 방어구·명마·장신구는 모든 병종이 써요. 궁병만 활 1개와 검 1개를 함께 낄 수 있어요.'],
   ['화상 보물','화전궁은 궁병이 끼면 일반 공격마다 2턴 화상을 걸어요(매 턴 공격의 6%, 강화 단계만큼 올라가 +50이면 15%, 방어 무시). 전투력과 추천 편성에도 반영돼요.'],
   ['돌파','같은 보물이 또 나오면 돌파 +1, 최대 +'+ITEM_MAXD+'. 1단계마다 그 보물의 모든 효과 +3%, +50이면 2.5배예요.'],
-  ['보물 강화도 교환권','같은 등급 보물 두 개의 돌파 단계를 서로 맞바꿔요(정련 금 환급분도 함께). 보물 상세 화면에서 써요. 금화 룰렛(0.01%)에서 얻어요.'],
+  ['보물 강화도 교환권','같은 등급 보물 두 개의 돌파 단계를 서로 맞바꿔요(정련 금 환급분도 함께). 보물 상세 화면에서 써요. 금화 룰렛(0.01%)과 쿠폰에서 얻어요.'],
   ['정련','v3.5.0부터 금으로 정련할 수 없어요. 돌파는 같은 보물을 다시 얻을 때만 +1씩 올라가요(보물 획득 중복, 보물 선택권). 과거에 정련한 단계는 그대로이고, 그 보물을 팔면 정련에 쓴 금을 돌려받아요.'],
   ['+50 이후','최대 돌파 뒤 같은 보물이 나오면 ★3 100 · ★4 300 · ★5 1,000금으로 바뀌어요.'],
   ['치명','치명타 확률이에요. 기본 10%에 그대로 더해져요(예: 치명 +12% → 22%). 최대 60%.'],
