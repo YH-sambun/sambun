@@ -422,6 +422,7 @@ details.nt:not([open]){padding:9px 12px}details.nt:not([open]) .nt-h b{font-weig
 .tbox .hint{color:var(--mute)}
 .li.bond{align-items:flex-start}
 .bfx{color:var(--bronze)!important}
+.bfx mark.bhl{background:var(--bronze);color:var(--panel);border-radius:3px;padding:0 3px}
 .bmem{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .bmem>span{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--mute)}
 .bmem .unown{opacity:.45;filter:grayscale(.8)}
@@ -647,7 +648,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v4.0.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v4.0.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -946,6 +947,10 @@ BONDS.forEach(B=>{const sc=o=>{if(!o)return;for(const k of Object.keys(o))o[k]=k
 // ★5 인연(v3.0.1): ★5 장수가 있고 ★3 장수가 없는 인연은 효과 ×1.15 (오호대장군 제외)
 const BOND5_MUL=1.15;
 BONDS.forEach(B=>{const rs=B.ids.map(i=>GMAP[i].rar);if(B.s5x||!rs.includes(5)||rs.includes(3))return;B.s5=1;const sc=o=>{if(!o)return;for(const k of Object.keys(o))o[k]=k==='spd'?Math.round(o[k]*BOND5_MUL):Math.round(o[k]*BOND5_MUL*100)/100};sc(B.fx);sc(B.full);if(B.base){sc(B.base.fx);sc(B.base.full)}});
+// v4.0.2: 인연 효과 필터용 효과 종류(기본+강화 효과 합집합)
+const BFX_K={atk:'공격',hp:'체력',def:'방어',spd:'속도'};
+BONDS.forEach(B=>{B.fk=new Set([...Object.keys(B.fx||{}),...Object.keys(B.full||{})].filter(k=>BFX_K[k]))});
+const bfxOk=(B,ks,x)=>(!x||B.cross)&&(!ks.length||ks.some(k=>B.fk.has(k)));
 function fxStr(v){const o=[];if(v.atk)o.push(`공격 +${Math.round(v.atk*100)}%`);if(v.hp)o.push(`체력 +${Math.round(v.hp*100)}%`);if(v.def)o.push(`방어 +${Math.round(v.def*100)}%`);if(v.spd)o.push(`속도 +${v.spd}`);return o.join(' · ')}
 function facStr(v){return fxStr(v)+(v.r3?` · ★3 장수 추가 ${fxStr(v.r3)}`:'')}
 function bondActive(B,ids){const have=B.ids.filter(x=>ids.has(x)).length;return have>=(B.min||B.ids.length)}
@@ -2016,11 +2021,16 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='4.0.1';
+const GAME_VERSION='4.0.2';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'4.0.2',date:'2026-10-16',title:'도감 인연 효과 필터',reward:{ap:30},items:[
+  '도감 인연 탭에 효과 필터가 생겼어요. 공격 · 체력 · 방어 · 속도 중 여러 개를 함께 고를 수 있고, 고른 효과 중 하나라도 주는 인연이 보여요.',
+  '인연 탭에 \'타국 ×2\' 필터를 추가했어요. 켜면 서로 다른 나라 장수로 이루어진 타국 인연만 보여요.',
+  '고른 효과는 인연 카드의 효과 문구에서 강조돼요. 이름 검색과 함께 쓸 수 있고, 발동 가능 · 1명 부족 · 그 외 묶음의 개수도 필터대로 바뀌어요.',
+  '장수 도감의 \'필터 더 보기\'에 인연 효과(여러 개 선택)와 타국 인연 필터를 추가했어요. 그 효과를 주는 인연에 속한 장수만 볼 수 있어요.']},
  {v:'4.0.1',date:'2026-10-16',title:'출정 역사 순서 · 증표 상점',reward:{ap:30},items:[
   '출정 20장을 역사 순서로 다시 놓았어요. 합비 공방 → 한중 → 번성 → 이릉 → 남만 → 가정 → 진창 → 오장원 → 검각 → 건업 → 천하통일. 난이도는 스테이지 번호대로라 진척 번호는 그대로이고, 깬 장의 이름만 바뀌어 보일 수 있어요.',
   '증표함이 전체 장수를 보여 줘요. 원정군에서 모은 증표도 여기서 써요. 장수마다 얻는 곳이 적혀 있어요.',
@@ -3307,7 +3317,7 @@ function sortedOwned(lv){return Object.keys(S.gens).sort((a,b)=>GMAP[b].rar-GMAP
 /* ---------------- 장수 고르기 공통 필터 · 정렬 (v2.0.4) ---------------- */
 const SKT={heal:'아군 회복',buff:'아군 강화',self:'자신 강화·회복',deb:'적 약화',taunt:'도발',guard:'호위',clean:'해제',ward:'전법 피해 감소',stun:'기절',burn:'화상',aoe:'광역',multi:'연속',single:'단일'};
 const GF_SORT={power:'전투력',rar:'등급',atk:'공격',def:'방어',hp:'체력',spd:'속도',name:'이름'};
-const GF={pick:{q:'',fac:'',cls:'',rar:0,sk:'',sort:'power'},lab:{q:'',fac:'',cls:'',rar:0,sk:'',sort:'power'},gens:{q:'',fac:'',cls:'',rar:0,sk:'',st:'',sort:'rar'},dex:{q:'',fac:'',cls:'',rar:0,sk:'',own:'',sort:'rar'},items:{q:''}};
+const GF={pick:{q:'',fac:'',cls:'',rar:0,sk:'',sort:'power'},lab:{q:'',fac:'',cls:'',rar:0,sk:'',sort:'power'},gens:{q:'',fac:'',cls:'',rar:0,sk:'',st:'',sort:'rar'},dex:{q:'',fac:'',cls:'',rar:0,sk:'',own:'',bfk:'',bx:'',sort:'rar'},items:{q:''}};
 const skTagC={};
 function skTags(id){if(skTagC[id])return skTagC[id];const s=skillOf(GMAP[id])||{},t=[];
   const up=b=>(b.atk||0)>0||(b.def||0)>0||(b.sr||0)>0;
@@ -3322,8 +3332,8 @@ function gfCmp(k){return (x,y)=>{const pr=y.p-x.p;switch(k){case 'name':return x
   case 'atk':return y.u.atk-x.u.atk||pr;case 'def':return y.u.def-x.u.def||pr;case 'hp':return y.u.maxhp-x.u.maxhp||pr;case 'spd':return y.u.spd-x.u.spd||pr;default:return pr||y.b.rar-x.b.rar}}}
 const gfStat=(k,u)=>!u?'':k==='atk'?` · 공격 ${fmt(Math.round(u.atk))}`:k==='def'?` · 방어 ${fmt(Math.round(u.def))}`:k==='hp'?` · 체력 ${fmt(Math.round(u.maxhp))}`:k==='spd'?` · 속도 ${u.spd}`:'';
 function gfHtml(key,F,o){
-  const c=(f,v,l)=>`<button type="button" data-gfx="${key}:${f}:${v}" aria-pressed="${String(F[f]==null?'':F[f])===String(v)}">${l}</button>`;
-  const row=(lab,f,opts)=>`<div class="chips" role="group" aria-label="${lab}"><span class="flab">${lab}</span>${opts.map(([v,l])=>c(f,v,l)).join('')}</div>`;
+  const c=(f,v,l,m)=>`<button type="button" data-gfx="${key}:${f}:${v}"${m?' data-gfm':''} aria-pressed="${m&&v?String(F[f]||'').split(',').includes(v):String(F[f]==null?'':F[f])===String(v)}">${l}</button>`;
+  const row=(lab,f,opts,m)=>`<div class="chips" role="group" aria-label="${lab}"><span class="flab">${lab}</span>${opts.map(([v,l])=>c(f,v,l,m)).join('')}</div>`;
   const ex=o.extra||[], nAct=(+F.rar?1:0)+(F.sk?1:0)+ex.filter(x=>F[x[1]]).length;
   return `<div class="gf"><input type="search" class="gf-q" data-gfq="${key}" value="${esc(F.q||'')}" placeholder="이름 검색 (한자도 돼요)" aria-label="장수 이름 검색" autocomplete="off">
    ${row('나라','fac',[['','전체'],...Object.entries(FAC)])}${row('병종','cls',[['','전체'],...Object.entries(CLS).map(([k,v])=>[k,v.n])])}${row('정렬','sort',Object.entries(o.sorts||GF_SORT))}
@@ -3331,7 +3341,7 @@ function gfHtml(key,F,o){
    ${row('등급','rar',[[0,'전체'],[5,stars(5)],[4,stars(4)],[3,stars(3)]])}${row('전법','sk',[['','전체'],...Object.entries(SKT)])}${ex.map(x=>row(...x)).join('')}</details></div>`;
 }
 const GF_RE={pick:()=>openSlotPicker(pickSlot),lab:()=>openLabGen(labPk[0],labPk[1]),gens:()=>renderView(),dex:()=>renderView()};
-document.addEventListener('click',e=>{const sm=e.target.closest('.gf-more>summary');if(sm){const d=sm.parentElement;GF[d.dataset.gfd].more=!d.open;return}const b=e.target.closest('[data-gfx]');if(!b)return;const[k,f,v]=b.dataset.gfx.split(':');GF[k][f]=f==='rar'?+v:v;GF_RE[k]()});
+document.addEventListener('click',e=>{const sm=e.target.closest('.gf-more>summary');if(sm){const d=sm.parentElement;GF[d.dataset.gfd].more=!d.open;return}const b=e.target.closest('[data-gfx]');if(!b)return;const[k,f,v]=b.dataset.gfx.split(':');if(b.hasAttribute('data-gfm')&&v){const a=String(GF[k][f]||'').split(',').filter(Boolean);GF[k][f]=(a.includes(v)?a.filter(x=>x!==v):[...a,v]).join(',')}else GF[k][f]=f==='rar'?+v:v;GF_RE[k]()});
 document.addEventListener('input',e=>{const i=e.target.closest&&e.target.closest('[data-gfq]');if(!i)return;const k=i.dataset.gfq,q=i.value.trim();GF[k].q=i.value;let n=0;
   document.querySelectorAll(`[data-gfn="${k}"]`).forEach(el=>{const ok=!q||el.dataset.nm.includes(q);el.classList.toggle('gf-x',!ok);if(ok)n++});document.querySelectorAll(`[data-gfc="${k}"]`).forEach(x=>x.textContent=n)});
 document.addEventListener('toggle',e=>{const d=e.target;if(d&&d.dataset&&d.dataset.gfd)GF[d.dataset.gfd].more=d.open},true);
@@ -3954,13 +3964,14 @@ function bondsOfHtml(id){
   const bs=BONDS.filter(B=>B.ids.includes(id));if(!bs.length)return '';
   return `<h3>인연</h3><div class="list">${bs.map(B=>`<div class="li" style="display:block"><b>${B.n}</b> <span class="sub">· ${fxStr(B.fx)}${B.full?` (${B.fullMin?B.fullMin+'명 이상':'전원'} ${fxStr(B.full)})`:''}</span><div class="sub" style="margin:2px 0 0">${B.ids.map(x=>GMAP[x].name).join(' · ')}${B.min?` 중 ${B.min}명 이상`:''}</div></div>`).join('')}</div>`;
 }
-let bondQ='', bondTbl=false;
+let bondQ='', bondTbl=false, bondFk=[], bondX=false;
+function fxStrH(v){if(!bondFk.length)return fxStr(v);const L={atk:`공격 +${Math.round((v.atk||0)*100)}%`,hp:`체력 +${Math.round((v.hp||0)*100)}%`,def:`방어 +${Math.round((v.def||0)*100)}%`,spd:`속도 +${v.spd}`};return ['atk','hp','def','spd'].filter(k=>v[k]).map(k=>bondFk.includes(k)?`<mark class="bhl">${L[k]}</mark>`:L[k]).join(' · ')}
 function bondsDexHtml(){
   const facRows=Object.entries(FAC_BONUS).map(([f,t])=>`<tr><th scope="row">${FAC[f]}</th>${t.map(v=>`<td>${facStr(v)}</td>`).join('')}</tr>`).join('');
   const q=bondQ.trim(), nm=B=>esc(B.n+' '+B.ids.map(x=>GMAP[x].name+(GMAP[x].hz||'')).join(' '));
   const need=B=>Math.max(0,(B.min||B.ids.length)-B.ids.filter(x=>S.gens[x]).length);
   const grp=[['발동 가능 · 장수를 모두 가졌어요',B=>need(B)===0],['1명 부족',B=>need(B)===1],['그 외',B=>need(B)>1]];
-  const card=B=>{const n=need(B);return `<div class="li bond${q&&!nm(B).includes(q)?' gf-x':''}" data-bnm="${nm(B)}"><div class="info"><b>${B.n}${B.cross?` <span class="chip">타국 ×${CROSS_MUL}</span>`:''}${n===0?' <span class="chip on">발동 가능</span>':''}</b><span>${esc(B.d)}</span><span class="bfx">${fxStr(B.fx)}${B.full?` · ${B.fullMin?B.fullMin+'명 이상':'전원'} 시 ${fxStr(B.full)}`:''}${B.min?` · ${B.min}명 이상`:''}</span>
+  const card=B=>{const n=need(B);return `<div class="li bond${q&&!nm(B).includes(q)?' gf-x':''}" data-bnm="${nm(B)}"><div class="info"><b>${B.n}${B.cross?` <span class="chip">타국 ×${CROSS_MUL}</span>`:''}${n===0?' <span class="chip on">발동 가능</span>':''}</b><span>${esc(B.d)}</span><span class="bfx">${fxStrH(B.fx)}${B.full?` · ${B.fullMin?B.fullMin+'명 이상':'전원'} 시 ${fxStrH(B.full)}`:''}${B.min?` · ${B.min}명 이상`:''}</span>
     <div class="bmem">${B.ids.map(x=>`<span class="${S.gens[x]?'':'unown'}" title="${GMAP[x].name}">${seal(GMAP[x],'sm')}<small>${GMAP[x].name}</small></span>`).join('')}</div></div></div>`};
   return `<details class="p3 btbl" ${bondTbl?'open':''}><summary>진영 · 연합군 · 의용군 보너스 표</summary>
   <h3>진영 보너스 <span style="font-weight:400">· 같은 진영 ★3 이상 장수에게 적용</span></h3>
@@ -3971,9 +3982,14 @@ function bondsDexHtml(){
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>1명</th><th>2명</th><th>3명 이상</th></tr></thead><tbody><tr><th scope="row">의용군</th><td>${fxStr(VOL_BONUS[1])}</td><td>${fxStr(VOL_BONUS[2])}</td><td>${fxStr(VOL_BONUS[3])}</td></tr></tbody></table></div></details>
   <h3>인연 ${BONDS.length}종 <span style="font-weight:400">· 발동하면 진형 전원에게 적용</span></h3>
   <input type="search" class="gf-q" id="bond-q" value="${esc(bondQ)}" placeholder="장수 이름이나 인연 이름으로 검색" aria-label="인연 검색" autocomplete="off">
-  ${grp.map(([t,f])=>{const L=BONDS.filter(f);return L.length?`<div class="bgrp" data-bg><h3>${t} <span style="font-weight:400">· <span data-bgc>${L.filter(B=>!q||nm(B).includes(q)).length}</span>개</span></h3><div class="list">${L.map(card).join('')}</div></div>`:''}).join('')}
-  <p class="sub" id="bond-none" ${q&&!BONDS.some(B=>nm(B).includes(q))?'':'hidden'}>검색한 이름이 들어간 인연이 없어요.</p>`;
+  <div class="chips" role="group" aria-label="인연 효과 필터" style="margin-top:8px"><span class="flab">효과</span>${Object.entries(BFX_K).map(([k,l])=>`<button type="button" data-bfk="${k}" aria-pressed="${bondFk.includes(k)}">${l} <span class="num">${BONDS.filter(B=>B.fk.has(k)&&(!bondX||B.cross)).length}</span></button>`).join('')}<button type="button" data-bfk="x" aria-pressed="${bondX}">타국 ×${CROSS_MUL} <span class="num">${BONDS.filter(B=>B.cross).length}</span></button>${bondFk.length||bondX?'<button type="button" data-bfk="">초기화</button>':''}</div>
+  ${bondFk.length||bondX?`<p class="sub" style="margin:0 0 6px">${[bondFk.length?`${bondFk.map(k=>BFX_K[k]).join(' · ')} 중 하나라도 주는`:'',bondX?'타국':''].filter(Boolean).join(' ')} 인연 <b>${BONDS.filter(B=>bfxOk(B,bondFk,bondX)).length}</b>종</p>`:''}
+  ${grp.map(([t,f])=>{const L=BONDS.filter(B=>f(B)&&bfxOk(B,bondFk,bondX)),c=L.filter(B=>!q||nm(B).includes(q)).length;return L.length?`<div class="bgrp" data-bg ${c?'':'hidden'}><h3>${t} <span style="font-weight:400">· <span data-bgc>${L.filter(B=>!q||nm(B).includes(q)).length}</span>개</span></h3><div class="list">${L.map(card).join('')}</div></div>`:''}).join('')}
+  <p class="sub" id="bond-none" ${BONDS.some(B=>bfxOk(B,bondFk,bondX)&&(!q||nm(B).includes(q)))?'hidden':''}>조건에 맞는 인연이 없어요.</p>`;
 }
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-bfk]');if(!b)return;const k=b.dataset.bfk;
+  if(!k){bondFk=[];bondX=false}else if(k==='x')bondX=!bondX;else bondFk=bondFk.includes(k)?bondFk.filter(x=>x!==k):[...bondFk,k];renderView();
+});
 document.addEventListener('input',e=>{if(!e.target||e.target.id!=='bond-q')return;bondQ=e.target.value;const q=bondQ.trim();let any=false;
   document.querySelectorAll('[data-bg]').forEach(g=>{let n=0;g.querySelectorAll('[data-bnm]').forEach(c=>{const ok=!q||c.dataset.bnm.includes(q);c.classList.toggle('gf-x',!ok);if(ok)n++});g.querySelector('[data-bgc]').textContent=n;g.hidden=!n;if(n)any=true});
   const no=$('#bond-none');if(no)no.hidden=any});
@@ -4180,8 +4196,9 @@ function vDex(){
   if(dexTab==='bonds')return h+bondsDexHtml();
   if(dexTab==='gens'){
     const F=GF.dex, dq=(F.q||'').trim();
-    h+=gfHtml('dex',F,{sorts:DSORT,extra:[['보유','own',[['','전체'],['y','보유'],['n','미보유']]]]});
-    const list=GENS.filter(g=>gfMatch(F,g)&&(!F.own||(F.own==='y')===!!S.gens[g.id])).sort((a,b)=>F.sort==='name'?a.name.localeCompare(b.name,'ko'):F.sort==='rar'?(b.rar-a.rar||(b.str+b.int+b.lead)-(a.str+a.int+a.lead)):(b[F.sort]-a[F.sort]||b.rar-a.rar));
+    h+=gfHtml('dex',F,{sorts:DSORT,extra:[['보유','own',[['','전체'],['y','보유'],['n','미보유']]],['인연 효과','bfk',[['','전체'],...Object.entries(BFX_K)],1],['타국 인연','bx',[['','전체'],['y',`타국 ×${CROSS_MUL} 인연 있음`]]]]});
+    const bks=String(F.bfk||'').split(',').filter(Boolean),bxo=!!F.bx;
+    const list=GENS.filter(g=>gfMatch(F,g)&&(!F.own||(F.own==='y')===!!S.gens[g.id])&&(!bks.length&&!bxo||BONDS.some(B=>B.ids.includes(g.id)&&bfxOk(B,bks,bxo)))).sort((a,b)=>F.sort==='name'?a.name.localeCompare(b.name,'ko'):F.sort==='rar'?(b.rar-a.rar||(b.str+b.int+b.lead)-(a.str+a.int+a.lead)):(b[F.sort]-a[F.sort]||b.rar-a.rar));
     h+=`<p class="sub" style="margin:4px 0 8px"><span data-gfc="dex">${list.filter(g=>gfQ(dq,g)).length}</span>명</p>`;
     const sv=g=>DSORT[F.sort]&&g[F.sort]!=null&&F.sort!=='rar'&&F.sort!=='name'?`<div class="meta num">${DSORT[F.sort]} ${g[F.sort]}</div>`:'';
     h+=list.length?`<div class="grid dexg">${list.map(g=>{const own=S.gens[g.id];return `<button type="button" class="gc ${own?'':'unown'}${gfQ(dq,g)?'':' gf-x'}" data-gfn="dex" data-nm="${gfNm(g)}" data-dexg="${g.id}" aria-label="${esc(g.name)}${own?' 보유':' 미보유'}">${seal(g)}<div class="nm">${esc(g.name)}</div><div class="stars r${g.rar}">${stars(g.rar)}</div><div class="meta"><span class="cls">${CLS[g.cls].g}</span><span>${FAC[g.fac]}</span></div>${sv(g)}</button>`}).join('')}</div>`:'<div class="empty-state"><b>將</b>조건에 맞는 장수가 없어요.</div>';
