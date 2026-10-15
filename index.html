@@ -420,13 +420,84 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 .bt{min-height:100%}
 @media (max-height:820px){.bt{padding:8px 12px;gap:6px}.bt-row{gap:4px}.bt-line .bu{padding:3px 2px 3px}.bt .seal.sm{width:30px;height:30px}.bt-log{min-height:48px}.bt-log .sk{font-size:22px}}
 @media (max-height:660px){.bt .seal.sm{width:26px;height:26px}.bu .bn{font-size:11px}.bt-log{min-height:36px}.bt-log .sk{font-size:18px}.bt-title{font-size:17px}}
+/* 전투 결과창 · 연출 (v3.3.0) */
+.bt-res{position:fixed!important;inset:0;z-index:31;gap:12px!important;padding:calc(16px + env(safe-area-inset-top,0px)) 16px 0!important}
+.res-sp{flex:1 0 0;min-height:0}
+.res-card{gap:14px}
+.res-hist,.res-main{width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
+.res-main{padding-top:14px;border-top:1px dashed var(--line)}
+.res-card.cap .res-main{order:-1;border-top:0;padding-top:0}
+.res-foot{position:sticky;bottom:0;width:100%;display:flex;justify-content:center;padding:10px 0 calc(12px + env(safe-area-inset-bottom,0px));background:var(--bg);box-shadow:0 -12px 12px -4px var(--bg);z-index:2}
+.rs-tg{background:none;border:0;padding:0;font:inherit;color:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.rs-tg i{font-style:normal;font-size:12px;color:var(--mute);transition:transform .2s}
+.rs-tg[aria-expanded=false] i{transform:rotate(-90deg)}
+.stw{position:relative;flex:none}
+.ink{position:absolute;left:50%;top:50%;width:var(--z);height:var(--z);margin:calc(var(--z)/-2) 0 0 calc(var(--z)/-2);border-radius:50%;background:var(--cinnabar);opacity:0;animation:ink .45s .28s ease-out forwards;pointer-events:none}
+@keyframes ink{from{transform:scale(.2);opacity:.9}to{transform:translate(var(--x),var(--y));opacity:.75}}
+.res-sum{width:100%;display:flex;flex-direction:column;gap:6px;font-size:13px}
+.rsl{color:var(--mute);text-align:center}
+.rsl .rsn{display:inline-block;max-width:9em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom;color:var(--fg)}
+.tug,.bt-dmg{display:grid;grid-template-columns:auto 1fr auto;gap:8px;align-items:center;font-size:12px;font-variant-numeric:tabular-nums}
+.tug .tb,.bt-dmg .tb{display:flex;height:10px;border-radius:5px;overflow:hidden;background:var(--panel2)}
+.tb i{display:block;height:100%;transition:width .3s}
+.tb i.a{background:var(--jade)}.tb i.b{background:var(--cinnabar)}
+.tug .num:first-child,.bt-dmg .num:first-child{color:var(--jade)}.tug .num:last-child,.bt-dmg .num:last-child{color:var(--cinnabar)}
+.tugc{display:flex;justify-content:space-between;font-size:11px;color:var(--mute);margin-top:-4px}
+.surv{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:4px}
+.sv{display:flex;flex-direction:column;align-items:center;gap:2px;width:50px;position:relative}
+.sv b{font-size:11px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.svh{width:100%;height:4px;border-radius:2px;background:var(--panel2);overflow:hidden}.svh i{display:block;height:100%;background:var(--jade)}
+.sv.x .seal,.sv.x b{opacity:.45;filter:grayscale(1)}
+.sv.x::after{content:'✕';position:absolute;top:2px;left:50%;transform:translateX(-50%);font-size:26px;line-height:34px;color:var(--cinnabar);font-weight:700}
+.bt-dmg{width:100%;max-width:300px;margin-top:4px;font-size:11px}
+.bt-dmg .tb{height:6px}
+.bt-graph{position:absolute;left:10px;right:10px;top:50%;transform:translateY(-50%);z-index:5;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;border-radius:12px;border:1px solid var(--line);background:rgba(10,16,16,.84);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);cursor:pointer}
+.bt-graph[hidden]{display:none}
+.gcol h4{margin:0 0 4px;font-size:12px;color:var(--mute);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gb{display:grid;grid-template-columns:3.6em 1fr 3.6em;gap:4px;align-items:center;font-size:11px;margin:3px 0}
+.gb .gn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gb b{text-align:right;font-weight:600}
+.gb .gt{height:7px;border-radius:3px;background:var(--panel2);overflow:hidden}.gb .gt i{display:block;height:100%;transition:width .25s}
+.gcol.a .gt i{background:var(--jade)}.gcol.b .gt i{background:var(--cinnabar)}
+.gb.x{opacity:.45}
+.gtot{font-size:13px;margin:0}
+.gx{grid-column:1/-1;margin:0;font-size:10px;color:var(--mute);text-align:center}
+html.work .bt-graph{background:var(--panel)}
+.bt-top .bu.lunge{animation:lungeD calc(var(--bd,560ms)*.8) ease-out}
+.bt-bot .bu.lunge{animation:lungeU calc(var(--bd,560ms)*.8) ease-out}
+@keyframes lungeD{45%{transform:translateY(14px) scale(1.04)}}
+@keyframes lungeU{45%{transform:translateY(-14px) scale(1.04)}}
+.bu.cast{box-shadow:0 0 0 2px var(--bronze),0 0 14px 2px var(--bronze);border-color:var(--bronze)}
+.bt-log .sk.slam{animation:slam .42s cubic-bezier(.2,1.5,.4,1)}
+@keyframes slam{from{transform:scale(1.9);opacity:0;letter-spacing:.3em}}
+.bu.hit{animation:shake .25s,hitf .3s}
+.bu.flash{animation:hitf .16s}
+@keyframes hitf{30%{filter:brightness(1.9)}}
+.bu.burn{animation:burnf .3s}
+@keyframes burnf{40%{box-shadow:0 0 12px 3px #e0782c;filter:brightness(1.3)}}
+.bu.heal{animation:healf .5s}
+@keyframes healf{40%{box-shadow:0 0 12px 3px var(--jade)}}
+.bu.stun{animation:stunf .6s}
+@keyframes stunf{20%{transform:rotate(-5deg)}40%{transform:rotate(5deg)}60%{transform:rotate(-3deg)}80%{transform:rotate(2deg)}}
+.dmg.s{color:#c9a3ff}
+.dmg.c{animation:critf .8s forwards}
+@keyframes critf{0%{transform:translate(-50%,0) scale(.6)}15%{transform:translate(-50%,-4px) scale(1.5)}100%{transform:translate(-50%,-28px) scale(1);opacity:0}}
+.bu.fall{animation:fall .65s ease-in}
+@keyframes fall{0%{opacity:1;filter:none}50%{transform:translateY(6px) rotate(-7deg);opacity:.7}100%{transform:translateY(3px) rotate(-3deg);opacity:.28;filter:grayscale(1)}}
+.bt.quake{animation:quake .26s}
+@keyframes quake{20%{transform:translate(-4px,2px)}40%{transform:translate(4px,-2px)}60%{transform:translate(-3px,-1px)}80%{transform:translate(2px,1px)}}
+.bt-fin{position:absolute;inset:0;z-index:6;pointer-events:none}
+.bt-fin.w{background:radial-gradient(circle at 50% 50%,rgba(208,80,58,.42),rgba(208,80,58,.12) 45%,transparent 70%);animation:bleed .75s ease-out forwards}
+@keyframes bleed{from{transform:scale(.15);opacity:0}60%{opacity:1}to{transform:scale(1.6);opacity:.9}}
+.bt-fin.l{background:rgba(6,10,10,.45);backdrop-filter:grayscale(1) brightness(.75);-webkit-backdrop-filter:grayscale(1) brightness(.75);animation:drain .75s ease-out forwards}
+@keyframes drain{from{opacity:0}to{opacity:1}}
+html.work .ink,html.work .bt-fin{display:none}
 </style>
 </head>
 <body>
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.2.4</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v3.3.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1636,6 +1707,7 @@ function openSettings(first){
    ${anon?(isInApp()?`<div class="warn" style="margin:0 0 12px"><b>구글 연동</b><br>지금은 카카오톡 같은 앱 안 브라우저라 구글 연동이 막혀 있어요. 게스트 기록은 처음 시작한 브라우저에만 남아 있어서, 다른 브라우저로 옮기면 새 게스트가 돼요.</div>`:`<button type="button" class="btn wide" id="link-google" style="margin-bottom:6px">구글 계정 연동하기</button><p class="sub">연동하면 지금 기록이 그대로 구글 계정에 묶여서, 다른 기기에서도 구글로 로그인해 이어서 할 수 있어요.</p>`):''}<button type="button" class="btn ghost wide" id="logout">로그아웃</button><h3>처음부터 다시 시작</h3>${resetBlock()}`}`);
   logoutArm=false;bindReset();
   {const nf=$('#name-form');if(nf&&!first)nf.insertAdjacentHTML('afterend',attRateHtml())}
+  {const lo=$('#logout');if(lo&&!first){lo.insertAdjacentHTML('beforebegin',`<label class="row" style="gap:8px;margin:0 0 4px;font-size:14px"><input type="checkbox" id="no-shake" ${btNoShake()?'checked':''}> 전투 화면 흔들림 끄기</label><p class="sub" style="margin:0 0 12px">치명타·마지막 일격 때 화면이 흔들리지 않아요.</p>`);$('#no-shake').onchange=e=>{btNoShakeSave(e.target.checked);toast(e.target.checked?'전투 화면 흔들림을 껐어요':'전투 화면 흔들림을 켰어요')}}}
   const lg=$('#link-google');if(lg)lg.onclick=linkGoogle;
   $('#name-form').onsubmit=ev=>{ev.preventDefault();const v=cleanName($('#name-input').value);if(!v){toast('이름을 입력해 주세요');return}MYNAME=v;save();closeSheet();renderView();toast('이름을 저장했어요');if(first)setTimeout(runPopups,300)};
   const lo=$('#logout');
@@ -1651,10 +1723,21 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='3.2.2';
+const GAME_VERSION='3.3.0';
 const ATT_AP=30, ATT_BONUS_FOOD=500;
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'3.3.0',date:'2026-10-15',title:'전투 결과창 개편 · 전투 연출',reward:{ap:30},items:[
+  '전투 결과창이 처음 열릴 때 勝·敗 도장, 전투 요약, 보상, 확인 버튼이 한 화면에 보여요. 위로 올리면 전투 기록·장수 상세·공유 버튼이 나와요.',
+  '결과창에 전투 요약이 생겼어요. 진행한 턴 수와 양쪽 생존 인원, 양쪽이 준 총 피해 비교 막대, 아군 장수별 생존·남은 체력을 한눈에 볼 수 있어요.',
+  '보상 숫자가 0부터 올라가며 표시되고, 확인 버튼은 스크롤해도 화면 아래에 붙어 있어요. 전투 기록 제목을 누르면 접고 펼 수 있어요.',
+  '장수 상세 아래의 설명 문구를 없앴어요. 경감한 피해·화상 피해 설명은 도움말 \'전투 결과\'에서 볼 수 있어요.',
+  '전투 연출이 생겼어요. 공격할 때 장수가 적 쪽으로 돌진하고, 전법은 이름이 크게 찍히며 시전 장수가 빛나요. 치명타는 화면이 살짝 흔들리고, 회복·화상·기절은 색으로 번쩍여요. 쓰러진 장수는 기울며 가라앉아요.',
+  '마지막 일격 뒤 잠깐 멈췄다가 승리하면 주홍 먹이 번지고, 패배하면 화면이 빛을 잃은 뒤 결과창으로 넘어가요. 勝 도장이 찍힐 때 먹물이 튀어요.',
+  '4배속·8배속에서는 돌진과 흔들림을 빼고 맞을 때 번쩍임만 보여 줘서 빠른 전투도 깔끔해요.',
+  '전투 중 가운데에 양쪽이 준 총 피해 비교 막대가 실시간으로 나와요. 위의 [그래프] 버튼을 누르면 장수별 피해 막대가 겹쳐 보이고, 다시 누르면 닫혀요(마지막 상태를 기억해요).',
+  '내 정보(설정)에 \'전투 화면 흔들림 끄기\'를 추가했어요. 기기의 동작 줄이기 설정을 켜면 모든 연출이 꺼져요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'3.2.4',date:'2026-10-15',title:'홈 화면 앱 자동 업데이트',reward:{ap:30,gpk:10},items:[
   '홈 화면에 추가한 앱처럼 새로고침 버튼이 없는 곳에서도 새 버전을 받을 수 있어요. 앱을 열거나 다른 앱에 갔다 돌아올 때 새 버전을 확인하고, 있으면 화면 위에 [지금 업데이트] 안내가 떠요.',
   '[지금 업데이트]를 누르면 진행 상황을 먼저 저장한 뒤 새 버전을 불러와요.',
@@ -2076,6 +2159,8 @@ const HELP=[
   ['보물','장수마다 3개까지 장착해요. 공격·체력·방어는 퍼센트로, 속도는 수치로 더해져요. 아래 보물 항목에 자세히 있어요.']]},
  {t:'전투 결과',rows:[
   ['MVP','아군·적군에서 각각 (준 피해 + 회복량 × 0.6) 점수가 가장 높은 장수예요. 준 피해에는 일반 공격, 전법, 화상 같은 지속 피해가 모두 들어가요. 회복은 피해보다 0.6배로 쳐요.'],
+  ['전투 기록','경감한 피해는 방어력과 피해 감소로 막아 낸 양이고, 화상 피해는 전법 피해에 포함돼요. 보물·전법 이름을 누르면 설명이 나와요.'],
+  ['전투 연출','공격 돌진, 전법 강조, 치명타 흔들림, 마지막 일격 연출이 나와요. 4·8배속에서는 돌진·흔들림이 빠져요. 흔들림은 내 정보에서 끌 수 있고, 기기의 동작 줄이기를 켜면 모든 연출이 꺼져요. 전투 중 [그래프]를 누르면 장수별 피해를 실시간으로 볼 수 있어요.'],
   ['패배 원인','진 전투의 결과 화면 위에 진형 상성, 판정패 여부, 피해를 가장 많이 낸 적, 가장 먼저 쓰러진 아군, 적 체력 대비 준 피해 중 해당하는 내용을 최대 3줄로 보여 줘요.']]},
  {t:'전투 규칙',rows:[
   ['병종','기병·보병은 맨 앞 적을, 궁병은 체력 비율이 가장 낮은 적을, 책사는 무작위 적을 공격해요.'],
@@ -4065,6 +4150,26 @@ const CAN_SHARE=typeof FIREBASE_CONFIG!=='undefined';
 const BT_SPD=[4,8,1,2], BT_SPD_K='sg_bt_speed';
 function btSpeed(){try{const v=+localStorage.getItem(BT_SPD_K);if(BT_SPD.includes(v))return v}catch(e){}return 4}
 function btSpeedSave(v){try{localStorage.setItem(BT_SPD_K,String(v))}catch(e){}}
+// 전투 연출 (v3.3.0): 흔들림 끄기 · 피해 그래프 상태는 기기에 기억해요
+function btNoShake(){try{return localStorage.getItem('sg_no_shake')==='1'}catch(e){return false}}
+function btNoShakeSave(on){try{localStorage.setItem('sg_no_shake',on?'1':'0')}catch(e){}}
+function btGraphOn(){try{return localStorage.getItem('sg_bt_graph')==='1'}catch(e){return false}}
+function btGraphSave(on){try{localStorage.setItem('sg_bt_graph',on?'1':'0')}catch(e){}}
+const btStill=()=>matchMedia('(prefers-reduced-motion: reduce)').matches||isWork();
+// 결과 요약 (v3.3.0): 턴 수 · 생존 인원 · 준 피해 비교 · 아군 생존 현황
+function battleTurns(res){if(res.turns)return res.turns;let n=1;const seen=new Set();for(const e of res.ev){if(e.spawn||e.tick)continue;const k=e.s+'-'+e.i;if(seen.has(k)){n++;seen.clear()}seen.add(k)}return n}
+function resSummary(res,st,SG,l0,l1){
+  const A=res.init[0]||[],B=res.init[1]||[],al=u=>((st[u.side+'-'+u.slot]||{}).hp||0)>0;
+  const d0=A.reduce((a,u)=>a+(st[u.side+'-'+u.slot]||{dmg:0}).dmg,0),d1=SG?res.ev.reduce((a,e)=>a+(e.hits||[]).filter(h=>h.s===0&&!h.self).reduce((x,h)=>x+h.d,0),0):B.reduce((a,u)=>a+(st[u.side+'-'+u.slot]||{dmg:0}).dmg,0);
+  const p=d0+d1>0?Math.round(d0/(d0+d1)*100):50;
+  const line=[`${battleTurns(res)}턴`,`<span class="rsn">${esc(l0)}</span> 생존 ${A.filter(al).length}/${A.length}`];if(!SG)line.push(`<span class="rsn">${esc(l1)}</span> 생존 ${B.filter(al).length}/${B.length}`);
+  const sv=A.map(u=>{const r=st[u.side+'-'+u.slot]||{hp:0},hp=Math.max(0,r.hp),mx=u.maxhp||u.hp||1,dead=hp<=0;
+    return `<span class="sv${dead?' x':''}" title="${esc(u.name)} ${dead?'전사':'남은 체력 '+fmt(hp)}">${seal(u,'sm')}<b>${esc(u.name)}</b><span class="svh"><i style="width:${dead?0:Math.max(3,Math.round(hp/mx*100))}%"></i></span></span>`}).join('');
+  return `<div class="res-sum"><div class="rsl">${line.join(' · ')}</div>
+   <div class="tug" aria-label="준 피해 ${esc(l0)} ${fmt(d0)} 대 ${esc(l1)} ${fmt(d1)}"><span class="num">${fmt(d0)}</span><span class="tb"><i class="a" style="width:${p}%"></i><i class="b" style="width:${100-p}%"></i></span><span class="num">${fmt(d1)}</span></div>
+   <div class="tugc"><span>${esc(l0)} 준 피해</span><span>${esc(l1)} 준 피해</span></div>
+   <div class="surv">${sv}</div></div>`;
+}
 // 패배 브리핑 (v3.2.3): 패배 원인을 최대 3줄로 요약해요
 const jIGa=w=>{const c=String(w||'').charCodeAt(String(w||'').length-1)-0xAC00;return c>=0&&c<=11171&&c%28?'이':'가'};
 function defeatBrief(res,st){
@@ -4095,7 +4200,7 @@ function battleStats(res){
   }
   return st;
 }
-let rsSide=0, rsMetric='dmg', rsSel='';
+let rsSide=0, rsMetric='dmg', rsSel='', rsOpen=true;
 const RS_M={dmg:'피해량',taken:'받은 피해',mit:'경감한 피해',acts:'공격 횟수',dps:'회당 피해'};
 function statChart(res,st,sel){
   const us=res.init[rsSide].map(u=>{const r=st[u.side+'-'+u.slot];return {u,r,v:rsMetric==='dps'?(r.acts?Math.round(r.dmg/r.acts):0):r[rsMetric]}}).sort((a,b)=>b.v-a.v);
@@ -4114,7 +4219,7 @@ function mvpHtml(m,tag){
    <div style="margin-top:4px"><button type="button" class="ichip sk" data-rssk="${key}">전법 · ${esc(u.skill)}</button></div></div></div>
    ${its?`<div class="ichips${BT_HIDE_SIDE>=0&&!hid?' no-cap':''}">${its}</div>`:''}
    <div class="stats" style="grid-template-columns:repeat(4,1fr);margin:10px 0 0">${c('총 피해',fmt(r.dmg))}${c('일반 공격 피해',fmt(r.nd))}${c('전법 피해',fmt(r.sd))}${c('처치',r.kills)}${c('받은 피해',fmt(r.taken))}${c('경감한 피해',fmt(r.mit))}${c('남은 체력',fmt(Math.max(0,r.hp)))}${c('회복',fmt(r.heal))}${c('행동 · 전법',r.acts+' · '+r.sk)}${c('회당 피해',fmt(r.acts?Math.round(r.dmg/r.acts):0))}${c('치명타',r.crit)}${c('생존',r.hp>0?'○':'✕')}</div>
-   <p class="sub no-cap" style="margin:6px 0 0;font-size:12px">보물·전법을 누르면 설명이 나와요. 경감한 피해는 방어력과 피해 감소로 막아 낸 양이고, 화상 피해는 전법 피해에 포함돼요.</p></div>`;
+</div>`;
 }
 function unitByKey(res,key){const[s,i]=key.split('-').map(Number);return res.init[s].find(x=>x.slot===i)}
 function openInfoPop(html){
@@ -4195,13 +4300,27 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
   const renderSide=k=>{const n=$('#bt-s'+k);if(n)n.innerHTML=sideHtml(k)};
   const castleHtml=SG?`<div class="castle"><b>城</b><div class="cbar"><i id="castle-i" style="width:100%"></i></div><span class="num" id="castle-t">${fmt(SG.max)}</span><span class="chip" id="wave-t">제1파</span></div>`:'';
   const setCastle=v=>{if(!SG)return;const i=$('#castle-i'),t=$('#castle-t');if(i)i.style.width=Math.max(0,v/SG.max*100)+'%';if(t)t.textContent=fmt(Math.max(0,v))};
-  const el=$('#battle');
-  el.innerHTML=`<div class="bt${SG?' siege':''}"><div class="bt-head"><span class="bt-title">${esc(title)}</span><button type="button" class="btn ghost sm" id="bt-speed">${btSpeed()}배속</button><button type="button" class="btn ghost sm" id="bt-skip">결과 보기</button>${opts&&opts.commit?'<button type="button" class="btn ghost sm red" id="bt-quit">중도포기</button>':''}</div>
+  const el=$('#battle');const sp0=btSpeed();
+  el.innerHTML=`<div class="bt${SG?' siege':''}${sp0>=4?' fast':''}" style="--bd:${Math.round(560/sp0)}ms"><div class="bt-head"><span class="bt-title">${esc(title)}</span><button type="button" class="btn ghost sm" id="bt-speed">${sp0}배속</button><button type="button" class="btn ghost sm" id="bt-graph" aria-pressed="${btGraphOn()}">그래프</button><button type="button" class="btn ghost sm" id="bt-skip">결과 보기</button>${opts&&opts.commit?'<button type="button" class="btn ghost sm red" id="bt-quit">중도포기</button>':''}</div>
   <div class="bt-side">${esc(SG?allyLab:foeLab)}${sideForm(topK)}</div><div class="bt-row bt-top ${SG?'bt-ally':'bt-foe'}" id="bt-s${topK}">${sideHtml(topK)}</div>${castleHtml}
-  <div class="bt-log"><div class="sk" id="bt-sk"></div><div class="ln" id="bt-ln">${esc(bonusLine(res.bonus&&res.bonus[0])?'아군 효과 · '+bonusLine(res.bonus[0]):'전투 개시')}</div></div>
-  <div class="bt-row bt-bot ${SG?'bt-foe':'bt-ally'}" id="bt-s${botK}">${sideHtml(botK)}</div><div class="bt-side" style="text-align:right">${esc(SG?foeLab:allyLab)}${sideForm(botK)}</div></div>`;
+  <div class="bt-log"><div class="sk" id="bt-sk"></div><div class="ln" id="bt-ln">${esc(bonusLine(res.bonus&&res.bonus[0])?'아군 효과 · '+bonusLine(res.bonus[0]):'전투 개시')}</div><div class="bt-dmg" id="bt-dmg" aria-hidden="true"><span class="num" id="bt-d0">0</span><span class="tb"><i class="a" id="bt-da" style="width:50%"></i><i class="b" id="bt-db" style="width:50%"></i></span><span class="num" id="bt-d1">0</span></div></div>
+  <div class="bt-row bt-bot ${SG?'bt-foe':'bt-ally'}" id="bt-s${botK}">${sideHtml(botK)}</div><div class="bt-side" style="text-align:right">${esc(SG?foeLab:allyLab)}${sideForm(botK)}</div><div class="bt-graph" id="bt-gr" hidden></div></div>`;
   el.hidden=false;
-  let speed=btSpeed(), idx=0, timer=null;
+  let speed=sp0, idx=0, timer=null;
+  // 실시간 피해 (v3.3.0)
+  const dm=[0,0],du={},gl=[SG?'수비군':allyLab,SG?'공격군':foeLab];
+  const acc=e=>{if(e.spawn||e.skip)return;const add=(s,i,d)=>{dm[s]+=d;if(!(SG&&s===1))du[s+'-'+i]=(du[s+'-'+i]||0)+d};
+    if(e.tick){for(const h of e.hits||[])if(h.by)add(h.by[0],h.by[1],h.d);return}
+    for(const h of e.hits||[])if(!h.self)add(e.s,e.i,h.d)};
+  const drawDmg=()=>{const t=dm[0]+dm[1],p=t?dm[0]/t*100:50,a=$('#bt-da'),b=$('#bt-db');if(!a)return;a.style.width=p+'%';b.style.width=(100-p)+'%';$('#bt-d0').textContent=fmt(dm[0]);$('#bt-d1').textContent=fmt(dm[1]);
+    const g=$('#bt-gr');if(!g||g.hidden)return;
+    const col=s=>{if(SG&&s===1)return `<div class="gcol"><h4>${esc(gl[s])}</h4><p class="gtot">총 ${fmt(dm[1])}</p></div>`;const us=units[s].map(u=>({u,v:du[s+'-'+u.slot]||0})).sort((x,y)=>y.v-x.v),mx=Math.max(1,...us.map(x=>x.v));
+      return `<div class="gcol ${s?'b':'a'}"><h4>${esc(gl[s])}</h4>${us.map(({u,v})=>`<div class="gb${u.hp<=0?' x':''}"><span class="gn">${esc(u.name)}</span><span class="gt"><i style="width:${v/mx*100}%"></i></span><b class="num">${fmt(v)}</b></div>`).join('')}</div>`};
+    g.innerHTML=col(0)+col(1)+'<p class="gx">누르면 닫혀요</p>'};
+  const setGraph=on=>{const g=$('#bt-gr'),b=$('#bt-graph');if(!g)return;g.hidden=!on;if(b)b.setAttribute('aria-pressed',String(on));btGraphSave(on);drawDmg()};
+  // 연출 (v3.3.0): 효과 클래스를 잠깐 붙였다 떼요
+  const fxc=(n,c,ms)=>{if(!n||btStill())return;n.classList.remove(c);void n.offsetWidth;n.classList.add(c);clearTimeout(n['_'+c]);n['_'+c]=setTimeout(()=>n.classList.remove(c),ms||600)};
+  const fast=()=>speed>=4, quake=()=>{if(!btNoShake()&&!btStill())fxc($('.bt'),'quake',260)};
   const U=(s,i)=>units[s].find(x=>x.slot===i);
   const paint=(s,i)=>{const u=U(s,i),n=$(`#bu-${s}-${i}`);if(!u||!n)return;n.querySelector('.hp i').style.width=(u.hp/u.maxhp*100)+'%';n.classList.toggle('dead',u.hp<=0)};
   const float=(s,i,txt,cls)=>{const n=$(`#bu-${s}-${i}`);if(!n)return;const f=document.createElement('span');f.className='dmg '+cls;f.textContent=txt;n.appendChild(f);setTimeout(()=>f.remove(),800)};
@@ -4209,13 +4328,17 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     if(e.spawn){units[1]=e.units.map(u=>({...u}));renderSide(1);waveNo=e.spawn;const w=$('#wave-t');if(w)w.textContent=`제${waveNo}파`;if(anim){$('#bt-sk').textContent=`제${waveNo}파`;$('#bt-ln').textContent='적의 새 무리가 몰려와요 (더 강해졌어요)'}return}
     {const lc=[...(e.hits||[]),...(e.heals||[])].filter(h=>h.ch!=null).pop();if(lc)setCastle(lc.ch)}
     const a=e.tick?null:U(e.s,e.i);
-    for(const h of e.hits||[]){const t=U(h.s,h.i);if(!t)continue;t.hp=h.hp;paint(h.s,h.i);if(anim){float(h.s,h.i,'-'+h.d,h.c?'c':(h.self||h.burn)?'b':'');const n=$(`#bu-${h.s}-${h.i}`);if(n){n.classList.remove('hit');void n.offsetWidth;n.classList.add('hit')}}}
-    for(const h of e.heals||[]){const t=U(h.s,h.i);if(!t)continue;t.hp=h.hp;paint(h.s,h.i);if(anim&&h.h>0)float(h.s,h.i,'+'+h.h,'h')}
-    if(anim)for(const st of e.stuns||[])float(st.s,st.i,'기절','s');
+    acc(e);let crit=false;
+    for(const h of e.hits||[]){const t=U(h.s,h.i);if(!t)continue;const was=t.hp;t.hp=h.hp;paint(h.s,h.i);if(anim){float(h.s,h.i,'-'+h.d,h.c?'c':(h.self||h.burn)?'b':'');if(h.c)crit=true;const n=$(`#bu-${h.s}-${h.i}`);
+      if(n){if(btStill()){n.classList.remove('hit');void n.offsetWidth;n.classList.add('hit')}else fxc(n,(h.burn||e.tick)?'burn':fast()?'flash':'hit',fast()?160:300);if(was>0&&h.hp<=0)fxc(n,'fall',650)}}}
+    for(const h of e.heals||[]){const t=U(h.s,h.i);if(!t)continue;t.hp=h.hp;paint(h.s,h.i);if(anim&&h.h>0){float(h.s,h.i,'+'+h.h,'h');fxc($(`#bu-${h.s}-${h.i}`),'heal',500)}}
+    if(anim)for(const st of e.stuns||[]){float(st.s,st.i,'기절','s');fxc($(`#bu-${st.s}-${st.i}`),'stun',600)}
     if(anim){
       document.querySelectorAll('.bu.act').forEach(n=>n.classList.remove('act'));
-      if(a){const an=$(`#bu-${e.s}-${e.i}`);an&&an.classList.add('act')}
-      $('#bt-sk').textContent=e.sk||'';
+      if(a){const an=$(`#bu-${e.s}-${e.i}`);if(an){an.classList.add('act');if(!e.skip&&!fast()&&(e.hits||[]).some(h=>!h.self))fxc(an,'lunge',Math.round(560/speed*.8)+40);if(e.sk)fxc(an,'cast',fast()?300:700)}}
+      $('#bt-sk').textContent=e.sk||'';if(e.sk)fxc($('#bt-sk'),'slam',fast()?220:420);
+      if(crit&&!fast())quake();
+      drawDmg();
       let ln;
       if(e.tick)ln='화상 피해';
       else if(e.skip)ln=`${a.name} 기절로 행동하지 못함`;
@@ -4231,6 +4354,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     if(fin||tok!==btToken)return;fin=1;
     clearTimeout(timer);
     const q=$('#bt-quit');if(q)q.remove();
+    {const bt=$('.bt');if(bt){bt.classList.remove('quake');bt.querySelectorAll('.bt-fin').forEach(n=>n.remove())}const gb=$('#bt-graph');if(gb)gb.remove();const gr=$('#bt-gr');if(gr)gr.hidden=true}
     if(opts&&opts.commit){try{await opts.commit()}catch(err){}if(tok!==btToken)return}
     while(idx<res.ev.length)apply(res.ev[idx++],false);
     document.querySelectorAll('.bu.act').forEach(n=>n.classList.remove('act'));
@@ -4238,13 +4362,16 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     const stt=battleStats(res), sh=opts&&opts.share, rp=opts&&opts.replay;
     rsSide=SG?0:rp?(res.win?0:1):0;{const m0=mvpOf(res,stt,rsSide);rsSel=m0?m0.u.side+'-'+m0.u.slot:''}
     const vd=opts&&opts.verdict, winLab=vd?vd.lab:rp?`${res.win?allyLab:foeLab} 승리`:(res.win?'승리':'패배');
-    box.innerHTML=`<div class="res-card" id="res-card"><div class="res-top"><div class="stamp ${res.win||rp||vd?'w':'l'}">${vd?vd.stamp:rp?'戰':res.win?'勝':'敗'}</div><h2 style="margin:0">${esc(winLab)}</h2></div>${!res.win&&!rp&&!vd&&!SG?(()=>{const L=defeatBrief(res,stt);return L.length?`<div class="brief"><h3>패배 원인</h3><ul>${L.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''})():''}${resultHtml()}
-     <div class="res-sec"><h3>전투 기록</h3>
+    const L0=SG?'수비군':(rp||vd)?allyLab:'아군', L1=SG?'공격군':(rp||vd)?foeLab:'적';
+    const inks=(res.win||rp||vd)?[[-40,-24,8],[36,-30,6],[44,14,9],[-38,26,5],[-6,-44,5],[24,38,6],[-50,2,4],[52,-6,4]].map(([x,y,z])=>`<i class="ink" style="--x:${x}px;--y:${y}px;--z:${z}px"></i>`).join(''):'';
+    box.innerHTML=`<span class="res-sp"></span>${sh&&CAN_SHARE?`<div class="share-row"><button type="button" class="btn ghost" id="sh-link">결과 링크 공유</button><button type="button" class="btn ghost" id="sh-img">이미지로 공유</button></div><div id="share-fallback" hidden style="width:100%;max-width:440px"><p class="sub" style="margin:0 0 4px">아래 내용을 길게 눌러 복사한 뒤 카카오톡에 붙여넣으세요.</p><textarea readonly></textarea></div>`:''}
+     <div class="res-card" id="res-card"><div class="res-hist">
+     <div class="res-sec"><h3><button type="button" class="rs-tg" id="rs-tg" aria-expanded="${rsOpen}">전투 기록 <i aria-hidden="true">▾</i></button></h3><div id="rs-body"${rsOpen?'':' hidden'}>
       <div class="chips no-cap" role="group">${SG?'':`<button type="button" data-rss="0" aria-pressed="${rsSide===0}">${esc(allyLab)}</button><button type="button" data-rss="1" aria-pressed="${rsSide===1}">${esc(foeLab)}</button>`}<span class="sp"></span>${Object.entries(RS_M).map(([k,v])=>`<button type="button" data-rsm="${k}" aria-pressed="${rsMetric===k}">${v}</button>`).join('')}</div>
-      <div class="sub" id="rs-cap" style="margin:0 0 4px">${esc(rsSide?foeLab:allyLab)} · ${RS_M[rsMetric]}</div><div class="sub no-cap" style="margin:0 0 4px;font-size:12px">장수 이름을 누르면 아래 기록 창이 그 장수로 바뀌어요.</div><div id="rs-chart">${statChart(res,stt,rsSel)}</div></div>
+      <div class="sub" id="rs-cap" style="margin:0 0 4px">${esc(rsSide?foeLab:allyLab)} · ${RS_M[rsMetric]}</div><div class="sub no-cap" style="margin:0 0 4px;font-size:12px">장수 이름을 누르면 아래 기록 창이 그 장수로 바뀌어요.</div><div id="rs-chart">${statChart(res,stt,rsSel)}</div></div></div>
      <div class="mvpline" id="rs-mvpl"></div><div id="rs-unit">${mvpHtml(mvpOf(res,stt,rsSide),'MVP')}</div></div>
-     ${sh&&CAN_SHARE?`<div class="share-row"><button type="button" class="btn ghost" id="sh-link">결과 링크 공유</button><button type="button" class="btn ghost" id="sh-img">이미지로 공유</button></div><div id="share-fallback" hidden style="width:100%;max-width:440px"><p class="sub" style="margin:0 0 4px">아래 내용을 길게 눌러 복사한 뒤 카카오톡에 붙여넣으세요.</p><textarea readonly></textarea></div>`:''}
-     <button type="button" class="btn" id="bt-close" style="min-width:160px">${rp?'게임 하러 가기':'확인'}</button>`;
+     <div class="res-main"><div class="res-top"><div class="stw"><div class="stamp ${res.win||rp||vd?'w':'l'}">${vd?vd.stamp:rp?'戰':res.win?'勝':'敗'}</div>${inks}</div><h2 style="margin:0">${esc(winLab)}</h2></div>${resSummary(res,stt,SG,L0,L1)}${!res.win&&!rp&&!vd&&!SG?(()=>{const L=defeatBrief(res,stt);return L.length?`<div class="brief"><h3>패배 원인</h3><ul>${L.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''})():''}${resultHtml()}</div></div>
+     <div class="res-foot"><button type="button" class="btn" id="bt-close" style="min-width:160px">${rp?'게임 하러 가기':'확인'}</button></div>`;
     $('.bt').appendChild(box);
     const showUnit=key=>{const u=unitByKey(res,key);if(!u)return;rsSel=key;const m=mvpOf(res,stt,u.side);$('#rs-unit').innerHTML=mvpHtml({u,r:stt[key]},m&&m.u===u?'MVP':'');
       const mm=mvpOf(res,stt,rsSide);$('#rs-mvpl').innerHTML=mm?`<span class="mvpb">MVP</span> <b>${esc(mm.u.name)}</b> · 총 피해 ${fmt(mm.r.dmg)}${mm.u.side+'-'+mm.u.slot!==key?` <button type="button" class="btn ghost sm" data-rsu="${mm.u.side}-${mm.u.slot}">MVP 보기</button>`:''}`:'';
@@ -4258,12 +4385,22 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
       const it=e.target.closest('[data-rsi]');if(it){const[k,j]=it.dataset.rsi.split(':'),u=unitByKey(res,k),x=u&&u.items[+j];if(x&&IMAP[x.k]&&BT_HIDE_SIDE!==u.side&&BT_HIDE_SIDE!==2)openInfoPop(itemInfoHtml(IMAP[x.k],x.d||0,u));return}
       const sk=e.target.closest('[data-rssk]');if(sk){const u=unitByKey(res,sk.dataset.rssk);if(u)openInfoPop(skillInfoHtml(u))}
     });
-    if(sh&&CAN_SHARE){$('#sh-link').onclick=()=>shareLink(sh,res.win);$('#sh-img').onclick=()=>shareImage($('#res-card'),sh)}
+    $('#rs-tg').onclick=()=>{rsOpen=!rsOpen;$('#rs-body').hidden=!rsOpen;$('#rs-tg').setAttribute('aria-expanded',String(rsOpen))};
+    if(sh&&CAN_SHARE){$('#sh-link').onclick=()=>shareLink(sh,res.win);$('#sh-img').onclick=async()=>{const c=$('#res-card');c.classList.add('cap');try{await shareImage(c,sh)}finally{c.classList.remove('cap')}}}
     $('#bt-close').onclick=()=>{el.hidden=true;el.innerHTML='';if(rp){history.replaceState(null,'',location.pathname+location.search);if(typeof showLogin==='function'&&!S&&MODE!=='local')showLogin()}renderTop();renderView()};
-    $('#bt-close').focus();
+    $('#bt-close').focus({preventScroll:true});
+    // 첫 화면은 아래쪽(도장·요약·보상·확인)부터 보여 줘요 (v3.3.0)
+    const toMain=()=>{const m=box.querySelector('.res-main');if(!m)return;box.scrollTop=Math.min(box.scrollHeight-box.clientHeight,Math.max(0,m.offsetTop-12))};toMain();requestAnimationFrame(toMain);
+    if(!btStill())box.querySelectorAll('.res-main .coin').forEach(c=>{const tn=[...c.childNodes].reverse().find(n=>n.nodeType===3&&/\d/.test(n.nodeValue));if(!tn)return;const m=tn.nodeValue.match(/^(\D*)([\d,]+)(.*)$/);if(!m)return;const to=+m[2].replace(/,/g,'');if(!(to>0))return;
+      const t0=performance.now(),D=700,f=t=>{const p=Math.min(1,(t-t0)/D);tn.nodeValue=m[1]+fmt(to*(1-Math.pow(1-p,3)))+m[3];if(p<1&&tn.isConnected)requestAnimationFrame(f)};tn.nodeValue=m[1]+'0'+m[3];requestAnimationFrame(f)});
   };
-  const step=()=>{if(tok!==btToken)return;if(idx>=res.ev.length){timer=setTimeout(finish,500);return}apply(res.ev[idx++],true);timer=setTimeout(step,560/speed)};
-  $('#bt-speed').onclick=()=>{speed=BT_SPD[(BT_SPD.indexOf(speed)+1)%BT_SPD.length];btSpeedSave(speed);$('#bt-speed').textContent=speed+'배속'};
+  // 마지막 일격 (v3.3.0): 0.4초 멈춘 뒤 승리는 먹 번짐, 패배는 화면 탈색
+  const finale=()=>{const bt=$('.bt');if(!bt||btStill()){timer=setTimeout(finish,500);return}
+    const lost=!res.win&&!(opts&&(opts.replay||opts.verdict));quake();
+    timer=setTimeout(()=>{if(tok!==btToken||fin)return;const o=document.createElement('div');o.className='bt-fin '+(lost?'l':'w');o.setAttribute('aria-hidden','true');bt.appendChild(o);timer=setTimeout(finish,750)},400)};
+  const step=()=>{if(tok!==btToken)return;if(idx>=res.ev.length){finale();return}apply(res.ev[idx++],true);timer=setTimeout(step,560/speed)};
+  $('#bt-speed').onclick=()=>{speed=BT_SPD[(BT_SPD.indexOf(speed)+1)%BT_SPD.length];btSpeedSave(speed);$('#bt-speed').textContent=speed+'배속';const bt=$('.bt');if(bt){bt.classList.toggle('fast',speed>=4);bt.style.setProperty('--bd',Math.round(560/speed)+'ms')}};
+  $('#bt-graph').onclick=()=>setGraph($('#bt-gr').hidden);$('#bt-gr').onclick=()=>setGraph(false);if(btGraphOn())setGraph(true);
   $('#bt-skip').onclick=finish;
   const qb=$('#bt-quit');let qArm=0;
   if(qb)qb.onclick=()=>{if(fin)return;
