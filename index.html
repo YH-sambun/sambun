@@ -15,7 +15,7 @@
   --bg:#0e1716; --panel:#152220; --panel2:#1c2d2a; --line:#2a3f3a;
   --fg:#ede5d1; --mute:#93a39b; --ink:#16120a;
   --bronze:#d2aa55; --bronze-d:#7d6330; --cinnabar:#d0503a; --jade:#5ab596;
-  --wei:#6197d8; --shu:#5ab596; --wu:#db6a52; --qun:#ab8ed3;
+  --wei:#6197d8; --shu:#5ab596; --wu:#db6a52; --qun:#ab8ed3; --dong:#cf6e98; --yuan:#d4b44e;
   --r2:#6f7f7a; --r3:#9fb0aa; --r4:#ad90e6; --r5:#e9c66c;
   --display:"Song Myung","Nanum Myeongjo","Batang",serif;
   --body:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
@@ -29,7 +29,7 @@ button{font:inherit;color:inherit;cursor:pointer}
 .sc{display:none}
 /* 업무 모드: 픽셀아트·한자 장식을 숨기고 밝은 회색 화면으로 */
 html.work{--bg:#f5f5f5;--panel:#ffffff;--panel2:#efefef;--line:#dadada;--fg:#222222;--mute:#6e6e6e;--ink:#ffffff;--bronze:#555555;--bronze-d:#bdbdbd;--cinnabar:#555555;--jade:#8a8a8a;
-  --wei:#c9d3df;--shu:#c9d3df;--wu:#c9d3df;--qun:#c9d3df;--r2:#c3c8ce;--r3:#c3c8ce;--r4:#aab2bd;--r5:#8f99a6;--display:var(--body);color-scheme:light}
+  --wei:#c9d3df;--shu:#c9d3df;--wu:#c9d3df;--qun:#c9d3df;--dong:#c9d3df;--yuan:#c9d3df;--r2:#c3c8ce;--r3:#c3c8ce;--r4:#aab2bd;--r5:#8f99a6;--display:var(--body);color-scheme:light}
 html.work body{background-image:none;font-size:14px}
 html.work .px{display:none!important}
 html.work .sc{display:inline;font-family:var(--body);font-size:13px;font-weight:700;color:var(--fg);line-height:1}
@@ -86,7 +86,7 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 .seal{--fac:var(--qun);--rc:var(--r3);width:44px;height:44px;flex:none;border-radius:50%;display:grid;place-items:center;font-family:var(--display);font-size:24px;color:var(--ink);background:var(--fac);box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--rc)}
 .seal.lg{width:72px;height:72px;font-size:40px}
 .seal.sm{width:34px;height:34px;font-size:18px}
-.f-wei{--fac:var(--wei)} .f-shu{--fac:var(--shu)} .f-wu{--fac:var(--wu)} .f-qun{--fac:var(--qun)}
+.f-wei{--fac:var(--wei)} .f-shu{--fac:var(--shu)} .f-wu{--fac:var(--wu)} .f-qun{--fac:var(--qun)} .f-dong{--fac:var(--dong)} .f-yuan{--fac:var(--yuan)}
 .r2{--rc:var(--r2)} .r3{--rc:var(--r3)} .r4{--rc:var(--r4)} .r5{--rc:var(--r5)}
 .seal.r5{box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--r5),0 0 14px rgba(233,198,108,.45)}
 .stars{color:var(--rc);font-size:12px;letter-spacing:-1px}
@@ -99,7 +99,7 @@ h3{font-size:14px;margin:16px 0 8px;color:var(--mute);letter-spacing:.06em;font-
 .gc .meta{font-size:12px;color:var(--mute);display:flex;gap:6px;align-items:center}
 .gc.in-deck{border-color:var(--bronze-d)}
 .chip{font-size:11px;border:1px solid var(--bronze-d);color:var(--bronze);border-radius:999px;padding:0 6px}
-/* v4.1.0 역할 태그 */.rtag{display:inline-block;font-size:11px;font-weight:600;line-height:16px;border-radius:999px;padding:0 6px;margin-left:3px;border:1px solid currentColor;white-space:nowrap;vertical-align:1px}.rtag.sub{opacity:.55;font-weight:400}.rtag.r-guard{color:#7fa6d6}.rtag.r-heal{color:var(--jade)}.rtag.r-war{color:var(--cinnabar)}.rtag.r-plan{color:#b58fd6}.rtags{display:flex;gap:3px;justify-content:center;flex-wrap:wrap}.rtags .rtag{margin-left:0}.rsum{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--mute);margin:-4px 0 10px}.rsum .rtag{margin-left:0}.rsum .rtag.z{opacity:.35}
+/* v4.1.0 역할 태그 */.rtag{display:inline-block;font-size:11px;font-weight:600;line-height:16px;border-radius:999px;padding:0 6px;margin-left:3px;border:1px solid currentColor;white-space:nowrap;vertical-align:1px}.rtag.sec{opacity:.55;font-weight:400}@media (max-width:399px){.gc .rtag.sec{padding:0 4px}.gc .rtag.sec .rn{display:none}}.rtag.r-guard{color:#7fa6d6}.rtag.r-heal{color:var(--jade)}.rtag.r-war{color:var(--cinnabar)}.rtag.r-plan{color:#b58fd6}.rtags{display:flex;gap:3px;justify-content:center;align-items:center;flex-wrap:wrap}.rtags .rtag{margin-left:0}.rsum{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--mute);margin:-4px 0 10px}.rsum .rtag{margin-left:0}.rsum .rtag.z{opacity:.35}
 html.work .rtag.r-guard,html.work .rtag.r-plan{color:#555}
 
 .exmap{display:flex;flex-direction:column;gap:6px;margin:6px 0 2px}
@@ -668,7 +668,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v4.2.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v5.0.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -702,7 +702,7 @@ html.work .xphase{display:none}
 <script>
 /* ---------------- data ---------------- */
 const CLS={inf:{n:'보병',g:'步'},cav:{n:'기병',g:'騎'},arc:{n:'궁병',g:'弓'},tac:{n:'책사',g:'策'}};
-const FAC={wei:'위',shu:'촉',wu:'오',qun:'군웅'};
+const FAC={wei:'위',shu:'촉',wu:'오',dong:'동탁',yuan:'원가',qun:'군웅'};
 const DEF_SKILL={inf:'철벽',cav:'돌격',arc:'연사',tac:'화계'};
 const SKILL_DESC={
   inf:'앞의 적을 강하게 베고 자신의 체력을 18% 회복',
@@ -712,7 +712,7 @@ const SKILL_DESC={
 };
 // id, 이름, 한자, 세력, 등급, 병과, 무력, 지력, 통솔, 속도, 고유 전법
 const GENS_RAW=[
- ['lubu','여포','呂布','qun',5,'cav',100,26,87,96,'천하무쌍'],
+ ['lubu','여포','呂布','dong',5,'cav',100,26,87,96,'천하무쌍'],
  ['guanyu','관우','關羽','shu',5,'cav',97,75,95,80,'청룡참월'],
  ['zhaoyun','조운','趙雲','shu',5,'cav',96,76,91,92,'일기당천'],
  ['zhangfei','장비','張飛','shu',5,'inf',98,30,85,78,'장판교 일갈'],
@@ -723,7 +723,7 @@ const GENS_RAW=[
  ['sunce','손책','孫策','wu',5,'cav',92,69,92,90,'소패왕'],
  ['dengai','등애','鄧艾','wei',5,'inf',87,89,95,70],
  ['sunjian','손견','孫堅','wu',5,'inf',93,73,92,78,'강동의 호랑이'],
- ['diaochan','초선','貂蟬','qun',5,'tac',26,86,72,88,'미인계'],
+ ['diaochan','초선','貂蟬','dong',5,'tac',26,86,72,88,'미인계'],
  ['liubei','유비','劉備','shu',4,'inf',73,74,78,72],
  ['machao','마초','馬超','shu',4,'cav',97,44,88,92],
  ['huangzhong','황충','黃忠','shu',5,'arc',93,60,86,78],
@@ -740,8 +740,8 @@ const GENS_RAW=[
  ['luxun','육손','陸遜','wu',4,'tac',69,95,96,80],
  ['xusheng','서성','徐盛','wu',4,'inf',82,76,86,72],
  ['zhangjiao','장각','張角','qun',5,'tac',20,87,90,72],
- ['dongzhuo','동탁','董卓','qun',5,'inf',87,69,84,62],
- ['yuanshao','원소','袁紹','qun',4,'cav',69,70,81,76],
+ ['dongzhuo','동탁','董卓','dong',5,'inf',87,69,84,62],
+ ['yuanshao','원소','袁紹','yuan',4,'cav',69,70,81,76],
  ['zhurong','축융','祝融','qun',4,'arc',88,40,70,86],
  ['weiyan','위연','魏延','shu',4,'inf',90,69,81,76],
  ['guanping','관평','關平','shu',3,'inf',82,70,78,72],
@@ -754,13 +754,13 @@ const GENS_RAW=[
  ['huanggai','황개','黃蓋','wu',3,'inf',83,72,78,68],
  ['zhoutai','주태','周泰','wu',4,'inf',88,46,76,70],
  ['lingtong','능통','凌統','wu',3,'cav',86,50,74,84],
- ['gaoshun','고순','高順','qun',4,'inf',85,54,86,70],
- ['chengong','진궁','陳宮','qun',4,'tac',50,85,76,72],
- ['huaxiong','화웅','華雄','qun',3,'cav',88,40,78,80],
- ['yanliang','안량','顔良','qun',3,'cav',89,32,76,82],
- ['wenchou','문추','文醜','qun',3,'cav',89,26,74,82],
- ['jiling','기령','紀靈','qun',3,'inf',81,48,74,66],
- ['yuanshu','원술','袁術','qun',3,'arc',60,67,70,70],
+ ['gaoshun','고순','高順','dong',4,'inf',85,54,86,70],
+ ['chengong','진궁','陳宮','dong',4,'tac',50,85,76,72],
+ ['huaxiong','화웅','華雄','dong',3,'cav',88,40,78,80],
+ ['yanliang','안량','顔良','yuan',3,'cav',89,32,76,82],
+ ['wenchou','문추','文醜','yuan',3,'cav',89,26,74,82],
+ ['jiling','기령','紀靈','yuan',3,'inf',81,48,74,66],
+ ['yuanshu','원술','袁術','yuan',3,'arc',60,67,70,70],
  ['wenpin','문빙','文聘','wei',3,'inf',80,68,82,66],
  ['yanyan','엄안','嚴顔','shu',4,'arc',82,62,78,70],
  ['handang','한당','韓當','wu',3,'cav',80,55,76,82],
@@ -779,9 +779,48 @@ const GENS_RAW=[
  ['jiaxu','가후','賈詡','wei',5,'tac',35,97,85,80,'완살'],
  ['lvmeng','여몽','呂蒙','wu',5,'inf',86,88,92,80,'백의도강'],
  ['lusu','노숙','魯肅','wu',4,'tac',40,92,84,74],
- ['xurong','서영','徐榮','qun',5,'cav',88,72,90,86,'형양의 추격'],
+ ['xurong','서영','徐榮','dong',5,'cav',88,72,90,86,'형양의 추격'],
  ['zhangren','장임','張任','qun',4,'arc',84,70,80,82],
- ['mateng','마등','馬騰','qun',4,'inf',86,62,86,74]
+ ['mateng','마등','馬騰','qun',4,'inf',86,62,86,74],
+ // v5.0.0 군웅 세분화: 새 장수 38명 (능력치: 삼국지14PK 무력·지력·통솔)
+ ['liru','이유','李儒','dong',4,'tac',26,93,61,74],
+ ['zhangxiu','장수','張繡','dong',4,'cav',73,62,80,84],
+ ['zhangji','장제','張濟','dong',3,'tac',43,80,68,70],
+ ['lijue','이각','李傕','dong',3,'cav',72,23,69,82],
+ ['guosi','곽사','郭汜','dong',3,'arc',76,13,65,76],
+ ['fanchou','번조','樊稠','dong',3,'cav',74,31,67,82],
+ ['houcheng','후성','侯成','dong',3,'inf',74,67,75,66],
+ ['songxian','송헌','宋憲','dong',3,'arc',77,37,68,76],
+ ['weixu','위속','魏續','dong',3,'inf',78,31,67,66],
+ ['lisu','이숙','李肅','dong',3,'tac',67,60,47,72],
+ ['zhangmiao','장막','張邈','dong',3,'tac',52,70,53,70],
+ ['zhanghe','장합','張郃','yuan',5,'cav',89,69,89,88],
+ ['jushou','저수','沮授','yuan',5,'tac',35,90,79,78],
+ ['tianfeng','전풍','田豐','yuan',5,'tac',29,93,72,76],
+ ['shenpei','심배','審配','yuan',5,'tac',60,83,82,74],
+ ['quyi','국의','麴義','yuan',4,'arc',78,50,82,80],
+ ['gaolan','고람','高覽','yuan',4,'cav',82,68,76,84],
+ ['fengji','봉기','逢紀','yuan',3,'tac',21,84,32,70],
+ ['guotu','곽도','郭圖','yuan',3,'tac',50,82,56,70],
+ ['xuyou','허유','許攸','yuan',3,'tac',21,81,36,72],
+ ['chunyuqiong','순우경','淳于瓊','yuan',3,'inf',67,29,74,64],
+ ['yuantan','원담','袁譚','yuan',3,'cav',69,30,60,80],
+ ['yuanshang','원상','袁尚','yuan',3,'cav',72,42,63,82],
+ ['gaogan','고간','高幹','yuan',3,'inf',59,53,74,64],
+ ['pangde','방덕','龐德','qun',5,'cav',94,71,81,88],
+ ['menghuo','맹획','孟獲','qun',5,'inf',87,42,80,68],
+ ['zhangbao','장보','張寶','qun',5,'tac',71,81,83,74],
+ ['zhangyan','장연','張燕','qun',4,'cav',81,54,80,90],
+ ['zhangliang','장량','張梁','qun',3,'inf',80,70,78,66],
+ ['wutugu','올돌골','兀突骨','qun',3,'inf',86,1,74,60],
+ ['zhanglu','장로','張魯','qun',3,'tac',26,73,51,68],
+ ['huangquan','황권','黃權','qun',3,'tac',59,85,76,72],
+ ['guanhai','관해','管亥','qun',3,'cav',80,10,70,80],
+ ['zhangwei','장위','張衛','qun',3,'inf',68,48,74,64],
+ ['wangyun','왕윤','王允','qun',3,'tac',6,67,26,70],
+ ['xuhuang','서황','徐晃','wei',4,'cav',90,74,88,86],
+ ['jiangwei','강유','姜維','shu',5,'tac',89,90,91,82],
+ ['guanxing','관흥','關興','shu',3,'cav',86,63,76,84]
 ];
 const GENS=GENS_RAW.map(r=>({id:r[0],name:r[1],hz:r[2],fac:r[3],rar:r[4],cls:r[5],str:r[6],int:r[7],lead:r[8],spd:r[9],skill:r[10]||DEF_SKILL[r[5]]}));
 const GMAP=Object.fromEntries(GENS.map(g=>[g.id,g]));
@@ -860,7 +899,46 @@ const SK={
  lusu:{n:'노숙의 중재',d:'아군 전체 체력 6% 회복, 아군 전체 공격 2턴 +12%',tg:'none',heal:{to:'all',p:.06},buff:{to:'all',atk:.12,dur:2}},
  xurong:{n:'형양의 추격',d:'맨 앞 적을 2번 베어 각 2.2배 피해, 맞은 적 공격 2턴 -15%',tg:'front',h:2,m:2.2,deb:{to:'hit',atk:-.15,dur:2}},
  zhangren:{n:'낙봉파의 매복',d:'맨 뒤 적에게 3.4배 치명타 확정',tg:'back',m:3.4,crit:1},
- mateng:{n:'서량의 맹주',d:'맨 앞 적에게 2.4배 피해, 아군 전체 공격 2턴 +15%',tg:'front',m:2.4,buff:{to:'all',atk:.15,dur:2}}
+ mateng:{n:'서량의 맹주',d:'맨 앞 적에게 2.4배 피해, 아군 전체 공격 2턴 +15%',tg:'front',m:2.4,buff:{to:'all',atk:.15,dur:2}},
+ // v5.0.0 새 장수 전법
+ liru:{n:'짐독',d:'서로 다른 적 2명에게 1.1배 피해, 3턴 동안 독 화상(매 턴 공격의 12%, 방어 무시), 맞은 적 공격 2턴 -15%',tg:'n',nt:2,m:1.1,burn:{p:.12,dur:3},deb:{to:'hit',atk:-.15,dur:2}},
+ zhangxiu:{n:'변환요격',d:'맨 앞 적을 2번 찔러 각 1.4배 피해, 자신 방어 2턴 +20%',tg:'front',h:2,m:1.4,buff:{to:'self',def:.2,dur:2}},
+ zhangji:{n:'서량의 덕장',d:'적 전체 0.5배 피해, 아군 전체 방어 2턴 +15%',tg:'all',m:.5,buff:{to:'all',def:.15,dur:2}},
+ lijue:{n:'장안 약탈',d:'맨 앞 적에게 2.4배 피해, 맞은 적 방어 2턴 -15%',tg:'front',m:2.4,deb:{to:'hit',def:-.15,dur:2}},
+ guosi:{n:'난전',d:'무작위 적에게 3번 0.9배 피해',tg:'rand',h:3,m:.9},
+ fanchou:{n:'서량 철기',d:'맨 앞 적에게 2.7배 피해',tg:'front',m:2.7},
+ houcheng:{n:'적토마 탈환',d:'맨 앞 적에게 2.0배 피해, 자신 방어 2턴 +30%',tg:'front',m:2,buff:{to:'self',def:.3,dur:2}},
+ songxian:{n:'백문루 강궁',d:'공격력이 가장 높은 적에게 2.4배 피해',tg:'high',m:2.4},
+ weixu:{n:'함진영 부장',d:'맨 앞 적에게 1.6배 피해, 아군 전체 방어 2턴 +12%',tg:'front',m:1.6,buff:{to:'all',def:.12,dur:2}},
+ lisu:{n:'적토마의 설득',d:'공격력이 가장 높은 적에게 1.4배 피해, 50% 확률로 전법 봉인(다음 전법 1번을 못 씀)',tg:'high',m:1.4,seal:.5},
+ zhangmiao:{n:'연주의 영접',d:'적 전체 0.4배 피해, 아군 전체 공격 2턴 +15%',tg:'all',m:.4,buff:{to:'all',atk:.15,dur:2}},
+ zhanghe:{n:'백전연마',d:'무작위 적에게 4번 1.15배 피해, 자신 방어 2턴 +20%',tg:'rand',h:4,m:1.15,buff:{to:'self',def:.2,dur:2}},
+ jushou:{n:'지낭',d:'적 전체 0.6배 피해, 아군 전체 공격 2턴 +20%·방어 2턴 +15%',tg:'all',m:.6,buff:{to:'all',atk:.2,def:.15,dur:2}},
+ tianfeng:{n:'간파',d:'공격력이 가장 높은 적 2명에게 1.5배 피해, 맞은 적 전법 봉인(다음 전법 1번을 못 씀), 맞은 적 방어 2턴 -20%',tg:'n',nt:2,pk:'high',m:1.5,seal:1,deb:{to:'hit',def:-.2,dur:2}},
+ shenpei:{n:'업성의 충절',d:'적 전체 0.5배 피해, 적 전체 공격 2턴 -20%, 아군 전체 방어 2턴 +20%',tg:'all',m:.5,deb:{to:'all',atk:-.2,dur:2},buff:{to:'all',def:.2,dur:2}},
+ quyi:{n:'선등 강노',d:'무작위 적에게 3번 1.2배 피해, 맞은 적 방어 2턴 -10%',tg:'rand',h:3,m:1.2,deb:{to:'hit',def:-.1,dur:2}},
+ gaolan:{n:'하북 정주',d:'맨 앞 적에게 3.0배 피해, 방어 20% 무시',tg:'front',m:3,ign:.2},
+ fengji:{n:'참언',d:'공격력이 가장 높은 적에게 1.2배 피해, 맞은 적 공격 2턴 -25%',tg:'high',m:1.2,deb:{to:'hit',atk:-.25,dur:2}},
+ guotu:{n:'업화',d:'서로 다른 적 3명에게 0.7배 피해, 3턴 동안 화상(매 턴 공격의 8%, 방어 무시)',tg:'n',nt:3,m:.7,burn:{p:.08,dur:3}},
+ xuyou:{n:'오소 밀고',d:'맨 뒤 적에게 2.4배 피해, 40% 확률로 1턴 기절',tg:'back',m:2.4,stun:.4},
+ chunyuqiong:{n:'오소 수비',d:'맨 앞 적에게 1.4배 피해, 자신 1턴 도발, 자신 방어 2턴 +30%',tg:'front',m:1.4,taunt:1,buff:{to:'self',def:.3,dur:2}},
+ yuantan:{n:'청주 자사',d:'맨 앞 적에게 2.6배 피해',tg:'front',m:2.6},
+ yuanshang:{n:'업성의 후계',d:'무작위 적에게 2번 1.3배 피해, 자신 공격 2턴 +15%',tg:'rand',h:2,m:1.3,buff:{to:'self',atk:.15,dur:2}},
+ gaogan:{n:'호관 수비',d:'맨 앞 적에게 1.8배 피해, 자신 방어 2턴 +35%',tg:'front',m:1.8,buff:{to:'self',def:.35,dur:2}},
+ pangde:{n:'결사의 관',d:'관을 메고 출진해 맨 앞 적에게 3.6배 피해, 자신 공격 2턴 +25%·방어 2턴 +15%',tg:'front',m:3.6,buff:{to:'self',atk:.25,def:.15,dur:2}},
+ menghuo:{n:'칠종칠금',d:'맨 앞 적에게 2.2배 피해, 자신 2턴 도발, 자신 방어 2턴 +35%. 특성: 전투마다 한 번, 쓰러질 피해를 체력 1로 버팀',tg:'front',m:2.2,taunt:2,buff:{to:'self',def:.35,dur:2},endure:1},
+ zhangbao:{n:'중황태을',d:'요술: 서로 다른 적 3명에게 1.0배 피해, 각 35% 확률로 1턴 기절',tg:'n',nt:3,m:1,stun:.35},
+ zhangyan:{n:'흑산의 비연',d:'맨 뒤 적에게 3.0배 피해',tg:'back',m:3},
+ zhangliang:{n:'인공장군',d:'맨 앞 적에게 2.0배 피해, 아군 전체 공격 2턴 +10%',tg:'front',m:2,buff:{to:'all',atk:.1,dur:2}},
+ wutugu:{n:'등갑병',d:'맨 앞 적에게 1.6배 피해, 자신 방어 2턴 +30%, 자신이 받는 전법 피해 2턴 -50%',tg:'front',m:1.6,buff:{to:'self',def:.3,sr:.5,dur:2}},
+ zhanglu:{n:'오두미도',d:'아군 전체 체력 5% 회복, 아군 전체 방어 2턴 +10%',tg:'none',heal:{to:'all',p:.05},buff:{to:'all',def:.1,dur:2}},
+ huangquan:{n:'신중한 간언',d:'적 전체 0.5배 피해, 적 전체 공격 2턴 -10%',tg:'all',m:.5,deb:{to:'all',atk:-.1,dur:2}},
+ guanhai:{n:'북해 포위',d:'맨 앞 적에게 2.8배 피해',tg:'front',m:2.8},
+ zhangwei:{n:'양평관 사수',d:'맨 앞 적에게 1.4배 피해, 자신 1턴 도발, 아군 전체 방어 2턴 +10%',tg:'front',m:1.4,taunt:1,buff:{to:'all',def:.1,dur:2}},
+ wangyun:{n:'연환의 설계',d:'서로 다른 적 2명에게 1.0배 피해, 각 40% 확률로 전법 봉인, 맞은 적 공격 2턴 -15%',tg:'n',nt:2,m:1,seal:.4,deb:{to:'hit',atk:-.15,dur:2}},
+ xuhuang:{n:'장구직입',d:'맨 앞 적을 2번 베어 각 1.3배 피해, 방어 30% 무시',tg:'front',h:2,m:1.3,ign:.3},
+ jiangwei:{n:'기염만장',d:'서로 다른 적 3명에게 1.2배 피해, 아군 전체 공격 2턴 +15%',tg:'n',nt:3,m:1.2,buff:{to:'all',atk:.15,dur:2}},
+ guanxing:{n:'용양용전',d:'맨 앞 적에게 2.2배 피해. 관우가 아군에 있으면 3.0배',tg:'front',m:2.2,cond:{ally:'guanyu',m:3}}
 };
 const DEF_SK={
  inf:{n:'철벽',d:'맨 앞 적 1.4배 피해, 자신 체력 18% 회복',tg:'front',m:1.4,heal:{to:'self',p:.18}},
@@ -875,13 +953,32 @@ const skillOf=b=>(b&&b.id&&SK[b.id])||DEF_SK[b.cls];
 GENS.forEach(g=>{g.skill=skillOf(g).n});
 // 진영 보너스: 같은 진영(★3 이상) 3명 / 4명 / 5명
 const FAC_BONUS={
- wei:[{atk:.10,def:.04},{atk:.18,def:.07},{atk:.28,def:.10}],
- shu:[{hp:.10,def:.03},{hp:.16,def:.05},{hp:.22,def:.08}],
- wu:[{atk:.08,spd:6},{atk:.14,spd:10},{atk:.22,spd:18}],
- qun:[{def:.15,atk:.05,hp:.05,r3:{atk:.01,hp:.01}},{def:.22,atk:.08,hp:.08,r3:{atk:.02,hp:.02}},{def:.28,atk:.11,hp:.11,r3:{atk:.03,hp:.03}}]
+ wei:[{atk:.09,def:.04},{atk:.14,def:.06},{atk:.20,def:.07}],
+ shu:[{hp:.09,def:.03},{hp:.13,def:.04},{hp:.15,def:.06}],
+ wu:[{atk:.07,spd:5},{atk:.11,spd:8},{atk:.15,spd:13}],
+ dong:[{atk:.11},{atk:.16},{atk:.21,hp:.03}],
+ yuan:[{hp:.06,def:.06},{hp:.09,def:.09},{hp:.10,def:.10}],
+ qun:[{def:.14,atk:.05,hp:.05,r3:{atk:.01,hp:.01}},{def:.18,atk:.06,hp:.06,r3:{atk:.02,hp:.02}},{def:.20,atk:.08,hp:.08,r3:{atk:.03,hp:.03}}]
 };
 // 인연: ids 전원이 진형에 있으면 발동(min이 있으면 그 수 이상, full은 전원일 때 효과)
 const BONDS=[
+ {n:'왕윤의 양녀',ids:['wangyun','diaochan'],fx:{atk:.10,hp:.08},d:'초선을 친딸처럼 거둔 사도 왕윤'},
+ {n:'하북 사정주',ids:['zhanghe','gaolan','yanliang','wenchou'],min:3,fullMin:4,fx:{atk:.10},full:{atk:.18,def:.06},d:'원소군을 떠받친 네 기둥. 3명 이상이면 발동하고 4명이면 효과가 커져요'},
+ {n:'원소의 두 책사',ids:['tianfeng','jushou'],fx:{atk:.12,def:.08},d:'관도에서 끝까지 직언한 전풍과 저수'},
+ {n:'장안의 난',ids:['lijue','guosi'],fx:{atk:.14},d:'동탁이 죽은 뒤 장안을 휩쓴 두 장수'},
+ {n:'원씨 형제의 다툼',ids:['yuantan','yuanshang'],fx:{hp:.12},d:'원소의 뒤를 두고 다툰 두 아들'},
+ {n:'황건 삼형제',ids:['zhangjiao','zhangbao','zhangliang'],fx:{atk:.12,hp:.12},d:'창천이사 황천당립, 태평도의 세 형제'},
+ {n:'남만 왕가',ids:['menghuo','zhurong'],fx:{hp:.15,def:.10},d:'남만왕 맹획과 그 아내 축융'},
+ {n:'등갑군',ids:['menghuo','wutugu'],fx:{def:.18},d:'칼과 화살이 통하지 않는 오과국의 등갑병'},
+ {n:'관씨 형제',ids:['guanxing','guanping'],fx:{atk:.12},d:'관우의 두 아들'},
+ {n:'여포군 팔건장',ids:['gaoshun','houcheng','songxian','weixu'],min:3,fx:{def:.12,atk:.06},d:'하비성까지 여포를 따른 장수들. 3명 이상이면 발동해요'},
+ {n:'완성의 계책',ids:['zhangxiu','jiaxu'],fx:{atk:.12,spd:5},d:'가후의 계책으로 조조를 물리친 장수'},
+ {n:'천수의 귀순',ids:['jiangwei','zhugeliang'],fx:{atk:.14},d:'제갈량이 뒤를 맡긴 천수의 기린아'},
+ {n:'번성 구원',ids:['xuhuang','caoren'],fx:{def:.12,atk:.08},d:'관우에게 포위된 조인을 구한 서황'},
+ {n:'동탁의 책사',ids:['liru','dongzhuo'],fx:{atk:.10,def:.10},d:'동탁 곁에서 독계를 꾸민 이유'},
+ {n:'업성 공방',ids:['shenpei','yuanshang'],fx:{def:.15},d:'원상을 위해 업성을 끝까지 지킨 심배'},
+ {n:'한중의 장씨',ids:['zhanglu','zhangwei'],fx:{hp:.12,def:.08},d:'오두미도로 한중을 다스린 장로와 아우 장위'},
+ {n:'서량의 맹장',ids:['pangde','machao'],fx:{atk:.12},d:'마초를 따라 서량을 누빈 방덕'},
  {n:'도원결의',ids:['liubei','guanyu','zhangfei'],fx:{atk:.15,hp:.15},d:'복숭아밭에서 의형제를 맺은 세 사람'},
  {n:'오호대장군',ids:['guanyu','zhangfei','zhaoyun','machao','huangzhong'],min:3,fullMin:4,fx:{atk:.10},full:{atk:.20,hp:.10},s5x:1,d:'촉의 다섯 맹장. 3명 이상이면 발동하고 4명 이상이면 효과가 커져요'},
  {n:'수어지교',ids:['liubei','zhugeliang'],fx:{atk:.12,hp:.10},d:'물과 물고기 같은 군주와 책사'},
@@ -986,7 +1083,11 @@ const RIVALS=[
  ['caocao','xurong','형양'],['caocao','chengong','결별'],['caocao','zhouyu','적벽'],['caocao','huanggai','고육계'],
  ['zhangliao','sunquan','합비'],['zhangliao','taishici','합비'],['xuchu','machao','위수 일기토'],['dianwei','jiaxu','완성'],['xiahoudun','gaoshun','소패'],
  ['caoren','zhouyu','강릉'],['sunjian','huaxiong','양인'],['sunjian','dongzhuo','반동탁'],['sunjian','xurong','양동'],
- ['sunce','taishici','신정 일기토'],['ganning','lingtong','부친의 원수'],['gongsunzan','yuanshao','계교']
+ ['sunce','taishici','신정 일기토'],['ganning','lingtong','부친의 원수'],['gongsunzan','yuanshao','계교'],
+ ['xuhuang','guanyu','번성 구원'],['jiangwei','dengai','검각'],['zhanghe','zhugeliang','목문도'],['zhanghe','zhangfei','와구관'],['tianfeng','caocao','관도'],
+ ['chunyuqiong','caocao','오소'],['shenpei','caocao','업성'],['quyi','gongsunzan','계교'],['zhangyan','yuanshao','흑산'],['zhangxiu','dianwei','완성'],['zhangxiu','caocao','완성'],
+ ['wangyun','dongzhuo','연환계'],['wangyun','lijue','장안 함락'],['pangde','guanyu','번성'],['menghuo','zhugeliang','칠종칠금'],['wutugu','zhugeliang','반사곡'],
+ ['zhangbao','liubei','황건 토벌'],['guanhai','taishici','북해'],['zhangwei','xiahouyuan','양평관']
 ];
 const RIVAL_P=.03, RIVAL_MAX=3, RIVAL_OF={};
 RIVALS.forEach(([a,b])=>{(RIVAL_OF[a]=RIVAL_OF[a]||new Set()).add(b);(RIVAL_OF[b]=RIVAL_OF[b]||new Set()).add(a)});
@@ -1183,7 +1284,7 @@ const itemUsers=it=>it.g==='書'?'책사 전용':it.g==='武'?Object.keys(CLS_W)
 function legalItem(cls,it,kept,v){if(itemFits(cls,it,kept))return it;const c=ITEMS.filter(x=>x.rar===it.rar&&!kept.includes(x)&&itemFits(cls,x,kept));return c.length?c[Math.floor(v*c.length)%c.length]:null}
 function npcIts(r,cls,itd){const kept=[],o=[];for(let j=0;j<3;j++){const v=r(),dd=Math.floor(r()*(itd+1));let it=ITEMS_V1[Math.floor(v*ITEMS_V1.length)];if(kept.includes(it))continue;it=legalItem(cls,it,kept,v);if(it){kept.push(it);o.push(it.id+':'+dd)}}return o}
 let ITEM_DROP=0;
-const ON_NAME={inf:'보병',cav:'기병',arc:'궁병',tac:'책사',wei:'위',shu:'촉',wu:'오',qun:'군웅'};
+const ON_NAME={inf:'보병',cav:'기병',arc:'궁병',tac:'책사',wei:'위',shu:'촉',wu:'오',dong:'동탁',yuan:'원가',qun:'군웅'};
 // 장착 보물 문자열 "id:돌파" 배열을 [{it,d}]로 (예전 형식인 id 하나도 받아요)
 function itemsOf(x,cls){
   const a=typeof x==='string'?[x]:Array.isArray(x)?x:[];const o=[],seen=new Set();
@@ -1287,10 +1388,10 @@ const TROOP_BASE={inf:[62,30,60,62],cav:[68,28,55,80],arc:[60,35,52,72],tac:[30,
 const CH_DEF=[
  // v4.0.1: 역사 순서 (합비 215 → 한중·번성 219 → 이릉 222 → 남만 225 → 가정 228 → 진창 229 → 오장원 234 → 검각 263 → 건업 280)
  ['황건적의 난','黃巾',['황건적','賊','qun'],'장각 토벌',[],['T:inf','T:inf','T:cav','T:arc','zhangjiao']],
- ['반동탁 연합','虎牢',['서량병','兵','qun'],'호뢰관',['huaxiong','dongzhuo'],['huaxiong','lubu','dongzhuo','T:arc','T:tac']],
- ['군웅할거','群雄',['원술군','兵','qun'],'수춘',['jiling','yuanshu'],['jiling','T:inf','yuanshu','T:arc','T:tac']],
- ['하비 공방','下邳',['여포군','兵','qun'],'백문루',['gaoshun','chengong'],['gaoshun','lubu','T:cav','chengong','T:arc']],
- ['관도대전','官渡',['하북군','兵','qun'],'오소 습격',['yanliang','wenchou'],['yanliang','wenchou','yuanshao','T:arc','T:tac']],
+ ['반동탁 연합','虎牢',['서량병','兵','dong'],'호뢰관',['huaxiong','lijue','guosi','dongzhuo'],['huaxiong','lubu','dongzhuo','T:arc','T:tac']],
+ ['군웅할거','群雄',['원술군','兵','yuan'],'수춘',['jiling','yuanshu'],['jiling','T:inf','yuanshu','T:arc','T:tac']],
+ ['하비 공방','下邳',['여포군','兵','dong'],'백문루',['gaoshun','houcheng','songxian','chengong'],['gaoshun','lubu','T:cav','chengong','T:arc']],
+ ['관도대전','官渡',['하북군','兵','yuan'],'오소 습격',['yanliang','wenchou','chunyuqiong','gaolan'],['yanliang','wenchou','yuanshao','T:arc','T:tac']],
  ['장판파','長坂',['조조군','魏','wei'],'장판교',['xuchu','yujin','lejin'],['xuchu','xiahoudun','caocao','T:arc','T:tac']],
  ['적벽대전','赤壁',['오군','吳','wu'],'동남풍',['zhoutai','huanggai','chengpu'],['huanggai','zhoutai','chengpu','ganning','zhouyu']],
  ['형주 쟁탈','荊州',['강동군','吳','wu'],'강릉',['lingtong','ganning','taishici'],['lingtong','sunce','ganning','taishici','sunquan']],
@@ -1299,7 +1400,7 @@ const CH_DEF=[
  ['한중 공방','漢中',['위군','魏','wei'],'정군산',['xiahouyuan','dianwei','zhangliao'],['dianwei','xiahoudun','zhangliao','xiahouyuan','guojia']],
  ['번성 전투','樊城',['형주군','蜀','shu'],'수엄칠군',['guanping','zhoucang','guanyu'],['guanping','zhoucang','guanyu','huangzhong','fazheng']],
  ['이릉대전','夷陵',['오군','吳','wu'],'화소연영',['ganning','taishici','luxun'],['zhoutai','lingtong','ganning','taishici','luxun']],
- ['남만 평정','南蠻',['남만병','蠻','qun'],'맹획의 땅',['zhurong','zhangren'],['zhangren','T:inf','zhurong','T:arc','T:tac']],
+ ['남만 평정','南蠻',['남만병','蠻','qun'],'맹획의 땅',['zhurong','wutugu','zhangren'],['zhangren','T:inf','zhurong','T:arc','T:tac']],
  ['가정 전투','街亭',['촉군','蜀','shu'],'가정',['weiyan','madai','liaohua'],['weiyan','zhaoyun','zhugeliang','yanyan','pangtong']],
  ['진창 공방','陳倉',['위군','魏','wei'],'진창성',['haozhao','wenpin','caoren'],['haozhao','caoren','xiahouyuan','jiaxu','guojia']],
  ['오장원','五丈原',['위군','魏','wei'],'오장원 대치',['zhangliao','xuchu','simayi'],['xiahoudun','xuchu','caocao','xiahouyuan','simayi']],
@@ -1370,7 +1471,7 @@ function formOfSpecs(specs){const s=(specs||[]).find(x=>x&&x.f);return cleanForm
 /* ---------------- pixel art (코드로 그리는 초상화·아이콘) ---------------- */
 const PX={};
 const SKIN={n:['#e8b98a','#c9925f'],d:['#c48a58','#9a6a3e'],r:['#c4523c','#93362a']};
-const FARM={wei:['#3d5f8f','#26405f','#a9bccf'],shu:['#3f7f5f','#285a40','#cfcdb8'],wu:['#a8402f','#6e2a1e','#dcb474'],qun:['#6a5288','#46365c','#bcaccc']};
+const FARM={wei:['#3d5f8f','#26405f','#a9bccf'],shu:['#3f7f5f','#285a40','#cfcdb8'],wu:['#a8402f','#6e2a1e','#dcb474'],qun:['#6a5288','#46365c','#bcaccc'],dong:['#7e3556','#53203a','#dcb9c8'],yuan:['#93772a','#64501b','#e4d6a2']};
 const TR=(hg,bd,o={})=>({hg,bd,...o});
 const TRAIT={
  lubu:TR('plume','none',{fierce:1}),guanyu:TR('hood','long',{sk:'r',fierce:1,hood:'#2f7a4a'}),zhaoyun:TR('helm','none',{white:1}),zhangfei:TR('helm','bushy',{sk:'d',big:1,fierce:1}),
@@ -1385,7 +1486,16 @@ const TRAIT={
  dengai:TR('helm','goatee',{}),xusheng:TR('helm','goatee',{}),wenchou:TR('helm','goatee',{fierce:1}),jiling:TR('helm','bushy',{}),yuanshu:TR('crown','goatee',{gold:1}),wenpin:TR('helm','goatee',{}),yanyan:TR('helm','long',{old:1,fierce:1}),caoren:TR('helm','bushy',{}),zhoucang:TR('band','bushy',{sk:'d',fierce:1}),sunshangxiang:TR('lady','none',{fem:1,dress:['#d0503a','#8f2f22']}),haozhao:TR('helm','goatee',{fierce:1}),gongsunzan:TR('helm','stubble',{white:1}),zhugejin:TR('scholar','long',{robe:1}),xunyu:TR('scholar','goatee',{robe:1}),fazheng:TR('scholar','thin',{robe:1}),hansui:TR('helm','long',{old:1}),jianyong:TR('scholar','stubble',{robe:1}),yufan:TR('scholar','goatee',{robe:1,old:1}),liuxun:TR('helm','none',{}),handang:TR('band','goatee',{}),
  sunjian:TR('helm','goatee',{fierce:1}),diaochan:TR('lady','none',{fem:1,robe:1,dress:['#e48aa8','#b05a78']}),zhurong:TR('tribal','none',{fem:1,sk:'d',fierce:1}),
  jiaxu:TR('scholar','thin',{robe:1,old:1}),lvmeng:TR('helm','goatee',{fierce:1}),lusu:TR('scholar','goatee',{robe:1}),
- xurong:TR('helm','bushy',{fierce:1}),zhangren:TR('band','goatee',{}),mateng:TR('helm','long',{old:1})
+ xurong:TR('helm','bushy',{fierce:1}),zhangren:TR('band','goatee',{}),mateng:TR('helm','long',{old:1}),
+ liru:TR('scholar','thin',{robe:1}),zhangxiu:TR('helm','goatee',{fierce:1}),zhangji:TR('helm','long',{old:1}),lijue:TR('helm','bushy',{fierce:1}),guosi:TR('band','bushy',{}),
+ fanchou:TR('helm','stubble',{}),houcheng:TR('helm','none',{}),songxian:TR('band','goatee',{}),weixu:TR('helm','stubble',{}),lisu:TR('scholar','goatee',{}),zhangmiao:TR('crown','goatee',{robe:1}),
+ zhanghe:TR('helm','goatee',{fierce:1}),jushou:TR('scholar','long',{robe:1}),tianfeng:TR('scholar','long',{robe:1,old:1}),shenpei:TR('scholar','goatee',{robe:1}),quyi:TR('band','bushy',{fierce:1}),
+ gaolan:TR('helm','goatee',{}),fengji:TR('scholar','thin',{robe:1}),guotu:TR('scholar','goatee',{robe:1}),xuyou:TR('scholar','thin',{}),chunyuqiong:TR('helm','bushy',{fat:1}),
+ yuantan:TR('crown','none',{}),yuanshang:TR('crown','none',{gold:1}),gaogan:TR('helm','goatee',{}),
+ pangde:TR('helm','bushy',{white:1,fierce:1}),menghuo:TR('tribal','bushy',{sk:'d',big:1,fierce:1}),zhangbao:TR('turban','goatee',{robe:1}),zhangyan:TR('band','stubble',{fierce:1}),
+ zhangliang:TR('turban','bushy',{}),wutugu:TR('tribal','none',{sk:'r',big:1,fierce:1}),zhanglu:TR('scholar','long',{robe:1}),huangquan:TR('scholar','goatee',{robe:1}),
+ guanhai:TR('turban','bushy',{sk:'d',fierce:1}),zhangwei:TR('helm','stubble',{}),wangyun:TR('crown','long',{robe:1,old:1}),
+ xuhuang:TR('helm','goatee',{fierce:1}),jiangwei:TR('helm','none',{}),guanxing:TR('hood','none',{hood:'#2f7a4a'})
 };
 function pxGrid(n,s){const c=document.createElement('canvas');c.width=c.height=n*s;const x=c.getContext('2d');return {c,p:(col,i,j,w=1,h=1)=>{if(!col||w<=0||h<=0)return;x.fillStyle=col;x.fillRect(i*s,j*s,w*s,h*s)}}}
 function portrait(b){
@@ -1541,7 +1651,7 @@ function mkUnit(spec,side,slot){
   // 화상 보물 (v3.4.1): 일반 공격에 화상. 비율은 강화 단계만큼 올라가요
   const ibx=its.find(x=>x.it.burn&&(!x.it.burn.cls||x.it.burn.cls===b.cls)), ib=ibx?{c:ibx.it.burn.c,p:ibx.it.burn.p*(1+ITEM_DSTEP*ibx.d),dur:ibx.it.burn.dur}:null;
   const sk=skillOf(b);hp=Math.round(hp);
-  return {id:b.id,name:b.name,hz:b.hz,fac:b.fac,rar:b.rar,cls:b.cls,skill:sk.n,sk,endure:!!sk.endure,
+  return {esc:spec.sc||1,id:b.id,name:b.name,hz:b.hz,fac:b.fac,rar:b.rar,cls:b.cls,skill:sk.n,sk,endure:!!sk.endure,
     hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0,bf:[],burn:[],stun:0,taunt:0,endUsed:0,lv,items:its.map(x=>({k:x.it.id,n:x.it.name,r:x.it.rar,d:x.d})),cr,cd,ls,dr,skp:skp+its.reduce((a,x)=>a+((x.it.ax&&x.it.ax.skp)||0),0),ib,ax:Object.assign({},...its.map(x=>x.it.ax||{})),endN:(sk.endure?1:0)+(its.some(x=>x.it.ax&&x.it.ax.endure)?1:0)};
 }
 // of: 상대 진형(배치를 정한 상대일 때만). 상성에서 이기면 전원 공격 +10%
@@ -1643,7 +1753,7 @@ function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:op
         if(S.stun)hitT.forEach(t=>{if(t.hp>0&&rng()<S.stun){t.stun=1;e.stuns.push({s:t.side,i:t.slot})}});
         if(S.burn)hitT.forEach(t=>{if(t.hp>0)t.burn.push({d:Math.max(1,Math.round(atkV*S.burn.p)),dur:S.burn.dur,by:[u.side,u.slot]})});
         if(S.heal){const H=S.heal, tg=H.to==='all'?allies():H.to==='low'?[allies().reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a)]:[u];
-          tg.forEach(t=>{if(C&&t.side===0){const h=Math.min(C.max-C.hp,Math.round(t.maxhp*H.p*SIEGE_HEAL));C.hp+=h;e.heals.push({s:0,i:t.slot,h,hp:t.hp,ch:C.hp});return}const h=Math.min(t.maxhp-t.hp,Math.round(t.maxhp*H.p*(t.ax&&t.ax.noheal?1:HEALF(W,r))));t.hp+=h;e.heals.push({s:t.side,i:t.slot,h,hp:t.hp})})}
+          tg.forEach(t=>{if(C&&t.side===0){const h=Math.min(C.max-C.hp,Math.round(t.maxhp*H.p*SIEGE_HEAL));C.hp+=h;e.heals.push({s:0,i:t.slot,h,hp:t.hp,ch:C.hp});return}const h=Math.min(t.maxhp-t.hp,Math.round(t.maxhp*H.p*(opt&&opt.stage&&t.side===1&&t.esc>1?1/t.esc:1)*(t.ax&&t.ax.noheal?1:HEALF(W,r))));t.hp+=h;e.heals.push({s:t.side,i:t.slot,h,hp:t.hp})})}
         if(S.clean){let n=0;allies().forEach(t=>{const bad=t.bf.some(b=>(b.atk||0)<0||(b.def||0)<0)||t.burn.length||t.stun>0||t.seal>0;if(!bad)return;n++;t.bf=t.bf.filter(b=>!((b.atk||0)<0||(b.def||0)<0));t.burn=[];t.stun=0;t.seal=0});if(n)e.notes.push(`해로운 효과 해제 ${n}명`)}
         arr(S.buff).forEach(b=>{(b.to==='all'?allies():[u]).forEach(t=>t.bf.push({atk:b.atk||0,def:b.def||0,sr:b.sr||0,dur:b.dur}));const x=[fxStr({atk:b.atk>0?b.atk:0,def:b.def>0?b.def:0}),b.sr?`받는 전법 피해 -${Math.round(b.sr*100)}%`:''].filter(Boolean).join(' · ');const y=[b.atk<0?`공격 ${Math.round(b.atk*100)}%`:'',b.def<0?`방어 ${Math.round(b.def*100)}%`:''].filter(Boolean).join(' · ');e.notes.push(`${b.to==='all'?'아군':'자신'} ${[x,y].filter(Boolean).join(' · ')}`)});
         arr(S.deb).forEach(b=>{(b.to==='all'?foes():hitT.filter(t=>t.hp>0)).forEach(t=>t.bf.push({atk:b.atk||0,def:b.def||0,dur:b.dur}));e.notes.push(`적 ${[b.atk?`공격 ${Math.round(b.atk*100)}%`:'',b.def?`방어 ${Math.round(b.def*100)}%`:''].filter(Boolean).join(' · ')}`)});
@@ -1676,7 +1786,7 @@ function mkTroop(tr,cls){const b=TROOP_BASE[cls];return {name:tr[0],hz:tr[1],fac
 function stageLv(n){return Math.min(MAXLV,1+Math.floor(n*.6)+(n%5===4?2:0))}
 // 55~59스테이지(12장, v4.0.1부터 번성 전투): 최상위권(전투력 약 30,000)에 맞춘 정예군. 적 전투력 약 18,000 → 30,000
 // v4.0.3: v4.0.1 장 순서 변경 뒤 어긋난 배율을 다시 맞추고, 13장 −10% → 20장 −28%로 낮춤(이릉 보스 약 42,000 · 100스테이지 보스 약 61,000)
-const STAGE_SC={55:4.34,56:4.563,57:4.232,58:5.21,59:3.339,60:5.779,61:4.987,62:4.562,63:4.696,64:3.757,65:5.779,66:5.157,67:4.93,68:4.966,69:5.639,70:5.785,71:5.317,72:4.932,73:4.97,74:3.605,75:5.797,76:5.321,77:4.833,78:4.96,79:3.882,80:5.829,81:5.302,82:4.537,83:4.89,84:3.795,85:6.049,86:5.502,87:5.009,88:5.063,89:3.787,90:6.366,91:5.882,92:5.354,93:5.623,94:4.253,95:6.7,96:5.83,97:5.484,98:5.615,99:4.388};
+const STAGE_SC={55:4.34,56:4.563,57:4.232,58:5.21,59:3.339,60:5.575,61:4.811,62:4.401,63:4.53,64:3.148,65:5.779,66:5.157,67:4.93,68:4.966,69:4.471,70:5.277,71:4.85,72:4.499,73:4.533,74:2.637,75:5.797,76:5.321,77:4.833,78:4.96,79:3.311,80:5.689,81:5.174,82:4.428,83:4.772,84:3.099,85:5.618,86:5.111,87:4.653,88:4.703,89:2.888,90:5.857,91:5.411,92:4.926,93:5.173,94:3.045,95:5.851,96:5.091,97:4.789,98:4.904,99:2.956};
 const SKIP_R=1.2;
 const stagePow=n=>deckPower(stageSpecs(n));
 function skipCount(){const mine=mySpecs();if(!mine.some(Boolean))return 0;const mp=deckPower(mine);let n=S.stage,c=0;while(n<NSTAGE&&mp>=SKIP_R*stagePow(n)){c++;n++}return c}
@@ -2071,11 +2181,23 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='4.2.3';
+const GAME_VERSION='5.0.0';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'5.0.0',date:'2026-10-16',title:'군웅 세분화 · 6세력 · 새 장수 38명',reward:{ap:30,gtk:38,gpk:50},items:[
+  '세력이 위·촉·오·동탁·원가·군웅 6개로 늘었어요. 동탁(董)에는 동탁·여포·초선·서영·고순·진궁·화웅이, 원가(袁)에는 원소·원술·안량·문추·기령이 옮겨 갔어요. 보유 장수와 돌파 단계는 그대로예요.',
+  '새 장수 38명이 합류해 세력마다 18명이 됐어요. 동탁: 이유·장수·장제·이각·곽사·번조·후성·송헌·위속·이숙·장막 / 원가: 장합★5·저수★5·전풍★5·심배★5·국의·고람·봉기·곽도·허유·순우경·원담·원상·고간 / 군웅: 방덕★5·맹획★5·장보★5·장연·장량·올돌골·장로·황권·관해·장위·왕윤 / 위: 서황 / 촉: 강유★5·관흥.',
+  '새 장수 능력치는 삼국지14PK의 무력·지력·통솔을 기준으로 했고, 모두 고유 전법이 있어요. 예: 맹획 칠종칠금(도발 + 쓰러질 피해를 한 번 버팀), 심배 업성의 충절(적 공격 감소 + 아군 방어 증가), 강유 기염만장.',
+  '세력이 늘어난 만큼 같은 세력 보너스를 낮췄어요. 3명은 약 90%, 4명은 80%, 5명은 70% 수준이에요. 예: 위 5명 공격 28%→20%, 오 5명 공격 22%·속도 18→공격 15%·속도 13. 동탁은 공격, 원가는 체력·방어 보너스예요.',
+  '새 인연 17개: 하북 사정주, 원소의 두 책사, 황건 삼형제, 남만 왕가, 등갑군, 왕윤의 양녀, 장안의 난, 여포군 팔건장, 완성의 계책, 천수의 귀순, 번성 구원 등.',
+  '새 숙적 19쌍(모두 60쌍): 서황·방덕 ⚔ 관우, 맹획·올돌골 ⚔ 제갈량, 강유 ⚔ 등애, 장합 ⚔ 제갈량·장비, 심배·전풍·순우경 ⚔ 조조, 왕윤 ⚔ 동탁 등.',
+  '수성전에 업성(심배)·장안(왕윤)·양평관(장위)·은갱동(맹획)·검각(강유) 5곳이 생겨 모두 21곳이 됐어요. 다음 날 수성전부터 순환에 섞여 나오고, 각 성의 수비 명장 증표를 얻을 수 있어요. 번성 수성전에는 방덕이 수비 명장으로 함께해요.',
+  '출정 보스 난이도 완화: 후반 스테이지 적의 회복량이 정예 배율이 붙기 전 체력 기준으로 바뀌었어요(18장 검각 보스가 크게 쉬워져요). 12~20장 보스의 정예 배율도 낮춰서, 끝까지 키운 진형이면 20장까지 깰 수 있어요. 결투·수성전·원정군은 그대로예요.',
+  '반동탁 연합·하비 공방은 동탁군, 군웅할거·관도대전은 원가군으로 바뀌었고, 이각·곽사·후성·송헌·순우경·고람·올돌골이 적으로 나와요.',
+  '무장 목록에서 역할 태그가 2개인 장수 카드의 첫 태그가 세로로 늘어나 찌그러지던 문제를 고쳤어요. 폭이 좁은 화면(400px 미만)에서는 보조 태그를 아이콘만 보여 줘서 카드 줄이 맞아요.',
+  '업데이트 기념으로 나팔 30개, 장수 선택권 38장(새 장수 수만큼), 장수 등용권 50장을 드려요. 공지를 확인하면 받아요.']},
  {v:'4.2.3',date:'2026-10-16',title:'전투 연출 오류 수정',reward:{ap:30},items:[
   '4.2.2에서 미인계·고평릉의 변·연환계·화소연영·복양의 계책·완살 6개 전법 이름이 숫자 \'3\'(또는 \'2\')으로 보이던 오류를 고쳤어요. 전투 결과는 그대로예요.',
   '피해 숫자가 피격 섬광에 가려 초상화 위에서 읽기 어렵던 문제를 고쳤어요. 숫자는 섬광 위, 카드 위쪽에 진한 테두리로 뜨고 여러 번 맞으면 옆으로 비켜 떠요.',
@@ -2938,7 +3060,7 @@ function openStage(n){
     tickAP();if(S.ap<AC){toast('나팔이 부족해요');return}
     S.ap-=AC;
     if(n>=S.stage&&mp>=SKIP_R*fp){const r=stageReward(n,true);S.gold+=r.gold;S.food+=r.food;S.stage=n+1;const br=bossFirst(n);save();renderTop();renderView();toast(`${stageName(n)} 돌파 (전투 생략) · 金 +${fmt(r.gold)} · 糧 +${fmt(r.food)}`);if(br)setTimeout(()=>toast(`보스 첫 격파 보상 · ${rewardText(br)}`),2300);return}
-    const res=simulate(mine,foe,(Math.random()*2**31)|0);
+    const res=simulate(mine,foe,(Math.random()*2**31)|0,{stage:1});  // v5.0.0: 출정 적 회복은 정예 배율 전 체력 기준
     let rwText=null;
     let extra='';
     if(res.win){const f=n>=S.stage;const r=stageReward(n,f);S.gold+=r.gold;S.food+=r.food;if(f)S.stage=n+1;rwText=r;
@@ -3426,7 +3548,7 @@ function roleTags(id){if(roleC[id])return roleC[id];const b=GMAP[id]||{},s=skill
   const pr=s.heal&&s.heal.to!=='self'?'heal':tank?'guard':d>=1.6?'war':plan?'plan':(b.cls==='inf'?'guard':b.cls==='tac'?'plan':'war'),t=[pr];
   if(pr!=='guard'&&(s.taunt||s.guard||s.pguard))t.push('guard');else if(pr!=='war'&&d>=2.5)t.push('war');else if(pr!=='plan'&&planS)t.push('plan');
   return roleC[id]=t}
-const roleHtml=id=>roleTags(id).map((r,k)=>`<span class="rtag r-${r}${k?' sub':''}" title="${k?'보조 역할':'주 역할'}">${ROLE[r].i}${ROLE[r].n}</span>`).join('');
+const roleHtml=id=>roleTags(id).map((r,k)=>`<span class="rtag r-${r}${k?' sec':''}" title="${k?'보조 역할':'주 역할'}">${ROLE[r].i}<span class="rn">${ROLE[r].n}</span></span>`).join('');
 function roleSumHtml(ids){const c={guard:0,heal:0,war:0,plan:0};ids.forEach(g=>{if(g&&GMAP[g])c[roleTags(g)[0]]++});
   return `<div class="rsum" aria-label="진형 역할 구성"><span>역할 구성</span>${Object.keys(ROLE).map(r=>`<span class="rtag r-${r}${c[r]?'':' z'}">${ROLE[r].i}${ROLE[r].n} ${c[r]}</span>`).join('')}</div>`}
 const gfMatch=(F,b)=>(!F.role||String(F.role).split(',').some(r=>roleTags(b.id).includes(r)))&&(!F.fac||b.fac===F.fac)&&(!F.cls||b.cls===F.cls)&&(!+F.rar||b.rar===+F.rar)&&(!F.sk||skTags(b.id).includes(F.sk));
@@ -3568,7 +3690,7 @@ const SIEGE={
   hefei:{n:'합비',hz:'合肥',boss:'sunquan',def:['zhangliao'],rw:{gold:.06},d:'215년 장료가 손권의 대군을 막아 낸 성. 손권과 장수들이 몰려와요.'},
   xiaopei:{n:'소패',hz:'小沛',boss:'lubu',def:['liubei'],rw:{food:.0165},d:'유비가 여포의 공격을 막아 낸 성. 여포와 장수들이 몰려와요.'},
   chencang:{n:'진창',hz:'陳倉',boss:'zhugeliang',def:['haozhao'],rw:{gold:.033,food:.0083},d:'229년 학소가 1천여 명으로 제갈량의 대군을 20여 일 막아 낸 성.'},
-  fancheng:{n:'번성',hz:'樊城',boss:'guanyu',def:['caoren'],rw:{food:.0165},d:'219년 조인이 관우의 포위와 홍수를 견디고 지켜 낸 성.'},
+  fancheng:{n:'번성',hz:'樊城',boss:'guanyu',def:['caoren','pangde'],rw:{food:.0165},d:'219년 조인이 관우의 포위와 홍수를 견디고 지켜 낸 성.'},
   jiangling:{n:'강릉',hz:'江陵',boss:'zhouyu',def:['caoren'],rw:{gold:.072},d:'208~209년 조인이 적벽 이후 주유의 공격을 1년 넘게 막아 낸 성.'},
   sishui:{n:'사수관',hz:'汜水關',boss:'sunjian',def:['huaxiong'],rw:{itk:.0165},d:'연의에서 동탁군 화웅이 손견을 물리친 관문.'},
   luocheng:{n:'낙성',hz:'雒城',boss:'liubei',def:['liuxun'],rw:{gold:.03,food:.0075},d:'214년 유순이 유비군을 1년 가까이 막아 낸 성. 방통이 이곳에서 전사했어요.'},
@@ -3581,11 +3703,18 @@ const SIEGE={
   ruxu:{n:'유수구',hz:'濡須口',boss:'caoren',def:['lvmeng'],rw:{itk:.0165},d:'여몽이 쌓은 유수오. 오가 조조·조인의 공격을 여러 번 막아 낸 곳.'},
   changsha:{n:'장사',hz:'長沙',boss:'guanyu',def:['huangzhong'],rw:{food:.0165},d:'209년 황충이 장사를 지키며 관우와 일기토를 벌인 성.'},
   maicheng:{n:'맥성',hz:'麥城',boss:'lvmeng',def:['guanyu'],rw:{gold:.033,food:.0083},d:'219년 형주를 잃은 관우가 마지막까지 버틴 작은 성.'},
-  beihai:{n:'북해',hz:'北海',boss:'zhangjiao',def:['taishici'],rw:{itk:.0158},d:'태사자가 황건적에게 포위된 공융을 구하러 달려간 성.'}
+  beihai:{n:'북해',hz:'北海',boss:'zhangjiao',def:['taishici'],rw:{itk:.0158},d:'태사자가 황건적에게 포위된 공융을 구하러 달려간 성.'},
+  // v5.0.0: 새 세력 수성전 5곳 (SIEGE_NEW_FROM일부터 순환에 섞여요)
+  yecheng:{n:'업성',hz:'鄴城',boss:'caocao',def:['shenpei'],rw:{gold:.069},d:'204년 심배가 조조의 포위를 반년 가까이 버틴 원가의 본거지.'},
+  changan:{n:'장안',hz:'長安',boss:'lijue',def:['wangyun'],rw:{food:.0165},d:'192년 동탁이 죽은 뒤 이각·곽사가 들이친 도읍. 왕윤이 끝까지 성을 지켰어요.'},
+  yangping:{n:'양평관',hz:'陽平關',boss:'xiahouyuan',def:['zhangwei'],rw:{gold:.06},d:'215년 장위가 조조군을 막아선 한중의 관문.'},
+  yinkeng:{n:'은갱동',hz:'銀坑洞',boss:'zhugeliang',def:['menghuo'],rw:{itk:.0165},d:'남만왕 맹획의 본거지. 칠종칠금의 마지막 무대예요.'},
+  jiange:{n:'검각',hz:'劍閣',boss:'dengai',def:['jiangwei'],rw:{gold:.033,food:.0083},d:'263년 강유가 위의 대군을 막아 낸 촉의 관문.'}
 };
 const SIEGE_K=4, SIEGE_DAILY=5, SIEGE_MAXR=150, SIEGE_HEAL=.3, SIEGE_BASE=.8, SIEGE_GROW=1.35, SIEGE_HERO=.10;
 const SIEGE_EPOCH=Date.UTC(2026,9,11,15);   // 2026-10-12(월) 0시 KST
 const SIEGE_WEEK0=['hefei','xiaopei','chencang'];
+const SIEGE_NEW=['yecheng','changan','yangping','yinkeng','jiange'], SIEGE_NEW_FROM=6;  // v5.0.0: 지난 날 순환은 그대로 두고 이 날부터 섞어요
 const TEND={any:{n:'무작위',d:'모든 병종이 섞여 와요'},inf:{n:'보병 위주',d:'보병이 몰려와요'},cav:{n:'기병 위주',d:'기병이 몰려와요'},arc:{n:'궁병 위주',d:'궁병이 몰려와요'},tac:{n:'책사 위주',d:'책사가 몰려와요'}};
 const RES_L={gold:['金','금'],food:['糧','군량'],itk:['券','보물 획득권']};
 const siegeCdMin=t=>Math.min(120,10+Math.max(0,t-1)*110/99);
@@ -3594,7 +3723,7 @@ const weekIdx=(t=Date.now())=>Math.floor((t-SIEGE_EPOCH+(t>=RESET_CUT?2*3600e3:0
 const sDay=(d=kstDay())=>Math.round((Date.parse(d)-Date.parse('2026-10-12'))/864e5);
 const sDayLabel=i=>{const a=new Date(Date.parse('2026-10-12')+i*864e5);return `${a.getUTCMonth()+1}/${a.getUTCDate()}`};
 const SG_FROM=4;  // 매일 수성전 순위 보상은 10/16부터
-const SIEGE_TOK={hefei:'zhangliao',xiaopei:'liubei',chencang:'haozhao',fancheng:'caoren',jiangling:'caoren',sishui:'huaxiong',luocheng:'liuxun',xiapi:'lubu',yijing:'gongsunzan',wancheng:'jiaxu',jiameng:'zhangfei',dingjun:'xiahouyuan',ruxu:'lvmeng',changsha:'huangzhong',maicheng:'guanyu',beihai:'taishici'};
+const SIEGE_TOK={hefei:'zhangliao',xiaopei:'liubei',chencang:'haozhao',fancheng:'caoren',jiangling:'caoren',sishui:'huaxiong',luocheng:'liuxun',xiapi:'lubu',yijing:'gongsunzan',wancheng:'jiaxu',jiameng:'zhangfei',dingjun:'xiahouyuan',ruxu:'lvmeng',changsha:'huangzhong',maicheng:'guanyu',beihai:'taishici',yecheng:'shenpei',changan:'wangyun',yangping:'zhangwei',yinkeng:'menghuo',jiange:'jiangwei'};
 const sgRankTok=r=>r===1?30:r===2?20:r===3?15:r<=10?10:5;
 const weekRange=w=>{const a=new Date(SIEGE_EPOCH+w*7*864e5+9*3600e3),b=new Date(a.getTime()+6*864e5);return `${a.getUTCMonth()+1}/${a.getUTCDate()}~${b.getUTCMonth()+1}/${b.getUTCDate()}`};
 let _sweek={};
@@ -3605,7 +3734,7 @@ function siegeWeek(w){
     if(_sweek[i]){prev=_sweek[i].keys;continue}
     const r=mulberry(90001+i*7919);let pick;
     if(i===0)pick=SIEGE_WEEK0.slice();
-    else{const av=keys.filter(k=>!prev.includes(k));for(let j=av.length-1;j>0;j--){const k=Math.floor(r()*(j+1));[av[j],av[k]]=[av[k],av[j]]}pick=av.slice(0,3)}
+    else{const av=keys.filter(k=>!prev.includes(k)&&(i>=SIEGE_NEW_FROM||!SIEGE_NEW.includes(k)));for(let j=av.length-1;j>0;j--){const k=Math.floor(r()*(j+1));[av[j],av[k]]=[av[k],av[j]]}pick=av.slice(0,3)}
     const tend={};pick.forEach(k=>tend[k]=TK[Math.floor(r()*TK.length)]);
     _sweek[i]={keys:pick,tend};prev=pick;
   }
