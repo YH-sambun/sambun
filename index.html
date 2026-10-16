@@ -668,7 +668,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v5.0.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v5.0.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -742,7 +742,7 @@ const GENS_RAW=[
  ['zhangjiao','장각','張角','qun',5,'tac',20,87,90,72],
  ['dongzhuo','동탁','董卓','dong',5,'inf',87,69,84,62],
  ['yuanshao','원소','袁紹','yuan',4,'cav',69,70,81,76],
- ['zhurong','축융','祝融','qun',4,'arc',88,40,70,86],
+ ['zhurong','축융','祝融','qun',4,'arc',88,40,74,86],
  ['weiyan','위연','魏延','shu',4,'inf',90,69,81,76],
  ['guanping','관평','關平','shu',3,'inf',82,70,78,72],
  ['madai','마대','馬岱','shu',3,'cav',84,50,76,84],
@@ -756,11 +756,11 @@ const GENS_RAW=[
  ['lingtong','능통','凌統','wu',3,'cav',86,50,74,84],
  ['gaoshun','고순','高順','dong',4,'inf',85,54,86,70],
  ['chengong','진궁','陳宮','dong',4,'tac',50,85,76,72],
- ['huaxiong','화웅','華雄','dong',3,'cav',88,40,78,80],
- ['yanliang','안량','顔良','yuan',3,'cav',89,32,76,82],
- ['wenchou','문추','文醜','yuan',3,'cav',89,26,74,82],
- ['jiling','기령','紀靈','yuan',3,'inf',81,48,74,66],
- ['yuanshu','원술','袁術','yuan',3,'arc',60,67,70,70],
+ ['huaxiong','화웅','華雄','dong',3,'cav',88,40,83,80],
+ ['yanliang','안량','顔良','yuan',3,'cav',89,32,82,82],
+ ['wenchou','문추','文醜','yuan',3,'cav',89,26,80,82],
+ ['jiling','기령','紀靈','yuan',3,'inf',81,48,78,66],
+ ['yuanshu','원술','袁術','yuan',3,'arc',60,67,75,70],
  ['wenpin','문빙','文聘','wei',3,'inf',80,68,82,66],
  ['yanyan','엄안','嚴顔','shu',4,'arc',82,62,78,70],
  ['handang','한당','韓當','wu',3,'cav',80,55,76,82],
@@ -783,41 +783,41 @@ const GENS_RAW=[
  ['zhangren','장임','張任','qun',4,'arc',84,70,80,82],
  ['mateng','마등','馬騰','qun',4,'inf',86,62,86,74],
  // v5.0.0 군웅 세분화: 새 장수 38명 (능력치: 삼국지14PK 무력·지력·통솔)
- ['liru','이유','李儒','dong',4,'tac',26,93,61,74],
+ ['liru','이유','李儒','dong',4,'tac',26,93,66,74],
  ['zhangxiu','장수','張繡','dong',4,'cav',73,62,80,84],
- ['zhangji','장제','張濟','dong',3,'tac',43,80,68,70],
- ['lijue','이각','李傕','dong',3,'cav',72,23,69,82],
- ['guosi','곽사','郭汜','dong',3,'arc',76,13,65,76],
- ['fanchou','번조','樊稠','dong',3,'cav',74,31,67,82],
- ['houcheng','후성','侯成','dong',3,'inf',74,67,75,66],
- ['songxian','송헌','宋憲','dong',3,'arc',77,37,68,76],
- ['weixu','위속','魏續','dong',3,'inf',78,31,67,66],
- ['lisu','이숙','李肅','dong',3,'tac',67,60,47,72],
- ['zhangmiao','장막','張邈','dong',3,'tac',52,70,53,70],
+ ['zhangji','장제','張濟','dong',3,'tac',43,80,73,70],
+ ['lijue','이각','李傕','dong',3,'cav',72,23,76,82],
+ ['guosi','곽사','郭汜','dong',3,'arc',76,13,72,76],
+ ['fanchou','번조','樊稠','dong',3,'cav',74,31,74,82],
+ ['houcheng','후성','侯成','dong',3,'inf',74,67,80,66],
+ ['songxian','송헌','宋憲','dong',3,'arc',77,37,74,76],
+ ['weixu','위속','魏續','dong',3,'inf',78,31,73,66],
+ ['lisu','이숙','李肅','dong',3,'tac',67,60,55,72],
+ ['zhangmiao','장막','張邈','dong',3,'tac',52,70,61,70],
  ['zhanghe','장합','張郃','yuan',5,'cav',89,69,89,88],
  ['jushou','저수','沮授','yuan',5,'tac',35,90,79,78],
  ['tianfeng','전풍','田豐','yuan',5,'tac',29,93,72,76],
  ['shenpei','심배','審配','yuan',5,'tac',60,83,82,74],
  ['quyi','국의','麴義','yuan',4,'arc',78,50,82,80],
  ['gaolan','고람','高覽','yuan',4,'cav',82,68,76,84],
- ['fengji','봉기','逢紀','yuan',3,'tac',21,84,32,70],
- ['guotu','곽도','郭圖','yuan',3,'tac',50,82,56,70],
- ['xuyou','허유','許攸','yuan',3,'tac',21,81,36,72],
- ['chunyuqiong','순우경','淳于瓊','yuan',3,'inf',67,29,74,64],
- ['yuantan','원담','袁譚','yuan',3,'cav',69,30,60,80],
- ['yuanshang','원상','袁尚','yuan',3,'cav',72,42,63,82],
- ['gaogan','고간','高幹','yuan',3,'inf',59,53,74,64],
+ ['fengji','봉기','逢紀','yuan',3,'tac',21,84,40,70],
+ ['guotu','곽도','郭圖','yuan',3,'tac',50,82,63,70],
+ ['xuyou','허유','許攸','yuan',3,'tac',21,81,44,72],
+ ['chunyuqiong','순우경','淳于瓊','yuan',3,'inf',67,29,80,64],
+ ['yuantan','원담','袁譚','yuan',3,'cav',69,30,68,80],
+ ['yuanshang','원상','袁尚','yuan',3,'cav',72,42,70,82],
+ ['gaogan','고간','高幹','yuan',3,'inf',59,53,80,64],
  ['pangde','방덕','龐德','qun',5,'cav',94,71,81,88],
  ['menghuo','맹획','孟獲','qun',5,'inf',87,42,80,68],
  ['zhangbao','장보','張寶','qun',5,'tac',71,81,83,74],
  ['zhangyan','장연','張燕','qun',4,'cav',81,54,80,90],
  ['zhangliang','장량','張梁','qun',3,'inf',80,70,78,66],
  ['wutugu','올돌골','兀突骨','qun',3,'inf',86,1,74,60],
- ['zhanglu','장로','張魯','qun',3,'tac',26,73,51,68],
- ['huangquan','황권','黃權','qun',3,'tac',59,85,76,72],
- ['guanhai','관해','管亥','qun',3,'cav',80,10,70,80],
- ['zhangwei','장위','張衛','qun',3,'inf',68,48,74,64],
- ['wangyun','왕윤','王允','qun',3,'tac',6,67,26,70],
+ ['zhanglu','장로','張魯','qun',3,'tac',26,73,59,68],
+ ['huangquan','황권','黃權','qun',3,'tac',59,85,81,72],
+ ['guanhai','관해','管亥','qun',3,'cav',80,10,76,80],
+ ['zhangwei','장위','張衛','qun',3,'inf',68,48,80,64],
+ ['wangyun','왕윤','王允','qun',3,'tac',6,67,34,70],
  ['xuhuang','서황','徐晃','wei',4,'cav',90,74,88,86],
  ['jiangwei','강유','姜維','shu',5,'tac',89,90,91,82],
  ['guanxing','관흥','關興','shu',3,'cav',86,63,76,84]
@@ -953,12 +953,12 @@ const skillOf=b=>(b&&b.id&&SK[b.id])||DEF_SK[b.cls];
 GENS.forEach(g=>{g.skill=skillOf(g).n});
 // 진영 보너스: 같은 진영(★3 이상) 3명 / 4명 / 5명
 const FAC_BONUS={
- wei:[{atk:.09,def:.04},{atk:.14,def:.06},{atk:.20,def:.07}],
- shu:[{hp:.09,def:.03},{hp:.13,def:.04},{hp:.15,def:.06}],
- wu:[{atk:.07,spd:5},{atk:.11,spd:8},{atk:.15,spd:13}],
- dong:[{atk:.11},{atk:.16},{atk:.21,hp:.03}],
- yuan:[{hp:.06,def:.06},{hp:.09,def:.09},{hp:.10,def:.10}],
- qun:[{def:.14,atk:.05,hp:.05,r3:{atk:.01,hp:.01}},{def:.18,atk:.06,hp:.06,r3:{atk:.02,hp:.02}},{def:.20,atk:.08,hp:.08,r3:{atk:.03,hp:.03}}]
+ wei:[{atk:.08,def:.04},{atk:.12,def:.05},{atk:.17,def:.06}],
+ shu:[{hp:.08,def:.03},{hp:.11,def:.04},{hp:.13,def:.05}],
+ wu:[{atk:.06,spd:5},{atk:.09,spd:7},{atk:.13,spd:11}],
+ dong:[{atk:.16,hp:.06,r3:{atk:.03,hp:.03}},{atk:.23,hp:.09,r3:{atk:.05,hp:.05}},{atk:.30,hp:.12,r3:{atk:.07,hp:.07}}],
+ yuan:[{hp:.12,def:.10,atk:.06,r3:{hp:.03,def:.03,atk:.03}},{hp:.17,def:.14,atk:.09,r3:{hp:.05,def:.05,atk:.05}},{hp:.22,def:.18,atk:.12,r3:{hp:.07,def:.07,atk:.07}}],
+ qun:[{def:.16,atk:.06,hp:.06,r3:{atk:.02,hp:.02}},{def:.21,atk:.08,hp:.08,r3:{atk:.03,hp:.03}},{def:.25,atk:.11,hp:.11,r3:{atk:.04,hp:.04}}]
 };
 // 인연: ids 전원이 진형에 있으면 발동(min이 있으면 그 수 이상, full은 전원일 때 효과)
 const BONDS=[
@@ -2181,11 +2181,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='5.0.1';
+const GAME_VERSION='5.0.2';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+{v:'5.0.2',date:'2026-10-16',title:'단일 세력 밸런스 · 동탁·원가·군웅 장수 통솔 조정',reward:{ap:30},items:[
+  '한 세력으로만 덱을 짰을 때 위·촉·오만 강하고 동탁·원가는 혼성 덱보다 약했어요. 세력 보너스와 장수 통솔을 같이 손봐서 여섯 세력 모두 단일 세력 덱이 혼성 덱과 비슷하거나 조금 강하게 맞췄어요.',
+  '세력 보너스(3·4·5명): 동탁 공격 11/16/21% → 16/23/30%, 체력 6/9/12% 추가, ★3 장수는 공격·체력 +3/5/7% 더 받아요 · 원가 체력 6/9/10% → 12/17/22%, 방어 6/9/10% → 10/14/18%, 공격 6/9/12% 추가, ★3 장수는 체력·방어·공격 +3/5/7% 더 받아요 · 군웅 방어 14/18/20% → 16/21/25%, 공격·체력 5/6/8% → 6/8/11%, ★3 추가 1/2/3% → 2/3/4%.',
+  '위·촉·오 세력 보너스는 조금 내렸어요. 위 공격 9/14/20% → 8/12/17%, 방어 4/6/7% → 4/5/6% · 촉 체력 9/13/15% → 8/11/13%, 방어 3/4/6% → 3/4/5% · 오 공격 7/11/15% → 6/9/13%, 속도 5/8/13 → 5/7/11.',
+  '삼국지14 능력치 기준으로 낮게 잡혀 있던 장수 28명의 통솔을 올렸어요(체력·방어·공격에 모두 들어가요). 동탁: 이숙 47→55 · 장막 53→61 · 장제 68→73 · 곽사 65→72 · 번조 67→74 · 이각 69→76 · 송헌 68→74 · 위속 67→73 · 후성 75→80 · 화웅 78→83 · 이유 61→66.',
+  '원가: 봉기 32→40 · 허유 36→44 · 원술 70→75 · 원담 60→68 · 곽도 56→63 · 원상 63→70 · 고간 74→80 · 순우경 74→80 · 기령 74→78 · 문추 74→80 · 안량 76→82. 군웅: 왕윤 26→34 · 장로 51→59 · 관해 70→76 · 장위 74→80 · 황권 76→81 · 축융 70→74.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
 {v:'5.0.1',date:'2026-10-16',title:'원정군 하드 · 디버프 · 무보상 반복 · 월간 순위',reward:{ap:30},items:[
   '원정군에 하드 난이도가 생겼어요. 적 전투력이 ×1.1이고, 금 ×1.5 · 정복 시 보물 선택권 2장이에요. 보상 원정은 지금처럼 하루 2번이고 첫 판은 일반이에요. 그날 일반을 정복하면 두 번째 판을 일반으로 할지 하드로 할지 고를 수 있어요.',
   '원정 출발 전에 디버프를 골라 걸 수 있어요. 천명 봉인(+1점) · 피로(+1) · 배수진(+2, 쓰러지면 부활 없음) · 강적(+2) · 보스 분노(+3) · 소수정예(+3, 최대 5명). 점수 1점마다 금 +10%, 3점마다 정복 시 보물 선택권 +1장이에요. 디버프 보너스는 그날 디버프를 건 첫 보상 원정 1번에만 붙어요.',
