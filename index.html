@@ -668,7 +668,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v5.0.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v5.0.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -2181,11 +2181,15 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='5.0.2';
+const GAME_VERSION='5.0.3';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'5.0.3',date:'2026-10-17',title:'원정군 하드 해금 완화',reward:{ap:30,rtk:777},items:[
+  '원정군 일반을 한 번이라도 정복했다면 이제 매일 첫 보상 원정부터 하드를 고를 수 있어요. 그날 일반을 먼저 정복하지 않아도 돼요.',
+  '아직 일반을 정복한 적이 없다면 지금처럼 일반부터 해요. 일반을 처음 정복하면 보상·무보상 원정 모두 하드가 열려요.',
+  '업데이트 기념으로 나팔 30개와 룰렛 소환권 777장(룰렛 777회)을 드려요. 공지를 확인하면 받아요.']},
 {v:'5.0.2',date:'2026-10-16',title:'단일 세력 밸런스 · 동탁·원가·군웅 장수 통솔 조정',reward:{ap:30},items:[
   '한 세력으로만 덱을 짰을 때 위·촉·오만 강하고 동탁·원가는 혼성 덱보다 약했어요. 세력 보너스와 장수 통솔을 같이 손봐서 여섯 세력 모두 단일 세력 덱이 혼성 덱과 비슷하거나 조금 강하게 맞췄어요.',
   '세력 보너스(3·4·5명): 동탁 공격 11/16/21% → 16/23/30%, 체력 6/9/12% 추가, ★3 장수는 공격·체력 +3/5/7% 더 받아요 · 원가 체력 6/9/10% → 12/17/22%, 방어 6/9/10% → 10/14/18%, 공격 6/9/12% 추가, ★3 장수는 체력·방어·공격 +3/5/7% 더 받아요 · 군웅 방어 14/18/20% → 16/21/25%, 공격·체력 5/6/8% → 6/8/11%, ★3 추가 1/2/3% → 2/3/4%.',
@@ -5076,11 +5080,11 @@ function exEnd(cleared,why){const s=exState(),R=s.run||{},fr=!!R.fr,gold=exGoldR
   let better=false;if(!fr){S.gold+=gold;if(clear){S.isk=(S.isk||0)+isk;s.c=(s.c|0)+1}better=cleared>(s.best||0);if(better)s.best=cleared}
   s.run=null;save();renderTop();
   return `<div class="row" style="justify-content:center;gap:6px">${gold?`<span class="coin"><b class="sl gold">金</b>+${fmt(gold)}</span>`:''}${isk?`<span class="coin"><b class="sl gold">寶</b>보물 선택권 +${isk}</span>`:''}${mp?`<span class="coin"><b class="sl gold">月</b>월간 +${mp}점</span>`:''}</div>
-   <p class="sub">${exDName(R.d)}${fr?' · 무보상':''} · ${why} · ${cleared}/${EX_MAX}칸 진행${better?' · <b style="color:var(--bronze)">이번 주 최고 기록!</b>':''}</p>${unl?'<p class="sub" style="color:var(--bronze)">하드 원정이 열렸어요!</p>':''}${clear&&!R.d&&!fr&&s.n<EX_DAILY?'<p class="sub" style="color:var(--bronze)">오늘 남은 보상 원정은 하드로 할 수 있어요.</p>':''}`}
-// v5.0.1: 보상 원정 하루 2회(첫 판은 일반, 오늘 일반을 정복하면 하드 선택 가능) → 이후 무보상 반복(일반 · 하드는 일반 정복 1회 후)
-function exCanHard(s){return s.n>=EX_DAILY?!!s.hd:!!s.tc}
+   <p class="sub">${exDName(R.d)}${fr?' · 무보상':''} · ${why} · ${cleared}/${EX_MAX}칸 진행${better?' · <b style="color:var(--bronze)">이번 주 최고 기록!</b>':''}</p>${unl?'<p class="sub" style="color:var(--bronze)">하드 원정이 열렸어요! 이제 보상·무보상 원정 모두 하드를 고를 수 있어요.</p>':''}`}
+// v5.0.1: 보상 원정 하루 2회 → 이후 무보상 반복. v5.0.3: 하드는 보상·무보상 모두 일반 정복 이력(hd) 1회 후
+function exCanHard(s){return !!s.hd}
 function exStart(){const s=exState();if(s.run)return;const fr=s.n>=EX_DAILY?1:0,d=exSel.d&&exCanHard(s)?1:0,db=exSel.db.filter(i=>EX_DBMAP[i]);
-  if(exSel.d&&!d){toast(fr?'일반 원정을 한 번 정복하면 하드가 열려요':'오늘 일반 원정을 정복하면 하드를 할 수 있어요');return}
+  if(exSel.d&&!d){toast('일반 원정을 한 번 정복하면 하드가 열려요');return}
   let v=0,at;if(fr){s.fv=(s.fv|0)+1;v=500+s.fv;at=EX_DAILY}else{s.n++;at=s.n}
   const bon=!fr&&db.length&&s.dbd!==s.day?1:0;if(bon)s.dbd=s.day;
   s.run={w:s.w,at,v,d,fr,bon,db,a:0,r:0,c:-1,path:[],p:exStartParty(s.w,at,v),tm:[],of:null,sc:0};save();renderView();
@@ -5155,7 +5159,7 @@ function exTagsHtml(R){const L=[`<span class="chip"${R.d?' style="border-color:v
   return `<div class="chips" style="margin:0 0 6px">${L.join('')}</div>`}
 function exSetupHtml(s){const fr=s.n>=EX_DAILY,canH=exCanHard(s);if(exSel.d&&!canH)exSel.d=0;
   const pts=exPtsOf(exSel.db),bon=!fr&&pts>0&&s.dbd!==s.day,gm=(exSel.d?EX_HARD_GOLD:1)*(bon?1+EX_DB_GOLD*pts:1),isk=(exSel.d?EX_HARD_ISK:EX_CLEAR_ISK)+(bon?Math.floor(pts/EX_DB_ISK):0);
-  const hardWhy=canH?'':fr?' (일반 정복 1회 후)':' (오늘 일반 정복 후)';
+  const hardWhy=canH?'':' (일반 정복 1회 후)';
   let h=`<h3 style="margin:4px 0 6px">${fr?'무보상 원정':`보상 원정 · 오늘 ${s.n+1}번째`}</h3>
    <div class="seg" role="group" aria-label="난이도"><button type="button" data-exd="0" aria-pressed="${!exSel.d}">일반</button><button type="button" data-exd="1" aria-pressed="${!!exSel.d}" ${canH?'':'disabled'}>하드${hardWhy}</button></div>
    <p class="sub" style="margin:6px 0 8px">${exSel.d?`하드: 적 전투력 ×${EX_HARD} · 금 ×${EX_HARD_GOLD} · 정복 시 보물 선택권 ${EX_HARD_ISK}장 · 월간 ${EX_MO_PT[1]}점`:`일반: 지금까지의 원정군 · 정복 시 보물 선택권 ${EX_CLEAR_ISK}장 · 월간 ${EX_MO_PT[0]}점`}</p>
@@ -5167,7 +5171,7 @@ function exSetupHtml(s){const fr=s.n>=EX_DAILY,canH=exCanHard(s);if(exSel.d&&!ca
   return h+`<button type="button" class="btn red wide" data-ex="start">${fr?`무보상 ${exDName(exSel.d)} 원정 출발`:`${exDName(exSel.d)} 원정 출발 · 남은 ${EX_DAILY-s.n}회`}</button>`}
 function vExpedition(){
   const s=exState(),R=s.run,rk=exRank(),myR=rk.findIndex(r=>r.me),mr=exMoRank(),myM=mr.findIndex(r=>r.me);
-  let h=`<div class="banner-card"><div class="big">遠征</div><h2>원정군</h2>${infoP('exp','★3 장수 3명으로 3막을 돌파해요','무작위 ★3 장수 3명으로 황건적의 난 → 반동탁 연합 → 적벽대전을 돌파해요. 갈래길에서 전투·정예·주막·모병을 골라 가고, 체력은 전투가 끝나도 그대로 이어져요. 천명은 천명의 탑과 같아요. 보상 원정은 하루 2번이고, 첫 판은 일반이에요. 그날 일반을 정복하면 남은 판을 하드로 할 수 있어요. 디버프를 걸면 그날 첫 디버프 원정의 보상이 늘어나요. 보상 원정을 다 쓰면 무보상으로 일반·하드를 계속할 수 있고, 정복할 때마다 월간 순위 점수(일반 1점 · 하드 2점)가 올라요. 군영이 가득 차면 모병 칸에서 장수를 교체할 수 있어요. [처음부터 다시하기]를 하면 새 지도·새 장수가 나와요.','margin:0')}
+  let h=`<div class="banner-card"><div class="big">遠征</div><h2>원정군</h2>${infoP('exp','★3 장수 3명으로 3막을 돌파해요','무작위 ★3 장수 3명으로 황건적의 난 → 반동탁 연합 → 적벽대전을 돌파해요. 갈래길에서 전투·정예·주막·모병을 골라 가고, 체력은 전투가 끝나도 그대로 이어져요. 천명은 천명의 탑과 같아요. 보상 원정은 하루 2번이에요. 일반을 한 번 정복하면 그 뒤로는 첫 판부터 하드를 고를 수 있어요. 디버프를 걸면 그날 첫 디버프 원정의 보상이 늘어나요. 보상 원정을 다 쓰면 무보상으로 일반·하드를 계속할 수 있고, 정복할 때마다 월간 순위 점수(일반 1점 · 하드 2점)가 올라요. 군영이 가득 차면 모병 칸에서 장수를 교체할 수 있어요. [처음부터 다시하기]를 하면 새 지도·새 장수가 나와요.','margin:0')}
    <div class="stats" style="grid-template-columns:repeat(3,1fr);margin:10px 0"><div class="stat"><small>오늘 보상 원정</small><b>${s.n}/${EX_DAILY}</b></div><div class="stat"><small>이번 주 최고</small><b>${s.best?exProg(s.best):'-'}${myR>=0?` <small style="display:inline;color:var(--mute)">${myR+1}위</small>`:''}</b></div><div class="stat"><small>이번 달 정복</small><b>${s.mo.p}점${myM>=0?` <small style="display:inline;color:var(--mute)">${myM+1}위</small>`:''}</b></div></div>`;
   if(!R){
     h+=exSetupHtml(s)+`<p class="sub" style="margin:8px 0 0">레벨은 1막 ${EX_LV[0]} · 2막 ${EX_LV[1]} · 3막 ${EX_LV[2]}으로 고정이고 돌파·보물은 없어요. 보상 원정은 진행한 칸에 비례해 금을 받아요.</p></div>`;
