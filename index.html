@@ -668,7 +668,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v5.1.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v5.2.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1110,27 +1110,32 @@ function applyRivals(T){const pairs=[];
   return pairs}
 // 연합군: ★3 이상 장수의 나라가 3개국 이상이면 진형 전원(★3 이상)에게 적용
 const VOL_BONUS={1:{atk:.04,hp:.04},2:{atk:.07,hp:.07},3:{atk:.10,hp:.10}};
-// v5.1.0 역할 조합: 진형에 수호·회복(주 역할) 장수가 함께 있으면 ★3 이상 전원(roleTags는 아래 역할 태그 절에서 정의, 전투·진형 계산 때만 호출)
-const COMBO_BONUS={hp:.04,def:.04};
+// v5.1.0 역할 조합: 진형에 수호·회복(주 역할) 장수가 함께 있으면 ★3 장수만(v5.2.0: 전원 +4% → ★3만 +8%). roleTags는 아래 역할 태그 절에서 정의, 전투·진형 계산 때만 호출
+const COMBO_BONUS={hp:.08,def:.08};
+// v5.2.0 등급 구성: 신예 = ★3 이상 3명 이상이고 ★5 없음 → 전원, 정예 = 신예 조건 + 전원 ★4 → 추가. 플레이어 덱에만(PvE 적 제외)
+const RANK_BONUS={no5:{atk:.12,hp:.12,def:.12},only4:{atk:.04,hp:.04,def:.04}};
 const ALLY_BONUS={3:{atk:.05,hp:.05,def:.05},4:{atk:.08,hp:.08,def:.08}};
-function teamBonusInfo(us){
+function teamBonusInfo(us,pve){
   const cnt={};us.forEach(u=>{if(u.rar>=3)cnt[u.fac]=(cnt[u.fac]||0)+1});
   const nn=Object.keys(cnt).length, ally=nn>=3?{n:Math.min(nn,4),b:ALLY_BONUS[Math.min(nn,4)]}:null;
   const facs=Object.entries(cnt).filter(([f,c])=>c>=3&&FAC_BONUS[f]).map(([f,c])=>({f,c,b:FAC_BONUS[f][Math.min(c,5)-3]}));
   const ids=new Set(us.map(u=>u.id).filter(Boolean));
   const n3=us.filter(u=>u.rar===3&&u.id&&GMAP[u.id]).length, vol=n3?{n:n3,b:VOL_BONUS[Math.min(n3,3)]}:null;
-  const rl=new Set(us.filter(u=>u.id&&GMAP[u.id]).map(u=>roleTags(u.id)[0])), combo=rl.has('guard')&&rl.has('heal')?{b:COMBO_BONUS}:null;
-  return {facs,bonds:BONDS.filter(B=>bondActive(B,ids)),ids,ally,nn,vol,combo,rl};
+  const real=us.filter(u=>u.id&&GMAP[u.id]), rl=new Set(real.map(u=>roleTags(u.id)[0])), combo=rl.has('guard')&&rl.has('heal')?{b:COMBO_BONUS}:null;
+  const rs=real.filter(u=>u.rar>=3).map(u=>u.rar), no5=!pve&&rs.length>=3&&!rs.includes(5)?{b:RANK_BONUS.no5}:null, only4=no5&&rs.every(r=>r===4)?{b:RANK_BONUS.only4}:null;
+  return {facs,bonds:BONDS.filter(B=>bondActive(B,ids)),ids,ally,nn,vol,combo,rl,no5,only4,pve:!!pve};
 }
-function applyBonuses(us){
-  const info=teamBonusInfo(us);
+function applyBonuses(us,pve){
+  const info=teamBonusInfo(us,pve);
   us.forEach(u=>{
     let a=0,h=0,d=0,sp=0;const add=v=>{a+=v.atk||0;h+=v.hp||0;d+=v.def||0;sp+=v.spd||0};
     info.facs.forEach(F=>{if(u.fac===F.f&&u.rar>=3){add(F.b);if(F.b.r3&&u.rar===3)add(F.b.r3)}});
     info.bonds.forEach(B=>add(bondFx(B,info.ids)));
     if(info.vol&&u.rar===3&&u.id&&GMAP[u.id])add(info.vol.b);
     if(info.ally&&u.rar>=3)add(info.ally.b);
-    if(info.combo&&u.rar>=3)add(info.combo.b);
+    if(info.combo&&u.rar===3)add(info.combo.b);
+    if(info.no5&&u.rar>=3)add(info.no5.b);
+    if(info.only4&&u.rar>=3)add(info.only4.b);
     u.atk=Math.round(u.atk*(1+a));u.maxhp=u.hp=Math.round(u.maxhp*(1+h));u.def=Math.round(u.def*(1+d));u.spd=Math.round((u.spd+sp)*10)/10;
   });
   return info;
@@ -1668,7 +1673,7 @@ function mkUnit(spec,side,slot){
     hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0,bf:[],burn:[],stun:0,taunt:0,endUsed:0,lv,items:its.map(x=>({k:x.it.id,n:x.it.name,r:x.it.rar,d:x.d})),cr,cd,ls,dr,skp:skp+its.reduce((a,x)=>a+((x.it.ax&&x.it.ax.skp)||0),0),ib,ax:Object.assign({},...its.map(x=>x.it.ax||{})),endN:(sk.endure?1:0)+(its.some(x=>x.it.ax&&x.it.ax.endure)?1:0)};
 }
 // of: 상대 진형(배치를 정한 상대일 때만). 상성에서 이기면 전원 공격 +10%
-function buildTeam(specs,side,of){const fm=formOfSpecs(specs);const us=specs.map((s,i)=>s?mkUnit(s,side,s.p!=null&&s.p>=0&&s.p<NSLOT?s.p:i):null).filter(Boolean);const info=applyBonuses(us);
+function buildTeam(specs,side,of,pve){const fm=formOfSpecs(specs);const us=specs.map((s,i)=>s?mkUnit(s,side,s.p!=null&&s.p>=0&&s.p<NSLOT?s.p:i):null).filter(Boolean);const info=applyBonuses(us,pve);
   const adv=formAdv(fm,of), nof=!formSet(specs);
   us.forEach(u=>{u.row=rowOf(u.slot,fm);u.form=fm;u.rd=1;const x=FORM[fm].fx[u.row]||{};
     if(x.spd)u.spd=Math.round((u.spd+x.spd)*10)/10;if(x.atk)u.atk=Math.round(u.atk*(1+x.atk));if(x.def)u.def=Math.round(u.def*(1+x.def));if(x.rd)u.rd=1+x.rd;
@@ -1693,7 +1698,7 @@ const FURY=(w,r)=>w&&r>=WAR_T0?1+WAR_K*(r-WAR_T0+1):1, HEALF=(w,r)=>w&&r>=WAR_T0
 const isPosB=b=>(b.atk||0)>0||(b.def||0)>0||(b.sr||0)>0;
 function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:opt.siege.hp}:null;let RR=0,waves=1;const W=!!(opt&&opt.war);
   const rng=mulberry(seed);
-  const fA=formSet(As),fB=formSet(Bs), A=buildTeam(As,0,fB), B=buildTeam(Bs,1,fA), T=[A.us,B.us];
+  const fA=formSet(As),fB=formSet(Bs), A=buildTeam(As,0,fB), B=buildTeam(Bs,1,fA,!W), T=[A.us,B.us];
   if(opt&&opt.tm)twApply(T[0],opt.tm);
   // 원정군: 자리별 시작 체력 비율(전투 사이 체력 이월)
   if(opt&&opt.hp0)T[0].forEach(u=>{const r=opt.hp0[u.slot];if(r!=null)u.hp=Math.max(1,Math.min(u.maxhp,Math.round(u.maxhp*r)))});
@@ -1783,7 +1788,7 @@ function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:op
     });
     if(W&&!C&&r>=PLG_T0){const pr=Math.min(PLG_CAP,PLG_K*(r-PLG_T0+1));[...T[0],...T[1]].forEach(u=>{if(u.hp<=0)return;const d=Math.max(1,Math.round(u.maxhp*pr));u.hp=Math.max(0,u.hp-d);tick.hits.push({s:u.side,i:u.slot,d,hp:u.hp,burn:1,plg:1})});if(!tick.notes.includes('역병'))tick.notes.push('역병')}
     if(tick.hits.length)ev.push(tick);
-    if(C&&C.hp>0&&!T[1].some(x=>x.hp>0)){waves++;const nb=buildTeam(opt.siege.wave(waves),1,fA);T[1]=nb.us;const rp=applyRivals(T);ev.push({spawn:waves,units:nb.us.map(u=>({...u})),hits:[],heals:[],notes:[]});if(rp.length)ev.push({phase:'숙적',r:RR,pairs:rp,rv0:Object.fromEntries(T[0].map(u=>[u.slot,u.rvN||0])),hits:[],heals:[],notes:[]})}
+    if(C&&C.hp>0&&!T[1].some(x=>x.hp>0)){waves++;const nb=buildTeam(opt.siege.wave(waves),1,fA,1);T[1]=nb.us;const rp=applyRivals(T);ev.push({spawn:waves,units:nb.us.map(u=>({...u})),hits:[],heals:[],notes:[]});if(rp.length)ev.push({phase:'숙적',r:RR,pairs:rp,rv0:Object.fromEntries(T[0].map(u=>[u.slot,u.rvN||0])),hits:[],heals:[],notes:[]})}
   }
   if(C)return {win:C.hp>0,siege:1,turns:RR,waves,castle:C.hp,castleMax:C.max,ev,init,bonus:[A.info,B.info]};
   let win;
@@ -1792,7 +1797,7 @@ function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:op
   else{const pct=k=>T[k].reduce((a,x)=>a+x.hp/x.maxhp,0)/T[k].length;win=pct(0)>pct(1)}
   return {win,ev,init,bonus:[A.info,B.info],fin:T[0].map(u=>({slot:u.slot,id:u.id,hp:u.hp,max:u.maxhp}))};
 }
-function bonusLine(info){if(!info)return '';const p=[...(info.ally?[`연합군 ${info.ally.n}개국`]:[]),...(info.vol?[`의용군 ${info.vol.n}명`]:[]),...(info.combo?['수호·회복 조합']:[]),...info.bonds.map(b=>b.n),...info.facs.map(f=>`${FAC[f.f]} ${f.c}명`)];return p.join(' · ')}
+function bonusLine(info){if(!info)return '';const p=[...(info.ally?[`연합군 ${info.ally.n}개국`]:[]),...(info.vol?[`의용군 ${info.vol.n}명`]:[]),...(info.combo?['수호·회복 조합']:[]),...(info.only4?['정예']:info.no5?['신예']:[]),...info.bonds.map(b=>b.n),...info.facs.map(f=>`${FAC[f.f]} ${f.c}명`)];return p.join(' · ')}
 
 /* ---------------- stages ---------------- */
 function mkTroop(tr,cls){const b=TROOP_BASE[cls];return {name:tr[0],hz:tr[1],fac:tr[2],rar:2,cls,str:b[0],int:b[1],lead:b[2],spd:b[3],skill:DEF_SKILL[cls]}}
@@ -2194,11 +2199,17 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='5.1.0';
+const GAME_VERSION='5.2.0';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'5.2.0',date:'2026-10-17',title:'신예·정예 보너스 · 역할 조합 개편',reward:{ap:30},items:[
+  '신예 보너스: ★5 장수가 없는 덱(★3 이상 3명 이상)은 전원 공격·체력·방어 +12%. ★5 없이 짠 덱도 ★5 덱과 맞붙을 수 있게 했어요.',
+  '정예 보너스: 전원 ★4로만 짜면 신예에 더해 +4%(합계 +16%). ★4 덱이 ★3을 섞은 덱에 밀리지 않도록 맞췄어요.',
+  '역할 조합(🛡수호 + 🩹회복)은 이제 ★3 장수만 체력·방어 +8%를 받아요(이전: ★3 이상 전원 +4%).',
+  '신예·정예 보너스는 내 덱과 상대 플레이어 덱(대결·연무장·추천)에만 적용돼요. 출정·공성·보스·누각·원정의 적 덱에는 적용되지 않아요. 진형 화면의 진영·인연 효과와 도감 인연 탭 표에서 볼 수 있어요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'5.1.0',date:'2026-10-17',title:'회복 장수 타국 인연 · 역할 조합 보너스',reward:{ap:30},items:[
   '회복 장수 8명에게 타국 인연이 하나씩 생겼어요: 단도부회(노숙·관우), 생자당여손중모(손권·조조), 청주병(장각·조조), 명주를 찾아(순욱·원소), 한중의 의탁(장로·마초), 형주 담판(제갈근·유비), 익주 귀순(간옹·유순), 박망파(이전·제갈량). 타국 인연이라 효과 2배가 적용돼요.',
   '역할 조합 보너스: 진형에 🛡수호와 🩹회복(주 역할) 장수가 함께 있으면 ★3 이상 전원 체력·방어 +4%. 진형 화면의 진영·인연 효과와 도감 인연 탭의 표에서 볼 수 있어요.',
@@ -2907,7 +2918,8 @@ const HELP=[
   ['타국 인연','서로 다른 진영의 장수로 이루어진 인연은 효과가 '+CROSS_MUL+'배예요. 여러 나라 장수를 섞어 쓰도록 돕는 보너스예요.'],
   ['연합군','★3 이상 장수의 나라가 3개국이면 ★3 이상 전원 공격·체력·방어 +5%, 4개국이면 +8%. 진영 보너스·인연과 함께 적용돼요.'],
   ['의용군','진형에 ★3 장수가 1·2·3명 이상이면 그 ★3 장수들의 공격·체력이 +4% · +7% · +10%. 연합군·진영 보너스·인연과 함께 적용돼요.'],
-  ['역할 조합','진형에 🛡수호와 🩹회복 장수(주 역할 기준)가 함께 있으면 ★3 이상 전원 체력·방어 +4%. 다른 보너스와 함께 적용돼요.'],
+  ['역할 조합','진형에 🛡수호와 🩹회복 장수(주 역할 기준)가 함께 있으면 ★3 장수만 체력·방어 +8%. 다른 보너스와 함께 적용돼요.'],
+  ['신예 · 정예','★5 장수가 없는 덱(★3 이상 3명 이상)은 전원 공격·체력·방어 +12%(신예), 전원 ★4면 +4% 더(정예, 합계 +16%). 플레이어 덱에만 적용되고 출정·공성·보스·누각·원정의 적에게는 적용되지 않아요.'],
   ['★5 인연','★5 장수가 들어 있고 ★3 장수가 없는 인연은 효과가 1.15배예요(오호대장군 제외). 타국 인연 2배와 함께 적용돼요.'],
   ['완성도','레벨 45%, 돌파 20%, 보물 35%(3칸의 등급과 돌파)를 반영한 육성 정도예요.'],
   ['★5 제한','진형(6명)에는 ★5 장수를 '+MAX5+'명까지 넣을 수 있어요. 야전 상대 진형에도 똑같이 적용돼요.'],
@@ -3586,7 +3598,7 @@ function roleTags(id){if(roleC[id])return roleC[id];const b=GMAP[id]||{},s=skill
   return roleC[id]=t}
 const roleHtml=id=>roleTags(id).map((r,k)=>`<span class="rtag r-${r}${k?' sec':''}" title="${k?'보조 역할':'주 역할'}">${ROLE[r].i}<span class="rn">${ROLE[r].n}</span></span>`).join('');
 function roleSumHtml(ids){const c={guard:0,heal:0,war:0,plan:0};ids.forEach(g=>{if(g&&GMAP[g])c[roleTags(g)[0]]++});
-  return `<div class="rsum" aria-label="진형 역할 구성"><span>역할 구성</span>${Object.keys(ROLE).map(r=>`<span class="rtag r-${r}${c[r]?'':' z'}">${ROLE[r].i}${ROLE[r].n} ${c[r]}</span>`).join('')}${c.guard&&c.heal?`<span class="chip" title="★3 이상 전원 ${fxStr(COMBO_BONUS)}">조합 발동</span>`:''}</div>`}
+  return `<div class="rsum" aria-label="진형 역할 구성"><span>역할 구성</span>${Object.keys(ROLE).map(r=>`<span class="rtag r-${r}${c[r]?'':' z'}">${ROLE[r].i}${ROLE[r].n} ${c[r]}</span>`).join('')}${c.guard&&c.heal?`<span class="chip" title="★3 장수 ${fxStr(COMBO_BONUS)}">조합 발동</span>`:''}</div>`}
 const gfMatch=(F,b)=>(!F.role||String(F.role).split(',').some(r=>roleTags(b.id).includes(r)))&&(!F.fac||b.fac===F.fac)&&(!F.cls||b.cls===F.cls)&&(!+F.rar||b.rar===+F.rar)&&(!F.sk||skTags(b.id).includes(F.sk));
 const gfQ=(q,b)=>!q||b.name.includes(q)||(b.hz||'').includes(q);
 const gfNm=b=>esc(b.name+(b.hz||''));
@@ -4222,13 +4234,16 @@ function teamBoxHtml(specs,all){
   const li=[...info.facs.map(F=>`<li><b>${FAC[F.f]} ${F.c}명</b> · ${facStr(F.b)} <span class="sub">(${FAC[F.f]} 장수)</span></li>`),
     ...(info.ally?[`<li><b>연합군 ${info.ally.n}개국</b> · ${fxStr(info.ally.b)} <span class="sub">(★3 이상 전원)</span></li>`]:[]),
     ...(info.vol?[`<li><b>의용군 ${info.vol.n}명</b> · ${fxStr(info.vol.b)} <span class="sub">(★3 장수)</span></li>`]:[]),
-    ...(info.combo?[`<li><b>역할 조합 · 🛡수호 + 🩹회복</b> · ${fxStr(info.combo.b)} <span class="sub">(★3 이상 전원)</span></li>`]:[]),
+    ...(info.combo?[`<li><b>역할 조합 · 🛡수호 + 🩹회복</b> · ${fxStr(info.combo.b)} <span class="sub">(★3 장수)</span></li>`]:[]),
+    ...(info.no5?[`<li><b>신예</b> · ${fxStr(info.no5.b)} <span class="sub">(★5 없는 덱 · ★3 이상 전원)</span></li>`]:[]),
+    ...(info.only4?[`<li><b>정예</b> · ${fxStr(info.only4.b)} <span class="sub">(전원 ★4 · 신예와 함께)</span></li>`]:[]),
     ...info.bonds.map(B=>`<li><b>인연 · ${B.n}</b>${B.cross?` <span class="chip">타국 ×${CROSS_MUL}</span>`:''} · ${fxStr(bondFx(B,info.ids))} <span class="sub">(${B.ids.filter(x=>info.ids.has(x)).map(x=>GMAP[x].name).join('·')} → 전원)</span></li>`)];
   const hints=BONDS.filter(B=>!bondActive(B,info.ids)).map(B=>{const have=B.ids.filter(x=>info.ids.has(x)),need=(B.min||B.ids.length)-have.length;return {B,have,need}})
     .filter(x=>x.have.length&&x.need===1).slice(0,3)
     .map(({B,have})=>`<li class="hint">${B.n}: ${B.ids.filter(x=>!info.ids.has(x)).map(x=>`${GMAP[x].name}${all||S.gens[x]?'':'(미보유)'}`).join(' 또는 ')} 추가 시 발동</li>`);
   if(info.nn===2)hints.unshift(`<li class="hint">연합군: 다른 나라 ★3 이상 장수 1명 추가 시 발동</li>`);
-  if(!info.combo&&info.rl&&(info.rl.has('guard')!==info.rl.has('heal')))hints.unshift(`<li class="hint">역할 조합: ${info.rl.has('guard')?'🩹회복':'🛡수호'} 장수 1명 추가 시 ★3 이상 전원 ${fxStr(COMBO_BONUS)}</li>`);
+  if(!info.combo&&info.rl&&(info.rl.has('guard')!==info.rl.has('heal')))hints.unshift(`<li class="hint">역할 조합: ${info.rl.has('guard')?'🩹회복':'🛡수호'} 장수 1명 추가 시 ★3 장수 ${fxStr(COMBO_BONUS)}</li>`);
+  if(!info.no5&&!info.pve){const n5=[...info.ids].filter(x=>GMAP[x]&&GMAP[x].rar===5).length;if(n5===1)hints.push(`<li class="hint">신예: ★5 장수를 빼면 ★3 이상 전원 ${fxStr(RANK_BONUS.no5)}</li>`)}
   return `<div class="tbox"><b class="tb-h">진영·인연 효과</b>${li.length?`<ul>${li.join('')}</ul>`:'<p class="sub" style="margin:4px 0 0">같은 진영 장수를 3명 이상 넣거나 인연이 있는 장수를 함께 넣으면 능력치가 올라요.</p>'}${hints.length?`<ul>${hints.join('')}</ul>`:''}</div>`;
 }
 function rivalsOfHtml(id){const rs=rivalsOf(id);if(!rs.length)return '';
@@ -4246,15 +4261,17 @@ function bondsDexHtml(){
   const grp=[['발동 가능 · 장수를 모두 가졌어요',B=>need(B)===0],['1명 부족',B=>need(B)===1],['그 외',B=>need(B)>1]];
   const card=B=>{const n=need(B);return `<div class="li bond${q&&!nm(B).includes(q)?' gf-x':''}" data-bnm="${nm(B)}"><div class="info"><b>${B.n}${B.cross?` <span class="chip">타국 ×${CROSS_MUL}</span>`:''}${n===0?' <span class="chip on">발동 가능</span>':''}</b><span>${esc(B.d)}</span><span class="bfx">${fxStrH(B.fx)}${B.full?` · ${B.fullMin?B.fullMin+'명 이상':'전원'} 시 ${fxStrH(B.full)}`:''}${B.min?` · ${B.min}명 이상`:''}</span>
     <div class="bmem">${B.ids.map(x=>`<span class="${S.gens[x]?'':'unown'}" title="${GMAP[x].name}">${seal(GMAP[x],'sm')}<small>${GMAP[x].name}</small></span>`).join('')}</div></div></div>`};
-  return `<details class="p3 btbl" ${bondTbl?'open':''}><summary>진영 · 연합군 · 의용군 · 역할 조합 보너스 표</summary>
+  return `<details class="p3 btbl" ${bondTbl?'open':''}><summary>진영 · 연합군 · 의용군 · 역할 조합 · 신예·정예 보너스 표</summary>
   <h3>진영 보너스 <span style="font-weight:400">· 같은 진영 ★3 이상 장수에게 적용</span></h3>
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>3명</th><th>4명</th><th>5명 이상</th></tr></thead><tbody>${facRows}</tbody></table></div>
   <h3>연합군 보너스 <span style="font-weight:400">· ★3 이상 장수의 나라 수, 진형의 ★3 이상 전원에게 적용</span></h3>
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>3개국</th><th>4개국</th></tr></thead><tbody><tr><th scope="row">연합군</th><td>${fxStr(ALLY_BONUS[3])}</td><td>${fxStr(ALLY_BONUS[4])}</td></tr></tbody></table></div>
   <h3>의용군 <span style="font-weight:400">· 진형의 ★3 장수 수, ★3 장수에게만 적용</span></h3>
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>1명</th><th>2명</th><th>3명 이상</th></tr></thead><tbody><tr><th scope="row">의용군</th><td>${fxStr(VOL_BONUS[1])}</td><td>${fxStr(VOL_BONUS[2])}</td><td>${fxStr(VOL_BONUS[3])}</td></tr></tbody></table></div>
-  <h3>역할 조합 <span style="font-weight:400">· 주 역할 기준, 진형의 ★3 이상 전원에게 적용</span></h3>
-  <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>효과</th></tr></thead><tbody><tr><th scope="row">🛡수호 + 🩹회복</th><td>${fxStr(COMBO_BONUS)}</td></tr></tbody></table></div></details>
+  <h3>역할 조합 <span style="font-weight:400">· 주 역할 기준, 진형의 ★3 장수에게만 적용</span></h3>
+  <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>효과</th></tr></thead><tbody><tr><th scope="row">🛡수호 + 🩹회복</th><td>${fxStr(COMBO_BONUS)}</td></tr></tbody></table></div>
+  <h3>신예 · 정예 <span style="font-weight:400">· 내 덱과 상대 플레이어 덱에만, ★3 이상 전원에게 적용</span></h3>
+  <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>조건</th><th>효과</th></tr></thead><tbody><tr><th scope="row">신예</th><td>★3 이상 3명 이상 · ★5 없음</td><td>${fxStr(RANK_BONUS.no5)}</td></tr><tr><th scope="row">정예</th><td>신예 조건 · 전원 ★4</td><td>추가 ${fxStr(RANK_BONUS.only4)}</td></tr></tbody></table></div><p class="sub" style="margin:4px 0 0">출정·공성·보스·누각·원정의 적 덱에는 신예·정예가 적용되지 않아요.</p></details>
   <h3>인연 ${BONDS.length}종 <span style="font-weight:400">· 발동하면 진형 전원에게 적용</span></h3>
   <input type="search" class="gf-q" id="bond-q" value="${esc(bondQ)}" placeholder="장수 이름이나 인연 이름으로 검색" aria-label="인연 검색" autocomplete="off">
   <div class="chips" role="group" aria-label="인연 효과 필터" style="margin-top:8px"><span class="flab">효과</span>${Object.entries(BFX_K).map(([k,l])=>`<button type="button" data-bfk="${k}" aria-pressed="${bondFk.includes(k)}">${l} <span class="num">${BONDS.filter(B=>B.fk.has(k)&&(!bondX||B.cross)).length}</span></button>`).join('')}<button type="button" data-bfk="x" aria-pressed="${bondX}">타국 ×${CROSS_MUL} <span class="num">${BONDS.filter(B=>B.cross).length}</span></button>${bondFk.length||bondX?'<button type="button" data-bfk="">초기화</button>':''}</div>
@@ -4739,11 +4756,11 @@ function vRaid(){
   raidSub();
   const c=raidCyc(), st=raidStats(c), boss=raidBoss(c), pct=Math.min(1,st.tot/RAID_HP), left=raidLeft(st), mine=mySpecs();
   const ms=raidEndMs(c)-Date.now(), hh=Math.max(0,Math.floor(ms/3.6e6)), dd=Math.floor(hh/24);
-  const bu=buildTeam(boss,1).us;
+  const bu=buildTeam(boss,1,undefined,1).us;
   let h=`<div class="banner-card"><div class="big">討伐</div><div class="row"><h2 style="margin:0">토벌전 · 제${c+1}회</h2><span class="sp"></span><span class="chip">${dd?dd+'일 ':''}${hh%24}시간 남음</span></div>
    <p class="sub" style="margin:4px 0 10px">${RAID_DAYS}일마다 새 적이 나타나요. 내 진형으로 ${RAID_ROUNDS}턴 동안 싸워 준 피해가 모두의 게이지에 쌓여요. 적을 이길 필요는 없어요. 하루 ${RAID_DAILY}회.</p>${deckQuickHtml('출전 진형')}
    <div class="list">${bu.map(u=>{const s=boss.find(x=>x.g===u.id);return `<div class="li">${seal(GMAP[u.id],'sm')}<div class="info"><b>${esc(u.name)} <span class="stars r${u.rar}">${stars(u.rar)}</span></b><span>${CLS[u.cls].g} ${CLS[u.cls].n} · Lv ${MAXLV} · 체력 ${fmt(u.maxhp)}</span><span class="labits">${itemsOf(s.i).map(({it})=>`<span class="ig r${it.rar}" title="${esc(it.name)} +${ITEM_MAXD}">${itemImg(it)}</span>`).join('')}</span></div></div>`}).join('')}</div>
-   ${bonusLine(buildTeam(boss,1).info)?`<p class="sub" style="margin:6px 0 0">적 효과 · ${esc(bonusLine(buildTeam(boss,1).info))}</p>`:''}</div>
+   ${bonusLine(buildTeam(boss,1,undefined,1).info)?`<p class="sub" style="margin:6px 0 0">적 효과 · ${esc(bonusLine(buildTeam(boss,1,undefined,1).info))}</p>`:''}</div>
    <div class="stat" style="text-align:left;margin-bottom:12px"><div class="row"><small style="font-size:12px">공동 게이지</small><span class="sp"></span><b class="num">${(pct*100).toFixed(1)}%</b></div>
    <div class="rgauge"><i style="width:${pct*100}%"></i>${RAID_TIERS.slice(0,3).map(T=>`<s style="left:${T.p*100}%"></s>`).join('')}</div>
    <div class="sub num" style="margin:0">${fmt(st.tot)} / ${fmt(RAID_HP)}</div></div>
