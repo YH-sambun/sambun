@@ -385,6 +385,7 @@ html.work .wheel-lights{display:none}
 .wheel.spin{transition:transform 2.2s cubic-bezier(.15,.75,.2,1)}
 .wheel-pin{position:absolute;left:50%;top:-14px;margin-left:-9px;width:0;height:0;z-index:2;border-left:9px solid transparent;border-right:9px solid transparent;border-top:21px solid #f3d58e;filter:drop-shadow(0 1px 1px rgba(0,0,0,.5));transform-origin:50% 0}
 .wheel-hub{position:absolute;left:50%;top:50%;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff1c4,var(--bronze) 45%,#7d6330 100%);box-shadow:0 0 0 3px #3a2a14,0 2px 8px rgba(0,0,0,.5);font-size:18px;color:#1a1206;display:grid;place-items:center;font-family:var(--display)}
+.shl{display:grid;grid-template-columns:auto 1fr auto auto;gap:8px;align-items:center;font-size:13px;margin:0 0 8px}.shl .shn{white-space:nowrap}.shl .shb{height:8px;border-radius:4px;background:var(--panel2);overflow:hidden}.shl .shb i{display:block;height:100%;background:var(--bronze)}.shl .shv{font-size:12px;color:var(--mute);white-space:nowrap}.shl .btn{white-space:nowrap}
 .rl-tab{flex:1 1 150px;max-width:240px;border-collapse:collapse;font-size:11.5px;line-height:1.3}
 .rl-tab th,.rl-tab td{padding:2px 3px;text-align:left;font-weight:400}
 .rl-tab thead th{font-size:11px;color:var(--mute);border-bottom:1px solid var(--line);white-space:nowrap}.rl-tab thead th+th{text-align:right}
@@ -696,7 +697,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v6.0.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v6.0.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -2268,11 +2269,17 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='6.0.0';
+const GAME_VERSION='6.0.1';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'6.0.1',date:'2026-10-17',title:'조각 · 선택권 한곳에 모음 · 장수 조각 200개',reward:{ap:30},items:[
+  '등용 탭 맨 위 카드가 \'선택권 · 조각\'으로 바뀌었어요. 장수 조각 · 보물 조각이 얼마나 모였는지 막대로 보여 주고, 다 모이면 바로 옆 버튼으로 선택권을 받아요. 카드를 접어 둬도 제목 옆에 조각 개수가 보여요.',
+  '장수 조각은 200개, 보물 조각은 100개를 모으면 선택권 1장이에요. 장수는 ★3 장수 돌파가 일찍 끝나 조각이 빨리 쌓여서, 성장 속도가 너무 빨라지지 않게 장수 쪽만 200개로 정했어요. 지금 가진 조각은 그대로예요.',
+  '등용·보물 획득 결과 창에서 조각이 선택권 1장만큼 모이면 \'선택권으로 바꾸기\' 버튼이 바로 나와요.',
+  '券(쿠폰) 창 위에도 지금 가진 선택권 · 조각 수와 교환 위치를 함께 보여 줘요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'6.0.0',date:'2026-10-17',title:'순환 상성 · 앞열 개편 · 허저·감녕·제갈량 리워크 · 혈전부',reward:{ap:30},items:[
   '병종 상성이 기병 → 책사 → 보병 → 궁병 → 기병으로 물고 물리게 바뀌었어요. 유리하면 피해 +25%, 불리하면 -15%이고, 마주 보는 기병↔보병, 궁병↔책사는 대등해요. 궁병이 기병(+50%)과 책사(+30%)를 함께 잡던 쏠림이 사라졌어요.',
   '\'맨 앞 적\'을 노리는 전법이 도발 중인 적이 없으면 맨 앞 줄을 건너뛰고 둘째 줄을 노려요(돌파). 앞줄 수호 장수는 도발로 전법을 받아 내야 해요. 일반 공격은 지금처럼 맨 앞을 쳐요.',
@@ -2873,7 +2880,7 @@ async function fillCouponList(){
 }
 function openCoupons(){
   if(!S)return;
-  openSheet(`<div class="sheet-h"><h2 style="margin:0">쿠폰</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${couponHtml()}<h3>쿠폰 목록</h3><div id="cpn-list"><div class="empty-state">불러오는 중…</div></div>`);
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">쿠폰</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div><div class="stat" style="text-align:left;margin:0 0 10px"><small>보유 중</small><div style="font-size:13px;margin-top:2px">장수 선택권 <b class="num">${S.gtk||0}</b> · 보물 선택권 <b class="num">${S.isk||0}</b> · 장수 조각 <b class="num">${fmt(S.gsh||0)}</b>/${SHARD_N.g} · 보물 조각 <b class="num">${fmt(S.ish||0)}</b>/${SHARD_N.i}</div><div class="sub" style="margin:2px 0 0;font-size:12px">선택권과 조각은 등용 탭 맨 위 '선택권 · 조각'에서 써요.</div></div>${couponHtml()}<h3>쿠폰 목록</h3><div id="cpn-list"><div class="empty-state">불러오는 중…</div></div>`);
   bindCoupon();fillCouponList();
 }
 document.addEventListener('click',async e=>{
@@ -3067,7 +3074,7 @@ const HELP=[
   ['돌파','같은 보물이 또 나오면 돌파 +1, 최대 +'+ITEM_MAXD+'. 1단계마다 그 보물의 모든 효과 +3%, +50이면 2.5배예요.'],
   ['보물 강화도 교환권','같은 등급 보물 두 개의 돌파 단계를 서로 맞바꿔요(정련 금 환급분도 함께). 보물 상세 화면에서 써요. 금화 룰렛(0.01%)과 쿠폰에서 얻어요.'],
   ['정련','v3.5.0부터 금으로 정련할 수 없어요. 돌파는 같은 보물을 다시 얻을 때만 +1씩 올라가요(보물 획득 중복, 보물 선택권). 과거에 정련한 단계는 그대로이고, 그 보물을 팔면 정련에 쓴 금을 돌려받아요.'],
-  ['+50 이후','최대 돌파 뒤 같은 보물이 나오면 조각(★3 1 · ★4 3 · ★5 10개)으로 바뀌어요. 보물 조각 100개는 등용 탭에서 보물 선택권 1장으로 바꿔요. 장수도 돌파를 다 채우면 같은 방식으로 장수 조각을 받아요. 모두 끝까지 키운 뒤에는 금으로 받아요.'],
+  ['+50 이후','최대 돌파 뒤 같은 보물이 나오면 조각(★3 1 · ★4 3 · ★5 10개)으로 바뀌어요. 보물 조각 100개는 등용 탭 맨 위 \'선택권 · 조각\'에서 보물 선택권 1장으로 바꿔요. 장수도 돌파를 다 채우면 같은 방식으로 장수 조각을 받고, 장수 조각은 200개가 장수 선택권 1장이에요. 모두 끝까지 키운 뒤에는 금으로 받아요.'],
   ['치명','치명타 확률이에요. 기본 10%에 그대로 더해져요(예: 치명 +12% → 22%). 최대 60%.'],
   ['치명 피해','치명타가 터졌을 때의 피해 배율이에요. 기본 150%에 그대로 더해져요(예: 치명 피해 +20% → 170%, +50% → 200%). 최대 300%.'],
   ['흡혈','준 피해의 일부만큼 체력을 회복해요. 최대 50%.'],
@@ -3382,16 +3389,20 @@ function rewardHtml(r){return `<div class="rw"><span class="coin"><b class="sl g
 /* ---------------- 등용 ---------------- */
 // 돌파를 다 채운 장수의 중복: 금으로 환불 (나팔 환불은 소탕과 맞물려 자원이 무한히 불어나서 v1.16.0에서 바꿈)
 const DUP_GOLD={3:100,4:150,5:500};  // v3.5.0: 룰렛 100회 금 환류 상쇄로 절반
-// v5.3.4: 돌파·강화가 끝난 뒤 중복은 조각(★3 1 · ★4 3 · ★5 10). 조각 100개 = 선택권 1장. 모두 끝까지 키웠으면 예전처럼 금
-const SHARD={3:1,4:3,5:10}, SHARD_N=100, SHK={g:'gsh',i:'ish'};
+// v5.3.4: 돌파·강화가 끝난 뒤 중복은 조각(★3 1 · ★4 3 · ★5 10). 모두 끝까지 키웠으면 예전처럼 금
+// v6.0.1: 선택권 1장 = 장수 조각 200 · 보물 조각 100 (장수는 ★3 돌파가 일찍 끝나 조각이 빨리 쌓여서)
+const SHARD={3:1,4:3,5:10}, SHARD_N={g:200,i:100}, SHK={g:'gsh',i:'ish'};
 function allMaxed(kind){return kind==='g'?GENS.every(g=>S.gens[g.id]&&S.gens[g.id].d>=maxD(g.rar)):ITEMS.every(it=>{const o=S.items.find(y=>y.k===it.id);return o&&o.d>=ITEM_MAXD})}
+const shReady=kind=>(S[SHK[kind]]||0)>=SHARD_N[kind]?`<div style="text-align:center;margin:0 0 10px"><button type="button" class="btn sm" data-shx="${kind}">${kind==='g'?'장수':'보물'} 조각으로 선택권 ${Math.floor((S[SHK[kind]]||0)/SHARD_N[kind])}장 받기</button></div>`:'';
 function overDup(kind,r){if(allMaxed(kind)){const g=(kind==='g'?DUP_GOLD:ITEM_OVER)[r];S.gold+=g;return {tag:`金 +${fmt(g)}`,gold:g,sh:0}}
   const k=SHK[kind],n=SHARD[r];S[k]=Math.min(99999,(S[k]||0)+n);return {tag:`조각 +${n}`,gold:0,sh:n}}
-const shLine=kind=>{const k=SHK[kind],v=S[k]||0;if(!v)return '';const n=Math.floor(v/SHARD_N);
-  return `<p class="sub" style="margin:0 0 8px"><b class="sl gold">片</b> ${kind==='g'?'장수':'보물'} 조각 <b class="num" style="color:var(--fg)">${fmt(v)}</b>/${SHARD_N} <button type="button" class="btn ghost sm" style="margin-left:6px" data-shx="${kind}" ${n?'':'disabled'}>${n?`선택권 ${n}장으로 바꾸기`:'100개부터 바꿀 수 있어요'}</button></p>`};
+const shBtn=kind=>{const v=S[SHK[kind]]||0,N=SHARD_N[kind],n=Math.floor(v/N);return `<button type="button" class="btn${n?'':' ghost'} sm" data-shx="${kind}" ${n?'':'disabled'}>${n?`선택권 ${n}장 받기`:`${fmt(N-v%N)}개 더`}</button>`};
+const shLine=kind=>{const v=S[SHK[kind]]||0,N=SHARD_N[kind],p=Math.min(100,v/N*100);
+  return `<div class="shl"><span class="shn"><b class="sl gold">片</b> ${kind==='g'?'장수':'보물'} 조각</span><span class="shb"><i style="width:${p}%"></i></span><b class="num shv">${fmt(v)}/${N}</b>${shBtn(kind)}</div>`};
 document.addEventListener('click',e=>{const b=e.target.closest('[data-shx]');if(!b||b.disabled)return;const kind=b.dataset.shx,k=SHK[kind],sel=kind==='g'?'gtk':'isk';
-  const n=Math.min(Math.floor((S[k]||0)/SHARD_N),999-(S[sel]||0));if(n<1){toast('선택권을 더 받을 수 없어요 (최대 999장)');return}
-  S[k]-=n*SHARD_N;S[sel]=(S[sel]||0)+n;save();renderTop();renderView();toast(`${kind==='g'?'장수':'보물'} 조각 ${fmt(n*SHARD_N)}개 → ${kind==='g'?'장수':'보물'} 선택권 ${n}장`)});
+  const N=SHARD_N[kind],n=Math.min(Math.floor((S[k]||0)/N),999-(S[sel]||0));if(n<1){toast('선택권을 더 받을 수 없어요 (최대 999장)');return}
+  S[k]-=n*N;S[sel]=(S[sel]||0)+n;save();renderTop();renderView();toast(`${kind==='g'?'장수':'보물'} 조각 ${fmt(n*N)}개 → ${kind==='g'?'장수':'보물'} 선택권 ${n}장 · 등용 탭 맨 위에서 써요`);
+  if(b.closest('#sheet')){b.disabled=true;b.textContent=`선택권 +${n}장 받음`}});
 const GCOST={1:100,10:900}, ICOST={1:80,10:720};
 // v5.3.1: 등용 탭 카드 접기 (제목을 눌러 접고 펼침 · 이 기기에 기억)
 const GF_K='sg_gfold', GF_ALL=['tk','g','i','rl'];
@@ -3410,11 +3421,11 @@ function vGacha(){
   const all=GF_ALL.every(gfOn), pc=k=>(S.pity&&S.pity[k])||0;
   const card=(k,big,title,sum,body,btns)=>`<div class="banner-card${gfOn(k)?' folded':''}" data-bc="${k}"><div class="big">${big}</div>${bcHead(k,title,sum)}<div class="bc-b">${body}</div>${btns}</div>`;
   return `<div class="row"><h2 style="margin:0">등용</h2><span class="sp"></span><button type="button" class="btn ghost sm" data-bcall aria-pressed="${all}">${all?'모두 펼치기':'간결히 보기'}</button></div>${infoP('gacha','군량으로 장수와 보물을 얻어요',`시간마다 쌓이는 군량으로 장수와 보물을 얻어요. 10회마다 ★4 이상 하나를 보장하고, ${PITY_N}회마다 선택권 1장을 드려요(천장).`)}
-  ${S.gtk||S.isk?card('tk','選','선택권',`장수 ${S.gtk||0} · 보물 ${S.isk||0}장`,`<p class="sub" style="margin:0 0 8px">원하는 장수·보물을 골라 받아요. 이미 있으면 돌파·강화 +1.</p>`,`<div class="row" style="gap:8px"><button type="button" class="btn" data-tkopen="g" ${S.gtk?'':'disabled'}>장수 선택권 ${S.gtk||0}장</button><button type="button" class="btn" data-tkopen="i" ${S.isk?'':'disabled'}>보물 선택권 ${S.isk||0}장</button></div>`):''}
-  ${card('g','募將','장수 등용',`천장 ${pc('g')}/${PITY_N}${S.gpk?` · 등용권 ${fmt(S.gpk)}장`:''}`,`${infoP('pull-g','중복이면 돌파 +1 (능력치 +6%)',`같은 장수가 나오면 돌파 단계가 올라 능력치가 6%씩 오릅니다(최대 5단계, ★3은 한계돌파로 10단계). 돌파를 다 채운 뒤 중복은 조각(★3 ${SHARD[3]} · ★4 ${SHARD[4]} · ★5 ${SHARD[5]}개)으로 바뀌고, 조각 ${SHARD_N}개는 장수 선택권 1장으로 바꿀 수 있어요.`,'margin:0')}${rates}
-   ${S.gpk?`<p class="sub" style="margin:0 0 8px"><b class="sl gold">券</b> 장수 등용권 <b class="num" style="color:var(--fg)">${S.gpk}</b>장 · 군량보다 먼저 쓰여요</p>`:''}${shLine('g')}`,pullBtns('g'))}
-  ${card('i','寶庫','보물 획득',`천장 ${pc('i')}/${PITY_N}${S.itk?` · 획득권 ${fmt(S.itk)}장`:''}`,`${infoP('pull-i',`보물 ${ITEMS.length}종 · 장수마다 3개 장착`,`보물 ${ITEMS.length}종. 장수마다 3개까지 장착해요. 무기·명마는 1개씩이고, 무기는 병종마다 쓸 수 있는 종류가 정해져 있어요. 같은 보물이 또 나오면 돌파 +1, 최대 +${ITEM_MAXD}. +${ITEM_MAXD} 뒤 중복은 조각(★3 ${SHARD[3]} · ★4 ${SHARD[4]} · ★5 ${SHARD[5]}개), ${SHARD_N}개는 보물 선택권 1장이에요.`,'margin:0')}${rates}
-   ${S.itk?`<p class="sub" style="margin:0 0 8px"><b class="sl gold">券</b> 보물 획득권 <b class="num" style="color:var(--fg)">${S.itk}</b>장 · 군량보다 먼저 쓰여요</p>`:''}${shLine('i')}`,pullBtns('i'))}${rouletteHtml()}`;
+  ${S.gtk||S.isk||S.gsh||S.ish?card('tk','選','선택권 · 조각',`선택권 장수 ${S.gtk||0} · 보물 ${S.isk||0}장${S.gsh||S.ish?` · 조각 ${fmt(S.gsh||0)} · ${fmt(S.ish||0)}`:''}`,`<p class="sub" style="margin:0 0 8px">원하는 장수·보물을 골라 받아요. 이미 있으면 돌파·강화 +1.</p><p class="sub" style="margin:0 0 6px">끝까지 키운 장수·보물이 또 나오면 조각을 받아요(★3 ${SHARD[3]} · ★4 ${SHARD[4]} · ★5 ${SHARD[5]}개). 장수 조각 ${SHARD_N.g}개 · 보물 조각 ${SHARD_N.i}개마다 선택권 1장이에요.</p>${shLine('g')}${shLine('i')}`,`<div class="row" style="gap:8px;margin-top:4px"><button type="button" class="btn" data-tkopen="g" ${S.gtk?'':'disabled'}>장수 선택권 ${S.gtk||0}장</button><button type="button" class="btn" data-tkopen="i" ${S.isk?'':'disabled'}>보물 선택권 ${S.isk||0}장</button></div>`):''}
+  ${card('g','募將','장수 등용',`천장 ${pc('g')}/${PITY_N}${S.gpk?` · 등용권 ${fmt(S.gpk)}장`:''}`,`${infoP('pull-g','중복이면 돌파 +1 (능력치 +6%)',`같은 장수가 나오면 돌파 단계가 올라 능력치가 6%씩 오릅니다(최대 5단계, ★3은 한계돌파로 10단계). 돌파를 다 채운 뒤 중복은 조각(★3 ${SHARD[3]} · ★4 ${SHARD[4]} · ★5 ${SHARD[5]}개)으로 바뀌고, 조각 ${SHARD_N.g}개는 맨 위 '선택권 · 조각'에서 장수 선택권 1장으로 바꿔요.`,'margin:0')}${rates}
+   ${S.gpk?`<p class="sub" style="margin:0 0 8px"><b class="sl gold">券</b> 장수 등용권 <b class="num" style="color:var(--fg)">${S.gpk}</b>장 · 군량보다 먼저 쓰여요</p>`:''}`,pullBtns('g'))}
+  ${card('i','寶庫','보물 획득',`천장 ${pc('i')}/${PITY_N}${S.itk?` · 획득권 ${fmt(S.itk)}장`:''}`,`${infoP('pull-i',`보물 ${ITEMS.length}종 · 장수마다 3개 장착`,`보물 ${ITEMS.length}종. 장수마다 3개까지 장착해요. 무기·명마는 1개씩이고, 무기는 병종마다 쓸 수 있는 종류가 정해져 있어요. 같은 보물이 또 나오면 돌파 +1, 최대 +${ITEM_MAXD}. +${ITEM_MAXD} 뒤 중복은 조각(★3 ${SHARD[3]} · ★4 ${SHARD[4]} · ★5 ${SHARD[5]}개), ${SHARD_N.i}개는 맨 위 '선택권 · 조각'에서 보물 선택권 1장으로 바꿔요.`,'margin:0')}${rates}
+   ${S.itk?`<p class="sub" style="margin:0 0 8px"><b class="sl gold">券</b> 보물 획득권 <b class="num" style="color:var(--fg)">${S.itk}</b>장 · 군량보다 먼저 쓰여요</p>`:''}`,pullBtns('i'))}${rouletteHtml()}`;
 }
 function rollRar(){const r=Math.random();return r<.03?5:r<.18?4:3}
 /* ---------------- 대량 소환 · 천장 · ★5 연출 (v3.4.0) ----------------
@@ -3486,14 +3497,14 @@ function openPullResult(kind,out,got,noTk){
    ${got?`<div class="pity-hit" role="status">천장 달성! ${P.sn} +${got}장 · 등용 탭 위 선택권에서 써요</div>`:''}`;
   const foot=`<div class="pity" style="margin-top:12px"><span>천장 <b class="num">${pc}</b>/${PITY_N}</span><div class="bar"><i style="width:${pc/PITY_N*100}%;background:var(--bronze)"></i></div></div>
    ${againHtml(kind,n,noTk)}`;
-  if(n<=10){out.sort((a,b)=>b.rar-a.rar);openSheet(`${head}${sh?`<p class="sub" style="margin:0 0 8px;text-align:center">${kind==='g'?'장수':'보물'} 조각 +${fmt(sh)} · 보유 ${fmt(S[SHK[kind]]||0)}/${SHARD_N}</p>`:''}<div class="reveal">${out.map((x,i)=>pullCard(kind,x,i)).join('')}</div>${foot}`);return}
+  if(n<=10){out.sort((a,b)=>b.rar-a.rar);openSheet(`${head}${sh?`<p class="sub" style="margin:0 0 8px;text-align:center">${kind==='g'?'장수':'보물'} 조각 +${fmt(sh)} · 보유 ${fmt(S[SHK[kind]]||0)}/${SHARD_N[kind]}</p>${shReady(kind)}`:''}<div class="reveal">${out.map((x,i)=>pullCard(kind,x,i)).join('')}</div>${foot}`);return}
   // 11회 이상: ★5는 카드로, ★4·★3은 같은 것끼리 묶어서
   const grp=r=>{const m=new Map();out.filter(x=>x.rar===r).forEach(x=>{const g=m.get(x.id)||{x,c:0};g.c++;g.x=x;m.set(x.id,g)});return [...m.values()].sort((a,b)=>b.c-a.c)};
   const tiles=r=>`<div class="pgrid">${grp(r).map(({x,c})=>`<div class="pt">${kind==='g'?seal(x,'sm'):`<div class="itm r${x.rar}">${itemImg(x)}</div>`}${c>1?`<b class="cnt num">×${c}</b>`:''}<span>${esc(x.name)}</span><small>${esc(x.tag)}</small></div>`).join('')}</div>`;
   const f5=out.filter(x=>x.rar===5);
   openSheet(`${head}
    <div class="pullsum"><span class="r5">★5 <b class="num">${cnt(5)}</b></span><span class="r4">★4 <b class="num">${cnt(4)}</b></span><span class="r3">★3 <b class="num">${cnt(3)}</b></span></div>
-   <p class="sub" style="margin:4px 0 10px;text-align:center">신규 ${nw} · ${kind==='g'?'돌파':'강화'} ${up}${sh?` · 조각 +${fmt(sh)} (${fmt(S[SHK[kind]]||0)}/${SHARD_N})`:''}${gold?` · 金 +${fmt(gold)}`:''}</p>
+   <p class="sub" style="margin:4px 0 10px;text-align:center">신규 ${nw} · ${kind==='g'?'돌파':'강화'} ${up}${sh?` · 조각 +${fmt(sh)} (${fmt(S[SHK[kind]]||0)}/${SHARD_N[kind]})`:''}${gold?` · 金 +${fmt(gold)}`:''}</p>${sh?shReady(kind):''}
    ${f5.length?`<div class="reveal">${f5.map((x,i)=>pullCard(kind,x,i)).join('')}</div>`:'<p class="sub" style="text-align:center">이번에는 ★5가 나오지 않았어요.</p>'}
    <h3 style="margin:14px 0 6px">★4 · ${cnt(4)}개</h3>${tiles(4)}
    <details class="p3"><summary>★3 · ${cnt(3)}개 보기</summary>${tiles(3)}</details>
