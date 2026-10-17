@@ -693,7 +693,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v5.3.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v5.3.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -871,7 +871,7 @@ const SK={
  zhugeliang:{n:'팔진도',d:'적 전체 0.6배 피해, 적 전체 공격 2턴 -25%',tg:'all',m:.6,deb:{to:'all',atk:-.25,dur:2}},
  caocao:{n:'난세의 간웅',d:'적 전체 0.7배 피해, 아군 전체 공격 2턴 +25%',tg:'all',m:.7,buff:{to:'all',atk:.25,dur:2}},
  simayi:{n:'고평릉의 변',d:'서로 다른 적 3명에게 1.1배 피해, 맞은 적 방어 2턴 -30%, 각 50% 확률로 전법 봉인(다음 전법 1번을 못 씀)',tg:'n',nt:3,m:1.1,seal:.5,deb:{to:'hit',def:-.3,dur:2}},
- zhouyu:{n:'적벽화공',d:'적 전체 0.6배 피해, 3턴 동안 화상(매 턴 공격의 10%, 방어 무시)',tg:'all',m:.6,burn:{p:.1,dur:3}},
+ zhouyu:{n:'적벽화공',d:'적 전체 0.5배 피해, 3턴 동안 화상(매 턴 공격의 10%, 방어 무시)',tg:'all',m:.5,burn:{p:.1,dur:3}},
  sunce:{n:'소패왕',d:'맨 앞 적에게 4.2배 피해, 방어 30% 무시',tg:'front',m:4.2,ign:.3},
  liubei:{n:'인덕',d:'아군 전체 체력 5% 회복, 아군 전체 공격 2턴 +10%',tg:'none',heal:{to:'all',p:.05},buff:{to:'all',atk:.1,dur:2}},
  machao:{n:'위수 추격',d:'체력이 가장 낮은 적에게 3.0배 피해, 대상 체력이 30% 이하면 4.5배',tg:'low',m:3,exe:{thr:.3,m:4.5}},
@@ -894,7 +894,7 @@ const SK={
  guanping:{n:'부자동심',d:'맨 앞 적 2.3배 피해. 관우가 아군에 있으면 3.3배',tg:'front',m:2.3,cond:{ally:'guanyu',m:3.3}},
  madai:{n:'참위연',d:'체력이 가장 낮은 적에게 2.8배 피해, 대상 체력이 30% 이하면 3.8배',tg:'low',m:2.8,exe:{thr:.3,m:3.8}},
  liaohua:{n:'백전노장',d:'맨 앞 적 2.4배 피해, 자신 방어 3턴 +40%',tg:'front',m:2.4,buff:{to:'self',def:.4,dur:3}},
- yujin:{n:'엄정한 군율',d:'맨 앞 적 1.3배 피해, 아군 전체 방어 2턴 +20%',tg:'front',m:1.3,buff:{to:'all',def:.2,dur:2}},
+ yujin:{n:'진화 군율',d:'맨 앞 적 1.2배 피해, 아군 전체 화상 해제, 아군 전체 3턴 받는 화상 -60%·방어 +10% (🔥화공 대비: 한 팀 2명이면 효과 ×0.75, 3명이면 ×0.5)',tg:'front',m:1.2,cleanBurn:1,buff:{to:'all',def:.1,br:.6,dur:3}},
  lejin:{n:'선등',d:'맨 앞 적에게 2.4배 치명타 확정',tg:'front',m:2.4,crit:1},
  lidian:{n:'유장의 지략',d:'무작위 적 2번 0.8배 피해, 체력이 가장 낮은 아군 5% 회복',tg:'rand',h:2,m:.8,heal:{to:'low',p:.05}},
  chengpu:{n:'강동의 원로',d:'무작위 적 2번 0.9배 피해, 아군 전체 공격 2턴 +10%',tg:'rand',h:2,m:.9,buff:{to:'all',atk:.1,dur:2}},
@@ -915,7 +915,7 @@ const SK={
  gongsunzan:{n:'백마의종',d:'맨 앞 적을 2번 베어 각 1.0배 피해, 아군 전체 공격 2턴 +10%',tg:'front',h:2,m:1,buff:{to:'all',atk:.1,dur:2}},
  zhugejin:{n:'오의 사신',d:'체력이 가장 낮은 아군 체력 12% 회복, 적 전체 공격 2턴 -10%',tg:'none',heal:{to:'low',p:.12},deb:{to:'all',atk:-.1,dur:2}},
  liuxun:{n:'낙성 고수',d:'자신 2턴 도발, 자신 방어 2턴 +25%, 자신 체력 8% 회복',tg:'none',taunt:2,buff:{to:'self',def:.25,dur:2},heal:{to:'self',p:.08}},
- caoren:{n:'번성 사수',d:'맨 앞 적에게 1.1배 피해, 자신 1턴 도발, 아군 전체 방어 2턴 +15%',tg:'front',m:1.1,taunt:1,buff:{to:'all',def:.15,dur:2}},
+ caoren:{n:'강릉 사수',d:'맨 앞 적에게 1.1배 피해, 자신 1턴 도발, 아군 전체 방어 2턴 +15%, 화상 전법을 가진 적 중 공격이 가장 높은 1명을 75% 확률로 전법 봉인 (🔥화공 대비: 한 팀 2명이면 효과 ×0.75, 3명이면 ×0.5)',tg:'front',m:1.1,taunt:1,sealFire:.75,buff:{to:'all',def:.15,dur:2}},
  zhoucang:{n:'청룡도 호위',d:'맨 앞 적에게 1.6배 피해, 2턴 동안 관우(없으면 체력 비율이 가장 낮은 아군)를 호위해 쓰러질 피해를 대신 맞음, 자신 방어 2턴 +25%',tg:'front',m:1.6,guard:{pref:'guanyu',dur:2},buff:{to:'self',def:.25,dur:2}},  // v5.3.0 호위 리워크
  sunshangxiang:{n:'궁요희',d:'무작위 적에게 화살을 4번 쏘아 각 1.4배 피해',tg:'rand',h:4,m:1.4},
  handang:{n:'강동 기병',d:'맨 앞 적을 2번 베어 각 1.3배 피해, 맞은 적 방어 2턴 -15%',tg:'front',h:2,m:1.3,deb:{to:'hit',def:-.15,dur:2}},
@@ -963,7 +963,7 @@ const SK={
  zhangliang:{n:'인공장군',d:'맨 앞 적에게 2.0배 피해, 아군 전체 공격 2턴 +10%',tg:'front',m:2,buff:{to:'all',atk:.1,dur:2}},
  wutugu:{n:'등갑병',d:'맨 앞 적에게 1.6배 피해, 자신 방어 2턴 +30%, 자신이 받는 전법 피해 2턴 -50%',tg:'front',m:1.6,buff:{to:'self',def:.3,sr:.5,dur:2}},
  zhanglu:{n:'오두미도',d:'아군 전체 체력 5% 회복, 아군 전체 방어 2턴 +10%',tg:'none',heal:{to:'all',p:.05},buff:{to:'all',def:.1,dur:2}},
- huangquan:{n:'신중한 간언',d:'적 전체 0.5배 피해, 적 전체 공격 2턴 -10%',tg:'all',m:.5,deb:{to:'all',atk:-.1,dur:2}},
+ huangquan:{n:'이릉의 간언',d:'적 전체 0.3배 피해, 아군 전체 해로운 효과 해제, 아군 전체 2턴 받는 전법 피해 -15%·받는 화상 -30% (🔥화공 대비: 한 팀 2명이면 효과 ×0.75, 3명이면 ×0.5)',tg:'all',m:.3,clean:1,buff:{to:'all',sr:.15,br:.3,dur:2}},
  guanhai:{n:'북해 포위',d:'맨 앞 적에게 2.8배 피해',tg:'front',m:2.8},
  zhangwei:{n:'양평관 사수',d:'맨 앞 적에게 1.4배 피해, 자신 1턴 도발, 아군 전체 방어 2턴 +10%',tg:'front',m:1.4,taunt:1,buff:{to:'all',def:.1,dur:2}},
  wangyun:{n:'연환의 설계',d:'서로 다른 적 2명에게 1.0배 피해, 각 40% 확률로 전법 봉인, 맞은 적 공격 2턴 -15%',tg:'n',nt:2,m:1,seal:.4,deb:{to:'hit',atk:-.15,dur:2}},
@@ -1712,11 +1712,14 @@ function mkUnit(spec,side,slot){
     hp,maxhp:hp,atk:Math.round(atk),def:Math.round(def),spd:Math.round(spd*10)/10,side,slot,acts:0,bf:[],burn:[],stun:0,taunt:0,endUsed:0,lv,items:its.map(x=>({k:x.it.id,n:x.it.name,r:x.it.rar,d:x.d})),cr,cd,ls,dr,skp:skp+its.reduce((a,x)=>a+((x.it.ax&&x.it.ax.skp)||0),0),ib,ax:Object.assign({},...its.map(x=>x.it.ax||{})),endN:(sk.endure?1:0)+(its.some(x=>x.it.ax&&x.it.ax.endure)?1:0)};
 }
 // of: 상대 진형(배치를 정한 상대일 때만). 상성에서 이기면 전원 공격 +10%
+// v5.3.2 화공 대비 장수: 한 팀에 2명이면 화공 대비 효과(받는 화상 감소·받는 전법 피해 감소·화공 봉인 확률) ×0.75, 3명이면 ×0.5
+const ANTIFIRE=['yujin','caoren','huangquan'], AF_MUL=[1,1,.75,.5];
 function buildTeam(specs,side,of,pve){const fm=formOfSpecs(specs);const us=specs.map((s,i)=>s?mkUnit(s,side,s.p!=null&&s.p>=0&&s.p<NSLOT?s.p:i):null).filter(Boolean);const info=applyBonuses(us,pve);
   const adv=formAdv(fm,of), nof=!formSet(specs);
   us.forEach(u=>{u.row=rowOf(u.slot,fm);u.form=fm;u.rd=1;const x=FORM[fm].fx[u.row]||{};
     if(x.spd)u.spd=Math.round((u.spd+x.spd)*10)/10;if(x.atk)u.atk=Math.round(u.atk*(1+x.atk));if(x.def)u.def=Math.round(u.def*(1+x.def));if(x.rd)u.rd=1+x.rd;
     if(adv){u.atk=Math.round(u.atk*(1+FORM_ADV));u.adv=1}if(nof)u.nof=1});
+  {const n=us.filter(u=>ANTIFIRE.includes(u.id)).length;us.forEach(u=>{u.afF=ANTIFIRE.includes(u.id)?AF_MUL[n]:1});if(info&&n)info.af={n,f:AF_MUL[n]}}
   return {us,info,adv}}
 // 상성은 배치를 직접 정한 진형끼리만 따져요(레이드 보스처럼 배치가 없는 상대는 제외)
 const formSet=specs=>{const s=(specs||[]).find(x=>x&&x.f);return s?formKey(s.f):null};
@@ -1735,7 +1738,7 @@ function eff(u,k){let v=1;for(const b of u.bf)v+=b[k]||0;return Math.max(.3,v)}
    야전·연습전·연무장·야전용 추천에만 opt.war로 켜요. 출정·원정군·토벌전·공성전·탑은 그대로. */
 const WAR_T0=13, WAR_K=.12, WAR_HC=.10, PLG_T0=22, PLG_K=.04, PLG_CAP=.25, WAR_R=30, WAR_OPT={rounds:WAR_R,war:1};
 const FURY=(w,r)=>w&&r>=WAR_T0?1+WAR_K*(r-WAR_T0+1):1, HEALF=(w,r)=>w&&r>=WAR_T0?Math.max(0,1-WAR_HC*(r-WAR_T0+1)):1;
-const isPosB=b=>(b.atk||0)>0||(b.def||0)>0||(b.sr||0)>0;
+const isPosB=b=>(b.atk||0)>0||(b.def||0)>0||(b.sr||0)>0||(b.br||0)>0;
 function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:opt.siege.hp}:null;let RR=0,waves=1;const W=!!(opt&&opt.war);
   const rng=mulberry(seed);
   // v5.2.1: opt.ex(원정군 파티)는 신예·정예 없이 싸워요(정복률을 v5.1 수준으로)
@@ -1815,8 +1818,10 @@ function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:op
         if(S.burn)hitT.forEach(t=>{if(t.hp>0)t.burn.push({d:Math.max(1,Math.round(atkV*S.burn.p)),dur:S.burn.dur,by:[u.side,u.slot]})});
         if(S.heal){const H=S.heal, tg=H.to==='all'?allies():H.to==='low'?[allies().reduce((a,b)=>b.hp/b.maxhp<a.hp/a.maxhp?b:a)]:[u];
           tg.forEach(t=>{if(C&&t.side===0){const h=Math.min(C.max-C.hp,Math.round(t.maxhp*H.p*SIEGE_HEAL));C.hp+=h;e.heals.push({s:0,i:t.slot,h,hp:t.hp,ch:C.hp});return}const h=Math.min(t.maxhp-t.hp,Math.round(t.maxhp*H.p*(opt&&opt.stage&&t.side===1&&t.esc>1?1/t.esc:1)*(t.ax&&t.ax.noheal?1:HEALF(W,r))));t.hp+=h;e.heals.push({s:t.side,i:t.slot,h,hp:t.hp})})}
+        if(S.sealFire){const fz=foes().filter(x=>x.sk&&x.sk.burn);if(fz.length){const t=fz.reduce((a,b)=>b.atk>a.atk?b:a);if(rng()<S.sealFire*(u.afF||1)){t.seal=1;e.notes.push(`${t.name} 화공 봉인`)}}}
+        if(S.cleanBurn){let n=0;allies().forEach(t=>{if(t.burn.length){t.burn=[];n++}});if(n)e.notes.push(`화상 해제 ${n}명`)}
         if(S.clean){let n=0;allies().forEach(t=>{const bad=t.bf.some(b=>(b.atk||0)<0||(b.def||0)<0)||t.burn.length||t.stun>0||t.seal>0;if(!bad)return;n++;t.bf=t.bf.filter(b=>!((b.atk||0)<0||(b.def||0)<0));t.burn=[];t.stun=0;t.seal=0});if(n)e.notes.push(`해로운 효과 해제 ${n}명`)}
-        arr(S.buff).forEach(b=>{(b.to==='all'?allies():[u]).forEach(t=>t.bf.push({atk:b.atk||0,def:b.def||0,sr:b.sr||0,dur:b.dur}));const x=[fxStr({atk:b.atk>0?b.atk:0,def:b.def>0?b.def:0}),b.sr?`받는 전법 피해 -${Math.round(b.sr*100)}%`:''].filter(Boolean).join(' · ');const y=[b.atk<0?`공격 ${Math.round(b.atk*100)}%`:'',b.def<0?`방어 ${Math.round(b.def*100)}%`:''].filter(Boolean).join(' · ');e.notes.push(`${b.to==='all'?'아군':'자신'} ${[x,y].filter(Boolean).join(' · ')}`)});
+        arr(S.buff).forEach(b=>{const af=u.afF||1,sr=(b.sr||0)*af,br=(b.br||0)*af;(b.to==='all'?allies():[u]).forEach(t=>t.bf.push({atk:b.atk||0,def:b.def||0,sr,br,dur:b.dur}));const x=[fxStr({atk:b.atk>0?b.atk:0,def:b.def>0?b.def:0}),sr?`받는 전법 피해 -${Math.round(sr*100)}%`:'',br?`받는 화상 -${Math.round(br*100)}%`:''].filter(Boolean).join(' · ');const y=[b.atk<0?`공격 ${Math.round(b.atk*100)}%`:'',b.def<0?`방어 ${Math.round(b.def*100)}%`:''].filter(Boolean).join(' · ');e.notes.push(`${b.to==='all'?'아군':'자신'} ${[x,y].filter(Boolean).join(' · ')}`)});
         arr(S.deb).forEach(b=>{(b.to==='all'?foes():hitT.filter(t=>t.hp>0)).forEach(t=>t.bf.push({atk:b.atk||0,def:b.def||0,dur:b.dur}));e.notes.push(`적 ${[b.atk?`공격 ${Math.round(b.atk*100)}%`:'',b.def?`방어 ${Math.round(b.def*100)}%`:''].filter(Boolean).join(' · ')}`)});
         if(S.burn&&hitT.length)e.notes.push('화상');
         if(e.stuns.length)e.notes.push(`기절 ${e.stuns.length}명`);
@@ -1826,7 +1831,7 @@ function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:op
     // 턴 종료: 화상 피해, 효과 지속 시간 감소
     const tick={tick:1,hits:[],heals:[],notes:[]};preTick=[pct(0),pct(1)];
     [...T[0],...T[1]].forEach(u=>{
-      for(const b of u.burn){if(u.hp>0)dmgTo(u,Math.round(b.d*((u.ax&&u.ax.burnx)||1)),tick,{burn:1,by:b.by})}
+      const brv=Math.min(.8,u.bf.reduce((a,x)=>a+(x.br||0),0));for(const b of u.burn){if(u.hp>0)dmgTo(u,Math.max(1,Math.round(b.d*((u.ax&&u.ax.burnx)||1)*(1-brv))),tick,{burn:1,by:b.by})}
       u.burn=u.burn.filter(b=>--b.dur>0);u.bf=u.bf.filter(b=>--b.dur>0);if(u.taunt>0)u.taunt--;if(u.grdT>0&&--u.grdT<=0)u.grd=null;
     });
     if(W&&!C&&r>=PLG_T0){const pr=Math.min(PLG_CAP,PLG_K*(r-PLG_T0+1));[...T[0],...T[1]].forEach(u=>{if(u.hp<=0)return;const d=Math.max(1,Math.round(u.maxhp*pr));u.hp=Math.max(0,u.hp-d);tick.hits.push({s:u.side,i:u.slot,d,hp:u.hp,burn:1,plg:1})});if(!tick.notes.includes('역병'))tick.notes.push('역병')}
@@ -1841,7 +1846,7 @@ function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:op
   else win=pct(0)>pct(1);
   return {win,ev,init,bonus:[A.info,B.info],fin:T[0].map(u=>({slot:u.slot,id:u.id,hp:u.hp,max:u.maxhp}))};
 }
-function bonusLine(info){if(!info)return '';const p=[...(info.ally?[`연합군 ${info.ally.n}개국`]:[]),...(info.vol?[`의용군 ${info.vol.n}명`]:[]),...(info.combo?['수호·회복 조합']:[]),...(info.only4?['정예']:info.no5?['신예']:[]),...info.bonds.map(b=>b.n),...info.facs.map(f=>`${FAC[f.f]} ${f.c}명`)];return p.join(' · ')}
+function bonusLine(info){if(!info)return '';const p=[...(info.ally?[`연합군 ${info.ally.n}개국`]:[]),...(info.vol?[`의용군 ${info.vol.n}명`]:[]),...(info.combo?['수호·회복 조합']:[]),...(info.only4?['정예']:info.no5?['신예']:[]),...(info.af&&info.af.n>1?[`화공 대비 ${info.af.n}명 · 효과 ${Math.round(info.af.f*100)}%`]:[]),...info.bonds.map(b=>b.n),...info.facs.map(f=>`${FAC[f.f]} ${f.c}명`)];return p.join(' · ')}
 
 /* ---------------- stages ---------------- */
 function mkTroop(tr,cls){const b=TROOP_BASE[cls];return {name:tr[0],hz:tr[1],fac:tr[2],rar:2,cls,str:b[0],int:b[1],lead:b[2],spd:b[3],skill:DEF_SKILL[cls]}}
@@ -2243,11 +2248,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='5.3.1';
+const GAME_VERSION='5.3.2';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'5.3.2',date:'2026-10-17',title:'주유 조정 · 화공 대비 장수 3명(우금·조인·황권)',reward:{ap:30},items:[
+  '주유 \'적벽화공\'이 너무 강했어요. 모의전에서 주유가 든 덱의 승률이 65% 안팎으로 책사 2위보다 7~9%p 높았어요. 방어를 무시하는 화상을 적 전체에 거는 장수가 주유 하나뿐이라, 방어가 높은 후반 장기전일수록 화상이 승부를 갈랐기 때문이에요. 피해 배율을 적 전체 0.6배 → 0.5배로 낮춰요. 화상(매 턴 공격의 10%, 3턴)은 그대로예요.',
+  '화공을 막는 \'🔥화공 대비\' 장수 3명이 생겼어요. 우금 \'진화 군율\'(★3 위 보병): 맨 앞 적 1.2배 피해, 아군 전체 화상 해제, 3턴 동안 아군 전체 받는 화상 -60%·방어 +10%. 불을 끄는 \'진화\'의 명수예요.',
+  '조인 \'강릉 사수\'(★3 위 기병): 예전 번성 사수(맨 앞 적 1.1배, 자신 1턴 도발, 아군 방어 +15%)에 더해, 화상 전법을 가진 적(주유·황개·방통·육손·이유·곽도) 중 공격이 가장 높은 1명을 75% 확률로 전법 봉인해요. 상대에게 화공 장수가 없으면 예전과 같아요.',
+  '황권 \'이릉의 간언\'(★3 군웅 책사): 적 전체 0.3배 피해, 아군 전체 해로운 효과(화상 포함) 해제, 2턴 동안 아군 전체 받는 전법 피해 -15%·받는 화상 -30%. 이릉에서 화공을 경계하라고 간언한 황권이에요.',
+  '화공 대비 장수는 함께 쓸 수 있지만, 한 팀에 2명이면 화공 대비 효과(받는 화상 감소·받는 전법 피해 감소·화공 봉인 확률)가 ×0.75, 3명이면 ×0.5가 돼요. 한 명만 넣어도 주유 덱과 대등해지도록 맞췄어요(모의전 승률 1명 47~53%, 3명 52%). 편성 효과 줄에 \'화공 대비 N명 · 효과 N%\'로 보여요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'5.3.1',date:'2026-10-17',title:'금화 룰렛 새 단장 · 소환권 100회 · 등용 탭 접기',reward:{rtk:100},items:[
   '금화 룰렛 바퀴의 칸 넓이가 보상 가치에 따라 달라졌어요. 군량·금처럼 흔한 칸은 넓고, 장수 선택권(帥)·보물 선택권(珍)·보물 강화도 교환권(萬)은 좁고 붉게 빛나요. 귀한 칸이 한곳에 몰려 있던 것을 흔한 칸 사이사이로 흩어 놓아, 돌 때 붉은 빛이 여러 번 스쳐 가요. 칸 넓이는 연출일 뿐 확률은 그대로예요.',
   '바퀴 칸 안 글씨를 빼고 한자 아이콘만 남겼어요. 장수 선택권과 보물 선택권이 둘 다 \'選\'이라 구분이 안 되던 것을 帥·珍으로 나눴어요(당첨 도장 將·寶·萬은 그대로예요).',
@@ -3694,15 +3706,15 @@ function autoDeck(){
 }
 function sortedOwned(lv){return Object.keys(S.gens).sort((a,b)=>GMAP[b].rar-GMAP[a].rar||specPower(specOf(b,lv))-specPower(specOf(a,lv)))}
 /* ---------------- 장수 고르기 공통 필터 · 정렬 (v2.0.4) ---------------- */
-const SKT={heal:'아군 회복',buff:'아군 강화',self:'자신 강화·회복',deb:'적 약화',taunt:'도발',guard:'호위',clean:'해제',ward:'전법 피해 감소',stun:'기절',seal:'봉인',burn:'화상',aoe:'광역',multi:'연속',single:'단일'};
+const SKT={heal:'아군 회복',buff:'아군 강화',self:'자신 강화·회복',deb:'적 약화',taunt:'도발',guard:'호위',clean:'해제',ward:'전법 피해 감소',anti:'🔥화공 대비',stun:'기절',seal:'봉인',burn:'화상',aoe:'광역',multi:'연속',single:'단일'};
 const GF_SORT={power:'전투력',rar:'등급',atk:'공격',def:'방어',hp:'체력',spd:'속도',name:'이름'};
 const GF={pick:{q:'',role:'',fac:'',cls:'',rar:0,sk:'',sort:'power'},lab:{q:'',role:'',fac:'',cls:'',rar:0,sk:'',sort:'power'},gens:{q:'',role:'',fac:'',cls:'',rar:0,sk:'',st:'',sort:'rar'},dex:{q:'',role:'',fac:'',cls:'',rar:0,sk:'',own:'',bfk:'',bx:'',sort:'rar'},items:{q:''}};
 const skTagC={};
 function skTags(id){if(skTagC[id])return skTagC[id];const s=skillOf(GMAP[id])||{},t=[];
   const up=b=>(b.atk||0)>0||(b.def||0)>0||(b.sr||0)>0;
   if(s.heal&&s.heal.to!=='self')t.push('heal');if(arr(s.buff).some(b=>b.to==='all'&&up(b)))t.push('buff');if((s.heal&&s.heal.to==='self')||arr(s.buff).some(b=>b.to!=='all'&&up(b)))t.push('self');if(arr(s.deb).length)t.push('deb');
-  if(s.taunt)t.push('taunt');if(s.guard)t.push('guard');if(s.clean)t.push('clean');if(arr(s.buff).some(b=>b.sr))t.push('ward');if(s.stun)t.push('stun');if(s.burn)t.push('burn');
-  if(s.tg==='all')t.push('aoe');else if(s.tg&&s.tg!=='none')t.push((s.h||s.nt||1)>1?'multi':'single');if(s.seal)t.push('seal');
+  if(s.cleanBurn||s.sealFire||arr(s.buff).some(b=>b.br))t.push('anti');if(s.taunt)t.push('taunt');if(s.guard)t.push('guard');if(s.clean)t.push('clean');if(arr(s.buff).some(b=>b.sr))t.push('ward');if(s.stun)t.push('stun');if(s.burn)t.push('burn');
+  if(s.tg==='all')t.push('aoe');else if(s.tg&&s.tg!=='none')t.push((s.h||s.nt||1)>1?'multi':'single');if(s.seal||s.sealFire)t.push('seal');
   return skTagC[id]=t}
 /* v4.1.0 역할 태그: 수호·회복·맹장·책략 (전법으로 자동 판정, 애매하면 보조 태그 1개 더) */
 const ROLE={guard:{n:'수호',i:'🛡'},heal:{n:'회복',i:'🩹'},war:{n:'맹장',i:'⚔'},plan:{n:'책략',i:'📜'}};
@@ -3710,8 +3722,8 @@ const roleC={};
 function roleTags(id){if(roleC[id])return roleC[id];const b=GMAP[id]||{},s=skillOf(b)||{};
   const mag=x=>Math.max(Math.abs(x.atk||0),Math.abs(x.def||0),x.sr||0), sh=s.heal&&s.heal.to==='self'?s.heal.p:0, d=(s.m||0)*(s.h||s.nt||1)*(s.tg==='all'?3:1);  // v5.3.0: s.n(전법 이름)→s.nt(타격 수). 이전엔 NaN이 돼 h 없는 전법이 전부 '피해 없음' 취급
   const tank=s.taunt||s.guard||s.pguard||s.endure||arr(s.buff).some(x=>x.to==='self'&&(x.def||0)>=.25)||(b.cls==='inf'&&sh>=.12)
-    ||arr(s.buff).some(x=>x.to==='all'&&(((x.def||0)>=.15&&(x.atk||0)<(x.def||0))||(x.sr||0)>=.3));  // v5.3.0: 아군 전체 방어 +15% 이상(공격 강화보다 클 때) · 받는 전법 피해 -30% 이상도 수호
-  const plan=arr(s.buff).some(x=>x.to==='all')||arr(s.deb).length||s.clean||s.stun||s.seal;
+    ||arr(s.buff).some(x=>x.to==='all'&&(((x.def||0)>=.15&&(x.atk||0)<(x.def||0))||(x.sr||0)>=.3||(x.br||0)>=.5));  // v5.3.2: 받는 화상 -50% 이상도 · v5.3.0: 아군 전체 방어 +15% 이상(공격 강화보다 클 때) · 받는 전법 피해 -30% 이상도 수호
+  const plan=arr(s.buff).some(x=>x.to==='all')||arr(s.deb).length||s.clean||s.stun||s.seal||s.sealFire;
   const planS=arr(s.buff).some(x=>x.to==='all'&&mag(x)>=.15)||arr(s.deb).some(x=>mag(x)>=.15)||s.clean||(s.stun||0)>=.3;
   const pr=s.heal&&s.heal.to!=='self'?'heal':tank?'guard':d>=1.6?'war':plan?'plan':(b.cls==='inf'?'guard':b.cls==='tac'?'plan':'war'),t=[pr];
   if(pr!=='guard'&&(s.taunt||s.guard||s.pguard))t.push('guard');else if(pr!=='war'&&d>=2.5)t.push('war');else if(pr!=='plan'&&planS)t.push('plan');
