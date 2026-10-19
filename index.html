@@ -699,7 +699,7 @@ html.work .xphase{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v7.0.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v7.1.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1988,7 +1988,7 @@ function newState(){
 }
 function sanitize(s){
   const n=newState();
-  if(!s||typeof s!=='object')return n;
+  if(!s||typeof s!=='object'){if(Date.now()>=WIPE_AT)n.wipe=WIPE_ID;return n}
   const o={...n,...s};
   const M7=s.m700?null:{gens:0,gsh:0,items:0,ish:0,drop:0};
   if(M7)for(const[k,v]of Object.entries(s.gens||{}))if(v&&!GMAP[k]){M7.gens++;M7.gsh+=40*(1+Math.max(0,v.d|0))}
@@ -2117,6 +2117,25 @@ const FIREBASE_CONFIG = {
 const LSK='yeonhap-local-v1';
 let AUTH=null, FS=null, MYNAME='', UNSUB=[];
 let saveT=null, saving=false, dirty=false, lastPub='';
+/* v7.1.1: 예약 초기화. 시각이 지난 뒤 표식(wipe)이 없는 기록은 1회 처음부터 다시 시작해요. */
+const WIPE_ID='w261019', WIPE_AT=Date.parse('2026-10-19T22:00:00+09:00');
+const wipeDue=()=>!!S&&Date.now()>=WIPE_AT&&S.wipe!==WIPE_ID&&!(typeof REC_SANDBOX!=='undefined'&&REC_SANDBOX);
+function doWipe(){
+  if(!wipeDue())return false;
+  const k={pvp:S.pvp,duel:S.duel,raid:S.raid,rev:S.rev};
+  S=sanitize({...newState(),...k,wipe:WIPE_ID});MIG_LV=null;MIG700=null;MIG301=0;MIG340=0;
+  setTimeout(()=>toast('10월 19일 밤 10시 초기화가 적용됐어요 · 공지 보상과 쿠폰을 다시 받을 수 있어요',5000),900);
+  return true;
+}
+async function wipeTick(){
+  if(!wipeDue()||($('#battle')&&!$('#battle').hidden))return;
+  if(MODE==='shared'&&FS&&UID){try{const d=await FS.collection('saves').doc(UID).get({source:'server'});const x=d.exists?d.data():null;
+    if(x&&x.wipe===WIPE_ID&&(Number(x.rev)||0)>baseRev){adoptServer(x,true);toast('10월 19일 밤 10시 초기화가 적용됐어요');setTimeout(runPopups,500);return}}catch(e){}}
+  if(!doWipe())return;
+  save();closeSheet();view='stage';render();$('#view').scrollTop=0;setTimeout(runPopups,500);
+}
+setInterval(wipeTick,30e3);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')wipeTick()});
 function lsLoad(){try{return JSON.parse(localStorage.getItem(LSK)||'null')}catch(e){return null}}
 function lsSave(){try{localStorage.setItem(LSK,JSON.stringify(S))}catch(e){}}
 function save(){if(typeof REC_SANDBOX!=='undefined'&&REC_SANDBOX)return;syncDeck();dirty=true;clearTimeout(saveT);saveT=setTimeout(flush,600)}
@@ -2157,7 +2176,7 @@ async function flush(){
 }
 function adoptServer(d,quiet){
   clearTimeout(saveT);saveT=null;dirty=false;conflictData=null;
-  S=sanitize(d);baseRev=Number(d.rev)||0;S.rev=baseRev;lastPub='';
+  S=sanitize(d);baseRev=Number(d.rev)||0;S.rev=baseRev;lastPub='';if(doWipe()){S.rev=baseRev;dirty=true;save()}
   if(MIG_LV){dirty=true;save()}
   closeSheet();setSaveSt('ok');render();migToast();
   if(!quiet)toast('다른 기기에서 저장한 최신 기록을 불러왔어요');
@@ -2229,7 +2248,7 @@ function authMsg(e){
 async function boot(){
   const replay=openReplayFromHash()||openBragFromHash();
   if(!configured()||!window.firebase){
-    MODE='local';S=sanitize(lsLoad());
+    MODE='local';S=sanitize(lsLoad());if(doWipe())lsSave();
     setBanner(configured()?'서버에 연결하지 못해 이 기기에만 저장 중이에요.':'서버 설정 전이라 이 기기에만 저장돼요. (관리자: index.html의 FIREBASE_CONFIG를 채워 주세요)');
     showGame(true);render();setInterval(renderTop,1000);setTimeout(runPopups,500);migToast();return;
   }
@@ -2243,7 +2262,7 @@ async function boot(){
     $('#view').innerHTML='<div class="loading">군영을 세우는 중…</div>';
     try{
       const snap=await FS.collection('saves').doc(UID).get();
-      S=sanitize(snap.exists?snap.data():null);baseRev=snap.exists?(Number(snap.data().rev)||0):0;S.rev=baseRev;conflictData=null;
+      S=sanitize(snap.exists?snap.data():null);doWipe();baseRev=snap.exists?(Number(snap.data().rev)||0):0;S.rev=baseRev;conflictData=null;
       const p=await FS.collection('players').doc(UID).get();
       const pd=p.exists?p.data():null;
       MYNAME=cleanName(pd&&pd.name)||cleanName(u.displayName)||('군주'+Math.floor(1000+Math.random()*9000));
@@ -2268,7 +2287,7 @@ function subBattles(){
 function subscribe(){
   unsubscribeAll();
   UNSUB.push(FS.collection('players').limit(300).onSnapshot(snap=>{
-    PLAYERS=snap.docs.map(d=>({id:d.id,...cleanPlayer(d.data())})).filter(p=>p.deck.length);refreshPvp();
+    PLAYERS=snap.docs.map(d=>({id:d.id,...cleanPlayer(d.data())})).filter(p=>p.deck.length&&(Date.now()<WIPE_AT||p.at>=WIPE_AT||p.id===UID));refreshPvp();
   },()=>{}));
   subBattles();
   // 내 저장 기록을 지켜보다가 다른 기기가 더 최신 기록을 저장하면 반영
@@ -2354,11 +2373,19 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='7.1.0';
+const GAME_VERSION='7.1.1';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'7.1.1',date:'2026-10-19',title:'오늘 밤 10시 진척도 초기화',reward:{ap:30},items:[
+  '오늘(10월 19일) 밤 10시에 모든 군주의 진척도를 한 번 초기화해요. 밤 10시가 지나 처음 접속하면(켜 둔 화면은 30초 안에) 자동으로 처음부터 시작돼요. 밤 10시 전에 이 버전으로 업데이트해 두면 따로 할 일은 없어요.',
+  '초기화되는 것: 장수 · 보물 · 자리 레벨 · 스테이지 · 재화 · 진형 · 출석 · 쿠폰 사용 기록 · 공지 보상 수령 기록.',
+  '그대로 남는 것: 야전 기록, 야전 일일 정산과 토벌전 보상 수령 기록(같은 보상을 두 번 받지 않도록), 계정 연동과 군주 이름.',
+  '초기화 뒤에는 지난 공지 보상과 쿠폰을 전부 다시 받을 수 있어요. 공지의 [모두 받기]와 쿠폰 목록을 챙겨 주세요.',
+  '밤 10시 전 기록으로 남아 있는 군주는 초기화 뒤 다시 접속할 때까지 대전 상대와 순위 목록에서 보이지 않아요.',
+  '11월 1일 하드 리셋 때는 지금의 공지 보상과 쿠폰이 전부 없어져요.',
+  '초기화 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'7.1.0',date:'2026-10-19',title:'규칙 간결화 · 보물 3칸 · 덱 보너스 3가지',reward:{ap:30},items:[
   '다시 안내드려요. 오늘(10월 19일) 밤 10시에 모든 진척도를 한 번 초기화해요. 초기화 뒤에는 공지 보상과 쿠폰을 전부 다시 받을 수 있으니 챙겨서 처음부터 다시 키워 보세요. 11월 1일 하드 리셋 때는 지금의 공지 보상과 쿠폰이 전부 없어져요.',
   '규칙이 너무 많아져서 덜어냈어요. 덱 보너스는 진영 · 인연 · 진형 세 가지만 남아요. 연합군 · 의용군 · 역할 조합 · 신예·정예 · ★3 진영 추가 보너스는 없어졌어요.',
