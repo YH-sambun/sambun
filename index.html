@@ -461,6 +461,7 @@ details.nt:not([open]){padding:9px 12px}details.nt:not([open]) .nt-h b{font-weig
 
 .dmg.b{color:#f2a35a}
 .dmg.s{color:var(--r4);font-size:12px}
+.tbox .tb-one{font-weight:600}.tbox details.tb-more{margin-top:4px}.tbox details.tb-more summary{cursor:pointer;color:var(--mute);font-size:12px}
 .tbox{background:var(--panel);border:1px solid var(--bronze-d);border-radius:12px;padding:10px 12px;margin-bottom:12px;font-size:13px}
 .tb-h{color:var(--bronze);font-weight:500}
 .tbox ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
@@ -992,9 +993,9 @@ const FAC_BONUS={
  wei:[{atk:.08,def:.04},{atk:.12,def:.05},{atk:.20,def:.08}],
  shu:[{hp:.08,def:.03},{hp:.11,def:.04},{hp:.16,def:.07}],
  wu:[{atk:.06,spd:5},{atk:.09,spd:7},{atk:.16,spd:13}],
- dong:[{atk:.16,hp:.06,r3:{atk:.03,hp:.03}},{atk:.23,hp:.09,r3:{atk:.05,hp:.05}},{atk:.34,hp:.15,r3:{atk:.07,hp:.07}}],
- yuan:[{hp:.12,def:.10,atk:.06,r3:{hp:.03,def:.03,atk:.03}},{hp:.17,def:.14,atk:.09,r3:{hp:.05,def:.05,atk:.05}},{hp:.25,def:.21,atk:.15,r3:{hp:.07,def:.07,atk:.07}}],
- qun:[{def:.16,atk:.06,hp:.06,r3:{atk:.02,hp:.02}},{def:.21,atk:.08,hp:.08,r3:{atk:.03,hp:.03}},{def:.29,atk:.14,hp:.14,r3:{atk:.04,hp:.04}}]
+ dong:[{atk:.16,hp:.06},{atk:.23,hp:.09},{atk:.34,hp:.15}],
+ yuan:[{hp:.12,def:.10,atk:.06},{hp:.17,def:.14,atk:.09},{hp:.25,def:.21,atk:.15}],
+ qun:[{def:.16,atk:.06,hp:.06},{def:.21,atk:.08,hp:.08},{def:.29,atk:.14,hp:.14}]
 };
 // 인연: ids 전원이 진형에 있으면 발동(min이 있으면 그 수 이상, full은 전원일 때 효과)
 const BONDS=[
@@ -1143,7 +1144,7 @@ function applyRivals(T){const pairs=[];
     if(n===(u.rvN||0))return;if(!u.rv0)u.rv0={atk:u.atk,def:u.def,spd:u.spd};const m=1+RIVAL_P*n;
     u.atk=Math.round(u.rv0.atk*m);u.def=Math.round(u.rv0.def*m);u.spd=Math.round(u.rv0.spd*m*10)/10;u.rvN=n}));
   return pairs}
-// 연합군: ★3 이상 장수의 나라가 3개국 이상이면 진형 전원(★3 이상)에게 적용
+// v7.1.0: 연합군·의용군·역할 조합·신예·정예는 없어졌어요(덱 보너스는 진영·인연·진형만). 상수는 예전 코드 호환용으로만 남겨요
 const VOL_BONUS={1:{atk:.04,hp:.04},2:{atk:.07,hp:.07},3:{atk:.10,hp:.10}};
 // v5.1.0 역할 조합: 진형에 수호·회복(주 역할) 장수가 함께 있으면 ★3 장수만(v5.2.0: 전원 +4% → ★3만 +8%). roleTags는 아래 역할 태그 절에서 정의, 전투·진형 계산 때만 호출
 const COMBO_BONUS={hp:.08,def:.08};
@@ -1152,19 +1153,19 @@ const RANK_BONUS={no5:{atk:.12,hp:.12,def:.12},only4:{atk:.04,hp:.04,def:.04}};
 const ALLY_BONUS={3:{atk:.05,hp:.05,def:.05},4:{atk:.08,hp:.08,def:.08}};
 function teamBonusInfo(us,pve){
   const cnt={};us.forEach(u=>{if(u.rar>=3)cnt[u.fac]=(cnt[u.fac]||0)+1});
-  const nn=Object.keys(cnt).length, ally=nn>=3?{n:Math.min(nn,4),b:ALLY_BONUS[Math.min(nn,4)]}:null;
+  const nn=Object.keys(cnt).length, ally=null;
   const facs=Object.entries(cnt).filter(([f,c])=>c>=3&&FAC_BONUS[f]).map(([f,c])=>({f,c,b:FAC_BONUS[f][Math.min(c,5)-3]}));
   const ids=new Set(us.map(u=>u.id).filter(Boolean));
-  const n3=us.filter(u=>u.rar===3&&u.id&&GMAP[u.id]).length, vol=n3?{n:n3,b:VOL_BONUS[Math.min(n3,3)]}:null;
-  const real=us.filter(u=>u.id&&GMAP[u.id]), rl=new Set(real.map(u=>roleTags(u.id)[0])), combo=rl.has('guard')&&rl.has('heal')?{b:COMBO_BONUS}:null;
-  const rs=real.filter(u=>u.rar>=3).map(u=>u.rar), no5=!pve&&rs.length>=3&&!rs.includes(5)?{b:RANK_BONUS.no5}:null, only4=no5&&rs.every(r=>r===4)?{b:RANK_BONUS.only4}:null;
+  const n3=us.filter(u=>u.rar===3&&u.id&&GMAP[u.id]).length, vol=null;
+  const real=us.filter(u=>u.id&&GMAP[u.id]), rl=new Set(real.map(u=>roleTags(u.id)[0])), combo=null;
+  const rs=real.filter(u=>u.rar>=3).map(u=>u.rar), no5=null, only4=null;
   return {facs,bonds:BONDS.filter(B=>bondActive(B,ids)),ids,ally,nn,vol,combo,rl,no5,only4,pve:!!pve};
 }
 function applyBonuses(us,pve){
   const info=teamBonusInfo(us,pve);
   us.forEach(u=>{
     let a=0,h=0,d=0,sp=0;const add=v=>{a+=v.atk||0;h+=v.hp||0;d+=v.def||0;sp+=v.spd||0};
-    info.facs.forEach(F=>{if(u.fac===F.f&&u.rar>=3){add(F.b);if(F.b.r3&&u.rar===3)add(F.b.r3)}});
+    info.facs.forEach(F=>{if(u.fac===F.f&&u.rar>=3){add(F.b);}});
     info.bonds.forEach(B=>add(bondFx(B,info.ids)));
     if(info.vol&&u.rar===3&&u.id&&GMAP[u.id])add(info.vol.b);
     if(info.ally&&u.rar>=3)add(info.ally.b);
@@ -1178,71 +1179,71 @@ function applyBonuses(us,pve){
 
 // id, 이름, 종류 글자, 등급, 효과, [그림 틀, 색], [조건(병종·나라), 추가 효과]
 // 효과: atk·hp·def = %, spd = 수치, cr = 치명 확률 %p, cd = 치명 피해 %p, ls = 흡혈 %, dr = 받는 피해 감소 %, sk = 기본 스킬 피해 %, usk = 궁극기 피해 %, up = 궁극기 확률 %p, pas = 패시브 증폭 %, res = 저항 %
-// v7.0.0: 51종으로 통합. 장수마다 2칸(★5칸 1 + ★4·★3칸 1). 특수 효과는 ITEM_AX, 설명은 ITEM_AXD, 예전 보물 → 통합 보물은 ITEM_MERGE
+// v7.1.0: 장수마다 3칸(★5칸 · ★4칸 · ★3칸), 특수 효과는 ★5만. v7.0.0: 51종으로 통합. 특수 효과는 ITEM_AX, 설명은 ITEM_AXD, 예전 보물 → 통합 보물은 ITEM_MERGE
 const ITEMS_RAW=[
- ['qinglong','청룡언월도','武',5,{atk:24,sk:12},null,null,null],
- ['fangtian','방천화극','武',5,{atk:20,spd:6,sk:8},null,null,null],
+ ['qinglong','청룡언월도','武',5,{atk:24,sk:7},null,null,null],
+ ['fangtian','방천화극','武',5,{atk:20,spd:6,sk:5},null,null,null],
  ['qixing','칠성보도','武',5,{atk:15,cr:10,cd:15},['sword','gold'],null,null],
- ['cixiong','자웅일대검','武',5,{atk:16,ls:6,sk:6},['sword','jade'],null,null],
+ ['cixiong','자웅일대검','武',5,{atk:16,ls:6,sk:3},['sword','jade'],null,null],
  ['kaishan','개산대부','武',5,{atk:20,cd:12},['axe','steel'],['inf',{def:6}],null],
- ['shoumian','수면탄두개','甲',5,{hp:18,def:14,res:30},['armorM','purple'],null,null],
+ ['shoumian','수면탄두개','甲',5,{hp:18,def:14,dr:6},['armorM','purple'],null,null],
  ['tengjia','등갑','甲',5,{hp:16,def:28},['armor','wood'],null,null],
- ['chitu','적토마','馬',5,{spd:18,atk:6,up:4},null,['cav',{atk:8}],null],
- ['hanxue','한혈보마','馬',5,{spd:14,hp:10,pas:10},['horse','red2'],null,null],
- ['yuxi','전국옥새','寶',5,{atk:8,hp:8,def:8,spd:4,pas:25},['seal','jade'],null,null],
- ['heyu','학우선','寶',5,{sk:18,spd:6,up:3},['fan','white'],['tac',{atk:8}],null],
- ['taiping','태평요술서','書',5,{up:5,usk:15,hp:8},null,null,null],
- ['sunzi','손자병법','書',5,{up:6,usk:20,atk:8},['scroll','gold'],null,null],
+ ['chitu','적토마','馬',5,{atk:6,spd:18,up:4},null,['cav',{atk:8}],null],
+ ['hanxue','한혈보마','馬',5,{atk:3,hp:13,spd:14},['horse','red2'],null,null],
+ ['yuxi','전국옥새','寶',5,{atk:16,hp:16,def:8,spd:4},['seal','jade'],null,null],
+ ['heyu','학우선','寶',5,{spd:6,sk:10,up:3},['fan','white'],['tac',{atk:8}],null],
+ ['taiping','태평요술서','書',5,{hp:8,sk:7,up:5},null,null,null],
+ ['sunzi','손자병법','書',5,{atk:8,sk:9,up:6},['scroll','gold'],null,null],
  ['bagua','팔진도','書',5,{def:16,dr:6,up:4},['scroll','blue'],null,null],
- ['yitian','의천검','武',4,{atk:14,sk:6},null,null,null],
- ['zhangba','장팔사모','武',4,{atk:14,cr:5,sk:6},null,['cav',{atk:8}],null],
- ['liannu','제갈연노','武',4,{atk:10,cr:5,spd:5},['bow','wood'],['arc',{atk:6}],null],
+ ['yitian','의천검','武',4,{atk:14,sk:3},null,null,null],
+ ['zhangba','장팔사모','武',4,{atk:14,cr:5,sk:3},null,['cav',{atk:8}],null],
+ ['liannu','제갈연노','武',4,{atk:10,spd:5,cr:5},['bow','wood'],['arc',{atk:6}],null],
  ['mingguang','명광개','甲',4,{hp:16,def:10},null,null,null],
- ['xuanjia','현갑','甲',4,{def:12,dr:5,res:10},['armorM','black'],null,null],
- ['tengpai','등패','甲',4,{def:12,hp:6},['shield','wood'],['inf',{def:6}],null],
- ['jueying','절영','馬',4,{spd:10,hp:4,up:3,pas:6},null,null,null],
- ['dilu','적로','馬',4,{spd:9,hp:5},null,null,null],
- ['baima','백마의종','馬',4,{spd:9,def:6},['horse','white'],['cav',{atk:10}],null],
+ ['xuanjia','현갑','甲',4,{def:12,dr:7},['armorM','black'],null,null],
+ ['tengpai','등패','甲',4,{hp:6,def:12},['shield','wood'],['inf',{def:6}],null],
+ ['jueying','절영','馬',4,{atk:2,hp:6,spd:10,up:3},null,null,null],
+ ['dilu','적로','馬',4,{hp:5,spd:9},null,null,null],
+ ['baima','백마의종','馬',4,{def:6,spd:9},['horse','white'],['cav',{atk:10}],null],
  ['hufu','호부','寶',4,{atk:7,hp:8,ls:3},['pendant','gold'],null,null],
- ['jinyin','금인','寶',4,{def:7,hp:7,spd:2},['seal','gold'],null,null],
+ ['jinyin','금인','寶',4,{hp:7,def:7,spd:2},['seal','gold'],null,null],
  ['shuaiqi','수자기','寶',4,{atk:7,def:7,up:3},['flag','red'],null,null],
- ['baiyu','백우선','寶',4,{sk:12,spd:4,up:2},['fan','paper'],['tac',{atk:5}],null],
+ ['baiyu','백우선','寶',4,{spd:4,sk:7,up:2},['fan','paper'],['tac',{atk:5}],null],
  ['qingnang','청낭서','書',4,{hp:10,ls:5},['book','jade'],null,null],
- ['liutao','육도','書',4,{up:4,usk:10,spd:3},['scroll','paper'],null,null],
- ['sanlue','삼략','書',4,{def:8,up:3,usk:8},['scroll','blue'],null,null],
- ['dajiang','대장기','寶',4,{atk:6,hp:6,def:6,pas:20},['flag','gold'],null,null],
+ ['liutao','육도','書',4,{spd:3,sk:4,up:4},['scroll','paper'],null,null],
+ ['sanlue','삼략','書',4,{def:8,sk:3,up:3},['scroll','blue'],null,null],
+ ['dajiang','대장기','寶',4,{atk:12,hp:12,def:6},['flag','gold'],null,null],
  ['tieqiang','철창','武',3,{atk:9,def:2},null,['cav',{atk:5}],null],
- ['huandao','환수도','武',3,{atk:8,cd:4,spd:2},['sword','steel'],null,null],
+ ['huandao','환수도','武',3,{atk:8,spd:2,cd:4},['sword','steel'],null,null],
  ['dagong','대궁','武',3,{atk:8,cr:4},['bow','wood'],['arc',{spd:2}],null],
  ['tiejia','철갑','甲',3,{hp:10,def:8},null,null,null],
- ['mudun','목순','甲',3,{def:6,dr:3,res:5},['shield','wood'],null,null],
- ['huangbiao','황표마','馬',3,{spd:8,atk:2},['horse','gold2'],null,null],
+ ['mudun','목순','甲',3,{def:6,dr:4},['shield','wood'],null,null],
+ ['huangbiao','황표마','馬',3,{atk:2,spd:8},['horse','gold2'],null,null],
  ['xiliang','서량마','馬',3,{spd:4},['horse','bronze2'],['cav',{atk:6}],null],
- ['fulu','부적','寶',3,{dr:3,hp:4,res:8},['pendant','paper'],null,null],
- ['xiangnang','향낭','寶',3,{spd:3,hp:5,atk:3,pas:6},['pendant','purple'],null,null],
- ['sunbin','손빈병법','書',3,{atk:6,usk:8},['scroll','paper'],null,null],
+ ['fulu','부적','寶',3,{hp:4,dr:5},['pendant','paper'],null,null],
+ ['xiangnang','향낭','寶',3,{atk:5,hp:7,spd:3},['pendant','purple'],null,null],
+ ['sunbin','손빈병법','書',3,{atk:6,sk:3},['scroll','paper'],null,null],
  ['shanhai','산해경','書',3,{spd:3,up:2},['book','purple'],null,null],
- ['bawang','패왕궁','武',5,{atk:16,cr:10,sk:8},['bow','gold'],['arc',{spd:4}],null],
- ['baiyuruyi','백옥여의','武',5,{sk:16,hp:10,usk:8},['ruyi','white'],null,null],
- ['tieruyi','철여의','武',4,{sk:11,def:6},['ruyi','steel'],null,null],
- ['bajiao','파초선','武',3,{sk:7,hp:3,spd:2},['fan','wood'],null,null],
+ ['bawang','패왕궁','武',5,{atk:16,cr:10,sk:5},['bow','gold'],['arc',{spd:4}],null],
+ ['baiyuruyi','백옥여의','武',5,{hp:10,sk:13},['ruyi','white'],null,null],
+ ['tieruyi','철여의','武',4,{def:6,sk:6},['ruyi','steel'],null,null],
+ ['bajiao','파초선','武',3,{hp:3,spd:2,sk:4},['fan','wood'],null,null],
  ['huojian','화전궁','武',5,{atk:12,spd:4},['bow','red'],null,{c:0.3,p:0.1,dur:2}],
  ['pajin','파진부','寶',4,{atk:7,hp:7},['pendant','red'],null,null],
  ['tuji','돌격창','武',4,{atk:12,spd:3},['spear','steel'],['cav',{atk:10}],null],
- ['langya','낭아봉','武',4,{atk:12,cd:8,def:3},['axe','black'],null,null],
- ['xuezhan','혈전부','寶',4,{atk:7,hp:7,pas:30},['pendant','purple'],null,null]
+ ['langya','낭아봉','武',4,{atk:12,def:3,cd:8},['axe','black'],null,null],
+ ['xuezhan','혈전부','寶',4,{atk:16,hp:16},['pendant','purple'],null,null]
 ];
 const ITEMS=ITEMS_RAW.map(r=>({id:r[0],name:r[1],g:r[2],rar:r[3],fx:r[4],art:r[5]||null,on:r[6]||null,burn:r[7]||null}));
 const ITEM_AX={"qinglong":{"ultCrit":1},"fangtian":{"killUp":0.15},"qixing":{"critBsk":0.2,"ultCritCd":0.2},"cixiong":{"bskLs":0.1},"kaishan":{"bskSunder":{"v":0.1,"dur":2}},"shoumian":{"rdu":0.2},"tengjia":{"ndr":0.15,"burnx":3},"chitu":{"first":1,"ultSpd":{"v":10,"dur":2}},"hanxue":{"regen":0.02},"yuxi":{"ultTeam":{"atk":0.08,"def":0.08,"dur":1}},"heyu":{"first":1,"ultTeam":{"atk":0.08,"dur":1}},"taiping":{"ultTeamHeal":0.05},"sunzi":{"upStreak":0.1},"bagua":{"ultTeamDr":{"v":0.15,"dur":2}},"yitian":{"ultSelf":{"atk":0.1,"dur":2}},"liannu":{"dbl":0.2},"xuanjia":{"rdu":0.12},"tengpai":{"ndr":0.08},"dilu":{"dilu":{"th":0.3,"red":0.5}},"hufu":{"endure":1,"noheal":1},"jinyin":{"sr":0.3},"shuaiqi":{"first":1},"qingnang":{"ultHealLow":0.08},"dajiang":{"r3x2":1},"bawang":{"critExtra":{"m":0.5},"randHit":1},"baiyuruyi":{"ultSelfHeal":0.15},"huojian":{"burnExt":1},"pajin":{"strip":1},"tuji":{"charge":0.5,"chargeCls":"cav"},"langya":{"sunder":{"v":0.1,"dur":2}},"xuezhan":{"nosk":1}};
 const ITEM_AXD={"qinglong":"궁극기 발동 후 다음 일반 공격이 확정 치명타로 적중한다.","fangtian":"적을 쓰러뜨리면 다음 액티브의 궁극기 확률이 15%p 오른다(1회, 중첩 없음).","qixing":"치명타가 나오면 다음 기본 스킬 피해가 20% 오르고(1회), 궁극기가 치명타면 치명 피해가 20% 추가된다.","cixiong":"기본 스킬 피해의 10%를 흡혈한다.","kaishan":"기본 스킬 적중 시 대상의 방어를 2턴 동안 10% 낮춘다(중첩 없음).","shoumian":"받는 궁극기 피해가 20% 줄어든다.","tengjia":"받는 일반 공격 피해가 15% 줄어들지만 받는 화상 피해는 3배가 된다.","chitu":"첫 액티브가 한 행동 빨리 발동하고, 궁극기 발동 시 자신의 속도가 2턴 동안 10 오른다.","hanxue":"매 턴 끝에 체력을 2% 회복한다.","yuxi":"궁극기 발동 시 아군 전체의 공격과 방어가 1턴 동안 8% 오른다.","heyu":"첫 액티브가 한 행동 빨리 발동하고, 궁극기 발동 시 아군 전체의 공격이 1턴 동안 8% 오른다.","taiping":"궁극기 발동 시 아군 전체의 체력을 5% 회복한다.","sunzi":"궁극기가 불발될 때마다 다음 발동 확률이 10%p씩 누적되고, 발동하면 초기화된다.","bagua":"궁극기 발동 시 아군 전체가 받는 피해가 2턴 동안 15% 줄어든다.","yitian":"궁극기 발동 시 자신의 공격이 2턴 동안 10% 오른다.","liannu":"일반 공격이 20% 확률로 2연사된다.","xuanjia":"받는 궁극기 피해가 12% 줄어든다.","tengpai":"받는 일반 공격 피해가 8% 줄어든다.","dilu":"전투마다 1번, 체력을 30% 아래로 떨어뜨리는 피해가 50% 줄어든다.","hufu":"불굴 1회가 부여되고 격전의 회복 감소를 무시한다.","jinyin":"받는 기본 스킬·궁극기 피해가 30% 줄어든다.","shuaiqi":"첫 액티브가 한 행동 빨리 발동한다.","qingnang":"궁극기 발동 시 체력 비율이 가장 낮은 아군의 체력을 8% 회복한다.","dajiang":"★3 장수가 장착하면 능력치가 2배가 된다.","bawang":"치명타가 나오면 같은 대상에게 0.5배 추가 화살을 쏘고(턴 1회), 무작위·다수 대상 기본 스킬의 타격 횟수가 1회 늘어난다.","baiyuruyi":"궁극기 발동 시 자신의 체력을 15% 회복한다.","huojian":"일반 공격이 적에게 화상을 입히고, 궁극기 발동 시 화상 중인 적 전원의 화상이 1턴 연장된다.","pajin":"공격이 대상의 강화 효과를 해제한다.","tuji":"기병이 장착하면 돌진 효과가 발동한다.","langya":"일반 공격이 대상의 방어를 2턴 동안 10% 약화시킨다.","xuezhan":"기본 스킬과 궁극기가 없는 대신 막타 사냥과 액티브 차례 2연타를 수행한다."};
 const ITEM_MERGE={"guding":"qixing","zhaoye":"chitu","qinggang":"yitian","sanjian":"zhangba","liuye":"yitian","shuangtie":"zhangba","dafu":"langya","yangyou":"liannu","hutou":"zhangba","gangdao":"yitian","yulin":"xuanjia","tiekui":"mingguang","jinkui":"xuanjia","longlin":"xuanjia","zhuahuang":"jueying","dawan":"jueying","yupei":"hufu","mengde":"liutao","chunqiu":"liutao","qianggong":"dagong","duandao":"huandao","changqiang":"tieqiang","shemao":"tieqiang","ji":"tieqiang","zhanfu":"huandao","shuangdao":"huandao","changjian":"huandao","mazhan":"tieqiang","nu":"dagong","tiebian":"tieqiang","pijia":"tiejia","mianjia":"tiejia","suozi":"tiejia","pikui":"tiejia","tongkui":"tiejia","yuandun":"mudun","zhajia":"tiejia","yanxin":"mudun","qingjia":"tiejia","junma":"huangbiao","qingcong":"huangbiao","wuzhui":"huangbiao","ziliu":"huangbiao","tongyin":"fulu","yuhuan":"xiangnang","junqi":"xiangnang","yushan":"bajiao","tonghu":"xiangnang","lingqi":"xiangnang","bingfa":"sunbin","lunyu":"sunbin","wuzi":"sunbin","shiji":"sunbin","shijing":"sunbin","hanshu":"sunbin","shangjun":"sunbin","zhujian":"shanhai","tiechui":"huandao","yuanrong":"bawang","kongque":"heyu","qingyu":"baiyu","zhuruyi":"bajiao"};
-ITEMS.forEach(it=>{if(ITEM_AX[it.id])it.ax=ITEM_AX[it.id]});
-const axText=it=>ITEM_AXD[it.id]||'';
+ITEMS.forEach(it=>{if(ITEM_AX[it.id]&&it.rar===5)it.ax=ITEM_AX[it.id]});  // v7.1.0: 특수 효과는 ★5만
+const axText=it=>it.rar===5&&ITEM_AXD[it.id]||'';
 // 강화에 절반만 오르는 효과(궁극기 확률·패시브 증폭·저항)
-const HALF_FX={up:1,pas:1,res:1};
+const HALF_FX={up:1};  // v7.1.0: 패시브 증폭·저항은 보물 능력치에서 빠졌어요
 const IMAP=Object.fromEntries(ITEMS.map(i=>[i.id,i]));
 const ITYPE={'武':'무기','甲':'방어구','馬':'명마','寶':'장신구','書':'서책'};
-const ITEM_SLOTS=2, ITEM_MAXD=50, ITEM_DSTEP=.03;
+const ITEM_SLOTS=3, ITEM_MAXD=50, ITEM_DSTEP=.03;
 // v7.0.0: 보물이 51종으로 줄어 ITEMS_V1은 전체와 같아요(예전 코드 호환용)
 const ITEMS_V1=ITEMS;
 /* ---------------- 병종 장착 규칙 (v3.4.0) ----------------
@@ -1252,25 +1253,25 @@ const WF_IDS={sword:'qixing cixiong yitian huandao',axe:'kaishan',guandao:'qingl
  bow:'liannu dagong bawang huojian',fan:'heyu baiyu bajiao',ruyi:'baiyuruyi tieruyi'};
 for(const[f,ids]of Object.entries(WF_IDS))ids.split(' ').forEach(id=>{const it=IMAP[id];if(it.g!=='武'){it.g0=it.g;it.g='武'}it.wf=f});
 const CLS_W={inf:['sword','axe','spear','halberd','mace'],cav:['spear','halberd','guandao','sword'],arc:['bow','sword'],tac:['fan','ruyi']};
-const ONE_G={'武':1};  // v7.0.0: 명마 1개 제한은 칸 규칙(★5칸·★4★3칸)으로 대신해요
-const SLOT_OF=it=>it.rar===5?0:1, SLOT_NM=['★5칸','★4·★3칸'];
+const ONE_G={};  // v7.1.0: 무기 1개 제한도 없어졌어요. 칸 규칙(등급마다 1개)만 남아요
+const SLOT_OF=it=>5-it.rar, SLOT_NM=['★5칸','★4칸','★3칸'];
 const itemFor=(cls,it)=>!cls||(it.g==='書'?cls==='tac':it.g==='武'?(CLS_W[cls]||[]).includes(it.wf):true);
 // others: 이미 낀 보물(IMAP 항목) 목록. 못 끼면 이유, 끼울 수 있으면 ''
 function itemWhy(cls,it,others){
   if(!itemFor(cls,it))return it.g==='書'?'서책은 책사만 장착할 수 있어요':`${CLS[cls].n} 장수가 쓸 수 없는 무기(${WFAM[it.wf]})예요`;
   if(ONE_G[it.g]&&(others||[]).some(o=>o&&o!==it&&o.g===it.g))return '무기는 한 장수에게 1개만 장착할 수 있어요';
-  // v7.0.0: ★5 보물은 ★5칸(1개), ★4·★3 보물은 ★4·★3칸(1개)
-  if((others||[]).some(o=>o&&o!==it&&SLOT_OF(o)===SLOT_OF(it)))return it.rar===5?'★5 보물은 ★5칸에 1개만 장착할 수 있어요':'★4·★3 보물은 ★4·★3칸에 1개만 장착할 수 있어요';
+  // v7.1.0: 등급마다 1칸 (★5칸 · ★4칸 · ★3칸)
+  if((others||[]).some(o=>o&&o!==it&&SLOT_OF(o)===SLOT_OF(it)))return `★${it.rar} 보물은 ★${it.rar}칸에 1개만 장착할 수 있어요`;
   return '';
 }
 const itemFits=(cls,it,others)=>!itemWhy(cls,it,others);
 // 병종별로 쓸 수 있는 보물 설명 (장착 화면·도감)
-const clsGear=cls=>`${CLS[cls].n} 무기: ${CLS_W[cls].map(f=>WFAM[f]).join(' · ')}${cls==='tac'?' · 서책 장착 가능':''} · ★5칸 1개 + ★4·★3칸 1개, 무기는 1개`;
+const clsGear=cls=>`${CLS[cls].n} 무기: ${CLS_W[cls].map(f=>WFAM[f]).join(' · ')}${cls==='tac'?' · 서책 장착 가능':''} · ★5칸 · ★4칸 · ★3칸에 1개씩`;
 const itemUsers=it=>it.g==='書'?'책사 전용':it.g==='武'?Object.keys(CLS_W).filter(c=>CLS_W[c].includes(it.wf)).map(c=>CLS[c].n).join('·')+' 사용':'';
 // 적 보물: 뽑힌 보물을 못 끼면 같은 등급에서 낄 수 있는 보물로 바꿔요(뽑기 순서는 그대로)
 function legalItem(cls,it,kept,v){if(itemFits(cls,it,kept))return it;const c=ITEMS.filter(x=>x.rar===it.rar&&!kept.includes(x)&&itemFits(cls,x,kept));return c.length?c[Math.floor(v*c.length)%c.length]:null}
-const ITEMS_5=ITEMS.filter(x=>x.rar===5), ITEMS_43=ITEMS.filter(x=>x.rar<5);
-function npcIts(r,cls,itd){const kept=[],o=[];for(const pool of[ITEMS_5,ITEMS_43]){const v=r(),dd=Math.floor(r()*(itd+1));let it=pool[Math.floor(v*pool.length)];it=legalItem(cls,it,kept,v);if(it){kept.push(it);o.push(it.id+':'+dd)}}return o}
+const ITEMS_5=ITEMS.filter(x=>x.rar===5), ITEMS_43=ITEMS.filter(x=>x.rar<5), ITEMS_4=ITEMS.filter(x=>x.rar===4), ITEMS_3=ITEMS.filter(x=>x.rar===3);
+function npcIts(r,cls,itd){const kept=[],o=[];for(const pool of[ITEMS_5,ITEMS_4,ITEMS_3]){const v=r(),dd=Math.floor(r()*(itd+1));let it=pool[Math.floor(v*pool.length)];it=legalItem(cls,it,kept,v);if(it){kept.push(it);o.push(it.id+':'+dd)}}return o}
 let ITEM_DROP=0;
 const ON_NAME={inf:'보병',cav:'기병',arc:'궁병',tac:'책사',wei:'위',shu:'촉',wu:'오',dong:'동탁',yuan:'원가',qun:'군웅'};
 // 장착 보물 문자열 "id:돌파" 배열을 [{it,d}]로 (예전 형식인 id 하나도 받아요)
@@ -1642,7 +1643,7 @@ function mkUnit(spec,side,slot){
   const P=pasOf(b), U=ultOf(b), pm=1+(f.pas||0)/100, pv=k=>P&&P[k]?P[k]*pm:0;
   hp*=1+(f.hp||0)/100+pv('hp');atk*=1+(f.atk||0)/100+pv('atk');def*=1+(f.def||0)/100+pv('def');spd+=(f.spd||0)+pv('spd');
   const cr=Math.min(.6,.1+(f.cr||0)/100+pv('cr')), cd=Math.min(3,1.5+(f.cd||0)/100+pv('cd')), ls=Math.min(.5,(f.ls||0)/100+pv('ls')), dr=Math.min(.5,(f.dr||0)/100+pv('dr'));
-  const skp=(f.sk||0)/100, usk=(f.usk||0)/100, pskp=pv('skp'), res=Math.min(.6,(f.res||0)/100+pv('res'));
+  const skp=(f.sk||0)/100, usk=((f.usk||0)+(f.sk||0))/100, pskp=pv('skp'), res=Math.min(.6,(f.res||0)/100+pv('res'));
   const up0=UP_BASE+upStat(b)+Math.min(UP_ITEM_CAP,(f.up||0)/100)+pv('up');
   if(spec.hpx)hp*=spec.hpx;
   // 화상 보물 (v3.4.1): 일반 공격에 화상. 비율은 강화 단계만큼 올라가요
@@ -1942,7 +1943,7 @@ function simulate(As,Bs,seed,opt){const C=opt&&opt.siege?{hp:opt.siege.hp,max:op
   else win=pct(0)>pct(1);
   return {win,ev,init,bonus:[A.info,B.info],fin:T[0].map(u=>({slot:u.slot,id:u.id,hp:u.hp,max:u.maxhp}))};
 }
-function bonusLine(info){if(!info)return '';const p=[...(info.ally?[`연합군 ${info.ally.n}개국`]:[]),...(info.vol?[`의용군 ${info.vol.n}명`]:[]),...(info.combo?['수호·회복 조합']:[]),...(info.only4?['정예']:info.no5?['신예']:[]),...(info.af&&info.af.n>1?[`화공 대비 ${info.af.n}명 · 효과 ${Math.round(info.af.f*100)}%`]:[]),...info.bonds.map(b=>b.n),...info.facs.map(f=>`${FAC[f.f]} ${f.c}명`)];return p.join(' · ')}
+function bonusLine(info){if(!info)return '';const p=[...(info.ally?[`연합군 ${info.ally.n}개국`]:[]),...(info.vol?[`의용군 ${info.vol.n}명`]:[]),...(info.combo?['수호·회복 조합']:[]),...(info.only4?['정예']:info.no5?['신예']:[]),...(info.af&&info.af.n>1?[`화공 대비 ${info.af.n}명 · 효과 ${Math.round(info.af.f*100)}%`]:[]),...info.facs.map(f=>`${FAC[f.f]} ${f.c}명`),...(info.bonds.length?[`인연 ${info.bonds.length}개`]:[])];return p.join(' · ')}
 
 /* ---------------- stages ---------------- */
 function mkTroop(tr,cls){const b=TROOP_BASE[cls];return {name:tr[0],hz:tr[1],fac:tr[2],rar:2,cls,str:b[0],int:b[1],lead:b[2],spd:b[3],skill:DEF_SKILL[cls]}}
@@ -1958,12 +1959,14 @@ function skipCount(){const mine=mySpecs();if(!mine.some(Boolean))return 0;const 
 // v3.0.0: 적도 6명 → v7.0.0: 5명. 단계 구성 5칸을 그대로 쓰고 배치를 정해 둬요(상성 적용)
 const STAGE6=1.1, STAGE_EASE=.95; // v4.2.2: 스테이지 적 배율 -5%
 // v7.0.0 스킬 3종·보물 2칸·5인 뒤 스테이지별 적 배율 보정(키는 0부터인 스테이지 번호). build/sim/tune7.js로 v6.0.1과 같은 플레이어 전투력(적 전투력×1.25)에서 승률을 맞춰요
+// v7.1.0 간결화 뒤 스테이지별 추가 보정(키는 0부터인 스테이지 번호)
+const STAGE_V71={"29":0.962,"44":0.96,"49":0.924,"51":1.08,"53":1.102,"59":1.06,"62":0.96,"69":1.046,"74":1.06,"76":0.876,"80":0.934,"85":0.929,"89":0.945,"90":0.893,"94":0.987,"95":0.902};
 const STAGE_V7={"9":0.828,"19":0.848,"27":0.926,"29":0.881,"34":0.929,"38":0.956,"39":1.055,"41":1.035,"42":0.87,"44":0.83,"46":1.085,"47":0.958,"49":0.75,"51":1.213,"53":1.209,"54":0.886,"57":1.139,"59":0.986,"62":0.786,"63":1.063,"64":1.026,"67":0.84,"69":0.959,"71":1.138,"73":0.955,"74":1.016,"79":0.895,"81":0.929,"82":0.703,"83":0.803,"84":0.804,"86":0.927,"87":0.711,"88":0.763,"89":0.796,"91":0.925,"93":0.882,"94":0.726,"96":1.094,"97":0.828,"98":0.962,"99":0.888};
 const stageForm=n=>Object.keys(FORM)[(n+Math.floor(n/5))%6];
 function stageSpecs(n){
   const c=CH[Math.floor(n/5)],row0=c.st[n%5],lv=stageLv(n),f=stageForm(n);
   const row=row0.slice(0,NSLOT);
-  const sc=ENEMY_SCALE*STAGE6*STAGE_EASE*(STAGE_SC[n]||1)*(STAGE_V6[n]||1)*(STAGE_V7[n]||1);
+  const sc=ENEMY_SCALE*STAGE6*STAGE_EASE*(STAGE_SC[n]||1)*(STAGE_V6[n]||1)*(STAGE_V7[n]||1)*(STAGE_V71[n]||1);
   return row.map((x,i)=>x.startsWith('T:')?{troop:mkTroop(c.tr,x.slice(2)),lv,d:0,sc,p:i,f}:{g:x,lv,d:0,sc,p:i,f});
 }
 function stageName(n){const c=CH[Math.floor(n/5)];return n%5===4?`${c.n} · ${c.boss}`:`${c.n} · 제${n%5+1}전`}
@@ -2351,11 +2354,20 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='7.0.0';
+const GAME_VERSION='7.1.0';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'7.1.0',date:'2026-10-19',title:'규칙 간결화 · 보물 3칸 · 덱 보너스 3가지',reward:{ap:30},items:[
+  '다시 안내드려요. 오늘(10월 19일) 밤 10시에 모든 진척도를 한 번 초기화해요. 초기화 뒤에는 공지 보상과 쿠폰을 전부 다시 받을 수 있으니 챙겨서 처음부터 다시 키워 보세요. 11월 1일 하드 리셋 때는 지금의 공지 보상과 쿠폰이 전부 없어져요.',
+  '규칙이 너무 많아져서 덜어냈어요. 덱 보너스는 진영 · 인연 · 진형 세 가지만 남아요. 연합군 · 의용군 · 역할 조합 · 신예·정예 · ★3 진영 추가 보너스는 없어졌어요.',
+  '보물 칸이 3칸이 됐어요. ★5칸 · ★4칸 · ★3칸에 그 등급 보물을 1개씩 끼워요. 무기 1개 제한도 없어졌어요. 지금 낀 보물은 그대로예요.',
+  '보물 특수 효과는 ★5 보물에만 남겼어요. ★4·★3 보물은 능력치(와 병종·진영 장착 보너스)만 있어요.',
+  '보물 능력치를 10종으로 줄였어요. 기본 스킬 피해와 궁극기 피해는 \'스킬 피해\' 하나로 합쳐 기본 스킬과 궁극기 모두에 적용돼요. 저항은 피해 감소로, 패시브 증폭은 공격·체력으로 바꿨어요.',
+  '진형 화면의 보너스는 \'동탁 5명 · 인연 2개 · 학익진\'처럼 한 줄로 보이고, [자세히]를 누르면 수치를 볼 수 있어요.',
+  '스테이지·천명탑·원정군·수성전·토벌전 난이도를 바뀐 규칙에 맞춰 다시 맞췄어요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'7.0.0',date:'2026-10-19',title:'스킬 3종 · 보물 리워크 51종 · 5인 진형',reward:{ap:30},items:[
   '오늘(10월 19일) 밤 10시에 모든 진척도를 한 번 초기화해요. 초기화 뒤에는 공지 보상을 전부 다시 받을 수 있으니, 공지 보상과 쿠폰을 챙겨서 처음부터 다시 키워 보시길 부탁드려요.',
   '11월 1일에는 하드 리셋을 해요. 그때는 진척도와 함께 지금 있는 공지 보상과 쿠폰이 전부 없어져서, 11월 1일 이후에는 지금의 공지 보상도 쿠폰도 받을 수 없어요. 이번 공지 보상과 쿠폰은 11월 1일 전까지의 테스트용이에요.',
@@ -3120,11 +3132,10 @@ const HELP=[
   ['레벨','1레벨 오를 때마다 능력치 +7%, 속도 +0.3. 최대 Lv '+MAXLV+'. 레벨은 장수가 아니라 진형의 자리(1~5번)마다 정해요. 둔영 탭에서 자리의 Lv 버튼을 눌러 올리거나 초기화(금 전액 환불)할 수 있어요.'],
   ['돌파','같은 장수를 또 얻으면 한 단계 올라요. 단계마다 능력치 +6%, 최대 5단계(◆◆◆◆◆). 5단계 이후 중복은 금으로 바뀌어요(★4 300 · ★5 1,000).'],
   ['한계돌파','★3 장수는 5단계 뒤에도 중복으로 6~10단계(✦)까지 더 오르고, 단계마다 똑같이 +6%예요. 10단계 이후 중복은 금 200으로 바뀌어요.'],
-  ['보물','장수마다 2칸이에요. ★5칸에는 ★5 보물 1개, ★4·★3칸에는 ★4나 ★3 보물 1개. 공격·체력·방어는 퍼센트로, 속도는 수치로 더해져요. 아래 보물 항목에 자세히 있어요.'],
+  ['보물','장수마다 3칸이에요. ★5칸 · ★4칸 · ★3칸에 그 등급 보물을 1개씩 끼워요. 특수 효과는 ★5 보물에만 있어요. 공격·체력·방어는 퍼센트로, 속도는 수치로 더해져요. 아래 보물 항목에 자세히 있어요.'],
   ['스킬 3종','장수마다 패시브 1개 + 기본 스킬 1개 + 궁극기 1개예요. 패시브는 전투 내내 자동으로 적용되고, 전법 차례(병종마다 2~4번째 행동)에 궁극기 확률만큼 궁극기가, 아니면 기본 스킬이 나가요.'],
   ['궁극기 확률','기본 25% + 병종 능력치(책사 지력 · 기병·궁병 무력 · 보병 통솔, 60에서 100 사이에서 0~+10%p) + 보물 궁극기 확률(최대 +12%p) + 패시브, 최대 50%예요. 장수 화면에서 지금 확률을 볼 수 있어요.'],
-  ['패시브 증폭','보물의 패시브 증폭만큼 패시브의 수치 효과가 커져요(+20%면 패시브 공격 +10%가 +12%).'],
-  ['저항','기절·혼란·봉인·공격·방어 감소 같은 해로운 효과를 그 확률로 무시해요. 최대 60%.']]},
+  ['저항','일부 장수의 패시브가 주는 효과예요. 기절·혼란·봉인·공격·방어 감소 같은 해로운 효과를 그 확률로 무시해요. 최대 60%.']]},
  {t:'전투 결과',rows:[
   ['MVP','아군·적군에서 각각 (준 피해 + 회복량 × 0.6) 점수가 가장 높은 장수예요. 준 피해에는 일반 공격, 전법, 화상 같은 지속 피해가 모두 들어가요. 회복은 피해보다 0.6배로 쳐요.'],
   ['전투 기록','경감한 피해는 방어력과 피해 감소로 막아 낸 양이고, 화상 피해는 전법 피해에 포함돼요. 보물·전법 이름을 누르면 설명이 나와요.'],
@@ -3154,10 +3165,6 @@ const HELP=[
   ['진영 보너스','같은 진영의 ★3 이상 장수가 3·4·5명이면 그 진영 장수가 강해져요. 5명 전원 같은 진영이면 효과가 크게 올라요(v7.0.0). 무장 탭 › 도감 › 인연에 전체 표가 있어요.'],
   ['인연','함께 편성하면 발동하고, 진형의 모든 장수 능력치가 올라요. 둔영 탭에서 발동 중인 인연을 볼 수 있어요.'],
   ['타국 인연','서로 다른 진영의 장수로 이루어진 인연은 효과가 '+CROSS_MUL+'배예요. 여러 나라 장수를 섞어 쓰도록 돕는 보너스예요.'],
-  ['연합군','★3 이상 장수의 나라가 3개국이면 ★3 이상 전원 공격·체력·방어 +5%, 4개국이면 +8%. 진영 보너스·인연과 함께 적용돼요.'],
-  ['의용군','진형에 ★3 장수가 1·2·3명 이상이면 그 ★3 장수들의 공격·체력이 +4% · +7% · +10%. 연합군·진영 보너스·인연과 함께 적용돼요.'],
-  ['역할 조합','진형에 🛡수호와 🩹회복 장수(주 역할 기준)가 함께 있으면 ★3 장수만 체력·방어 +8%. 다른 보너스와 함께 적용돼요.'],
-  ['신예 · 정예','★5 장수가 없는 덱(★3 이상 3명 이상)은 전원 공격·체력·방어 +12%(신예), 전원 ★4면 +4% 더(정예, 합계 +16%). 플레이어 덱에만 적용되고 출정·공성·보스·누각·원정의 적에게는 적용되지 않아요. 원정군 파티에도 적용되지 않아요(v5.2.1).'],
   ['★5 인연','★5 장수가 들어 있고 ★3 장수가 없는 인연은 효과가 1.15배예요(오호대장군 제외). 타국 인연 2배와 함께 적용돼요.'],
   ['완성도','레벨 45%, 돌파 20%, 보물 35%(2칸의 등급과 돌파)를 반영한 육성 정도예요.'],
   ['★5 제한','진형(5명)에는 ★5 장수를 '+MAX5+'명까지 넣을 수 있어요. 야전 상대 진형에도 똑같이 적용돼요.'],
@@ -3179,12 +3186,11 @@ const HELP=[
   ['치명 피해','치명타가 터졌을 때의 피해 배율이에요. 기본 150%에 그대로 더해져요(예: 치명 피해 +20% → 170%, +50% → 200%). 최대 300%.'],
   ['흡혈','준 피해의 일부만큼 체력을 회복해요. 최대 50%.'],
   ['피해 감소','받는 피해를 줄여요. 화상 피해에는 적용되지 않고, 최대 50%.'],
-  ['기본 스킬 피해','기본 스킬로 주는 피해가 늘어요.'],
-  ['궁극기 피해 · 궁극기 확률','궁극기로 주는 피해가 늘어요 · 궁극기가 나갈 확률이 올라요(보물 합계 최대 +12%p, 강화에는 절반만 올라요).'],
-  ['패시브 증폭 · 저항','패시브의 수치 효과가 커져요 · 해로운 효과를 무시할 확률이에요. 둘 다 강화에는 절반만 올라요.'],
+  ['스킬 피해','기본 스킬과 궁극기로 주는 피해가 늘어요.'],
+  ['궁극기 확률','궁극기가 나갈 확률이 올라요(보물 합계 최대 +12%p, 강화에는 절반만 올라요).'],
   ['조건 효과','일부 보물은 특정 병종이 장착하면 추가 효과가 있어요. 장착 화면에 적용 여부가 표시돼요.'],
   ['보물 도감','보물마다 +0(보유)·+10·+25·+50에 처음 도달하면 영구 등록돼 모든 장수가 강해져요. 팔아도 등록은 남아요. 세트를 완성하면 추가 효과가 있고, 야전에도 적용돼요. 연무장에는 적용되지 않아요.'],
-  ['전투력','치명·흡혈·피해 감소·기본 스킬·궁극기 피해·궁극기 확률도 전투력에 반영돼요.']]},
+  ['전투력','치명·흡혈·피해 감소·스킬 피해·궁극기 확률도 전투력에 반영돼요.']]},
  {t:'등용·재화',rows:[
   ['보물 획득권','보물 획득에 군량 대신 먼저 쓰여요. 1장이 1회예요.'],
   ['장수 등용권','장수 등용에 군량 대신 먼저 쓰여요. 1장이 1회예요. 금화 룰렛과 출석 2일차에서 얻어요.'],
@@ -3526,7 +3532,7 @@ function vGacha(){
   ${S.gtk||S.isk||S.gsh||S.ish?card('tk','選','선택권 · 조각',`선택권 장수 ${S.gtk||0} · 보물 ${S.isk||0}장${S.gsh||S.ish?` · 조각 ${fmt(S.gsh||0)} · ${fmt(S.ish||0)}`:''}`,`<p class="sub" style="margin:0 0 8px">원하는 장수·보물을 골라 받아요. 이미 있으면 돌파·강화 +1.</p><p class="sub" style="margin:0 0 6px">끝까지 키운 장수·보물이 또 나오면 조각을 받아요(★3 ${SHARD[3]} · ★4 ${SHARD[4]} · ★5 ${SHARD[5]}개). 장수 조각 ${SHARD_N.g}개 · 보물 조각 ${SHARD_N.i}개마다 선택권 1장이에요.</p>${shLine('g')}${shLine('i')}`,`<div class="row" style="gap:8px;margin-top:4px"><button type="button" class="btn" data-tkopen="g" ${S.gtk?'':'disabled'}>장수 선택권 ${S.gtk||0}장</button><button type="button" class="btn" data-tkopen="i" ${S.isk?'':'disabled'}>보물 선택권 ${S.isk||0}장</button></div>`):''}
   ${card('g','募將','장수 등용',`천장 ${pc('g')}/${PITY_N}${S.gpk?` · 등용권 ${fmt(S.gpk)}장`:''}`,`${infoP('pull-g','중복이면 돌파 +1 (능력치 +6%)',`같은 장수가 나오면 돌파 단계가 올라 능력치가 6%씩 오릅니다(최대 5단계, ★3은 한계돌파로 10단계). 돌파를 다 채운 뒤 중복은 조각(★3 ${SHARD[3]} · ★4 ${SHARD[4]} · ★5 ${SHARD[5]}개)으로 바뀌고, 조각 ${SHARD_N.g}개는 맨 위 '선택권 · 조각'에서 장수 선택권 1장으로 바꿔요.`,'margin:0')}${rates}
    ${S.gpk?`<p class="sub" style="margin:0 0 8px"><b class="sl gold">券</b> 장수 등용권 <b class="num" style="color:var(--fg)">${S.gpk}</b>장 · 군량보다 먼저 쓰여요</p>`:''}`,pullBtns('g'))}
-  ${card('i','寶庫','보물 획득',`천장 ${pc('i')}/${PITY_N}${S.itk?` · 획득권 ${fmt(S.itk)}장`:''}`,`${infoP('pull-i',`보물 ${ITEMS.length}종 · 장수마다 2칸(★5칸 + ★4·★3칸)`,`보물 ${ITEMS.length}종. 장수마다 ★5칸 1개 + ★4·★3칸 1개를 장착해요. 무기는 1개만이고, 무기는 병종마다 쓸 수 있는 종류가 정해져 있어요. 같은 보물이 또 나오면 돌파 +1, 최대 +${ITEM_MAXD}. +${ITEM_MAXD} 뒤 중복은 조각(★3 ${SHARD[3]} · ★4 ${SHARD[4]} · ★5 ${SHARD[5]}개), ${SHARD_N.i}개는 맨 위 '선택권 · 조각'에서 보물 선택권 1장으로 바꿔요.`,'margin:0')}${rates}
+  ${card('i','寶庫','보물 획득',`천장 ${pc('i')}/${PITY_N}${S.itk?` · 획득권 ${fmt(S.itk)}장`:''}`,`${infoP('pull-i',`보물 ${ITEMS.length}종 · 장수마다 3칸(★5칸 · ★4칸 · ★3칸)`,`보물 ${ITEMS.length}종. 장수마다 ★5칸 1개 + ★4·★3칸 1개를 장착해요. 무기는 1개만이고, 무기는 병종마다 쓸 수 있는 종류가 정해져 있어요. 같은 보물이 또 나오면 돌파 +1, 최대 +${ITEM_MAXD}. +${ITEM_MAXD} 뒤 중복은 조각(★3 ${SHARD[3]} · ★4 ${SHARD[4]} · ★5 ${SHARD[5]}개), ${SHARD_N.i}개는 맨 위 '선택권 · 조각'에서 보물 선택권 1장으로 바꿔요.`,'margin:0')}${rates}
    ${S.itk?`<p class="sub" style="margin:0 0 8px"><b class="sl gold">券</b> 보물 획득권 <b class="num" style="color:var(--fg)">${S.itk}</b>장 · 군량보다 먼저 쓰여요</p>`:''}`,pullBtns('i'))}${rouletteHtml()}`;
 }
 function rollRar(){const r=Math.random();return r<.03?5:r<.18?4:3}
@@ -3824,7 +3830,7 @@ function vDeck(){
     h+=`<div class="slot${cls}" role="button" tabindex="0" data-slot="${i}">${pos2}${seal(g,'sm')}<div class="info"><b>${esc(g.name)} <span class="stars r${g.rar}">${stars(g.rar)}</span>${roleHtml(gid)}</b><span>${CLS[g.cls].g} ${CLS[g.cls].n} · ${dupHtml(s.d,0,maxD(g.rar))}${it?` · ${esc(it.name)}`:''} · 전투력 ${fmt(specPower(s))}</span>${skLine(g)}</div>
     <div class="mv">${swb}<button type="button" class="clr" data-clr="${i}" aria-label="${esc(g.name)} 빼기">✕</button></div></div>`;
   });
-  h+=`<div class="legend"><b>전투 규칙</b><br>보병·기병은 가장 앞줄(선봉) 적 중 한 명을 공격하고, 궁병은 적 기병 중 체력 비율이 가장 낮은 적을(기병이 없으면 책사, 책사도 없으면 전체 중 체력 비율이 가장 낮은 적), 책사는 무작위 적을 노립니다. 전법은 기병 2번째, 보병·궁병 3번째, 책사 4번째 행동마다 발동해요. 도발 중인 적이 있으면 단일 공격은 그 적에게 향해요.<br><b>상성</b> 기병 → 책사 → 보병 → 궁병 → 기병 (유리하면 피해 +25%, 불리하면 -15%, 기병↔보병·궁병↔책사는 대등). 궁병은 기병, 그다음 책사를 먼저 노려요. '맨 앞 적' 전법은 도발 중인 적이 없으면 둘째 줄을 노려요(돌파).<br><b>진영·인연</b> 같은 진영 3명 이상, 또는 인연 있는 장수를 함께 넣으면 능력치가 올라요(인연은 진형 전원에게 적용). 다른 나라 장수끼리의 타국 인연은 효과가 2배이고, 3개국 이상 섞으면 연합군 보너스를 받아요. 무장 탭 › 도감 › 인연에서 전체 목록을 볼 수 있어요.<br><button type="button" class="btn ghost sm" data-help="3" style="margin-top:8px">전투 규칙 자세히 보기</button></div>`;
+  h+=`<div class="legend"><b>전투 규칙</b><br>보병·기병은 가장 앞줄(선봉) 적 중 한 명을 공격하고, 궁병은 적 기병 중 체력 비율이 가장 낮은 적을(기병이 없으면 책사, 책사도 없으면 전체 중 체력 비율이 가장 낮은 적), 책사는 무작위 적을 노립니다. 전법은 기병 2번째, 보병·궁병 3번째, 책사 4번째 행동마다 발동해요. 도발 중인 적이 있으면 단일 공격은 그 적에게 향해요.<br><b>상성</b> 기병 → 책사 → 보병 → 궁병 → 기병 (유리하면 피해 +25%, 불리하면 -15%, 기병↔보병·궁병↔책사는 대등). 궁병은 기병, 그다음 책사를 먼저 노려요. '맨 앞 적' 전법은 도발 중인 적이 없으면 둘째 줄을 노려요(돌파).<br><b>진영·인연</b> 같은 진영 3명 이상, 또는 인연 있는 장수를 함께 넣으면 능력치가 올라요(인연은 진형 전원에게 적용). 다른 나라 장수끼리의 타국 인연은 효과가 2배예요. 덱 보너스는 진영 · 인연 · 진형 세 가지예요. 무장 탭 › 도감 › 인연에서 전체 목록을 볼 수 있어요.<br><button type="button" class="btn ghost sm" data-help="3" style="margin-top:8px">전투 규칙 자세히 보기</button></div>`;
   return h;
 }
 document.addEventListener('click',e=>{
@@ -3931,8 +3937,8 @@ let pickSlot=0;
 // v3.6.1: 편성 창에서 바로 보물 교체 (고른 뒤 편성 창으로 돌아옴)
 let eqRet=null;
 function slotGearHtml(gid,i){const st=S.gens[gid];if(!st)return '';
-  return `<p class="sub" style="margin:0 0 4px"><b>보물</b> · ${st.its.length}/${ITEM_SLOTS}칸 · ★5칸 + ★4·★3칸 · ${esc(deckName(S.dk))} 기준</p><div class="list" style="margin-bottom:12px">${Array.from({length:ITEM_SLOTS},(_,k)=>{const x=slotItemOf(st,k),iv=x&&IMAP[x.k];
-    return `<button type="button" class="li" style="text-align:left" data-equip="${gid}:${k}" data-eqfrom="${i}">${iv?`${itemTile(iv,x.d)}<div class="info"><b>${esc(iv.name)}${x.d?` <span class="pc">+${x.d}</span>`:''} <small style="color:var(--mute)">${SLOT_NM[k]}</small></b><span>${fxText(iv,x.d,GMAP[gid])}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>${SLOT_NM[k]} 비어 있음</b><span>눌러서 ${k?'★4·★3':'★5'} 보물 장착</span></div>`}<span class="btn ghost sm">${iv?'변경':'장착'}</span></button>`}).join('')}</div>`}
+  return `<p class="sub" style="margin:0 0 4px"><b>보물</b> · ${st.its.length}/${ITEM_SLOTS}칸 · 등급마다 1칸 · ${esc(deckName(S.dk))} 기준</p><div class="list" style="margin-bottom:12px">${Array.from({length:ITEM_SLOTS},(_,k)=>{const x=slotItemOf(st,k),iv=x&&IMAP[x.k];
+    return `<button type="button" class="li" style="text-align:left" data-equip="${gid}:${k}" data-eqfrom="${i}">${iv?`${itemTile(iv,x.d)}<div class="info"><b>${esc(iv.name)}${x.d?` <span class="pc">+${x.d}</span>`:''} <small style="color:var(--mute)">${SLOT_NM[k]}</small></b><span>${fxText(iv,x.d,GMAP[gid])}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>${SLOT_NM[k]} 비어 있음</b><span>눌러서 ★${5-k} 보물 장착</span></div>`}<span class="btn ghost sm">${iv?'변경':'장착'}</span></button>`}).join('')}</div>`}
 function openSlotPicker(i){pickSlot=i;
   const cur=S.deck[i], F=GF.pick, lv=slotLv(i), q=(F.q||'').trim();
   const list=Object.keys(S.gens).filter(g=>g!==cur&&gfMatch(F,GMAP[g])).map(g=>{const s=specOf(g,lv);return {g,b:GMAP[g],p:specPower(s),u:mkUnit(s,0,0)}}).sort(gfCmp(F.sort));
@@ -4068,7 +4074,7 @@ const SIEGE={
   yinkeng:{n:'은갱동',hz:'銀坑洞',boss:'zhugeliang',def:['menghuo'],rw:{itk:.0165},d:'남만왕 맹획의 본거지. 칠종칠금의 마지막 무대예요.'},
   jiange:{n:'검각',hz:'劍閣',boss:'dengai',def:['jiangwei'],rw:{gold:.033,food:.0083},d:'263년 강유가 위의 대군을 막아 낸 촉의 관문.'}
 };
-const SIEGE_K=5.38, SIEGE_DAILY=5, SIEGE_MAXR=150, SIEGE_HEAL=.3, SIEGE_BASE=.8, SIEGE_GROW=1.35, SIEGE_HERO=.10;
+const SIEGE_K=7.0, SIEGE_DAILY=5, SIEGE_MAXR=150, SIEGE_HEAL=.3, SIEGE_BASE=.8, SIEGE_GROW=1.35, SIEGE_HERO=.10;
 const SIEGE_EPOCH=Date.UTC(2026,9,11,15);   // 2026-10-12(월) 0시 KST
 const SIEGE_WEEK0=['hefei','xiaopei','chencang'];
 const SIEGE_NEW=['yecheng','changan','yangping','yinkeng','jiange'], SIEGE_NEW_FROM=6;  // v5.0.0: 지난 날 순환은 그대로 두고 이 날부터 섞어요
@@ -4211,7 +4217,7 @@ document.addEventListener('click',e=>{
 });
 /* ---------------- 추천 편성 ----------------
    고정한 장수(자리 그대로)와 고정한 보물은 두고, 남은 자리와 보물 칸을 추천으로 채워요.
-   1) 장수: 진영·연합군·인연 효과까지 넣은 진형 점수가 가장 높은 조합을 찾아요(여러 출발점 + 한 명씩 바꿔 보기)
+   1) 장수: 진영·인연 효과까지 넣은 진형 점수가 가장 높은 조합을 찾아요(여러 출발점 + 한 명씩 바꿔 보기)
    2) 보물: 좋은 보물부터, 진형 점수가 가장 많이 오르는 장수에게 끼워요(명마는 1개까지)
    3) 자리: 병종(보병·기병 앞, 궁병·책사 뒤)과 자리 레벨을 함께 따져 배치
    토벌전용은 후보 진형들을 이번 토벌전 보스와 실제로 싸워 보고 평균 피해가 가장 큰 진형을 골라요. */
@@ -4473,7 +4479,7 @@ function openRec(ctx){
    <div class="chips" role="group" aria-label="배치" style="margin:0 0 4px"><span class="flab">배치</span><button type="button" data-rform="" aria-pressed="${!recFormFix}">자동</button>${Object.entries(FORM).map(([k,f])=>`<button type="button" data-rform="${k}" aria-pressed="${recFormFix===k}">${f.n}</button>`).join('')}</div>
    <p class="sub" style="margin:0 0 6px;font-size:12px">${recFormFix?`${FORM[recFormFix].n}으로 고정하고 그 안에서 장수와 자리를 추천해요.`:'배치 6종을 모두 비교해서 가장 좋은 배치를 골라요.'}</p>
    ${rows}
-   <p class="sub" style="font-size:12px;margin:4px 0 10px">후보 진형을 만든 뒤 실제 전투 계산으로 비교해요(진영·인연·연합군·${V.lab?'':'보물 도감·'}전법·속도·자리 순서·배치 모두 반영). ${modeTxt} 2~5초 걸릴 수 있어요.</p>
+   <p class="sub" style="font-size:12px;margin:4px 0 10px">후보 진형을 만든 뒤 실제 전투 계산으로 비교해요(진영·인연·${V.lab?'':'보물 도감·'}전법·속도·자리 순서·배치 모두 반영). ${modeTxt} 2~5초 걸릴 수 있어요.</p>
    <button type="button" class="btn wide red" id="rec-go">추천 받기</button>`);
 }
 function openRecResult(P){
@@ -4558,10 +4564,8 @@ function teamBoxHtml(specs,all){
   const hints=BONDS.filter(B=>!bondActive(B,info.ids)).map(B=>{const have=B.ids.filter(x=>info.ids.has(x)),need=(B.min||B.ids.length)-have.length;return {B,have,need}})
     .filter(x=>x.have.length&&x.need===1).slice(0,3)
     .map(({B,have})=>`<li class="hint">${B.n}: ${B.ids.filter(x=>!info.ids.has(x)).map(x=>`${GMAP[x].name}${all||S.gens[x]?'':'(미보유)'}`).join(' 또는 ')} 추가 시 발동</li>`);
-  if(info.nn===2)hints.unshift(`<li class="hint">연합군: 다른 나라 ★3 이상 장수 1명 추가 시 발동</li>`);
-  if(!info.combo&&info.rl&&(info.rl.has('guard')!==info.rl.has('heal')))hints.unshift(`<li class="hint">역할 조합: ${info.rl.has('guard')?'🩹회복':'🛡수호'} 장수 1명 추가 시 ★3 장수 ${fxStr(COMBO_BONUS)}</li>`);
-  if(!info.no5&&!info.pve){const n5=[...info.ids].filter(x=>GMAP[x]&&GMAP[x].rar===5).length;if(n5===1)hints.push(`<li class="hint">신예: ★5 장수를 빼면 ★3 이상 전원 ${fxStr(RANK_BONUS.no5)}</li>`)}
-  return `<div class="tbox"><b class="tb-h">진영·인연 효과</b>${li.length?`<ul>${li.join('')}</ul>`:'<p class="sub" style="margin:4px 0 0">같은 진영 장수를 3명 이상 넣거나 인연이 있는 장수를 함께 넣으면 능력치가 올라요.</p>'}${hints.length?`<ul>${hints.join('')}</ul>`:''}</div>`;
+  const one=[...info.facs.map(F=>`${FAC[F.f]} ${F.c}명`),...(info.bonds.length?[`인연 ${info.bonds.length}개`]:[]),...(specs.some(Boolean)?[FORM[cleanForm((specs.find(Boolean)||{}).f)].n]:[])].join(' · ');
+  return `<div class="tbox"><b class="tb-h">덱 보너스</b> <span class="tb-one">${esc(one)||'없음'}</span>${li.length||hints.length?`<details class="tb-more"><summary>자세히</summary>${li.length?`<ul>${li.join('')}</ul>`:''}${hints.length?`<ul>${hints.join('')}</ul>`:''}</details>`:'<p class="sub" style="margin:4px 0 0">같은 진영 장수를 3명 이상 넣거나 인연이 있는 장수를 함께 넣으면 능력치가 올라요.</p>'}</div>`;
 }
 function rivalsOfHtml(id){const rs=rivalsOf(id);if(!rs.length)return '';
   return `<h3>숙적 <span style="font-weight:400">· 상대 진형에 있으면 두 장수 모두 공격·방어·속도 +${Math.round(RIVAL_P*100)}%</span></h3><div class="list">${rs.map(r=>`<div class="li" style="display:block"><b>${GMAP[r.o].name}</b> <span class="sub">· ${esc(r.w)}${BONDS.some(B=>B.ids.length===2&&B.ids.includes(id)&&B.ids.includes(r.o))?' · 같은 편이면 인연':''}</span></div>`).join('')}</div>`}
@@ -4578,17 +4582,9 @@ function bondsDexHtml(){
   const grp=[['발동 가능 · 장수를 모두 가졌어요',B=>need(B)===0],['1명 부족',B=>need(B)===1],['그 외',B=>need(B)>1]];
   const card=B=>{const n=need(B);return `<div class="li bond${q&&!nm(B).includes(q)?' gf-x':''}" data-bnm="${nm(B)}"><div class="info"><b>${B.n}${B.cross?` <span class="chip">타국 ×${CROSS_MUL}</span>`:''}${n===0?' <span class="chip on">발동 가능</span>':''}</b><span>${esc(B.d)}</span><span class="bfx">${fxStrH(B.fx)}${B.full?` · ${B.fullMin?B.fullMin+'명 이상':'전원'} 시 ${fxStrH(B.full)}`:''}${B.min?` · ${B.min}명 이상`:''}</span>
     <div class="bmem">${B.ids.map(x=>`<span class="${S.gens[x]?'':'unown'}" title="${GMAP[x].name}">${seal(GMAP[x],'sm')}<small>${GMAP[x].name}</small></span>`).join('')}</div></div></div>`};
-  return `<details class="p3 btbl" ${bondTbl?'open':''}><summary>진영 · 연합군 · 의용군 · 역할 조합 · 신예·정예 보너스 표</summary>
-  <h3>진영 보너스 <span style="font-weight:400">· 같은 진영 ★3 이상 장수에게 적용</span></h3>
+  return `<details class="p3 btbl" ${bondTbl?'open':''}><summary>진영 보너스 표</summary>
+  <h3>진영 보너스 <span style="font-weight:400">· 같은 진영 장수에게 적용 · 덱 보너스는 진영 · 인연 · 진형 세 가지예요</span></h3>
   <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>3명</th><th>4명</th><th>5명 이상</th></tr></thead><tbody>${facRows}</tbody></table></div>
-  <h3>연합군 보너스 <span style="font-weight:400">· ★3 이상 장수의 나라 수, 진형의 ★3 이상 전원에게 적용</span></h3>
-  <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>3개국</th><th>4개국</th></tr></thead><tbody><tr><th scope="row">연합군</th><td>${fxStr(ALLY_BONUS[3])}</td><td>${fxStr(ALLY_BONUS[4])}</td></tr></tbody></table></div>
-  <h3>의용군 <span style="font-weight:400">· 진형의 ★3 장수 수, ★3 장수에게만 적용</span></h3>
-  <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>1명</th><th>2명</th><th>3명 이상</th></tr></thead><tbody><tr><th scope="row">의용군</th><td>${fxStr(VOL_BONUS[1])}</td><td>${fxStr(VOL_BONUS[2])}</td><td>${fxStr(VOL_BONUS[3])}</td></tr></tbody></table></div>
-  <h3>역할 조합 <span style="font-weight:400">· 주 역할 기준, 진형의 ★3 장수에게만 적용</span></h3>
-  <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>효과</th></tr></thead><tbody><tr><th scope="row">🛡수호 + 🩹회복</th><td>${fxStr(COMBO_BONUS)}</td></tr></tbody></table></div>
-  <h3>신예 · 정예 <span style="font-weight:400">· 내 덱과 상대 플레이어 덱에만, ★3 이상 전원에게 적용</span></h3>
-  <div style="overflow-x:auto"><table class="dtab"><thead><tr><th></th><th>조건</th><th>효과</th></tr></thead><tbody><tr><th scope="row">신예</th><td>★3 이상 3명 이상 · ★5 없음</td><td>${fxStr(RANK_BONUS.no5)}</td></tr><tr><th scope="row">정예</th><td>신예 조건 · 전원 ★4</td><td>추가 ${fxStr(RANK_BONUS.only4)}</td></tr></tbody></table></div><p class="sub" style="margin:4px 0 0">출정·공성·보스·누각·원정의 적 덱과 원정군 파티에는 신예·정예가 적용되지 않아요.</p></details>
   <h3>인연 ${BONDS.length}종 <span style="font-weight:400">· 발동하면 진형 전원에게 적용</span></h3>
   <input type="search" class="gf-q" id="bond-q" value="${esc(bondQ)}" placeholder="장수 이름이나 인연 이름으로 검색" aria-label="인연 검색" autocomplete="off">
   <div class="chips" role="group" aria-label="인연 효과 필터" style="margin-top:8px"><span class="flab">효과</span>${Object.entries(BFX_K).map(([k,l])=>`<button type="button" data-bfk="${k}" aria-pressed="${bondFk.includes(k)}">${l} <span class="num">${BONDS.filter(B=>B.fk.has(k)&&(!bondX||B.cross)).length}</span></button>`).join('')}<button type="button" data-bfk="x" aria-pressed="${bondX}">타국 ×${CROSS_MUL} <span class="num">${BONDS.filter(B=>B.cross).length}</span></button>${bondFk.length||bondX?'<button type="button" data-bfk="">초기화</button>':''}</div>
@@ -4669,7 +4665,7 @@ document.addEventListener('click',e=>{
   const br=e.target.closest('[data-bulkr]');if(br){bulkR[br.dataset.bulkr]=!bulkR[br.dataset.bulkr];openBulk();return}
 });
 
-const FXL={atk:['공격','%'],hp:['체력','%'],def:['방어','%'],spd:['속도',''],cr:['치명','%'],cd:['치명 피해','%'],ls:['흡혈','%'],dr:['피해 감소','%'],sk:['기본 스킬 피해','%'],usk:['궁극기 피해','%'],up:['궁극기 확률','%p'],pas:['패시브 증폭','%'],res:['저항','%']};
+const FXL={atk:['공격','%'],hp:['체력','%'],def:['방어','%'],spd:['속도',''],cr:['치명','%'],cd:['치명 피해','%'],ls:['흡혈','%'],dr:['피해 감소','%'],sk:['스킬 피해','%'],usk:['궁극기 피해','%'],up:['궁극기 확률','%p'],pas:['패시브 증폭','%'],res:['저항','%']};
 function fxList(f,m){return Object.entries(f).map(([k,v])=>`${FXL[k][0]} +${Math.round(v*m*10)/10}${FXL[k][1]}`).join(' · ')}
 function fxText(it,d,w){const m=(1+ITEM_DSTEP*(d||0))*(it.ax&&it.ax.r3x2&&w&&w.rar===3?2:1);let t=fxList(it.fx,m);
   if(it.on){const ok=w&&(w.cls===it.on[0]||w.fac===it.on[0]);t+=` · ${ON_NAME[it.on[0]]} 장착 시 ${fxList(it.on[1],m)}${w?(ok?' (적용 중)':' (미적용)'):''}`}
@@ -4733,8 +4729,8 @@ function openGen(gid){
   <div class="row" style="margin-top:8px"><span class="sub" style="margin:0">능력치</span><button type="button" class="qh" data-help="1" aria-label="능력치 도움말">?</button></div><div class="stats" style="margin-top:4px"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
   <div class="sub" style="margin:2px 0 6px">치명 ${Math.round(u.cr*100)}% · 치명 피해 ${Math.round(u.cd*100)}%${u.ls?` · 흡혈 ${Math.round(u.ls*1000)/10}%`:''}${u.dr?` · 피해 감소 ${Math.round(u.dr*1000)/10}%`:''}${u.skp?` · 기본 스킬 피해 +${Math.round(u.skp*1000)/10}%`:''}${u.usk?` · 궁극기 피해 +${Math.round(u.usk*1000)/10}%`:''}${u.res?` · 저항 ${Math.round(u.res*100)}%`:''} · 궁극기 확률 ${ultPText(u)}</div>${usageHtml(gid)}<div class="row sub" style="margin:0 0 4px">무력 ${b.str} · 지력 ${b.int} · 통솔 ${b.lead}<span class="sp"></span>전투력 <b style="color:var(--bronze)">${fmt(unitPower(u))}</b></div>
   ${skill3Html(b,u)}${bondsOfHtml(b.id)}${rivalsOfHtml(b.id)}
-  <h3>보물 <span style="font-weight:400">· ${st.its.length}/${ITEM_SLOTS}칸 · ★5칸 1 + ★4·★3칸 1 · ${inDeck?esc(deckName(S.dk))+' 기준':'진형 밖'}</span></h3>
-  <div class="list" style="margin-bottom:12px">${Array.from({length:ITEM_SLOTS},(_,k)=>{const x=slotItemOf(st,k),iv=x&&IMAP[x.k];return `<div class="li">${iv?`${itemTile(iv,x.d)}<div class="info"><b>${esc(iv.name)}${x.d?` <span class="pc">+${x.d}</span>`:''} <small style="color:var(--mute)">${SLOT_NM[k]}</small></b><span>${fxText(iv,x.d,b)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>${SLOT_NM[k]} 비어 있음</b><span>${k?'★4·★3 보물을':'★5 보물을'} 장착할 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-equip="${gid}:${k}">${iv?'변경':'장착'}</button></div>`}).join('')}</div>
+  <h3>보물 <span style="font-weight:400">· ${st.its.length}/${ITEM_SLOTS}칸 · ★5 · ★4 · ★3 한 칸씩 · ${inDeck?esc(deckName(S.dk))+' 기준':'진형 밖'}</span></h3>
+  <div class="list" style="margin-bottom:12px">${Array.from({length:ITEM_SLOTS},(_,k)=>{const x=slotItemOf(st,k),iv=x&&IMAP[x.k];return `<div class="li">${iv?`${itemTile(iv,x.d)}<div class="info"><b>${esc(iv.name)}${x.d?` <span class="pc">+${x.d}</span>`:''} <small style="color:var(--mute)">${SLOT_NM[k]}</small></b><span>${fxText(iv,x.d,b)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>${SLOT_NM[k]} 비어 있음</b><span>★${5-k} 보물을 장착할 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-equip="${gid}:${k}">${iv?'변경':'장착'}</button></div>`}).join('')}</div>
   <h3>레벨</h3><div class="lvbox"><p class="sub" style="margin:0">레벨은 장수가 아니라 진형의 자리마다 정해져요. ${inDeck?`지금 ${at+1}번 자리(Lv ${slotLv(at)})에 있어요.`:`진형 밖이라 가장 높은 자리 레벨(Lv ${s.lv}) 기준으로 능력치를 보여 줘요.`}</p>${inDeck?`<button type="button" class="btn ghost wide" data-slv="${at}" style="margin-top:8px">${at+1}번 자리 레벨 조정</button>`:''}</div>
   <button type="button" class="btn ghost wide" data-deckt="${gid}" style="margin-top:10px">${inDeck?'진형에서 빼기':'진형에 넣기'}</button>`);
 }
@@ -4929,8 +4925,8 @@ function openLabSlot(side,i){
   openSheet(`<div class="sheet-h">${seal(g,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(g.name)}</h2><div class="stars r${g.rar}">${stars(g.rar)}</div><div class="sub" style="margin:0">${FAC[g.fac]} · ${CLS[g.cls].g} ${CLS[g.cls].n} · Lv ${MAXLV} · 돌파 ${maxD(g.rar)} · ${side==='atk'?'공격덱':'방어덱'} ${i+1}번</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <div class="stats" style="margin-top:8px"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
    ${skill3Html(g,u)}
-   <h3>보물 <span style="font-weight:400">· 모두 +${D.p} · ★5칸 + ★4·★3칸</span></h3>
-   <div class="list">${Array.from({length:ITEM_SLOTS},(_,k)=>{const it=labSlotIt(x,k);return `<div class="li">${it?`${itemTile(it,D.p)}<div class="info"><b>${esc(it.name)} <small style="color:var(--mute)">${SLOT_NM[k]}</small></b><span>${fxText(it,D.p,g)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>${SLOT_NM[k]} 비어 있음</b><span>${k?'★4·★3':'★5'} 보물을 고를 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-labit="${side}:${i}:${k}">${it?'변경':'장착'}</button></div>`}).join('')}</div>
+   <h3>보물 <span style="font-weight:400">· 모두 +${D.p} · ★5 · ★4 · ★3 한 칸씩</span></h3>
+   <div class="list">${Array.from({length:ITEM_SLOTS},(_,k)=>{const it=labSlotIt(x,k);return `<div class="li">${it?`${itemTile(it,D.p)}<div class="info"><b>${esc(it.name)} <small style="color:var(--mute)">${SLOT_NM[k]}</small></b><span>${fxText(it,D.p,g)}</span></div>`:`<div class="itm r2">空</div><div class="info"><b>${SLOT_NM[k]} 비어 있음</b><span>★${5-k} 보물을 고를 수 있어요</span></div>`}<button type="button" class="btn ghost sm" data-labit="${side}:${i}:${k}">${it?'변경':'장착'}</button></div>`}).join('')}</div>
    <div class="row" style="margin-top:12px;gap:8px"><button type="button" class="btn ghost" style="flex:1" data-labgen="${side}:${i}">장수 변경</button><button type="button" class="btn ghost" data-labrm="${side}:${i}">자리 비우기</button></div>`);
 }
 let labPk=['atk',0];
@@ -5026,7 +5022,7 @@ document.addEventListener('keydown',e=>{if((e.key==='Enter'||e.key===' ')&&e.tar
 /* ---------------- 토벌전 보스 (3일 회차 · 공동 게이지) ----------------
    회차마다 모든 군주가 같은 적 3명(Lv40 · 돌파 5 · 보물 3개 +50, 인연 적용)을 상대해요.
    10턴 동안 준 피해가 공동 게이지에 쌓이고, 도전 기록은 raids 컬렉션에 한 건씩 남아요. */
-const RAID_EPOCH='2026-10-13', RAID_DAYS=3, RAID_DAILY=3, RAID_ROUNDS=10, RAID_HPX=20, RAID_HP=1570000, RAID_HIT_MAX=300000;  // v7.0.0: 1회 평균 피해 42.9k → 37.5k(-13%)에 맞춰 1.8M → 1.57M
+const RAID_EPOCH='2026-10-13', RAID_DAYS=3, RAID_DAILY=3, RAID_ROUNDS=10, RAID_HPX=20, RAID_HP=1770000, RAID_HIT_MAX=300000;  // v7.1.0 보정
 const RAID_TIERS=[{p:.25,r:{food:3000}},{p:.5,r:{itk:10}},{p:.75,r:{gold:60000}},{p:1,r:{itk:30}}];
 const RAID_RANK=[{itk:10,food:2000},{itk:7,food:2000},{itk:5,food:2000}];
 let RAIDS=[], raidUnsub=null, raidBusy=false;
@@ -5040,7 +5036,7 @@ function raidBoss(c){
   const pool=[...GENS], pick=[];
   while(pick.length<3)pick.push(pool.splice(Math.floor(rng()*pool.length),1)[0].id);
   pick.sort((a,b)=>LAB_ORD[GMAP[a].cls]-LAB_ORD[GMAP[b].cls]);
-  const items=[[...ITEMS_5],[...ITEMS_43]];
+  const items=[[...ITEMS_5],[...ITEMS_4],[...ITEMS_3]];
   return pick.map(g=>{const its=[],kept=[];
     items.forEach(pool=>{for(let t=0;t<9&&pool.length;t++){const v=rng();let it=pool.splice(Math.floor(v*pool.length),1)[0];it=legalItem(GMAP[g].cls,it,kept,v);if(!it)continue;kept.push(it);its.push(it.id+':'+ITEM_MAXD);break}});
     return {g,lv:MAXLV,d:maxD(GMAP[g].rar),i:its,hpx:RAID_HPX}});
@@ -5268,7 +5264,8 @@ function twApply(us,mods){
 }
 const TW_V6=.94;  // v6.0.0 순환 상성·돌파 뒤 보정
 const TW_V7=1;  // v7.0.0 스킬 3종 뒤 보정 (build/sim/modes7.js)
-const twRatio=fl=>TW_V7*TW_V6*0.6*Math.pow(TW_G,fl-1)*(TW_BOSS[fl]?1.12:1);
+const TW_V71=0.96;
+const twRatio=fl=>TW_V71*TW_V7*TW_V6*0.6*Math.pow(TW_G,fl-1)*(TW_BOSS[fl]?1.12:1);
 function twEnemy(w,fl,myP,lv,itd){
   const r=mulberry((w+11)*104729+fl*7919), all=GENS.map(g=>g.id), boss=TW_BOSS[fl], pick=boss?[boss]:[];let n5=boss&&GMAP[boss].rar===5?1:0,guard=0;
   while(pick.length<NSLOT&&guard++<600){const g=all[Math.floor(r()*all.length)];if(pick.includes(g))continue;if(GMAP[g].rar===5){if(n5>=MAX5)continue;n5++}pick.push(g)}
@@ -5377,7 +5374,8 @@ const exHas=(R,id)=>!!(R&&R.db&&R.db.includes(id));
 const exPtsOf=db=>(db||[]).reduce((a,id)=>a+((EX_DBMAP[id]||{}).p||0),0);
 const exPts=R=>exPtsOf(R.db);
 const exCap=R=>exHas(R,'cap5')?5:NSLOT;
-const exFoeMul=(R,t)=>EX_V7*EX_V6*(t==='boss'?EX_V6B*EX_V7B:1)*(R.d?EX_HARD:1)*(exHas(R,'strong')?EX_STRONG:1)*(t==='boss'&&exHas(R,'boss')?EX_BOSSUP:1);
+const EX_V71=0.87, EX_V71B=1;
+const exFoeMul=(R,t)=>EX_V71*EX_V7*EX_V6*(t==='boss'?EX_V6B*EX_V7B*EX_V71B:1)*(R.d?EX_HARD:1)*(exHas(R,'strong')?EX_STRONG:1)*(t==='boss'&&exHas(R,'boss')?EX_BOSSUP:1);
 const exGoldMul=R=>(R.d?EX_HARD_GOLD:1)*(R.bon?1+EX_DB_GOLD*exPts(R):1);
 const exIsk=R=>(R.d?EX_HARD_ISK:EX_CLEAR_ISK)+(R.bon?Math.floor(exPts(R)/EX_DB_ISK):0);
 const exGoldR=(R,c)=>R.fr?0:Math.round(exGold(c)*exGoldMul(R));
@@ -5806,13 +5804,13 @@ function itemInfoHtml(it,d,w){
    <h3 style="margin:12px 0 4px">지금 효과 (+${d})</h3><p style="margin:0;font-size:13px">${fxText(it,d,w)}</p>
    <h3 style="margin:12px 0 4px">강화 단계별 효과</h3>
    ${steps.map(s=>`<div class="row" style="padding:6px 0;border-bottom:1px solid var(--line);flex-wrap:nowrap;${s===d?'color:var(--bronze)':''}"><b class="num" style="width:40px;flex:none">+${s}</b><span style="flex:1;font-size:12px">${fxText(it,s)}${s===d?' ◀ 지금':''}</span></div>`).join('')}
-   <p class="sub" style="margin:8px 0 0;font-size:12px">강화 1단계마다 기본 효과가 +3%씩 올라요(최대 +${ITEM_MAXD}, +50이면 2.5배). 궁극기 확률·패시브 증폭·저항은 절반(+1.5%)만 올라요.</p>`;
+   <p class="sub" style="margin:8px 0 0;font-size:12px">강화 1단계마다 기본 효과가 +3%씩 올라요(최대 +${ITEM_MAXD}, +50이면 2.5배). 궁극기 확률은 절반(+1.5%)만 올라요.</p>`;
 }
 function skillInfoHtml(u){
   const b=GMAP[u.id]||{cls:u.cls,id:null};
   return `<div class="mvp-h">${seal(u,'lg')}<div style="min-width:0"><b style="font-size:17px">${esc(u.name)}의 스킬</b><div class="sub" style="margin:0">${CLS[u.cls].g} ${CLS[u.cls].n}${u.cls==='cav'&&typeof CAV_SK_MUL!=='undefined'&&CAV_SK_MUL!==1?` · 기병 전법 피해 ×${CAV_SK_MUL}`:''}</div></div></div>
    ${skill3Html(b,u)}
-   <div class="sub" style="margin:0">${u.skp?`기본 스킬 피해 +${Math.round(u.skp*1000)/10}%`:''}${u.usk?` · 궁극기 피해 +${Math.round(u.usk*1000)/10}%`:''}${u.pskp?` · 패시브 전법 피해 +${Math.round(u.pskp*1000)/10}%`:''}${u.res?` · 저항 ${Math.round(u.res*100)}%`:''}</div>
+   <div class="sub" style="margin:0">${u.skp?`스킬 피해 +${Math.round(u.skp*1000)/10}%`:''}${u.usk&&Math.abs(u.usk-u.skp)>1e-6?` · 궁극기 피해 +${Math.round(u.usk*1000)/10}%`:''}${u.pskp?` · 패시브 전법 피해 +${Math.round(u.pskp*1000)/10}%`:''}${u.res?` · 저항 ${Math.round(u.res*100)}%`:''}</div>
    ${b.id?'':'<p class="sub" style="margin:6px 0 0">일반 병사는 기본 전법만 써요.</p>'}`;
 }
 // 결과 링크: 진형과 시드를 담아 같은 전투를 다시 재생
