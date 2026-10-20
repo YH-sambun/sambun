@@ -779,13 +779,27 @@ html.work #rt-notif,html.work #rt-cut{display:none}
 .rt-ult .ur b{font-weight:700}
 .rt-ult .ur .usk{color:#e9c66c;font-weight:700}
 .rt-ult .ur .v{font-variant-numeric:tabular-nums}
+/* v8.2.0 전체 전투 로그 창 */
+.bl-win{position:fixed;inset:0;z-index:35;background:var(--bg);display:flex;flex-direction:column;padding:calc(10px + env(safe-area-inset-top,0px)) 12px calc(10px + env(safe-area-inset-bottom,0px));gap:8px;text-align:left}
+.bl-head{display:flex;align-items:center;gap:6px;max-width:680px;width:100%;margin:0 auto}
+.bl-head b{font-family:var(--display);font-size:16px}
+.bl-head .sp{flex:1}
+.bl-fil{display:flex;flex-wrap:wrap;align-items:center;gap:6px;max-width:680px;width:100%;margin:0 auto}
+.bl-fil select{margin-left:auto;background:var(--panel);color:var(--fg);border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-size:12px;max-width:45%}
+.bl-list{flex:1;overflow-y:auto;max-width:680px;width:100%;margin:0 auto;font-size:12px;line-height:1.45;-webkit-overflow-scrolling:touch}
+.bl-r{display:flex;gap:8px;padding:4px 6px;border-left:3px solid #58d468;border-bottom:1px solid var(--line)}
+.bl-r.f{border-left-color:#e8503e}
+.bl-r.sys{border-left-color:var(--bronze);color:var(--mute)}
+.bl-r .tt{flex:none;width:44px;color:var(--mute);font-variant-numeric:tabular-nums}
+.bl-r .tx{flex:1;min-width:0;word-break:keep-all;overflow-wrap:anywhere}
+.res-foot{gap:8px}
 </style>
 </head>
 <body>
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v8.1.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v8.2.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -2099,9 +2113,11 @@ function rtCreate(As,Bs,seed,opt,HK){HK=HK||{};const C=opt&&opt.siege?{hp:opt.si
     const lsv=lsOf(u)+(!o&&P.lsN?P.lsN*u.pm:0)+(o&&!isU&&ax.bskLs?ax.bskLs:0);
     if(lsv>0&&!ff&&(u.hp>0||(C&&u.side===0)))healTo(u,dd*lsv,e);
   };
+  // v8.2.0 거리 대상: '맨 앞·맨 뒤'는 배치 줄이 아니라 쏘는 순간 시전자와의 직선거리(x·y 그대로)로 정해요
+  const dE=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
   const pickBy=(u,S)=>{const f=foesOf(u);if(!f.length)return null;const tz=f.find(x=>x.taunt>0);if(tz)return tz;
-    switch(S.tg){case 'front':{const ms=[...new Set(f.map(x=>x.row||0))].sort((a,b)=>a-b),m=ms.length>1?ms[1]:ms[0],fr=f.filter(x=>(x.row||0)===m);return fr[Math.floor(rng()*fr.length)]}
-      case 'back':{const m=Math.max(...f.map(x=>x.row||0)),fr=f.filter(x=>(x.row||0)===m);return fr[Math.floor(rng()*fr.length)]}
+    switch(S.tg){case 'front':{const s=[...f].sort((a,b)=>dE(u,a)-dE(u,b));return s.length>1?s[1]:s[0]} // 돌파: 가장 가까운 적은 건너뛰고 두 번째로 가까운 적
+      case 'back':return f.reduce((a,b)=>dE(u,b)>dE(u,a)?b:a);
       case 'low':return lowest(f);
       case 'hpmax':return f.reduce((a,b)=>b.hp/b.maxhp>a.hp/a.maxhp?b:a);
       case 'high':return f.reduce((a,b)=>b.atk*eff(b,'atk')>a.atk*eff(a,'atk')?b:a);
@@ -2110,7 +2126,7 @@ function rtCreate(As,Bs,seed,opt,HK){HK=HK||{};const C=opt&&opt.siege?{hp:opt.si
   const normalBy=(u,e,av,cf)=>{const f=foesOf(u);if(!f.length)return;const tz=f.find(x=>x.taunt>0),P=u.P||{},ax=u.ax||{};
     if(cf){const al=livingOf(u).filter(x=>x!==u),ff=al.length>0&&!(C&&u.side===0)&&rng()<.5,pool=ff?al:f;hitBy(u,pool[Math.floor(rng()*pool.length)],1,undefined,ff,e,av,false);return}
     if(ax.nosk&&!tz){hitBy(u,lowest(f),1,undefined,false,e,av,false);return}
-    if(ax.charge&&u.cls===ax.chargeCls){const rows=[...new Set(f.map(x=>x.row||0))].sort();for(const rw of rows){const p=f.filter(x=>(x.row||0)===rw&&x.hp>0);if(!p.length)continue;const t=tz&&p.includes(tz)?tz:p[Math.floor(rng()*p.length)];hitBy(u,t,ax.charge,undefined,false,e,av,false)}e.notes.push('돌진');return}
+    if(ax.charge&&u.cls===ax.chargeCls){const ds=f.map(x=>dE(u,x)),d0=Math.min(...ds),d1=Math.max(...ds),band=x=>d1-d0<1?0:Math.min(2,Math.floor((dE(u,x)-d0)/(d1-d0)*3));for(const rw of [0,1,2]){const p=f.filter(x=>band(x)===rw&&x.hp>0);if(!p.length)continue;const t=tz&&p.includes(tz)?tz:p[Math.floor(rng()*p.length)];hitBy(u,t,ax.charge,undefined,false,e,av,false)}e.notes.push('돌진');return}
     let t;if(tz)t=tz;
     else if(u.tgt&&u.tgt.hp>0&&u.tgt.side!==u.side)t=u.tgt;
     else if(u.cls==='arc'){const cv=f.filter(x=>x.cls==='cav'),tc=f.filter(x=>x.cls==='tac'),pool=cv.length?cv:tc.length?tc:f;t=lowest(pool)}
@@ -2119,22 +2135,24 @@ function rtCreate(As,Bs,seed,opt,HK){HK=HK||{};const C=opt&&opt.siege?{hp:opt.si
     const db=(ax.dbl||0)+((P.dbl||0)*(u.pm||1));if(db>0&&t&&t.hp>0&&rng()<db){note(e,'2연사');hitBy(u,t,1,undefined,false,e,av,false)}
   };
   // ---- 전법(기본 스킬·궁극기) (턴제와 같음) ----
+  let FT=null;
   const castBy=(u,S,isU,e,av,post)=>{const P=u.P||{},ax=u.ax||{},SKM=u.cls==='cav'?CAV_SK_MUL:1,noDmg=S.m===0||S.m==null;
     if(S.cost){const c=Math.round(u.maxhp*S.cost);u.hp=Math.max(1,u.hp-c);pushHit(e,u,{s:u.side,i:u.slot,d:c,hp:u.hp,self:1})}
     const hitT=[],mark=t=>{if(t&&!hitT.includes(t))hitT.push(t)};
     const exeFl=t=>S.exe&&S.exe.kill&&hpR(t)<=S.exe.thr?{exeKill:1}:undefined;
     const xh=(P.randHit||0)+(!isU&&ax.randHit?1:0);
+    e.tg=SINGLE_TG[S.tg]&&foesOf(u).some(x=>x.taunt>0)?'taunt':S.tg==='n'&&S.pk?'n:'+S.pk:S.tg;
     if(S.tg==='all'){foesOf(u).forEach(t=>{if(noDmg)mark(t);else{hitBy(u,t,S.m*SKM,S,false,e,av,isU,exeFl(t));mark(t)}})}
     else if(S.tg==='n'){const f=foesOf(u),tz=f.find(x=>x.taunt>0),pool=f.filter(x=>x!==tz),pk=tz?[tz]:[],nt=(S.nt||2)+(!isU&&ax.randHit?1:0);
-      if(S.pk==='high')pool.sort((a,b)=>b.atk*eff(b,'atk')-a.atk*eff(a,'atk'));else if(S.pk==='low')pool.sort((a,b)=>a.hp/a.maxhp-b.hp/b.maxhp);else if(S.pk==='back')pool.sort((a,b)=>(b.row||0)-(a.row||0));
+      if(S.pk==='high')pool.sort((a,b)=>b.atk*eff(b,'atk')-a.atk*eff(a,'atk'));else if(S.pk==='low')pool.sort((a,b)=>a.hp/a.maxhp-b.hp/b.maxhp);else if(S.pk==='back')pool.sort((a,b)=>dE(u,b)-dE(u,a));
       while(pk.length<nt&&pool.length)pk.push(S.pk?pool.shift():pool.splice(Math.floor(rng()*pool.length),1)[0]);
       pk.forEach(t=>{if(noDmg)mark(t);else{hitBy(u,t,S.m*SKM,S,false,e,av,isU,exeFl(t));mark(t)}})}
     else if(S.tg!=='none'){const nh=(S.h||1)+(S.tg==='rand'?xh:0);
-      for(let k=0;k<nh;k++){const t=pickBy(u,S);if(!t)break;if(noDmg){mark(t);continue}let m=S.m;
+      for(let k=0;k<nh;k++){const t=k===0&&FT&&FT.hp>0?FT:pickBy(u,S);if(!t)break;if(noDmg){mark(t);continue}let m=S.m;
         if(S.exe&&!S.exe.kill&&hpR(t)<=S.exe.thr)m=S.exe.m;
         if(S.cond&&T[u.side].some(x=>x.id===S.cond.ally&&x.hp>0))m=S.cond.m;m*=SKM;
         hitBy(u,t,m,S,false,e,av,isU,exeFl(t));mark(t);
-        if(S.pierce&&!isU){const nr=foesOf(u).filter(x=>(x.row||0)>(t.row||0));if(nr.length){const mn=Math.min(...nr.map(x=>x.row||0)),p=nr.filter(x=>(x.row||0)===mn),t2=p[Math.floor(rng()*p.length)];hitBy(u,t2,m*.5,S,false,e,av,isU);mark(t2);note(e,'관통')}}}
+        if(S.pierce&&!isU){const dt0=dE(u,t),nr=foesOf(u).filter(x=>x!==t&&dE(u,x)>dt0);if(nr.length){const t2=nr.reduce((a,b)=>dE(t,b)<dE(t,a)?b:a);hitBy(u,t2,m*.5,S,false,e,av,isU);mark(t2);note(e,'관통')}}}
     }
     const stunP=p=>p+(u.stunp||0)+(P.firstStun&&!u.faDone?P.firstStun*u.pm:0);
     const liveT=()=>hitT.filter(t=>t.hp>0);
@@ -2200,14 +2218,16 @@ function rtCreate(As,Bs,seed,opt,HK){HK=HK||{};const C=opt&&opt.siege?{hp:opt.si
     u.bk=null;if(u.cls==='tac'){const nf=nearest(u,foesOf(u));if(nf&&rtDist(u,nf)<u.rng*.75){const dx=u.x-nf.x,dy=u.y-nf.y,L=Math.hypot(dx,dy)||1;u.bk={dx:dx/L,dy:dy/L,t:0,dur:Math.min(u.anim.d,.55)}}}
     if(HK.start)HK.start(u,S,isU,sk)};
   const resolve=(u,a)=>{a=a||u.act;if(!a||a.done)return;a.done=1;const e=a.e,av=atkOf(u),post=[];
-    if(!a.sk){normalBy(u,e,av,a.cf);if(a.bz)normalBy(u,e,av,false)}else castBy(u,a.S,a.isU,e,av,post);
+    if(!a.sk){normalBy(u,e,av,a.cf);if(a.bz)normalBy(u,e,av,false)}else{FT=a.t0||null;castBy(u,a.S,a.isU,e,av,post);FT=null}
     if(u.fzK){u.fzK=0;if(!u.fzT&&u.hp>0&&foesOf(u).length){u.fzT=1;e.notes.push('광분 추격');normalBy(u,e,atkOf(u),false);u.fzK=0}}
-    ev.push(e);post.forEach(x=>ev.push(x));checkDead(e);if(HK.resolve)HK.resolve(u,e)};
+    e.tr=G.t;ev.push(e);post.forEach(x=>ev.push(x));checkDead(e);if(HK.resolve)HK.resolve(u,e)};
   // 타격 프레임: 원거리 무기는 투사체를 날리고 맞을 때 계산해요. 전체·다수 전법은 바로 계산
-  const strike=(u,i)=>{const a=u.act;if(!a||a.done)return;if(HK.strike)HK.strike(u,a,i);
+  const strike=(u,i)=>{const a=u.act;if(!a||a.done)return;
+    if(a.sk&&SINGLE_TG[a.S.tg]&&(i>=u.anim.hit.length-1||!(a.t0&&a.t0.hp>0)))a.t0=pickBy(u,a.S); // v8.2.0 전법 대상은 마지막 타격(발사) 순간의 거리로 정하고 그 적에게 날려요
+    if(HK.strike)HK.strike(u,a,i);
     if(i<u.anim.hit.length-1)return;
-    const pj=RT_PROJ[u.wp], single=!a.sk||!a.S.tg||SINGLE_TG[a.S.tg];
-    if(pj&&single&&u.tgt&&u.tgt.hp>0&&u.tgt!==u){const t=u.tgt,dur=pj==='arrow'?rtDist(u,t)/380+.06:rtDist(u,t)/220+.18;G.pr.push({u,t,type:pj,x:u.x+u.face*8,y:u.y-22,sx:u.x+u.face*8,sy:u.y-22,tt:0,dur,arc:pj==='arrow'?(a.sk?5:3):0,big:a.sk?1:0,done:0,land:()=>resolve(u,a)});return}
+    const pj=RT_PROJ[u.wp], single=!a.sk||!a.S.tg||SINGLE_TG[a.S.tg], pt=a.sk&&a.t0?a.t0:u.tgt;
+    if(pj&&single&&pt&&pt.hp>0&&pt!==u){const t=pt,dur=pj==='arrow'?rtDist(u,t)/380+.06:rtDist(u,t)/220+.18;G.pr.push({u,t,type:pj,x:u.x+u.face*8,y:u.y-22,sx:u.x+u.face*8,sy:u.y-22,tt:0,dur,arc:pj==='arrow'?(a.sk?5:3):0,big:a.sk?1:0,done:0,land:()=>resolve(u,a)});return}
     resolve(u,a)};
   const tickRound=()=>{
     const tick={tick:1,hits:[],heals:[],notes:[],t:G.t};preTick=[pct(0),pct(1)];
@@ -2776,11 +2796,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='8.1.2';
+const GAME_VERSION='8.2.0';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'8.2.0',date:'2026-10-20',title:'거리로 정하는 공격 대상 · 전체 전투 로그',reward:{ap:30},items:[
+  '\'맨 뒤 적\'·\'맨 앞 적\' 전법의 대상을 배치 줄이 아니라, 쏘는 순간 시전자에게서 실제로 얼마나 떨어져 있는지(가로·세로 직선거리)로 정해요. 전투 중 장수들이 움직이면 대상도 따라 바뀌어요.',
+  '맨 뒤 적: 시전자에게서 가장 먼 적 · 맨 뒤 여러 명: 먼 순서대로 · 맨 앞 적(돌파): 가장 가까운 적을 건너뛴 두 번째로 가까운 적 · 관통: 맞은 적보다 먼 적 중 맞은 적에게 가장 가까운 1명 · 돌격창: 거리로 가까움·중간·멀리 3구간마다 1명. 도발은 지금처럼 먼저 적용돼요.',
+  '진형 배치로 받은 효과(줄별 공격·방어·속도, 받는 피해 증감)와 진형 상성은 전투 중 위치가 바뀌어도 끝까지 그대로예요.',
+  '원거리 장수의 전법 화살·부채 바람이 실제로 피해를 받는 적에게 날아가요. 이전에는 평소 쫓던 적에게 날아가고 피해는 다른 적이 받는 경우가 있었어요.',
+  '전투 결과 화면의 [전체 로그]를 누르면 전투 전체 기록을 시간순으로 볼 수 있어요. 누가 누구에게 어떤 전법으로 얼마나 피해·회복했는지, 전법이 어떤 규칙으로 대상을 골랐는지 나와요. 아군·적·장수별로 골라 보고 복사할 수 있어요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'8.1.2',date:'2026-10-20',title:'전투 화면 정리',reward:{ap:30},items:[
   '전투 화면 아래쪽 순서를 바꿨어요. 전장 바로 아래에 전투 기록, 그 아래에 그래프, 맨 아래에 장수 카드가 와요. 그래프는 전장을 가리지 않고 넓게 보여요.',
   '궁극기를 쓰면 누가 누구에게 어떤 궁극기를 써서 얼마나 피해·회복했는지 최근 4줄까지 전투 기록 아래에 남아요(아군 초록, 적군 빨강 표시).',
@@ -6378,7 +6405,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
       if(S.tg==='all'||S.tg==='n'||S.tg==='none'){const f=G.T[1-u.side].filter(x=>x.hp>0);const cx=f.length?f.reduce((a,x)=>a+x.x,0)/f.length:u.x+u.face*60,cy=f.length?f.reduce((a,x)=>a+x.y,0)/f.length:u.y;
         const type=S.tg==='none'?(S.heal?'heal2':'circle'):u.cls==='tac'?(S.burn?'fire':'tornado'):u.cls==='arc'?'rain':'sweep2';
         if(type==='rain')f.forEach((t,i)=>V.fx.push({type:'arrowfall',x:t.x-10+vrng()*20,y:t.y,t:-i*.06,dur:.5}));else fx(type,S.tg==='none'?u.x:cx,S.tg==='none'?u.y:cy,{dur:type==='tornado'?1.1:type==='fire'?.9:.6,face:u.face})}},
-    strike:(u,a,i)=>{const t=u.tgt;if(!t||t.hp<=0||RT_PROJ[u.wp])return;if(a.sk&&a.S.tg&&!SINGLE_TG[a.S.tg])return;weaponFx(u,t,!!a.sk,a.isU)},
+    strike:(u,a,i)=>{const t=a.sk&&a.t0?a.t0:u.tgt;if(!t||t.hp<=0||RT_PROJ[u.wp])return;if(a.sk&&a.S.tg&&!SINGLE_TG[a.S.tg])return;weaponFx(u,t,!!a.sk,a.isU)},
     resolve:(u,e)=>{logLine(u,e);if(e.ult){const hs=(e.hits||[]).filter(h=>!h.self),ns=[...new Set(hs.map(h=>h.s+'-'+h.i))].map(k=>{const [s,i]=k.split('-');return (U(+s,+i)||{name:''}).name}).filter(Boolean),tot=hs.reduce((x,h)=>x+h.d,0),hl=(e.heals||[]).reduce((x,h)=>x+(h.h||0),0);
         const to=ns.length>3?`${ns.slice(0,2).join('·')} 외 ${ns.length-2}명`:ns.length?ns.join('·'):hl?'아군':'';
         V.ults.unshift({side:u.side,who:u.name,to,sk:e.sk,v:tot?fmt(tot)+' 피해':hl?fmt(hl)+' 회복':''});if(V.ults.length>4)V.ults.pop();V.ultN++}if(e.sk){const hs=(e.hits||[]).filter(h=>!h.self);if(hs.length>1&&!SIMPLE)V.combo={n:hs.length,d:hs.reduce((x,h)=>x+h.d,0),t:0,dur:1.1}}},
@@ -6551,7 +6578,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
       <div class="sub" id="rs-cap" style="margin:0 0 4px">${esc(rsSide?foeLab:allyLab)} · ${RS_M[rsMetric]}</div><div class="sub no-cap" style="margin:0 0 4px;font-size:12px">장수 이름을 누르면 아래 기록 창이 그 장수로 바뀌어요.</div><div id="rs-chart">${statChart(res,stt,rsSel)}</div></div></div>
      <div class="mvpline" id="rs-mvpl"></div><div id="rs-unit">${mvpHtml(mvpOf(res,stt,rsSide),'MVP')}</div></div>
      <div class="res-main"><div class="res-top"><div class="stw"><div class="stamp ${res.win||rp||vd?'w':'l'}">${vd?vd.stamp:rp?'戰':res.win?'勝':'敗'}</div>${inks}</div><h2 style="margin:0">${esc(winLab)}</h2></div>${resSummary(res,stt,SG,SG?'수비군':(rp||vd)?allyLab:'아군',SG?'공격군':(rp||vd)?foeLab:'적')}${!res.win&&!rp&&!vd&&!SG?(()=>{const L=defeatBrief(res,stt);return L.length?`<div class="brief"><h3>패배 원인</h3><ul>${L.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`:''})():''}${resultHtml()}</div></div>
-     <div class="res-foot"><button type="button" class="btn" id="bt-close" style="min-width:160px">${rp?'게임 하러 가기':'확인'}</button></div>`;
+     <div class="res-foot"><button type="button" class="btn ghost" id="bt-log">전체 로그</button><button type="button" class="btn" id="bt-close" style="min-width:160px">${rp?'게임 하러 가기':'확인'}</button></div>`;
     $('.bt').appendChild(box);
     const showUnit=key=>{const u=unitByKey(res,key);if(!u)return;rsSel=key;const m=mvpOf(res,stt,u.side);$('#rs-unit').innerHTML=mvpHtml({u,r:stt[key]},m&&m.u===u?'MVP':'');
       const mm=mvpOf(res,stt,rsSide);$('#rs-mvpl').innerHTML=mm?`<span class="mvpb">MVP</span> <b>${esc(mm.u.name)}</b> · 총 피해 ${fmt(mm.r.dmg)}${mm.u.side+'-'+mm.u.slot!==key?` <button type="button" class="btn ghost sm" data-rsu="${mm.u.side}-${mm.u.slot}">MVP 보기</button>`:''}`:'';
@@ -6568,6 +6595,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     $('#rs-tg').onclick=()=>{rsOpen=!rsOpen;$('#rs-body').hidden=!rsOpen;$('#rs-tg').setAttribute('aria-expanded',String(rsOpen))};
     if(sh&&CAN_SHARE){$('#sh-link').onclick=()=>shareLink(sh,res.win);$('#sh-img').onclick=async()=>{const c=$('#res-card');c.classList.add('cap');try{await shareImage(c,sh)}finally{c.classList.remove('cap')}}}
     $('#bt-close').onclick=()=>{el.hidden=true;el.innerHTML='';removeEventListener('resize',resize);if(rp){history.replaceState(null,'',location.pathname+location.search);if(typeof showLogin==='function'&&!S&&MODE!=='local')showLogin()}renderTop();renderView()};
+    $('#bt-log').onclick=()=>openBattleLog(res,SG?'수비군':allyLab,SG?'공격군':foeLab);
     $('#bt-close').focus({preventScroll:true});
     const toMain=()=>{const m=box.querySelector('.res-main');if(!m)return;box.scrollTop=Math.min(box.scrollHeight-box.clientHeight,Math.max(0,m.offsetTop-12))};toMain();requestAnimationFrame(toMain);
     if(!btStill())box.querySelectorAll('.res-main .coin').forEach(c=>{const tn=[...c.childNodes].reverse().find(n=>n.nodeType===3&&/\d/.test(n.nodeValue));if(!tn)return;const m=tn.nodeValue.match(/^(\D*)([\d,]+)(.*)$/);if(!m)return;const to=+m[2].replace(/,/g,'');if(!(to>0))return;
@@ -6594,6 +6622,53 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
 const RT_ICON={stun:['..#..','.###.','#####','.###.','..#..'],conf:['.#.#.','..#..','.#.#.','..#..','.#.#.'],taunt:['.###.','#...#','#...#','.#.#.','..#..'],up:['..#..','.###.','#.#.#','..#..','..#..'],dn:['..#..','..#..','#.#.#','.###.','..#..'],burn:['..#..','.##..','.###.','#####','.###.'],seal:['#####','#...#','#.#.#','#...#','#####']};
 const RT_ICOL={stun:'#ffd36b',conf:'#f490b8',taunt:'#e9c66c',up:'#8fd3ff',dn:'#c9a0ff',burn:'#ff8a3a',seal:'#b0b0b0'};
 const RT_FX_FLOOR={dust:1,circle:1,crack:1,heal:1,heal2:1,buff:1,fire:1,tornado:1};
+// ---- v8.2.0 전체 전투 로그(앱 안 전체 화면 창) ----
+const BL_TG={front:'두 번째로 가까운 적(돌파)',back:'가장 먼 적',low:'체력 비율 최저',high:'공격 최고',hpmax:'체력 비율 최고',rand:'무작위',all:'적 전체',n:'서로 다른 적','n:back':'먼 순서','n:low':'체력 비율 낮은 순','n:high':'공격 높은 순',taunt:'도발 장수'};
+function battleLogRows(res){
+  const nm={};(res.init||[[],[]]).forEach((tm,s)=>(tm||[]).forEach(u=>{nm[s+'-'+u.slot]=u.name}));
+  const N=(s,i)=>nm[s+'-'+i]||'?', tm=t=>t==null?'':`${Math.floor(t/60)}:${(t%60).toFixed(1).padStart(4,'0')}`;
+  const grp=(arr,v)=>{const m=new Map();for(const h of arr){const k=h.s+'-'+h.i;const o=m.get(k)||{s:h.s,i:h.i,v:0,n:0,c:0};o.v+=v(h);o.n++;if(h.c)o.c=1;m.set(k,o)}return [...m.values()]};
+  const rows=[];
+  for(const e of res.ev||[]){
+    if(e.spawn){(e.units||[]).forEach(u=>{nm['1-'+u.slot]=u.name});rows.push({t:e.t,k:'sys',txt:`제${e.spawn}파 등장`,who:[]});continue}
+    if(e.phase){rows.push({t:e.t,k:'sys',txt:e.phase==='숙적'?`숙적 대면 · ${(e.pairs||[]).map(([a,b])=>a+' ⚔ '+b).join(' · ')}`:`${e.phase} 단계 (${e.r}턴)`,who:[]});continue}
+    const hs=(e.hits||[]).filter(h=>!h.self),self=(e.hits||[]).filter(h=>h.self),hl=e.heals||[];
+    const hitTx=grp(hs,h=>h.d).map(o=>`${N(o.s,o.i)} ${fmt(o.v)}${o.n>1?`(${o.n}회)`:''}${o.c?' 치명':''}`).join(', ');
+    const healTx=grp(hl,h=>h.h||0).map(o=>`${N(o.s,o.i)} +${fmt(o.v)}`).join(', ');
+    const who=new Set([...hs,...hl].map(h=>h.s+'-'+h.i));
+    if(e.tick){if(!hs.length&&!hl.length)continue;rows.push({t:e.t,k:'sys',txt:`[턴 끝] ${hitTx?'지속 피해 '+hitTx:''}${hitTx&&healTx?' · ':''}${healTx?'회복 '+healTx:''}${e.notes&&e.notes.length?' · '+e.notes.join(' · '):''}`,who:[...who]});continue}
+    if(e.s==null)continue;
+    const a=N(e.s,e.i);who.add(e.s+'-'+e.i);
+    if(e.skip){rows.push({t:e.t,k:e.s,txt:`${a} 기절로 행동하지 못함`,who:[...who]});continue}
+    const kind=e.sk?`${e.ult?'궁극기':'전법'} ${e.sk}`:'일반 공격', rule=e.sk&&BL_TG[e.tg]?` (대상: ${BL_TG[e.tg]})`:'';
+    let txt=`${a} · ${kind}${rule}`;
+    if(hitTx)txt+=` → ${hitTx}`;
+    if(self.length)txt+=` · 자신 -${fmt(self.reduce((x,h)=>x+h.d,0))}`;
+    if(healTx)txt+=` · 회복 ${healTx}`;
+    if(e.stuns&&e.stuns.length)txt+=` · 기절 ${[...new Set(e.stuns.map(x=>N(x.s,x.i)))].join(', ')}`;
+    if(e.notes&&e.notes.length)txt+=` · ${e.notes.join(' · ')}`;
+    rows.push({t:e.tr!=null?e.tr:e.t,k:e.s,txt,who:[...who]})}
+  return rows.map((r,j)=>({...r,j})).sort((a,b)=>(a.t-b.t)||(a.j-b.j)).map(r=>({...r,tt:tm(r.t)}))}
+function openBattleLog(res,l0,l1){
+  const host=document.querySelector('.bt');if(!host)return;const old=document.querySelector('.bl-win');if(old)old.remove();
+  const rows=battleLogRows(res);let side=-1,unit='';
+  const units=[0,1].flatMap(s=>(res.init[s]||[]).map(u=>({k:s+'-'+u.slot,n:u.name,s})));
+  const w=document.createElement('div');w.className='bl-win';w.setAttribute('role','dialog');w.setAttribute('aria-label','전체 전투 로그');
+  w.innerHTML=`<div class="bl-head"><b>전체 전투 로그</b><span class="sp"></span><button type="button" class="btn ghost sm" id="bl-copy">복사</button><button type="button" class="btn sm" id="bl-x">닫기</button></div>
+  <div class="bl-fil chips no-cap" role="group"><button type="button" data-bls="-1" aria-pressed="true">전체</button><button type="button" data-bls="0" aria-pressed="false">${esc(l0)}</button><button type="button" data-bls="1" aria-pressed="false">${esc(l1)}</button>
+  <select id="bl-u" aria-label="장수"><option value="">모든 장수</option>${units.map(u=>`<option value="${u.k}">${u.s?'적 ':''}${esc(u.n)}</option>`).join('')}</select></div>
+  <div class="bl-list" id="bl-list"></div>`;
+  host.appendChild(w);
+  const vis=()=>rows.filter(r=>(side<0||r.k===side)&&(!unit||r.who.includes(unit)));
+  const draw=()=>{const v=vis();$('#bl-list').innerHTML=v.length?v.map(r=>`<div class="bl-r${r.k==='sys'?' sys':r.k?' f':''}"><span class="tt">${r.tt}</span><span class="tx">${esc(r.txt)}</span></div>`).join(''):'<p class="sub">기록이 없어요.</p>';
+    w.querySelectorAll('[data-bls]').forEach(b=>b.setAttribute('aria-pressed',String(+b.dataset.bls===side)))};
+  w.querySelectorAll('[data-bls]').forEach(b=>b.onclick=()=>{side=+b.dataset.bls;draw()});
+  $('#bl-u').onchange=e=>{unit=e.target.value;draw()};
+  $('#bl-x').onclick=()=>w.remove();
+  $('#bl-copy').onclick=async()=>{const txt=vis().map(r=>`${r.tt} ${r.txt}`).join('\n');let ok=false;try{await navigator.clipboard.writeText(txt);ok=true}catch(e){}
+    if(!ok){const ta=document.createElement('textarea');ta.value=txt;ta.style.cssText='position:fixed;opacity:0';document.body.appendChild(ta);ta.select();try{ok=document.execCommand('copy')}catch(e){}ta.remove()}
+    if(typeof toast==='function')toast(ok?'전투 로그를 복사했어요':'복사하지 못했어요')};
+  draw();$('#bl-x').focus({preventScroll:true})}
 
 /* ---------------- sheet ---------------- */
 function openSheet(html){const s=$('#sheet');s.innerHTML=`<div class="sheet-body" role="dialog" aria-modal="true">${html}</div>`;s.hidden=false;const f=s.querySelector('button');f&&f.focus({preventScroll:true})}
