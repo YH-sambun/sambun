@@ -799,7 +799,7 @@ html.work #rt-notif,html.work #rt-cut{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v8.3.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v8.3.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1969,6 +1969,12 @@ function rtSpriteSpec(b){const h=rtHash(b.id||('T'+b.name)),wp=rtWeaponOf(b);
  const horse=b.cls==='cav'?{...RT_HORSES[h%RT_HORSES.length],s:(FARM[b.fac]||FARM.qun)[0]}:null;
  return {key:(b.id||('T'+b.name+b.cls)),tr:rtTraitOf(b),fac:FARM[b.fac]?b.fac:'qun',wp,horse,shield:0,cls:b.cls}}
 const RT_FR=new Map();
+// v8.3.1 무기 모션 시트가 있을 때: 예전 도트 프레임(76장)은 만들지 않고 초상과 앞으로 내딛는 거리만 준비해요
+function rtPortraitOf(sp){const A=RT_ANIM[sp.wp],p0=rtPoseAt(A,0);
+ const pc=document.createElement('canvas');pc.width=48;pc.height=48;const g=pc.getContext('2d');g.imageSmoothingEnabled=false;const pf=rtFrameOf(sp,{...p0,noHorse:1,noWeapon:1,hx:3,hy:4,bhx:-3,bhy:4});g.drawImage(pf,13,14,30,30,0,0,48,48);return pc}
+function rtLite(b){const sp=rtSpriteSpec(b),A=RT_ANIM[sp.wp],S=RT_ANIM_SK[sp.wp],fr={spec:sp,lite:1,lunge:[],lungeS:[]};
+ for(let i=0;i<RT_NF;i++)fr.lunge.push(rtPoseAt(A,i/RT_NF).lunge);for(let i=0;i<RT_NS;i++)fr.lungeS.push(rtPoseAt(S,i/RT_NS).lunge);
+ fr.portrait=rtPortraitOf(sp);return fr}
 function rtFrames(b){const sp=rtSpriteSpec(b);const k=sp.key;if(RT_FR.has(k))return RT_FR.get(k);
  const A=RT_ANIM[sp.wp],p0=rtPoseAt(A,0),pw={...p0,...(A.walk||{})},fr={idle:[],walk:[],atk:[],lunge:[],sk:[],lungeS:[],skR:[],atkR:[],spec:sp};
  for(let i=0;i<2;i++)fr.idle.push(rtFrameOf(sp,{...p0,bob:i,hy:p0.hy+i}));
@@ -2811,11 +2817,15 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='8.3.0';
+const GAME_VERSION='8.3.1';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'8.3.1',date:'2026-10-20',title:'전투 시작이 빨라졌어요',reward:{ap:30},items:[
+  '전투를 시작할 때 잠깐 멈추던 시간을 줄였어요. 쓰지 않던 예전 장수 그림을 더는 만들지 않고, 장수 카드에 쓰는 초상만 준비해요.',
+  '전장에 보이는 장수 모습과 전투 결과는 그대로예요. 장수 그림이 담긴 파일을 불러오지 못했을 때만 예전 그림으로 대신 보여 줘요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'8.3.0',date:'2026-10-20',title:'감녕, 근접 암살자로 변신',reward:{ap:30},items:[
   '감녕의 병종이 궁병에서 보병으로 바뀌었어요. 이제 활 대신 칼을 들고 적 진영 깊숙이 뛰어드는 암살자예요.',
   '전법 금범야습: 가장 먼 적 앞으로 순식간에 돌진해, 도착한 자리에서 가까운 적 3명을 차례로 베어요. 3명 모두 치명타 확정(방어 30% 무시)에 3턴 출혈이 걸려요.',
@@ -6445,7 +6455,8 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
   const acc=(u,k,d)=>{const key=u.side+'-'+u.slot;V[k][key]=(V[k][key]||0)+d};
   let G=null,waveNo=1;
   const U=(s,i)=>G&&G.T[s].find(x=>x.slot===i);
-  const prep=tm=>{tm.forEach(u=>{if(u.fr)return;u.fr=rtFrames(u);u.ss=typeof SS!=='undefined'&&SS.ready?SS.frames(u.fr.spec):null;u.horse=!!u.fr.spec.horse;u.flash=0;u.rageT=0});if(typeof SS!=='undefined')SS.release()};
+  const prep=tm=>{tm.forEach(u=>{if(u.fr)return;const sp=rtSpriteSpec(u);u.ss=typeof SS!=='undefined'&&SS.ready?SS.frames(sp):null;u.fr=u.ss?rtLite(u):rtFrames(u); // v8.3.1 시트가 없을 때만 예전 도트 프레임
+   u.horse=!!u.fr.spec.horse;u.flash=0;u.rageT=0});if(typeof SS!=='undefined')SS.release()};
   const banner=(b,s,cls)=>{V.banner={b,s,cls,t:0,dur:SIMPLE?.6:1.3}};
   const logLine=(a,e)=>{const hs=(e.hits||[]).filter(h=>!h.self),tot=hs.reduce((x,h)=>x+h.d,0),uniq=new Set(hs.map(h=>h.s+'-'+h.i)).size;
     const tgt=uniq>1?`적 ${uniq}명`:hs[0]?(U(hs[0].s,hs[0].i)||{name:''}).name:'';
