@@ -716,17 +716,17 @@ html.work .xphase{display:none}
 .rt-stage{position:relative;width:100%;aspect-ratio:4/3;background:#000;overflow:hidden;border-radius:10px;border:1px solid var(--line)}
 .rt-stage>canvas{position:absolute;inset:0;width:100%;height:100%}
 #rt-world{image-rendering:pixelated}
-.rt-stat{position:absolute;left:6px;bottom:6px;width:40%;max-width:180px;background:rgba(20,14,10,.82);border:1px solid var(--line);border-radius:6px;padding:5px 6px;display:none;pointer-events:none;font-size:10px;color:#f1e6d2;z-index:2}
+.rt-stat{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px 8px;display:none;font-size:12px;color:var(--fg)}
 .rt-stat.on{display:block}
-.rt-stat h4{margin:0 0 4px;font-size:10px;font-weight:700;color:var(--mute);display:flex;justify-content:space-between}
-.rt-stat h4 b{color:#f1e6d2}
+.rt-stat h4{margin:0 0 4px;font-size:12px;font-weight:700;color:var(--mute);display:flex;justify-content:space-between}
+.rt-stat h4 b{color:inherit}
 .rt-stat .sr{display:flex;align-items:center;gap:4px;margin:2px 0}
-.rt-stat .sr canvas{width:16px;height:16px;flex:none;image-rendering:pixelated;border-radius:3px;background:#2a1f18}
-.rt-stat .sr .sn{width:32px;flex:none;font-size:9px;white-space:nowrap;overflow:hidden}
-.rt-stat .sr .sb{flex:1;height:7px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
+.rt-stat .sr canvas{width:20px;height:20px;flex:none;image-rendering:pixelated;border-radius:3px;background:#2a1f18}
+.rt-stat .sr .sn{width:44px;flex:none;font-size:12px;white-space:nowrap;overflow:hidden}
+.rt-stat .sr .sb{flex:1;height:9px;background:rgba(255,255,255,.08);border-radius:3px;overflow:hidden}
 .rt-stat .sr .sb i{display:block;height:100%;width:0;background:#ff8a3a;border-radius:3px;transition:width .2s}
 .rt-stat.heal .sb i{background:#7ce48a}
-.rt-stat .sr .sv{width:36px;flex:none;text-align:right;font-size:9px;font-variant-numeric:tabular-nums}
+.rt-stat .sr .sv{width:58px;flex:none;text-align:right;font-size:12px;font-variant-numeric:tabular-nums}
 .rt-stat .sr.dead{opacity:.45}
 #rt-notif{position:absolute;right:6px;bottom:8px;display:flex;flex-direction:column;gap:4px;align-items:flex-end;pointer-events:none;z-index:2}
 #rt-notif .nt{display:flex;align-items:center;gap:6px;background:rgba(20,12,8,.78);border:1px solid rgba(233,198,108,.35);border-radius:6px;padding:2px 8px 2px 3px;font-size:11px;color:#f1e6d2;animation:rtntin .25s ease-out both}
@@ -769,13 +769,23 @@ html.work #rt-notif,html.work #rt-cut{display:none}
 @media (max-height:720px){.rt-stage{aspect-ratio:3/2}}
 @media (max-height:620px){.rt-stage{aspect-ratio:16/9}.rtc canvas{width:26px;height:26px}}
 @media (prefers-reduced-motion:reduce){html:not(.fxon) .rt-ban,html:not(.fxon) #rt-notif .nt{animation-duration:.01s}}
+
+.bt.rt .bt-log{flex-direction:column}
+.rt-ult:empty{display:none}
+.rt-ult{margin-top:4px;display:flex;flex-direction:column;gap:2px}
+.rt-ult .ur{font-size:12px;line-height:1.35;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--mute);padding-left:6px;border-left:3px solid #58d468}
+.rt-ult .ur.f{border-left-color:#e8503e}
+.rt-ult .ur.new{color:var(--fg)}
+.rt-ult .ur b{font-weight:700}
+.rt-ult .ur .usk{color:#e9c66c;font-weight:700}
+.rt-ult .ur .v{font-variant-numeric:tabular-nums}
 </style>
 </head>
 <body>
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v8.1.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v8.1.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -2766,11 +2776,16 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='8.1.1';
+const GAME_VERSION='8.1.2';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'8.1.2',date:'2026-10-20',title:'전투 화면 정리',reward:{ap:30},items:[
+  '전투 화면 아래쪽 순서를 바꿨어요. 전장 바로 아래에 전투 기록, 그 아래에 그래프, 맨 아래에 장수 카드가 와요. 그래프는 전장을 가리지 않고 넓게 보여요.',
+  '궁극기를 쓰면 누가 누구에게 어떤 궁극기를 써서 얼마나 피해·회복했는지 최근 4줄까지 전투 기록 아래에 남아요(아군 초록, 적군 빨강 표시).',
+  '격파 표시의 글상자 테두리를 없앴어요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'8.1.1',date:'2026-10-20',title:'전투 배경 땅 넓힘',reward:{ap:30},items:[
   '전투 배경의 지평선·수평선을 화면 위쪽으로 올리고, 장수들이 싸우는 땅을 이전보다 약 2배 넓혔어요.',
   '수상 전투는 갑판을 넓혀 장수들이 배 위에서 싸우는 모습이 더 자연스러워요.',
@@ -6338,7 +6353,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
   const scene=rtScenePick(opts,rt.seed,title), time=rtTimeOf(), wx=rtWeatherOf(rt.seed,scene), BG=rtBackground(scene,time);
   const vrng=mulberry(((rt.seed|0)+1234)>>>0);
   // 연출 상태(엔진 밖)
-  const V={fx:[],nums:[],stamps:[],shake:0,flashW:0,banner:null,drops:[],dmg:{},heal:{},log:''};
+  const V={fx:[],nums:[],stamps:[],shake:0,flashW:0,banner:null,drops:[],dmg:{},heal:{},log:'',ults:[],ultN:0};
   for(let i=0;i<(wx==='rain'?46:wx==='snow'?34:0);i++)V.drops.push({x:vrng()*RT_W,y:vrng()*RT_H,v:wx==='rain'?150+vrng()*60:18+vrng()*14,w:vrng()*6.28});
   const num=(x,y,text,cls)=>{if(SIMPLE&&cls!=='dmg'&&cls!=='crit'&&cls!=='heal')return;const k=V.nums.filter(n=>Math.abs(n.x-x)<14&&n.t<.25).length;V.nums.push({x:x+(k%2?1:-1)*Math.ceil(k/2)*10,y,text,cls,t:0,dur:cls==='crit'?1.1:.85})};
   const label=(t,text,cls)=>{if(SIMPLE)return;V.nums.push({x:t.x,y:t.y-(t.horse?36:30)-10,text,cls:cls||'st',t:0,dur:.9,lab:1})};
@@ -6364,7 +6379,9 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
         const type=S.tg==='none'?(S.heal?'heal2':'circle'):u.cls==='tac'?(S.burn?'fire':'tornado'):u.cls==='arc'?'rain':'sweep2';
         if(type==='rain')f.forEach((t,i)=>V.fx.push({type:'arrowfall',x:t.x-10+vrng()*20,y:t.y,t:-i*.06,dur:.5}));else fx(type,S.tg==='none'?u.x:cx,S.tg==='none'?u.y:cy,{dur:type==='tornado'?1.1:type==='fire'?.9:.6,face:u.face})}},
     strike:(u,a,i)=>{const t=u.tgt;if(!t||t.hp<=0||RT_PROJ[u.wp])return;if(a.sk&&a.S.tg&&!SINGLE_TG[a.S.tg])return;weaponFx(u,t,!!a.sk,a.isU)},
-    resolve:(u,e)=>{logLine(u,e);if(e.sk){const hs=(e.hits||[]).filter(h=>!h.self);if(hs.length>1&&!SIMPLE)V.combo={n:hs.length,d:hs.reduce((x,h)=>x+h.d,0),t:0,dur:1.1}}},
+    resolve:(u,e)=>{logLine(u,e);if(e.ult){const hs=(e.hits||[]).filter(h=>!h.self),ns=[...new Set(hs.map(h=>h.s+'-'+h.i))].map(k=>{const [s,i]=k.split('-');return (U(+s,+i)||{name:''}).name}).filter(Boolean),tot=hs.reduce((x,h)=>x+h.d,0),hl=(e.heals||[]).reduce((x,h)=>x+(h.h||0),0);
+        const to=ns.length>3?`${ns.slice(0,2).join('·')} 외 ${ns.length-2}명`:ns.length?ns.join('·'):hl?'아군':'';
+        V.ults.unshift({side:u.side,who:u.name,to,sk:e.sk,v:tot?fmt(tot)+' 피해':hl?fmt(hl)+' 회복':''});if(V.ults.length>4)V.ults.pop();V.ultN++}if(e.sk){const hs=(e.hits||[]).filter(h=>!h.self);if(hs.length>1&&!SIMPLE)V.combo={n:hs.length,d:hs.reduce((x,h)=>x+h.d,0),t:0,dur:1.1}}},
     death:t=>{V.stamps.push({side:t.side,text:t.name+' 격파',t:0,dur:1.5});if(!SIMPLE)fx('dust',t.x,t.y,{dur:.4});if(G.T[t.side].every(x=>x.hp<=0))quake(.12)},
     phase:e=>{if(e.phase==='숙적'){const pr=e.pairs.slice(0,2).map(([a,b])=>`${a} ⚔ ${b}`).join(' · ');banner('숙적 대면',pr,'r');V.log=`${pr} · 두 장수 모두 공격·방어·속도 +${Math.round(RIVAL_P*100)}% (숙적 수만큼, 최대 +${Math.round(RIVAL_P*RIVAL_MAX*100)}%)`}
       else{banner(e.phase,`${e.r}턴`,e.phase==='격전'?'w':'p');V.log=e.phase==='격전'?`${e.r}턴 · 양쪽 주는 피해가 매 턴 늘고 회복은 줄어요`:`${e.r}턴 · 양쪽 매 턴 끝에 최대 체력의 일부가 깎여요`}},
@@ -6388,9 +6405,10 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
   el.innerHTML=`<div class="bt rt${SG?' siege':''}"><div class="bt-head"><span class="bt-title">${esc(title)}</span><button type="button" class="btn ghost sm" id="bt-speed">${speed}배속</button><button type="button" class="btn ghost sm" id="bt-simple" aria-pressed="${SIMPLE}" title="초상만 움직이는 간단 보기">간단</button><button type="button" class="btn ghost sm" id="bt-graph" aria-pressed="${STAT>0}">그래프${STAT?': '+['','공격','치유'][STAT]:''}</button><button type="button" class="btn ghost sm" id="bt-skip">결과 보기</button>${opts&&opts.commit?'<button type="button" class="btn ghost sm red" id="bt-quit">중도포기</button>':''}</div>
   <div class="rt-top"><div class="team"><canvas id="rt-pa" width="48" height="48"></canvas><div class="tx"><span class="nm">${esc(L0)}${formTxt(0,rt.As)?` · ${formTxt(0,rt.As)}`:''}</span><div class="bar"><i id="rt-ba"></i></div></div></div><div class="vs"><b>${esc(RT_SCENE_N[scene]||'')} ${RT_TIME_N[time]}${RT_WX_N[wx]?' · '+RT_WX_N[wx]:''}</b><span id="rt-tm">0:00</span></div><div class="team r"><canvas id="rt-pf" width="48" height="48"></canvas><div class="tx"><span class="nm">${esc(L1)}${formTxt(1,rt.Bs)?` · ${formTxt(1,rt.Bs)}`:''}</span><div class="bar"><i id="rt-bf"></i></div></div></div></div>
   ${castleHtml}
-  <div class="rt-stage" id="rt-stage"><canvas id="rt-world" width="${RT_W*RT_SC}" height="${RT_H*RT_SC}"></canvas><canvas id="rt-ov"></canvas><div id="rt-notif"></div><div id="rt-stat" class="rt-stat"></div><div id="rt-cut"><div class="dim"></div><div class="rt-ban" id="rt-ban"><canvas width="48" height="48"></canvas><div class="t"></div></div></div></div>
-  <div class="rt-cards" id="rt-cards"></div>
-  <div class="bt-log rt-log"><div class="ln" id="bt-ln">${esc(bonusLine(res.bonus&&res.bonus[0])?'아군 효과 · '+bonusLine(res.bonus[0]):'전투 개시')}</div></div></div>`;
+  <div class="rt-stage" id="rt-stage"><canvas id="rt-world" width="${RT_W*RT_SC}" height="${RT_H*RT_SC}"></canvas><canvas id="rt-ov"></canvas><div id="rt-notif"></div><div id="rt-cut"><div class="dim"></div><div class="rt-ban" id="rt-ban"><canvas width="48" height="48"></canvas><div class="t"></div></div></div></div>
+  <div class="bt-log rt-log"><div class="ln" id="bt-ln">${esc(bonusLine(res.bonus&&res.bonus[0])?'아군 효과 · '+bonusLine(res.bonus[0]):'전투 개시')}</div><div class="rt-ult" id="rt-ult"></div></div>
+  <div id="rt-stat" class="rt-stat"></div>
+  <div class="rt-cards" id="rt-cards"></div></div>`;
   el.hidden=false;
   const wc=$('#rt-world'),wg=wc.getContext('2d');wg.imageSmoothingEnabled=false;const oc=$('#rt-ov'),og=oc.getContext('2d');let K=1;
   const scratch=document.createElement('canvas');scratch.width=200;scratch.height=230;const sg=scratch.getContext('2d');
@@ -6406,7 +6424,8 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
     for(const s of [0,1]){const tm=G.T[s];const bar=$(s?'#rt-bf':'#rt-ba');if(bar){if(SG&&s===0)bar.style.width=Math.max(0,G.C.hp/G.C.max*100)+'%';else{const hp=tm.reduce((a,u)=>a+Math.max(0,u.hp),0),mx=tm.reduce((a,u)=>a+u.maxhp,0);bar.style.width=(mx?hp/mx*100:0)+'%'}}
       for(const u of tm){if(!u.card)continue;u.card.classList.toggle('dead',u.hp<=0);u.card.querySelector('.hp i').style.width=Math.max(0,u.hp/u.maxhp*100)+'%';const g=u.card.querySelector('.sg'),n=SK_CD[u.cls]||3,f=(u.acts%n)/n;g.querySelector('i').style.width=((u.state==='cast')?100:f*100)+'%';g.classList.toggle('full',u.state==='cast')}}
     const tm=$('#rt-tm');if(tm){const t=G.t;tm.textContent=`${Math.floor(t/60)}:${String(Math.floor(t%60)).padStart(2,'0')}`}
-    const ln=$('#bt-ln');if(ln&&V.log&&ln.textContent!==V.log)ln.textContent=V.log};
+    const ln=$('#bt-ln');if(ln&&V.log&&ln.textContent!==V.log)ln.textContent=V.log;
+    const ul=$('#rt-ult');if(ul&&ul.dataset.n!==String(V.ultN)){ul.dataset.n=V.ultN;ul.innerHTML=V.ults.map((x,i)=>`<div class="ur${x.side?' f':''}${i?'':' new'}"><b>${esc(x.who)}</b>${x.to?` → ${esc(x.to)}`:''} · <span class="usk">${esc(x.sk)}</span>${x.v?` <span class="v">${x.v}</span>`:''}</div>`).join('')}};
   // ---- 그리기 ----
   const spriteOf=u=>{const fr=u.fr;if(u.state==='walk')return fr.walk[Math.floor(u.st*9)%4];if(u.state==='cast'){const i=Math.min(RT_NS-1,Math.floor(u.st/u.anim.d*RT_NS));return (u.act&&u.act.isU||u.rageT>0)?fr.skR[i]:fr.sk[i]}if(u.state==='atk'){const i=Math.min(RT_NF-1,Math.floor(u.st/u.anim.d*RT_NF));return u.rageT>0?fr.atkR[i]:fr.atk[i]}if(u.state==='dead')return fr.ko;if(u.state==='hit')return fr.hit;return fr.idle[Math.floor(u.st*1.6)%2]};
   // 모션 시트 프레임: 엔진의 타격 시점(anim.hit)에 시트의 타격 칸이 오게 맞춰요. 여러 번 치는 전법은 타격마다 한 번씩 휘둘러요
@@ -6495,7 +6514,7 @@ function playBattle(res,title,allyLab,foeLab,resultHtml,opts){
       else{g.font=`800 7.5px ${FB}`;g.fillStyle='#ffffff';g.strokeStyle='#1a120d';g.lineWidth=2}
       g.strokeText(n.text,n.x,y);g.fillText(n.text,n.x,y)}
     g.globalAlpha=1;
-    const slot=[0,0];for(const s of V.stamps){const k=s.t/s.dur,sc=k<.15?1+(.15-k)*6:1,i=slot[s.side]++;const x=s.side?RT_W*.75:RT_W*.25,y=RT_FY0-30+i*13;g.save();g.translate(x,y);g.rotate(-.12);g.scale(sc,sc);g.globalAlpha=k<.75?1:1-(k-.75)/.25;g.font=`700 8.5px ${FB}`;g.fillStyle=s.side?'#ff3b30':'#8fd3ff';g.strokeStyle='#1a120d';g.lineWidth=2.5;g.strokeText(s.text,0,0);g.fillText(s.text,0,0);const w=g.measureText(s.text).width+8;g.strokeStyle=s.side?'#ff3b30':'#8fd3ff';g.lineWidth=.8;g.strokeRect(-w/2,-8,w,11);g.restore()}
+    const slot=[0,0];for(const s of V.stamps){const k=s.t/s.dur,sc=k<.15?1+(.15-k)*6:1,i=slot[s.side]++;const x=s.side?RT_W*.75:RT_W*.25,y=RT_FY0-30+i*13;g.save();g.translate(x,y);g.rotate(-.12);g.scale(sc,sc);g.globalAlpha=k<.75?1:1-(k-.75)/.25;g.font=`700 8.5px ${FB}`;g.fillStyle=s.side?'#ff3b30':'#8fd3ff';g.strokeStyle='#1a120d';g.lineWidth=2.5;g.strokeText(s.text,0,0);g.fillText(s.text,0,0);g.restore()}
     if(V.combo){const c=V.combo,k=c.t/c.dur;g.globalAlpha=k<.7?1:1-(k-.7)/.3;g.font=`800 12px ${FB}`;g.fillStyle='#ffd36b';g.strokeStyle='#3a1a08';g.lineWidth=3;g.strokeText(`${c.n} HIT`,RT_W*.5,22);g.fillText(`${c.n} HIT`,RT_W*.5,22);g.font=`700 7px ${FB}`;g.fillStyle='#fff6c8';g.lineWidth=2;g.strokeText(fmt(c.d),RT_W*.5,31);g.fillText(fmt(c.d),RT_W*.5,31)}
     if(V.banner){const b=V.banner,k=b.t/b.dur,sc=k<.12?1+(.12-k)*5:1;g.globalAlpha=k<.15?k/.15:k>.8?1-(k-.8)/.2:1;g.fillStyle='rgba(10,6,4,.55)';g.fillRect(0,RT_H*.36,RT_W,RT_H*.2);g.save();g.translate(RT_W/2,RT_H*.46);g.scale(sc,sc);g.font=`400 18px "Song Myung",serif`;g.fillStyle=b.cls==='r'?'#ff8a6b':b.cls==='p'?'#b8a0ff':'#e9c66c';g.strokeStyle='#1a120d';g.lineWidth=3;g.strokeText(b.b,0,0);g.fillText(b.b,0,0);g.restore();if(b.s){g.font=`700 7px ${FB}`;g.fillStyle='#f1e6d2';g.strokeStyle='#1a120d';g.lineWidth=2;g.strokeText(b.s,RT_W/2,RT_H*.46+11);g.fillText(b.s,RT_W/2,RT_H*.46+11)}}
     g.globalAlpha=1};
