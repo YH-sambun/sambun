@@ -793,13 +793,29 @@ html.work #rt-notif,html.work #rt-cut{display:none}
 .bl-r .tt{flex:none;width:44px;color:var(--mute);font-variant-numeric:tabular-nums}
 .bl-r .tx{flex:1;min-width:0;word-break:keep-all;overflow-wrap:anywhere}
 .res-foot{gap:8px}
+/* v8.6.1 장수 모션 보기 */
+.mv-seal{position:relative;flex:none;background:none;border:0;padding:0;border-radius:50%;cursor:pointer}
+.mv-seal:focus-visible{outline:2px solid var(--bronze);outline-offset:4px}
+.mv-play{position:absolute;right:-4px;bottom:-4px;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:10px;padding-left:2px;background:var(--bronze);color:var(--ink);box-shadow:0 0 0 2px var(--panel)}
+.mv-bg{position:fixed;inset:0;z-index:40;background:rgba(4,8,8,.66);display:flex;align-items:center;justify-content:center;padding:16px}
+.mv-box{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px 14px 6px;animation:up .2s ease-out}
+.mv-h{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.mv-h b{font-size:18px}
+.mv-h .x{margin-left:auto;background:var(--panel2);border:1px solid var(--line);border-radius:50%;width:40px;height:40px;padding:0;font-size:16px;flex:none;color:var(--fg)}
+.mv-tag{font-size:12px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--mute)}
+.mv-tag.gs{border-color:var(--bronze);color:var(--bronze)}
+.mv-stage{position:relative;height:250px;border-radius:12px;overflow:hidden;display:flex;align-items:center;justify-content:center;
+ background:linear-gradient(180deg,color-mix(in srgb,var(--fac) 22%,#1d2a2c) 0,#26383a 58%,#3b3a2a 58%,#2c2b20 100%)}
+.mv-stage canvas{image-rendering:pixelated;max-width:100%;max-height:236px}
+.mv-stage .sub{position:absolute;margin:0}
+.mv-seg{margin:10px 0 8px}
 </style>
 </head>
 <body>
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v8.6.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v8.6.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -2423,6 +2439,43 @@ GS.portraitCanvas=function(id){if(!GS.has(id)||!GS_PORT[id])return null;if(GS._p
  const im=new Image();im.onload=()=>{g.clearRect(0,0,48,48);g.drawImage(im,0,0,48,48)};im.src=GS_PORT[id];if(im.complete)g.drawImage(im,0,0,48,48);
  GS._pc.set(id,pc);return pc};
 if(typeof GS_PACK!=='undefined')GS.init().catch(()=>{});
+/* ───────────── v8.6.1 장수 모션 보기 (초상화 클릭 대기모션 보기 스레드) ─────────────
+   장수 상세창(무장·도감·연구소) 큰 초상을 누르면 창이 떠서 대기 모션을 반복해요. 걷기·공격·쓰러짐 버튼으로 바꿔 볼 수 있어요.
+   전용 모션 시트(GS)가 있으면 그 그림, 없으면 전장과 같은 무기별 공용 모션(SS)으로 그려요. */
+const MV={el:null,raf:0,b:null,fr:null,mode:'idle',t0:0,tries:0};
+// [이름, 초당 칸 수, 끝난 뒤 쉬는 초]
+const MV_M={idle:['대기',8,0],walk:['걷기',12,0],atk:['공격',10,.6],die:['쓰러짐',4.5,1.2]};
+function mvSeal(b){return `<button type="button" class="mv-seal" data-mv="${esc(b.id)}" aria-label="${esc(b.name)} 모션 보기">${seal(b,'lg')}<span class="mv-play" aria-hidden="true">▶</span></button>`}
+function mvFrames(b){try{return (typeof GS!=='undefined'&&GS.frames(b))||(typeof SS!=='undefined'&&SS.ready?SS.frames(rtSpriteSpec(b)):null)}catch(e){return null}}
+function openMotion(id){const b=GMAP[id];if(!b)return;closeMotion();MV.b=b;MV.mode='idle';MV.tries=0;
+ const el=document.createElement('div');el.id='mv';el.className='mv-bg';
+ el.innerHTML=`<div class="mv-box" role="dialog" aria-modal="true" aria-label="${esc(b.name)} 모션">
+  <div class="mv-h"><b>${esc(b.name)}</b><span class="mv-tag" id="mv-tag"></span><button type="button" class="x" id="mv-x" aria-label="닫기">✕</button></div>
+  <div class="mv-stage f-${b.fac}"><canvas id="mv-cv" width="10" height="10"></canvas><p class="sub" id="mv-wait">그림을 불러오는 중이에요</p></div>
+  <div class="seg mv-seg" role="group" aria-label="모션">${Object.keys(MV_M).map(k=>`<button type="button" data-mvm="${k}" aria-pressed="${k==='idle'}">${MV_M[k][0]}</button>`).join('')}</div></div>`;
+ document.body.appendChild(el);MV.el=el;
+ el.addEventListener('click',e=>{if(e.target===el||e.target.closest('#mv-x')){closeMotion();return}
+  const m=e.target.closest('[data-mvm]');if(m){MV.mode=m.dataset.mvm;MV.t0=performance.now();el.querySelectorAll('[data-mvm]').forEach(x=>x.setAttribute('aria-pressed',String(x===m)))}});
+ el.querySelector('#mv-x').focus({preventScroll:true});mvStart()}
+function mvStart(){if(!MV.el)return;const fr=mvFrames(MV.b);
+ if(!fr){if(++MV.tries<40)setTimeout(mvStart,150);else{const w=MV.el.querySelector('#mv-wait');if(w)w.textContent='그림을 불러오지 못했어요'}return}
+ MV.fr=fr;const w=MV.el.querySelector('#mv-wait');if(w)w.remove();
+ const tag=MV.el.querySelector('#mv-tag');tag.textContent=fr.gs?'전용 모션':'공용 모션';tag.classList.toggle('gs',!!fr.gs);
+ // 모든 줄의 그림이 들어가는 크기로 캔버스를 잡고, 발 기준점을 같은 자리에 둬요
+ let x0=fr.ax-30,y0=fr.ay-10,x1=fr.ax+30,y1=fr.ay+8;['idle','walk','atk','die'].forEach(k=>(fr[k]||[]).forEach(f=>{x0=Math.min(x0,f.x);y0=Math.min(y0,f.y);x1=Math.max(x1,f.x+f.c.width);y1=Math.max(y1,f.y+f.c.height)}));
+ const P=6,cv=MV.el.querySelector('#mv-cv');cv.width=x1-x0+P*2;cv.height=y1-y0+P*2;MV.ox=P-x0;MV.oy=P-y0;
+ const k=Math.max(1,Math.min(3,Math.floor(Math.min(320/cv.width,230/cv.height)*2)/2||1));cv.style.width=Math.round(cv.width*k)+'px';
+ MV.t0=performance.now();cancelAnimationFrame(MV.raf);MV.raf=requestAnimationFrame(mvTick)}
+function mvTick(now){if(!MV.el||!MV.fr)return;const fr=MV.fr,cv=MV.el.querySelector('#mv-cv'),g=cv.getContext('2d'),[,fps,rest]=MV_M[MV.mode];
+ const arr=(fr[MV.mode]&&fr[MV.mode].length?fr[MV.mode]:fr.idle),t=Math.max(0,(now-MV.t0)/1000),n=arr.length;let i;
+ if(!rest)i=Math.floor(t*fps)%n;else{const cyc=n/fps+rest,tt=t%cyc;i=Math.min(n-1,Math.floor(tt*fps))}
+ const f=arr[i];g.imageSmoothingEnabled=false;g.clearRect(0,0,cv.width,cv.height);
+ g.fillStyle='rgba(0,0,0,.28)';g.beginPath();g.ellipse(MV.ox+fr.ax,MV.oy+fr.ay,fr.mounted?44:24,fr.mounted?7:5,0,0,Math.PI*2);g.fill();
+ g.drawImage(f.c,MV.ox+f.x,MV.oy+f.y);MV.raf=requestAnimationFrame(mvTick)}
+function closeMotion(){cancelAnimationFrame(MV.raf);MV.raf=0;MV.fr=null;if(MV.el){MV.el.remove();MV.el=null}}
+document.addEventListener('click',e=>{const t=e.target.closest&&e.target.closest('[data-mv]');if(t){e.stopPropagation();openMotion(t.dataset.mv)}});
+// 모션 창이 떠 있으면 Esc는 모션 창만 닫아요(상세창은 그대로)
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&MV.el){e.stopImmediatePropagation();closeMotion()}},true);
 function bonusLine(info){if(!info)return '';const p=[...(info.ally?[`연합군 ${info.ally.n}개국`]:[]),...(info.vol?[`의용군 ${info.vol.n}명`]:[]),...(info.combo?['수호·회복 조합']:[]),...(info.only4?['정예']:info.no5?['신예']:[]),...(info.af&&info.af.n>1?[`화공 대비 ${info.af.n}명 · 효과 ${Math.round(info.af.f*100)}%`]:[]),...info.facs.map(f=>`${FAC[f.f]} ${f.c}명`),...(info.bonds.length?[`인연 ${info.bonds.length}개`]:[])];return p.join(' · ')}
 
 /* ---------------- stages ---------------- */
@@ -2853,11 +2906,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='8.6.0';
+const GAME_VERSION='8.6.1';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'8.6.1',date:'2026-10-22',title:'장수 모션 보기',reward:{ap:30},items:[
+  '장수 상세창의 큰 초상화를 누르면 그 장수가 전장에서 서 있는 대기 모션을 볼 수 있어요. 초상화 오른쪽 아래 ▶ 표시가 있는 곳이에요.',
+  '창 아래 대기·걷기·공격·쓰러짐 버튼으로 다른 모션도 돌려 볼 수 있어요. 기병은 말과 함께 나와요.',
+  '무장 탭뿐 아니라 도감, 연구소 장수 창에서도 똑같이 볼 수 있어요.',
+  '전용 그림이 있는 장수 36명은 "전용 모션", 나머지 장수는 전장과 같은 무기별 "공용 모션"으로 보여 줘요.',
+  '능력치·스킬·병종은 그대로예요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'8.6.0',date:'2026-10-22',title:'장수 20명 전용 모션 추가',reward:{ap:30},items:[
   '조조·사마의·주유·초선·방통·하후연·곽가·손권·태사자·육손·서성·장각·동탁·원소·축융·위연·관평·마대·요화·우금 20명이 전장에서 장수마다 새로 그린 그림으로 서 있고, 걷고, 공격하고, 쓰러져요. 조조·원소·마대는 말을 탄 모습이에요.',
   '여포·관우·조운·장비는 새로 그린 기병 그림으로 바뀌었어요.',
@@ -5323,7 +5383,7 @@ document.addEventListener('click',e=>{
 function openGen(gid){
   const b=GMAP[gid], st=S.gens[gid], s=specOf(gid), u=mkUnit(s,0,0);
   const at=S.deck.indexOf(gid), inDeck=at>=0;
-  openSheet(`<div class="sheet-h">${seal(b,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz)}</span></h2>
+  openSheet(`<div class="sheet-h">${mvSeal(b)}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz)}</span></h2>
    <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · ${inDeck?`${at+1}번 자리 Lv ${slotLv(at)}`:`진형 밖 · Lv ${s.lv} 기준`}</div>${dupHtml(st.d,1,maxD(b.rar))}</div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <div class="row" style="margin-top:8px"><span class="sub" style="margin:0">능력치</span><button type="button" class="qh" data-help="1" aria-label="능력치 도움말">?</button></div><div class="stats" style="margin-top:4px"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
   <div class="sub" style="margin:2px 0 6px">치명 ${Math.round(u.cr*100)}% · 치명 피해 ${Math.round(u.cd*100)}%${u.ls?` · 흡혈 ${Math.round(u.ls*1000)/10}%`:''}${u.dr?` · 피해 감소 ${Math.round(u.dr*1000)/10}%`:''}${u.skp?` · 기본 스킬 피해 +${Math.round(u.skp*1000)/10}%`:''}${u.usk?` · 궁극기 피해 +${Math.round(u.usk*1000)/10}%`:''}${u.res?` · 저항 ${Math.round(u.res*100)}%`:''} · 궁극기 확률 ${ultPText(u)}</div>${usageHtml(gid)}<div class="row sub" style="margin:0 0 4px">무력 ${b.str} · 지력 ${b.int} · 통솔 ${b.lead}<span class="sp"></span>전투력 <b style="color:var(--bronze)">${fmt(unitPower(u))}</b></div>
@@ -5417,7 +5477,7 @@ function openDex(id){
   const b=GMAP[id], own=S.gens[id];
   const a=mkUnit({g:id,lv:1,d:0},0,0), z=mkUnit({g:id,lv:MAXLV,d:maxD(b.rar)},0,0);
   const row=(l,x,y)=>`<tr><th scope="row">${l}</th><td>${x}</td><td>${y}</td></tr>`;
-  openSheet(`<div class="sheet-h">${seal(b,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz)}</span></h2>
+  openSheet(`<div class="sheet-h">${mvSeal(b)}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz)}</span></h2>
    <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]} · ${CLS[b.cls].g} ${CLS[b.cls].n} · ${own?`보유 중 (돌파 ${own.d})`:'미보유'}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
   <div class="stats"><div class="stat"><small>무력</small><b>${b.str}</b></div><div class="stat"><small>지력</small><b>${b.int}</b></div><div class="stat"><small>통솔</small><b>${b.lead}</b></div><div class="stat"><small>속도</small><b>${b.spd}</b></div></div>
   ${usageHtml(id)}<h3>전투 능력치 (보물 미장착 기준)</h3>
@@ -5521,7 +5581,7 @@ function labRandom(){
 function openLabSlot(side,i){
   const D=labCur(side), x=D.s[i];if(!x){openLabGen(side,i);return}
   const g=GMAP[x.g], u=mkUnit(labSpecs(D)[i],0,0);
-  openSheet(`<div class="sheet-h">${seal(g,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(g.name)}</h2><div class="stars r${g.rar}">${stars(g.rar)}</div><div class="sub" style="margin:0">${FAC[g.fac]} · ${CLS[g.cls].g} ${CLS[g.cls].n} · Lv ${MAXLV} · 돌파 ${maxD(g.rar)} · ${side==='atk'?'공격덱':'방어덱'} ${i+1}번</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+  openSheet(`<div class="sheet-h">${mvSeal(g)}<div style="min-width:0"><h2 style="margin:0">${esc(g.name)}</h2><div class="stars r${g.rar}">${stars(g.rar)}</div><div class="sub" style="margin:0">${FAC[g.fac]} · ${CLS[g.cls].g} ${CLS[g.cls].n} · Lv ${MAXLV} · 돌파 ${maxD(g.rar)} · ${side==='atk'?'공격덱':'방어덱'} ${i+1}번</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <div class="stats" style="margin-top:8px"><div class="stat"><small>체력</small><b>${fmt(u.maxhp)}</b></div><div class="stat"><small>공격</small><b>${fmt(u.atk)}</b></div><div class="stat"><small>방어</small><b>${fmt(u.def)}</b></div><div class="stat"><small>속도</small><b>${u.spd}</b></div></div>
    ${skill3Html(g,u)}
    <h3>보물 <span style="font-weight:400">· 모두 +${D.p} · ★5 · ★4 · ★3 한 칸씩</span></h3>
