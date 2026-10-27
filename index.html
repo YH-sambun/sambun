@@ -822,7 +822,7 @@ html.work #rt-notif,html.work #rt-cut{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v9.1.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v9.2.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1767,7 +1767,7 @@ function mkUnit(spec,side,slot){
   its.forEach(({it,d})=>{const x=itemFx(it,d,b);for(const k in x)f[k]=(f[k]||0)+x[k]});
   // v7.0.0 패시브: 정적 능력치는 전투 시작 시 자신에게, 패시브 증폭(pas) 보물만큼 커져요
   const P=pasOf(b), U=ultOf(b), pm=1+(f.pas||0)/100, pv=k=>P&&P[k]?P[k]*pm:0;
-  hp*=(1+(f.hp||0)/100+pv('hp'))*(spec.hx||1);atk*=(1+(f.atk||0)/100+pv('atk'))*(spec.ax||1);def*=1+(f.def||0)/100+pv('def');spd+=(f.spd||0)+pv('spd');
+  hp*=(1+(f.hp||0)/100+pv('hp'))*(spec.hx||1);atk*=(1+(f.atk||0)/100+pv('atk'))*(spec.ax||1);def*=1+(f.def||0)/100+pv('def');spd+=(f.spd||0)+pv('spd');spd*=(spec.sx||1);
   const cr=Math.min(.6,.1+(f.cr||0)/100+pv('cr')), cd=Math.min(3,1.5+(f.cd||0)/100+pv('cd')), ls=Math.min(.5,(f.ls||0)/100+pv('ls')), dr=Math.min(.5,(f.dr||0)/100+pv('dr'));
   const skp=(f.sk||0)/100, usk=((f.usk||0)+(f.sk||0))/100, pskp=pv('skp'), res=Math.min(.6,(f.res||0)/100+pv('res'));
   const up0=UP_BASE+upStat(b)+Math.min(UP_ITEM_CAP,(f.up||0)/100)+pv('up');
@@ -2597,7 +2597,7 @@ function sanitize(s){
     if(s.gens&&Object.keys(s.gens).length)MIG_LV={ref,slv:o.slv.slice()};
   }
   for(const g of Object.values(o.gens))g.lv=1;
-  o.siege=cleanSiege(s.siege);o.tw=cleanTw(s.tw);o.ex=cleanEx(s.ex);o.sj=cleanSj(s.sj);o.dl=cleanDl(s.dl);o.ar=cleanAr(s.ar);
+  o.siege=cleanSiege(s.siege);o.tw=cleanTw(s.tw);o.ex=cleanEx(s.ex);o.sj=cleanSj(s.sj);o.dl=cleanDl(s.dl);o.ar=cleanAr(s.ar);o.dr=cleanDr(s.dr);o.rl=cleanRl(s.rl);
   return o;
 }
 // 레벨은 진형의 자리(1~6번)에 붙어요. 진형 밖 장수는 가장 높은 자리 레벨 기준으로 보여 줘요
@@ -2917,11 +2917,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='9.1.0';
+const GAME_VERSION='9.2.0';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['輪',{rtk:30}],['輪',{rtk:100}],['選',{isk:1}],['換',{xtk:1}]];
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'9.2.0',date:'2026-10-27',title:'전장 새 모드 · 군웅 드래프트 · 난세 규칙전',reward:{ap:30},items:[
+  '전장(戰)에 다른 군주와 겨루는 모드 2개가 생겼어요. 이제 전장은 야전 · 무도회 · 드래프트 · 규칙전이에요.',
+  '군웅 드래프트: 하루 1번. 104명 중 서로 병종이 다른 후보 3명에서 1명씩 5번 골라 덱을 만들어요. 모두 Lv.40·같은 돌파·보물 없이 싸우니 보유 장수와 상관없어요. 7승 또는 3패까지 연전하고, 상대는 이번 주 다른 군주가 만든 드래프트 덱(없으면 AI 덱)이에요. 승리마다 금 400, 7승이면 금 1,200 추가.',
+  '후보를 고를 때 지금 덱과 협공이 이어지면 "협공 +N"이 보여요. 다른 나라 장수를 섞어 보세요.',
+  '난세 규칙전: 매주 규칙이 바뀌어요(무략금지 → 기마대전 → 군웅할거 → 신진기예 → 설중행군 → 궁노사격 순). 내 장수로 규칙에 맞는 진형을 짜 두면 다른 군주의 도전 상대가 되고, 나는 하루 5번 도전해요. 이기면 3점과 금 400, 이번 주 15점 금 2,000 · 30점 금 3,000 · 60점 금 5,000.',
+  '두 모드 모두 야전 규칙(격전·역병)으로 싸우고, 이번 주 순위가 보여요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'9.1.0',date:'2026-10-27',title:'새 모드 · 사전 재현 · 일기토 · 천하제일 무도회',reward:{ap:30},items:[
   '메뉴를 나눴어요. 출정(征)에는 컴퓨터와 싸우는 모드(스테이지·사전 재현·일기토·토벌전·수성전·천명탑·원정군)를, 전장(戰)에는 다른 군주와 겨루는 모드(야전·천하제일 무도회)를 모았어요. 토벌전·수성전·천명탑·원정군은 자리만 옮겼고 기록과 규칙은 그대로예요.',
   '사전 재현(출정): 황건 토벌부터 오장원까지 역사 속 전투 16개를 그때의 장수로 다시 싸워요. 내 장수와 상관없이 정해진 장수가 나가고, 진형과 자리만 골라요. 전투마다 별 3개(승리 · 시간 · 특수 조건), 처음 받을 때 금 1,000 · 1,000 · 2,000. 깬 전투를 다시 이기면 하루 3번까지 금 500.',
@@ -4166,6 +4173,153 @@ document.addEventListener('click',e=>{
     const an=`${GMAP[M.a.s.g].name} (${arName(M.a)})`,bn=`${GMAP[M.b.s.g].name} (${arName(M.b)})`;
     playBattle(M.res,`무도회 ${AR_RN[k]||''}`,an,bn,()=>`<p class="sub">${esc(an)} vs ${esc(bn)}</p>`,{verdict:{lab:`${M.w===M.a?an:bn} 승리`,stamp:'勝'}})}
 });
+/* ---------------- v9.2.0 전장 · 군웅 드래프트 · 주간 난세 규칙전 ----------------
+   드래프트: 하루 1번. 104명 중 3명씩 5번 골라 덱을 만들고(레벨·돌파 고정, 보물 없음) 7승 또는 3패까지 연전.
+     상대는 이번 주 다른 군주가 완성한 드래프트 덱, 모자라면 AI 드래프트 덱. 승리마다 금, 7승이면 추가 금.
+   규칙전: 매주 규칙 1개(주간 순환). 내 장수로 규칙에 맞는 진형을 짜 등록하고, 하루 5번 다른 군주의 규칙 진형에 도전.
+     승리 3점 + 금. 이번 주 점수 단계 보상. 두 모드 모두 야전 규칙(격전·역병)으로 싸워요. */
+const PV_SEG=[['duel','야전'],['ar','무도회'],['dr','드래프트'],['rl','규칙전']];
+// 진형·자리 편집(사전 재현과 같은 방식): key마다 {f,o}
+const ARR={}, arrSw={};
+function arrHtml(key,f,o,RN=['선봉','중견','후위']){
+  return `<div class="chips">${Object.entries(FORM).map(([k,v])=>`<button type="button" data-arrf="${key}:${k}" aria-pressed="${f===k}">${v.n}</button>`).join('')}</div>
+   <p class="sub" style="margin:0 0 8px;font-size:12px">${esc(FORM[f].d)}</p>
+   <div class="sj-slots">${o.map((g,i)=>{const G=GMAP[g];return `<button type="button" class="sj-slot ${arrSw[key]===i?'on':''}" data-arrsw="${key}:${i}">${seal(G,'sm')}<span><b>${esc(G.name)}</b><small>${RN[rowOf(i,f)]} · ${CLS[G.cls].n}</small></span></button>`}).join('')}</div>
+   <p class="sub" style="margin:4px 0 0;font-size:12px">두 장수를 차례로 누르면 자리를 바꿔요.</p>`}
+document.addEventListener('click',e=>{
+  const f=e.target.closest('[data-arrf]');if(f){const[k,v]=f.dataset.arrf.split(':');const A=arrGet(k);if(A){A.f=v;save();renderView()}return}
+  const w=e.target.closest('[data-arrsw]');if(w){const[k,v]=w.dataset.arrsw.split(':');const i=+v,A=arrGet(k);if(!A)return;if(arrSw[k]==null)arrSw[k]=i;else{if(arrSw[k]!==i)[A.o[arrSw[k]],A.o[i]]=[A.o[i],A.o[arrSw[k]]];arrSw[k]=null}save();renderView()}
+});
+function arrGet(k){if(k==='dr'){const R=drState().run;return R&&R.pk.length>=NSLOT?R:null}if(k==='rl'){const s=rlState();return s}return null}
+const pubDeck=x=>Array.isArray(x)?cleanPlayer({deck:x}).deck:[];
+const xpN=specs=>{try{return xpPairs(specs.filter(Boolean).map((s,i)=>mkUnit(s,0,i))).length}catch(e){return 0}};
+
+/* ---- 군웅 드래프트 ---- */
+const DR_LV=40, DR_WINS=7, DR_LOSS=3, DR_WIN_G=400, DR_FULL_G=1200;
+const drSpec=(g,i,f)=>({g,lv:DR_LV,d:SJ_D(GMAP[g].rar),i:[],p:i,f});
+function cleanDr(x){x=x&&typeof x==='object'?x:{};const R=x.run&&typeof x.run==='object'?x.run:null;const ids=a=>(Array.isArray(a)?a:[]).filter(g=>typeof g==='string'&&GMAP[g]);
+  return {day:typeof x.day==='string'?x.day:'',n:Math.max(0,Math.min(1,x.n|0)),w:Number.isInteger(x.w)?x.w:-1,best:Math.max(0,Math.min(DR_WINS,x.best|0)),runs:Math.max(0,x.runs|0),
+    run:R?{pk:ids(R.pk).slice(0,NSLOT),of:R.of?ids(R.of).slice(0,3):null,f:formKey(R.f)||'fangyuan',o:ids(R.o).slice(0,NSLOT),win:Math.max(0,Math.min(DR_WINS,R.win|0)),loss:Math.max(0,Math.min(DR_LOSS,R.loss|0)),k:Math.max(0,R.k|0),log:Array.isArray(R.log)?R.log.slice(-10).map(l=>({n:String(l.n||'').slice(0,24),w:l.w?1:0})):[]}:null,
+    pub:x.pub&&Number.isInteger(x.pub.w)?{w:x.pub.w,d:pubDeck(x.pub.d)}:null}}
+function drState(){if(!S.dr||typeof S.dr!=='object'||!('n' in S.dr))S.dr=cleanDr(S.dr);const s=S.dr,d=kstDay(),w=weekIdx();if(s.day!==d){s.day=d;s.n=0}if(s.w!==w){s.w=w;s.best=0;s.runs=0}if(s.run===undefined)s.run=null;return s}
+const drSeed=(R,k)=>sjHash(kstDay()+'|'+(UID||'me')+'|dr|'+(drState().runs)+'|'+k);
+// 3명 후보: 서로 다른 병종, ★5는 3명까지
+function drOffer(pk,r){const n5=pk.filter(g=>GMAP[g].rar===5).length,cls=['inf','cav','arc','tac'];for(let i=cls.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[cls[i],cls[j]]=[cls[j],cls[i]]}
+  const out=[];for(const c of cls){if(out.length>=3)break;const x=r(),rar=x<.3?5:x<.7?4:3;let pool=GENS.filter(g=>g.cls===c&&!pk.includes(g.id)&&!out.includes(g.id)&&(g.rar!==5||n5<MAX5));const pr=pool.filter(g=>g.rar===rar);if(pr.length)pool=pr;if(pool.length)out.push(pool[Math.floor(r()*pool.length)].id)}
+  return out}
+function drStart(){const s=drState();if(s.run)return;if(s.n>=1){toast('오늘 드래프트를 이미 했어요');return}
+  s.n=1;s.runs++;const R={pk:[],of:null,f:'fangyuan',o:[],win:0,loss:0,k:0,log:[]};R.of=drOffer(R.pk,mulberry(drSeed(R,0)));s.run=R;save();renderView()}
+function drPick(g){const s=drState(),R=s.run;if(!R||!R.of||!R.of.includes(g))return;R.pk.push(g);
+  if(R.pk.length>=NSLOT){R.of=null;R.o=R.pk.slice();
+    // 기본 자리: 보병·기병 앞, 궁병·책사 뒤
+    const ord={inf:0,cav:1,arc:2,tac:3};R.o.sort((a,b)=>ord[GMAP[a].cls]-ord[GMAP[b].cls])}
+  else R.of=drOffer(R.pk,mulberry(drSeed(R,R.pk.length)));save();renderView()}
+const drSpecs=R=>R.o.map((g,i)=>drSpec(g,i,R.f));
+// AI 드래프트 덱: 후보 3명 중 전투력이 가장 높은 장수를 pb 확률로(내 승수가 오를수록 강해져요)
+function drAi(seed,pb=.6){const r=mulberry(seed),pk=[];while(pk.length<NSLOT){const of=drOffer(pk,r);const best=of.map(g=>[g,deckPower([drSpec(g,0,'fangyuan')])]).sort((a,b)=>b[1]-a[1]);pk.push(best[r()<pb?0:Math.min(1,best.length-1)][0])}
+  const ord={inf:0,cav:1,arc:2,tac:3};pk.sort((a,b)=>ord[GMAP[a].cls]-ord[GMAP[b].cls]);const f=Object.keys(FORM)[Math.floor(r()*6)];return pk.map((g,i)=>drSpec(g,i,f))}
+function drFoe(R){const s=drState(),w=weekIdx(),seed=drSeed(R,100+R.k);
+  const pool=(PLAYERS||[]).filter(p=>p.id!==UID&&p.sg&&p.sg.dr&&p.sg.dr.w===w&&p.sg.dr.d&&p.sg.dr.d.length);
+  const r=mulberry(seed);if(pool.length&&r()<.8){const p=pool[Math.floor(r()*pool.length)];return {name:nameOf(p.id),d:p.sg.dr.d.map(x=>({...x,lv:DR_LV,i:[],cb:null})),user:1}}
+  return {name:'떠돌이 군주',d:drAi(seed,Math.min(1,.6+.07*R.win))}}
+const drGold=w=>w*DR_WIN_G+(w>=DR_WINS?DR_FULL_G:0);
+function drEnd(R){const s=drState();const g=drGold(R.win);S.gold+=g;if(R.win>s.best)s.best=R.win;s.run=null;save();renderTop();return g}
+function drFight(){const s=drState(),R=s.run;if(!R||R.of||R.pk.length<NSLOT)return;
+  const mine=drSpecs(R);s.pub={w:weekIdx(),d:mine.map(x=>({g:x.g,lv:x.lv,d:x.d,i:[],p:x.p,f:x.f}))};
+  const foe=drFoe(R),seed=drSeed(R,200+R.k),res=simulate(mine,foe.d,seed,WAR_OPT);R.k++;
+  if(res.win)R.win++;else R.loss++;R.log.push({n:foe.name,w:res.win?1:0});
+  const over=R.win>=DR_WINS||R.loss>=DR_LOSS;let gold=0;const W=R.win,L=R.loss;if(over)gold=drEnd(R);else save();
+  playBattle(res,`드래프트 ${W+L}전`,'내 드래프트',foe.name,()=>`<p class="sub">${W}승 ${L}패${over?' · 드래프트 끝':''}</p>${over?`<div class="row" style="justify-content:center;gap:6px"><span class="coin"><b class="sl gold">金</b>+${fmt(gold)}</span></div>`:''}`,{})}
+function drRank(){const w=weekIdx(),rows=[];(PLAYERS||[]).forEach(p=>{if(p.id===UID)return;const d=p.sg&&p.sg.dr;if(d&&d.w===w&&d.b)rows.push({id:p.id,b:d.b})});const s=drState();if(s.best)rows.push({id:UID||'me',b:s.best,me:1});return rows.sort((a,b)=>b.b-a.b)}
+function vDr(){
+  const s=drState(),R=s.run;
+  let h=`<div class="banner-card"><div class="big">群選</div><h2>군웅 드래프트</h2>${infoP('dr',`하루 1번 · 3명 중 1명씩 5번 골라 ${DR_WINS}승 도전`,`104명 중 3명씩 보여 주는 후보에서 1명씩 5번 골라 덱을 만들어요. 내 보유 장수와 상관없이 모두 Lv.${DR_LV}·같은 돌파·보물 없이 싸워요. 후보 3명은 서로 병종이 달라요. 다 고르면 진형과 자리를 정하고, ${DR_WINS}승 또는 ${DR_LOSS}패가 될 때까지 연달아 싸워요. 상대는 이번 주 다른 군주가 만든 드래프트 덱이고, 없으면 AI 드래프트 덱이에요. 승리마다 금 ${fmt(DR_WIN_G)}, ${DR_WINS}승이면 금 ${fmt(DR_FULL_G)}을 더 줘요. 다른 나라 장수를 섞으면 협공이 붙어요.`,'margin:0')}
+   <div class="stats" style="grid-template-columns:repeat(2,1fr);margin:10px 0 0"><div class="stat"><small>오늘 입장</small><b>${s.n}/1</b></div><div class="stat"><small>이번 주 최고</small><b>${s.best}승</b></div></div>`;
+  if(!R){h+=`<button type="button" class="btn red wide" data-dr="start" style="margin-top:10px" ${s.n>=1?'disabled':''}>${s.n>=1?'오늘 드래프트를 했어요 · 밤 10시에 다시':'드래프트 시작'}</button></div>`}
+  else if(R.of){h+=`</div><h3 style="margin:4px 0 6px">${R.pk.length+1}번째 장수 고르기 <small style="color:var(--mute);font-weight:400">${R.pk.length}/${NSLOT}</small></h3>
+     ${R.pk.length?`<div class="row" style="gap:4px;flex-wrap:wrap;margin-bottom:8px">${R.pk.map(g=>seal(GMAP[g],'sm')).join('')}</div>`:''}
+     <div class="list">${R.of.map(g=>{const G=GMAP[g],sk=skillOf(G),xp=R.pk.length?xpN([...R.pk,g].map((x,i)=>drSpec(x,i,'fangyuan')))-xpN(R.pk.map((x,i)=>drSpec(x,i,'fangyuan'))):0;
+       return `<button type="button" class="li" data-drpick="${g}" style="text-align:left">${seal(G,'sm')}<div class="info"><b>${esc(G.name)} <small style="color:var(--mute);font-weight:400">${CLS[G.cls].n} · ★${G.rar} · ${FAC[G.fac]}</small>${xp>0?` <span class="chip" style="color:var(--jade);border-color:var(--jade)">협공 +${xp}</span>`:''}</b><span>${esc(sk.n)} · ${esc(sk.d||'')}</span></div></button>`}).join('')}</div>`}
+  else{const mine=drSpecs(R),xp=xpN(mine);
+    h+=`</div><div class="row" style="margin:4px 0 6px"><h3 style="margin:0">내 드래프트 덱</h3><span class="sp"></span><span class="chip">${R.win}승 ${R.loss}패</span></div>
+     ${R.win+R.loss===0?arrHtml('dr',R.f,R.o):`<div class="row" style="gap:4px;flex-wrap:wrap;margin-bottom:6px">${R.o.map(g=>seal(GMAP[g],'sm')).join('')}<span class="sub" style="margin:0 0 0 6px">${FORM[R.f].n}</span></div>`}
+     <p class="sub" style="margin:8px 0">전투력 ${fmt(deckPower(mine))}${xp?` · 협공 짝 ${xp}개`:''} · 진형과 자리는 첫 전투 전까지 바꿀 수 있어요.</p>
+     <div class="row" style="gap:8px"><button type="button" class="btn ghost" data-dr="quit">그만두기</button><button type="button" class="btn red" style="flex:1" data-dr="fight">${R.win+R.loss+1}전 시작</button></div>
+     <p class="sub" style="margin:6px 0 0;font-size:12px">지금까지 금 ${fmt(drGold(R.win))} · 그만두면 지금 승수만큼 받아요.</p>
+     ${R.log.length?`<div class="chips" style="margin-top:8px">${R.log.map(l=>`<span class="chip" style="color:${l.w?'var(--cinnabar)':'var(--mute)'}">${l.w?'勝':'敗'} ${esc(l.n)}</span>`).join('')}</div>`:''}`}
+  const rk=drRank();
+  h+=`<div class="labbox" style="margin-top:12px"><div class="row"><h3 style="margin:0">이번 주 최고 승수</h3><span class="sp"></span><span class="chip">${weekRange(weekIdx())}</span></div>
+   ${rk.length?`<div class="list" style="margin-top:8px">${rk.slice(0,20).map((r,i)=>`<div class="li ${r.me?'me':''}"><span class="rank">${i+1}</span><div class="info"><b>${esc(r.me?'나':nameOf(r.id))}</b><span>${r.b}승</span></div></div>`).join('')}</div>`:'<p class="sub" style="margin:8px 0 0">이번 주 기록이 아직 없어요.</p>'}</div>`;
+  return h}
+document.addEventListener('click',e=>{
+  const b=e.target.closest('[data-dr]');if(b&&!b.disabled){const a=b.dataset.dr;
+    if(a==='start')drStart();else if(a==='fight')drFight();
+    else if(a==='quit'){const R=drState().run;if(!R)return;openSheet(`<div class="sheet-h"><h2 style="margin:0">드래프트를 그만둘까요?</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div><p class="sub">${R.win}승까지의 보상(금 +${fmt(drGold(R.win))})을 받고 끝내요. 오늘 입장은 돌아오지 않아요.</p><div class="row" style="gap:8px"><button type="button" class="btn ghost" data-close style="flex:1">계속하기</button><button type="button" class="btn red" data-dr="quitok" style="flex:1">그만두기</button></div>`)}
+    else if(a==='quitok'){const R=drState().run;if(!R)return;const g=drEnd(R);closeSheet();renderView();toast(`드래프트 종료 · 금 +${fmt(g)}`)}
+    return}
+  const p=e.target.closest('[data-drpick]');if(p){drPick(p.dataset.drpick)}
+});
+
+/* ---- 주간 난세 규칙전 ---- */
+const RL_DAILY_N=5, RL_WIN_G=400, RL_MS=[[15,2000],[30,3000],[60,5000]];
+// mods: 병종별 [체력, 공격, 속도] 배율
+const RULES=[
+ {id:'notac',n:'무략금지',hz:'無略',d:'책사 없이 무력으로만 싸워요. 책사는 진형에 넣을 수 없어요.',ok:G=>G.cls!=='tac'},
+ {id:'cav',n:'기마대전',hz:'騎馬',d:'기병만 나갈 수 있고, 기병 공격 +10%.',ok:G=>G.cls==='cav',mods:{cav:[1,1.1,1]}},
+ {id:'onefac',n:'군웅할거',hz:'群雄',d:'한 나라에서 1명만 넣을 수 있어요. 여섯 나라를 섞어 협공을 이어 보세요.',ok:G=>true,oneFac:1},
+ {id:'low',n:'신진기예',hz:'新進',d:'★4 이하 장수만 나갈 수 있어요.',ok:G=>G.rar<=4},
+ {id:'snow',n:'설중행군',hz:'雪中',d:'눈보라 속 장기전. 모든 장수 속도 −20%, 체력 +30%.',ok:G=>true,mods:{inf:[1.3,1,.8],cav:[1.3,1,.8],arc:[1.3,1,.8],tac:[1.3,1,.8]},wx:'snow',scene:'snow'},
+ {id:'bow',n:'궁노사격',hz:'弓弩',d:'원거리전. 궁병·책사 공격 +25%, 보병·기병 체력 +15%.',ok:G=>true,mods:{arc:[1,1.25,1],tac:[1,1.25,1],inf:[1.15,1,1],cav:[1.15,1,1]}}
+];
+const RLMAP=Object.fromEntries(RULES.map(r=>[r.id,r]));
+const rlRule=(w=weekIdx())=>RULES[((w%RULES.length)+RULES.length)%RULES.length];
+function rlLegal(R,gs){if(gs.some(g=>!GMAP[g]||!R.ok(GMAP[g])))return false;if(R.oneFac&&new Set(gs.map(g=>GMAP[g].fac)).size<gs.length)return false;return gs.filter(g=>GMAP[g].rar===5).length<=MAX5}
+const rlMod=(R,s)=>{const m=R.mods&&R.mods[GMAP[s.g].cls];return m?{...s,hx:m[0],ax:m[1],sx:m[2]}:s};
+function cleanRl(x){x=x&&typeof x==='object'?x:{};const ids=a=>(Array.isArray(a)?a:[]).filter(g=>typeof g==='string'&&GMAP[g]);
+  return {w:Number.isInteger(x.w)?x.w:-1,o:ids(x.o).slice(0,NSLOT),f:formKey(x.f)||'fangyuan',day:typeof x.day==='string'?x.day:'',n:Math.max(0,Math.min(RL_DAILY_N,x.n|0)),p:Math.max(0,x.p|0),cl:Array.isArray(x.cl)?x.cl.filter(Number.isInteger).slice(0,RL_MS.length):[],log:Array.isArray(x.log)?x.log.slice(-RL_DAILY_N).map(l=>({n:String(l.n||'').slice(0,24),w:l.w?1:0})):[]}}
+function rlState(){if(!S.rl||typeof S.rl!=='object'||!('cl' in S.rl))S.rl=cleanRl(S.rl);const s=S.rl,d=kstDay(),w=weekIdx();
+  if(s.w!==w){s.w=w;s.o=[];s.p=0;s.cl=[]}if(s.day!==d){s.day=d;s.n=0;s.log=[]}s.o=s.o.filter(g=>S.gens[g]);return s}
+const rlSpecs=s=>s.o.map((g,i)=>{const x=specOf(g,defLv(g));return x?{...x,p:i,f:s.f}:null}).filter(Boolean);
+function rlPub(){if(!S||!S.rl)return null;const s=rlState(),R=rlRule();if(!s.o.length||!rlLegal(R,s.o))return null;return {w:s.w,p:s.p,d:rlSpecs(s).map(x=>({g:x.g,lv:x.lv,d:x.d,i:x.i,cb:x.cb,p:x.p,f:x.f}))}}
+// 상대: 이번 주 규칙 진형을 등록한 다른 군주 + 오늘의 가상 군주 3명(내 전투력에 맞춘 규칙 덱)
+function rlAi(k,R=rlRule()){const s=rlState(),r=mulberry(sjHash(kstDay()+'|rl|'+(UID||'me')+'|'+k)),pk=[];let guard=0;
+  while(pk.length<NSLOT&&guard++<800){const g=GENS[Math.floor(r()*GENS.length)].id;if(pk.includes(g))continue;if(rlLegal(R,[...pk,g]))pk.push(g)}
+  const mine=rlSpecs(s),lv=mine.length?Math.round(mine.reduce((a,x)=>a+x.lv,0)/mine.length):Math.max(...S.slv),itd=mine.length?Math.round(mine.reduce((a,x)=>a+specItd(x),0)/mine.length):0,f=Object.keys(FORM)[Math.floor(r()*6)];
+  const base=pk.map((g,i)=>({g,lv,d:Math.floor(r()*(maxD(GMAP[g].rar)+1)),i:npcIts(r,GMAP[g].cls,itd),p:i,f}));
+  const my=mine.length?deckPower(mine.map(x=>rlMod(R,x))):deckPower(base),sc=(.85+.1*k)*my/Math.max(1,deckPower(base.map(x=>rlMod(R,x))));return base.map(x=>({...x,sc}))}
+function rlFoes(){const w=weekIdx(),R=rlRule(),out=(PLAYERS||[]).filter(p=>p.id!==UID&&p.sg&&p.sg.rl&&p.sg.rl.w===w&&p.sg.rl.d.length&&rlLegal(R,p.sg.rl.d.map(x=>x.g))).map(p=>({id:p.id,name:nameOf(p.id),d:p.sg.rl.d,pt:p.sg.rl.p|0}));
+  for(let k=0;k<3;k++)out.push({id:'ai'+k,name:`가상 군주 ${k+1}`,d:rlAi(k),ai:1});return out}
+function rlGo(id){const s=rlState(),R=rlRule();if(s.n>=RL_DAILY_N){toast('오늘 도전을 모두 했어요');return}if(!s.o.length||!rlLegal(R,s.o)){toast('규칙 진형을 먼저 짜세요');return}
+  const F=rlFoes().find(x=>x.id===id);if(!F)return;const mine=rlSpecs(s).map(x=>rlMod(R,x)),foe=F.d.map(x=>rlMod(R,x)),seed=sjHash(kstDay()+'|'+(UID||'me')+'|'+id+'|'+s.n)%2147483647;
+  const res=simulate(mine,foe,seed,WAR_OPT);s.n++;if(res.win){s.p+=3;S.gold+=RL_WIN_G}s.log.push({n:F.name,w:res.win?1:0});save();renderTop();
+  playBattle(res,`난세 규칙전 · ${R.n}`,'내 규칙 진형',F.name,()=>`${res.win?`<div class="row" style="justify-content:center;gap:6px"><span class="coin"><b class="sl gold">金</b>+${fmt(RL_WIN_G)}</span></div>`:''}<p class="sub">${res.win?'승리 +3점 · ':''}이번 주 ${s.p}점 · 오늘 ${s.n}/${RL_DAILY_N}</p>`,{scene:R.scene,wx:R.wx})}
+function rlRank(){const w=weekIdx(),rows=[];(PLAYERS||[]).forEach(p=>{if(p.id===UID)return;const r=p.sg&&p.sg.rl;if(r&&r.w===w&&r.p)rows.push({id:p.id,p:r.p})});const s=rlState();if(s.p)rows.push({id:UID||'me',p:s.p,me:1});return rows.sort((a,b)=>b.p-a.p)}
+function rlPickHtml(){const s=rlState(),R=rlRule();const own=Object.keys(S.gens).filter(g=>GMAP[g]).sort((a,b)=>GMAP[b].rar-GMAP[a].rar||GMAP[a].name.localeCompare(GMAP[b].name,'ko'));
+  return `<p class="sub">${esc(R.d)} 고른 순서대로 자리에 들어가요(최대 ${NSLOT}명).</p><div class="dl-pick">${own.map(g=>{const on=s.o.includes(g),ok=on||(s.o.length<NSLOT&&rlLegal(R,[...s.o,g]));
+    return `<button type="button" data-rlpick="${g}" aria-pressed="${on}" ${ok?'':'disabled style="opacity:.35"'}>${seal(GMAP[g],'sm')}<small>${esc(GMAP[g].name)}</small></button>`}).join('')}</div>
+   <button type="button" class="btn wide" data-close style="margin-top:10px">완료 · ${s.o.length}/${NSLOT}명</button>`}
+function vRl(){
+  const s=rlState(),R=rlRule(),left=RL_DAILY_N-s.n,legal=s.o.length&&rlLegal(R,s.o),nx=rlRule(weekIdx()+1);
+  let h=`<div class="banner-card"><div class="big">${R.hz}</div><h2>난세 규칙전 · ${esc(R.n)}</h2><p class="sub" style="margin:0 0 6px">${esc(R.d)}</p>${infoP('rl',`매주 규칙이 바뀌어요 · 다음 주 ${nx.n}`,`매주 규칙이 하나씩 바뀌어요(일요일 밤 10시). 내 장수로 규칙에 맞는 진형을 짜 두면 다른 군주가 도전하는 상대가 되고, 나는 하루 ${RL_DAILY_N}번 다른 군주의 규칙 진형이나 가상 군주에게 도전해요. 이기면 3점과 금 ${fmt(RL_WIN_G)}. 이번 주 점수 ${RL_MS.map(([p,g])=>`${p}점 금 ${fmt(g)}`).join(' · ')}. 야전 규칙(격전·역병)으로 싸워요.`,'margin:0')}
+   <div class="stats" style="grid-template-columns:repeat(2,1fr);margin:10px 0 0"><div class="stat"><small>이번 주 점수</small><b>${s.p}점</b></div><div class="stat"><small>오늘 남은 도전</small><b>${left}/${RL_DAILY_N}</b></div></div>
+   <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap">${RL_MS.map(([p,g],i)=>{const got=s.cl.includes(i),can=!got&&s.p>=p;return `<button type="button" class="btn sm ${can?'red':'ghost'}" data-rlms="${i}" ${can?'':'disabled'}>${p}점 · 金${fmt(g)}${got?' ✓':''}</button>`}).join('')}</div></div>`;
+  h+=`<div class="row" style="margin:4px 0 6px"><h3 style="margin:0">내 규칙 진형</h3><span class="sp"></span><button type="button" class="btn ghost sm" data-rledit>장수 고르기</button></div>`;
+  if(!s.o.length)h+=`<div class="empty-state">이번 주 규칙에 맞는 장수를 골라 진형을 짜세요.</div>`;
+  else h+=arrHtml('rl',s.f,s.o)+`<p class="sub" style="margin:6px 0">${legal?`전투력 ${fmt(deckPower(rlSpecs(s).map(x=>rlMod(R,x))))} (규칙 적용) · 다른 군주에게 이 진형이 상대로 보여요.`:'<b style="color:var(--cinnabar)">규칙에 맞지 않아요.</b>'}</p>`;
+  const foes=rlFoes();
+  h+=`<h3 style="margin:12px 0 6px">도전 상대</h3><div class="list">${foes.map(F=>`<div class="li"><div class="info"><b>${esc(F.name)}${F.ai?'':` <small style="color:var(--mute);font-weight:400">${F.pt}점</small>`}</b><span class="row" style="gap:2px;flex-wrap:wrap">${F.d.map(x=>seal(GMAP[x.g],'sm')).join('')}</span><span class="num">전투력 ${fmt(deckPower(F.d.map(x=>rlMod(R,x))))}</span></div><button type="button" class="btn sm red" data-rlgo="${esc(F.id)}" ${left<=0||!legal?'disabled':''}>도전</button></div>`).join('')}</div>`;
+  if(s.log.length)h+=`<div class="chips" style="margin-top:8px">${s.log.map(l=>`<span class="chip" style="color:${l.w?'var(--cinnabar)':'var(--mute)'}">${l.w?'勝':'敗'} ${esc(l.n)}</span>`).join('')}</div>`;
+  const rk=rlRank();
+  h+=`<div class="labbox" style="margin-top:12px"><div class="row"><h3 style="margin:0">이번 주 순위</h3><span class="sp"></span><span class="chip">${weekRange(weekIdx())}</span></div>
+   ${rk.length?`<div class="list" style="margin-top:8px">${rk.slice(0,20).map((r,i)=>`<div class="li ${r.me?'me':''}"><span class="rank">${i+1}</span><div class="info"><b>${esc(r.me?'나':nameOf(r.id))}</b><span>${r.p}점</span></div></div>`).join('')}</div>`:'<p class="sub" style="margin:8px 0 0">이번 주 기록이 아직 없어요.</p>'}</div>`;
+  return h}
+document.addEventListener('click',e=>{
+  if(e.target.closest('[data-rledit]')){openSheet(`<div class="sheet-h"><h2 style="margin:0">규칙 진형 · ${esc(rlRule().n)}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div><div id="rl-pick">${rlPickHtml()}</div>`);return}
+  const p=e.target.closest('[data-rlpick]');if(p&&!p.disabled){const s=rlState(),g=p.dataset.rlpick,i=s.o.indexOf(g);if(i>=0)s.o.splice(i,1);else if(s.o.length<NSLOT)s.o.push(g);arrSw.rl=null;save();const box=$('#rl-pick');if(box)box.innerHTML=rlPickHtml();renderView();return}
+  const g=e.target.closest('[data-rlgo]');if(g&&!g.disabled){rlGo(g.dataset.rlgo);return}
+  const m=e.target.closest('[data-rlms]');if(m&&!m.disabled){const i=+m.dataset.rlms,s=rlState();if(s.cl.includes(i)||s.p<RL_MS[i][0])return;s.cl.push(i);S.gold+=RL_MS[i][1];save();renderTop();renderView();toast(`규칙전 ${RL_MS[i][0]}점 달성 · 금 +${fmt(RL_MS[i][1])}`)}
+});
+function drPub(){if(!S||!S.dr)return null;const s=drState(),w=weekIdx();if(!s.best&&!(s.pub&&s.pub.w===w))return null;return {w,b:s.best,d:s.pub&&s.pub.w===w?s.pub.d:[]}}
 /* ---------------- 출정 ---------------- */
 function vStage(){
   if(stMode==='sj')return `<h2>출정</h2>`+stSegHtml()+vSj();if(stMode==='dl')return `<h2>출정</h2>`+stSegHtml()+vDl();
@@ -5038,10 +5192,10 @@ function cleanSiege(x){if(!x||typeof x!=='object')return {};const o={day:typeof 
 function siegePub(){const s=S&&S.siege,r={},td=sDay();if(s&&s.w===td&&s.wb)for(const[k,v]of Object.entries(s.wb))r[k]={t:v.t,hp:v.hp,d:v.d};
   // v4.0.0: 어제 기록(pr)도 함께 올려 다음 날 순위 정산에 써요
   let pr=null;{const P=s&&(s.w===td-1?{w:s.w,wb:s.wb}:s.prev&&s.prev.w===td-1?s.prev:null);if(P){const rr={};for(const[k,v]of Object.entries(P.wb||{}))rr[k]={t:v.t,hp:v.hp,d:v.d};pr={sd:P.w,r:rr}}}
-  return {w:weekIdx(),sd:td,r,pr,a:attPub(),t:S&&S.tw&&S.tw.w===weekIdx()&&S.tw.best?{w:S.tw.w,f:S.tw.best,c:S.tw.c|0}:null,e:S&&S.ex&&S.ex.w===weekIdx()&&S.ex.best?{w:S.ex.w,f:S.ex.best,c:S.ex.c|0}:null,m:exMoPub(),du:arPub(),pdu:arPubPrev()}}
+  return {w:weekIdx(),sd:td,r,pr,a:attPub(),t:S&&S.tw&&S.tw.w===weekIdx()&&S.tw.best?{w:S.tw.w,f:S.tw.best,c:S.tw.c|0}:null,e:S&&S.ex&&S.ex.w===weekIdx()&&S.ex.best?{w:S.ex.w,f:S.ex.best,c:S.ex.c|0}:null,m:exMoPub(),du:arPub(),pdu:arPubPrev(),dr:drPub(),rl:rlPub()}}
 function cleanSg(x){if(!x||typeof x!=='object'||!Number.isInteger(x.w))return null;const r={};for(const k of Object.keys(SIEGE)){const v=cleanRec(x.r&&x.r[k]);if(v)r[k]=v}
   const sd=Number.isInteger(x.sd)?x.sd:null;let pr=null;if(x.pr&&Number.isInteger(x.pr.sd)){const rr={};for(const k of Object.keys(SIEGE)){const v=cleanRec(x.pr.r&&x.pr.r[k]);if(v)rr[k]=v}pr={sd:x.pr.sd,r:rr}}
-  const a=x.a&&typeof x.a.k==='string'&&typeof x.a.f==='string'?{k:x.a.k.slice(0,4),n:Math.max(0,Math.min(400,x.a.n|0)),f:x.a.f.slice(0,10)}:null;const t=x.t&&Number.isInteger(x.t.w)?{w:x.t.w,f:Math.max(0,Math.min(30,x.t.f|0)),c:Math.max(0,Math.min(99,x.t.c|0))}:null;const e=x.e&&Number.isInteger(x.e.w)?{w:x.e.w,f:Math.max(0,Math.min(21,x.e.f|0)),c:Math.max(0,Math.min(99,x.e.c|0))}:null;const m=x.m&&typeof x.m.k==='string'?{k:x.m.k.slice(0,7),p:Math.max(0,Math.min(99999,x.m.p|0)),n:Math.max(0,Math.min(99999,x.m.n|0)),h:Math.max(0,Math.min(99999,x.m.h|0))}:null;return {w:x.w,sd,r,pr,a,t,e,m,du:cleanDu(x.du),pdu:cleanDu(x.pdu)}}
+  const a=x.a&&typeof x.a.k==='string'&&typeof x.a.f==='string'?{k:x.a.k.slice(0,4),n:Math.max(0,Math.min(400,x.a.n|0)),f:x.a.f.slice(0,10)}:null;const t=x.t&&Number.isInteger(x.t.w)?{w:x.t.w,f:Math.max(0,Math.min(30,x.t.f|0)),c:Math.max(0,Math.min(99,x.t.c|0))}:null;const e=x.e&&Number.isInteger(x.e.w)?{w:x.e.w,f:Math.max(0,Math.min(21,x.e.f|0)),c:Math.max(0,Math.min(99,x.e.c|0))}:null;const m=x.m&&typeof x.m.k==='string'?{k:x.m.k.slice(0,7),p:Math.max(0,Math.min(99999,x.m.p|0)),n:Math.max(0,Math.min(99999,x.m.n|0)),h:Math.max(0,Math.min(99999,x.m.h|0))}:null;return {w:x.w,sd,r,pr,a,t,e,m,du:cleanDu(x.du),pdu:cleanDu(x.pdu),dr:x.dr&&Number.isInteger(x.dr.w)?{w:x.dr.w,b:Math.max(0,Math.min(7,x.dr.b|0)),d:pubDeck(x.dr.d)}:null,rl:x.rl&&Number.isInteger(x.rl.w)?{w:x.rl.w,p:Math.max(0,Math.min(999,x.rl.p|0)),d:pubDeck(x.rl.d)}:null}}
 function siegeWave(key,seed,lv,itd,tend){
   const C=SIEGE[key];
   return n=>{const r=mulberry(seed*977+n*131);const pool=Object.keys(GMAP).filter(g=>g!==C.boss&&(!tend||tend==='any'||GMAP[g].cls===tend));const pick=[C.boss];let n5=GMAP[C.boss].rar===5?1:0,guard=0;
@@ -6507,11 +6661,11 @@ document.addEventListener('click',e=>{
   const p=e.target.closest('[data-expick]');if(p){exPick(p.dataset.expick);return}
   const w=e.target.closest('[data-exsw]');if(w){exSwap(w.dataset.exsw);return}
 });
-function pvpSegHtml(){return `<div class="seg" role="group" aria-label="전장 메뉴"><button type="button" data-pvpm="duel" aria-pressed="${pvpMode==='duel'}">야전</button><button type="button" data-pvpm="ar" aria-pressed="${pvpMode==='ar'}">천하제일 무도회</button></div><p class="sub" style="margin:-6px 0 10px;font-size:12px">전장은 다른 군주와 겨루는 곳이에요. 토벌전·수성전·천명탑·원정군은 출정으로 옮겼어요.</p>`}
+function pvpSegHtml(){return `<div class="seg" role="group" aria-label="전장 메뉴"><button type="button" data-pvpm="duel" aria-pressed="${pvpMode==='duel'}">야전</button><button type="button" data-pvpm="ar" aria-pressed="${pvpMode==='ar'}">무도회</button><button type="button" data-pvpm="dr" aria-pressed="${pvpMode==='dr'}">드래프트</button><button type="button" data-pvpm="rl" aria-pressed="${pvpMode==='rl'}">규칙전</button></div><p class="sub" style="margin:-6px 0 10px;font-size:12px">전장은 다른 군주와 겨루는 곳이에요. 토벌전·수성전·천명탑·원정군은 출정으로 옮겼어요.</p>`}
 function vPvp(){
   const myP=deckPower(defSpecs());
   let h=`<div class="row"><h2>전장</h2><span class="sp"></span>${MODE==='shared'?'<button type="button" class="btn ghost sm" id="settings">내 정보</button>':''}</div>`;
-  if(pvpMode!=='ar')pvpMode='duel';h+=pvpSegHtml();if(pvpMode==='ar')return h+vAr();
+  if(!['ar','dr','rl'].includes(pvpMode))pvpMode='duel';h+=pvpSegHtml();if(pvpMode==='ar')return h+vAr();if(pvpMode==='dr')return h+vDr();if(pvpMode==='rl')return h+vRl();
   h+=deckQuickHtml('공격 진형');
   if(MODE!=='shared'){
     return h+`<p class="sub">다른 군주의 방어 진형에 도전하는 곳이에요.</p><div class="empty-state"><b>對戰</b>서버 설정이 끝나면 친구들과 겨룰 수 있어요. 지금은 연습전만 가능합니다.</div>
