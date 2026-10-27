@@ -827,7 +827,7 @@ html.work #rt-notif,html.work #rt-cut{display:none}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v9.5.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v9.5.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -2978,11 +2978,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='9.5.1';
+const GAME_VERSION='9.5.2';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['角',{ap:30}],['將',{gpk:10}],['選',{isk:1}],['換',{xtk:1}]];  // v9.5.0: 4·5일 룰렛 소환권 → 나팔 30 · 등용권 10
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'9.5.2',date:'2026-10-27',title:'군웅할거 · 나라별 시작',reward:{ap:30},items:[
+  '군웅할거 진형의 내 장수는 이제 고른 나라 장수만 넣을 수 있어요. 처음에는 그 나라 장수로만 천하를 노려요.',
+  '성을 점령해 합류한 수비장은 지금처럼 나라와 관계없이 진형에 넣을 수 있어요. 영토가 넓어질수록 여러 나라 장수가 모여요.',
+  '시작 합류 장수는 시작 성 수비장 중 우리 나라 장수만 들어와요. 군웅은 관해·장량이 함께 시작해요.',
+  '이미 시작한 이번 시즌은 세력과 점령한 성을 그대로 두고, 진형에 있던 다른 나라 내 장수와 시작 성의 다른 나라 수비장만 빠져요.',
+  '난세 규칙전의 \'군웅할거\' 규칙(한 나라에서 1명만)은 이름을 \'천하연합\'으로 바꿨어요. 규칙 내용은 그대로예요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'9.5.1',date:'2026-10-27',title:'장수 6명 새 그림',reward:{ap:30},items:[
   '조조·순욱·고순·장임·제갈량·육손이 새 그림과 모션으로 바뀌었어요.',
   '조조는 큰 낫을 휘둘러 보랏빛 초승달을 날리고, 순욱은 금빛 방패막을 펼친 뒤 요정 칼날을 쏴요.',
@@ -4369,7 +4376,7 @@ const RL_DAILY_N=5, RL_WIN_G=400, RL_MS=[[15,2000],[30,3000],[60,5000]];
 const RULES=[
  {id:'notac',n:'무략금지',hz:'無略',d:'책사 없이 무력으로만 싸워요. 책사는 진형에 넣을 수 없어요.',ok:G=>G.cls!=='tac'},
  {id:'cav',n:'기마대전',hz:'騎馬',d:'기병만 나갈 수 있고, 기병 공격 +10%.',ok:G=>G.cls==='cav',mods:{cav:[1,1.1,1]}},
- {id:'onefac',n:'군웅할거',hz:'群雄',d:'한 나라에서 1명만 넣을 수 있어요. 여섯 나라를 섞어 협공을 이어 보세요.',ok:G=>true,oneFac:1},
+ {id:'onefac',n:'천하연합',hz:'連合',d:'한 나라에서 1명만 넣을 수 있어요. 여섯 나라를 섞어 협공을 이어 보세요.',ok:G=>true,oneFac:1},
  {id:'low',n:'신진기예',hz:'新進',d:'★4 이하 장수만 나갈 수 있어요.',ok:G=>G.rar<=4},
  {id:'snow',n:'설중행군',hz:'雪中',d:'눈보라 속 장기전. 모든 장수 속도 −20%, 체력 +30%.',ok:G=>true,mods:{inf:[1.3,1,.8],cav:[1.3,1,.8],arc:[1.3,1,.8],tac:[1.3,1,.8]},wx:'snow',scene:'snow'},
  {id:'bow',n:'궁노사격',hz:'弓弩',d:'원거리전. 궁병·책사 공격 +25%, 보병·기병 체력 +15%.',ok:G=>true,mods:{arc:[1,1.25,1],tac:[1,1.25,1],inf:[1.15,1,1],cav:[1.15,1,1]}}
@@ -4545,7 +4552,7 @@ const GW_K=Object.keys(GW_C);
 const GW_F={wei:{h:'wancheng',c:['wancheng','fancheng','hefei']},shu:{h:'luocheng',c:['luocheng','jiameng','jiange']},wu:{h:'ruxu',c:['ruxu','jiangling','changsha']},
   dong:{h:'changan',c:['changan','sishui','chencang']},yuan:{h:'yecheng',c:['yecheng','yijing','beihai']},qun:{h:'xiapi',c:['xiapi','xiaopei']}};
 // 시작 세력 난이도(시뮬로 정함): 0 쉬움 · 1 보통 · 2 어려움
-let GW_LV={wei:0,shu:2,wu:1,dong:1,yuan:1,qun:1};  // 시뮬(기본 진형 8종 × 4, 덱 바꾸지 않고 가까운 성부터): 통일률 위 88% · 오·동탁·원가 75% · 군웅 69% · 촉 50%
+let GW_LV={wei:0,shu:2,wu:0,dong:0,yuan:1,qun:2};  // v9.5.2 시뮬(sim/gwsim952.js, 그 나라 5명 진형 · 2명+시작 합류, 각 16판): 통일률 위·오·동탁 100% · 원가 75~94% · 촉 56~75% · 군웅 50~81%
 const GW_LVN=['쉬움','보통','어려움'], GW_UG=[5000,6500,8000];
 const GW_TR={wei:['조조군','曹'],shu:['유비군','劉'],wu:['손권군','孫'],dong:['동탁군','董'],yuan:['원소군','袁'],qun:['군웅군','群']};
 const GW_GL=3, GW_GLMAX=9, GW_INC=30, GW_TOK={3:5,4:10,5:30}, GW_TH=.65, GW_DEFG=100;
@@ -4563,12 +4570,12 @@ function cleanGw(x){x=x&&typeof x==='object'?x:{};const ids=a=>(Array.isArray(a)
     dk:Array.isArray(x.dk)?Array.from({length:NSLOT},(_,i)=>typeof x.dk[i]==='string'&&GMAP[x.dk[i]]?x.dk[i]:null):null,ff:formKey(x.ff)||'',
     run:R?{k:R.k,wv:Math.max(1,Math.min(3,R.wv|0)),n:Math.max(2,Math.min(3,R.n|0)),hp:R.hp&&typeof R.hp==='object'?Object.fromEntries(Object.entries(R.hp).filter(([k])=>/^\d$/.test(k)).map(([k,v])=>[k,Math.max(0,Math.min(1,Number(v)||0))])):{},sd:R.sd|0,p:Math.max(1,Number(R.p)||1)}:null,
     th:T?{k:T.k,f:T.f,d:T.d|0,sd:T.sd|0}:null,at:Math.max(0,x.at|0),
-    u:x.u?1:0,up:x.up?1:0,log:Array.isArray(x.log)?x.log.slice(-12).map(l=>String(l).slice(0,60)):[],
+    u:x.u?1:0,up:x.up?1:0,v2:x.v2?1:0,log:Array.isArray(x.log)?x.log.slice(-12).map(l=>String(l).slice(0,60)):[],
     prev:x.prev&&Number.isInteger(x.prev.s)?{s:x.prev.s,f:GW_F[x.prev.f]?x.prev.f:'',c:Math.max(0,Math.min(21,x.prev.c|0)),u:x.prev.u?1:0}:null}}
 const gwMine=s=>GW_K.filter(k=>s.o[k]===s.f);
 function gwState(){if(!S.gw||typeof S.gw!=='object'||!('ld' in S.gw))S.gw=cleanGw(S.gw);const s=S.gw,se=gwSeason();
   if(s.s!==se){if(s.f&&s.s>=0)s.prev={s:s.s,f:s.f,c:gwMine(s).length,u:s.u};const pv=s.prev;Object.assign(s,cleanGw({}),{s:se,prev:pv})}
-  if(s.f)gwTick(s);return s}
+  if(s.f){gwMig952(s);gwTick(s)}return s}
 // 밤 10시 정산을 지난 날마다 처리해요: 미룬 방어전 자동 처리 → 군령 +3 → 성 수입 → 새 반격
 function gwTick(s){const today=sDay(),end=gwDay0(s.s)+13;let d=s.ld,ch=false;
   while(d<Math.min(today,end)){d++;ch=true;
@@ -4581,10 +4588,21 @@ function gwThreat(s,d){const r=mulberry(sjHash('gwth|'+s.s+'|'+(UID||'me')+'|'+d
   const k=b[Math.floor(r()*b.length)],fs=GW_ADJ[k].map(n=>s.o[n]).filter(f=>f!==s.f&&f!=='neu');s.th={k,f:fs[Math.floor(r()*fs.length)],d,sd:Math.floor(r()*1e6)}}
 function gwDist(s,k){const h=GW_F[s.f].h,seen={[h]:0},q=[h];while(q.length){const x=q.shift();for(const n of GW_ADJ[x])if(seen[n]==null){seen[n]=seen[x]+1;q.push(n)}}return seen[k]||1}
 const gwCanHit=(s,k)=>s.o[k]!==s.f&&GW_ADJ[k].some(n=>s.o[n]===s.f);
-// 내 군웅할거 진형: 자리마다 내 장수 또는 합류 장수(합류 장수는 그 자리 레벨, 돌파 0, 보물 없음)
-function gwDeck(s){if(!s.dk){s.dk=S.deck.slice(0,NSLOT).map(g=>g||null);while(s.dk.length<NSLOT)s.dk.push(null)}return s.dk}
-function gwSpecs(s){const f=s.ff||curForm();return gwDeck(s).map((g,i)=>!g?null:S.gens[g]?{...specOf(g,slotLv(i)),p:i,f}:s.j.includes(g)?{g,lv:slotLv(i),d:0,i:[],p:i,f}:null)}
-const gwPick=s=>[...new Set([...s.j,...Object.keys(S.gens)])].filter(g=>GMAP[g]);
+// v9.5.2 나라 제한: 내 장수는 고른 나라 장수만 넣어요. 성을 점령해 합류한 장수는 나라와 관계없이 넣을 수 있어요.
+// 시작 합류 장수 = 시작 성 수비장 중 우리 나라 장수. 군웅은 하비·소패 수비장이 모두 다른 나라라 관해·장량을 따로 줘요.
+const GW_J0X={qun:['guanhai','zhangliang']};
+const gwJ0=f=>[...new Set([...GW_F[f].c.flatMap(k=>gwDefG(k)).filter(g=>GMAP[g].fac===f),...(GW_J0X[f]||[]).filter(g=>GMAP[g])])];
+const gwMy=(s,g)=>!!(S.gens[g]&&GMAP[g]&&GMAP[g].fac===s.f);
+const gwOk=(s,g)=>!!g&&(gwMy(s,g)||s.j.includes(g));
+// v9.5.1까지 시작한 시즌: 시작 성의 다른 나라 수비장은 빼고(점령해서 들어온 장수는 남겨요), 군웅은 시작 합류 장수를 더해요
+function gwMig952(s){if(!s.f||s.v2)return;const got=new Set(s.fc.flatMap(k=>gwDefG(k)));
+  const x=GW_F[s.f].c.flatMap(k=>gwDefG(k)).filter(g=>GMAP[g].fac!==s.f&&!got.has(g));
+  s.j=[...new Set([...s.j.filter(g=>!x.includes(g)),...gwJ0(s.f)])];if(s.dk)s.dk=s.dk.map(g=>gwOk(s,g)?g:null);s.v2=1}
+// 내 군웅할거 진형: 자리마다 우리 나라 내 장수 또는 합류 장수(합류 장수는 그 자리 레벨, 돌파 0, 보물 없음)
+function gwDeck(s){if(!s.dk){s.dk=S.deck.slice(0,NSLOT).map(g=>gwOk(s,g)?g:null);while(s.dk.length<NSLOT)s.dk.push(null)}
+  for(let i=0;i<NSLOT;i++)if(s.dk[i]&&!gwOk(s,s.dk[i]))s.dk[i]=null;return s.dk}
+function gwSpecs(s){const f=s.ff||curForm();return gwDeck(s).map((g,i)=>!g?null:gwMy(s,g)?{...specOf(g,slotLv(i)),p:i,f}:s.j.includes(g)?{g,lv:slotLv(i),d:0,i:[],p:i,f}:null)}
+const gwPick=s=>[...new Set([...s.j,...Object.keys(S.gens).filter(g=>gwMy(s,g))])].filter(g=>GMAP[g]);
 function gwLv(sp){const f=sp.filter(Boolean);return f.length?Math.round(f.reduce((a,x)=>a+x.lv,0)/f.length):1}
 function gwItd(sp){const ds=sp.filter(Boolean).flatMap(x=>itemsOf(x.i).map(o=>o.d));return ds.length?Math.round(ds.reduce((a,b)=>a+b,0)/ds.length):0}
 // 수비장 5명: 그 성의 수비 명장 + 그 세력 장수
@@ -4666,11 +4684,11 @@ function gwMapHtml(s){const sea=gwSeaNow(),mine=s.f?s.o:gwOwn0(),pre=!s.f;
   setTimeout(gwScrollFix,0);
   return `<div class="gw-wrap"><div class="gw-map"><img src="${gwMapSrc(sea)}" alt="" draggable="false"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${roads}</svg>${nodes}</div></div>
    <div class="row" style="gap:6px;margin:6px 0 8px;flex-wrap:wrap"><span class="chip">${gwOld?'고지도':GW_SEA.find(x=>x[0]===sea)[1]+' 지도'}</span><span class="sub" style="margin:0;font-size:12px">${gwOld?'':'6시간마다 계절이 바뀌어요'}</span><span class="sp"></span><button type="button" class="btn sm ghost" data-gw="old">${gwOld?'계절 지도':'고지도'}</button></div>`}
-function gwFacCard(f){const v=GW_F[f],lv=GW_LV[f];return `<button type="button" class="li gw-fc f-${f}" data-gwf="${f}" style="text-align:left"><div class="info"><b>${FAC[f]} <span class="chip">${GW_LVN[lv]}</span></b><span>본거지 ${SIEGE[v.h].n} · 시작 성 ${v.c.length}곳(${v.c.map(k=>SIEGE[k].n).join('·')}) · 통일 금 ${fmt(GW_UG[lv])} + 보물 선택권 1</span></div></button>`}
+function gwFacCard(f){const v=GW_F[f],lv=GW_LV[f];return `<button type="button" class="li gw-fc f-${f}" data-gwf="${f}" style="text-align:left"><div class="info"><b>${FAC[f]} <span class="chip">${GW_LVN[lv]}</span></b><span>본거지 ${SIEGE[v.h].n} · 시작 성 ${v.c.length}곳(${v.c.map(k=>SIEGE[k].n).join('·')}) · 통일 금 ${fmt(GW_UG[lv])} + 보물 선택권 1</span><span>${FAC[f]} 장수로 시작 · 시작 합류 ${gwJ0(f).map(g=>esc(GMAP[g].name)).join('·')||'없음'}</span></div></button>`}
 function vGw(){const s=gwState(),se=gwSeason(),dayN=Math.min(14,sDay()-gwDay0(se)+1);
-  let h=`<div class="banner-card"><div class="big">群雄</div><h2>군웅할거</h2>${infoP('gw',`2주 시즌 · 성 21곳을 차지해 천하통일`,`세력 하나를 골라 본거지에서 시작해요. 군령 1개로 내 성과 이웃한 성을 공격해요. 군령은 밤 10시마다 ${GW_GL}개 생기고 ${GW_GLMAX}개까지 쌓여요. 공성전은 잡병 파도를 지나 수비장과 싸우고, 체력은 한 번의 공격 안에서 이어져요. 성을 처음 점령하면 금과 그 성 수비장의 증표(★3 ${GW_TOK[3]} · ★4 ${GW_TOK[4]} · ★5 ${GW_TOK[5]})를 받고, 수비장이 합류 장수로 들어와 군웅할거 진형에 쓸 수 있어요. 점령한 성마다 하루 금 ${GW_INC}. 첫 점령 5곳마다 천명 3개 중 1개. 밤 10시 정산 때 AI 세력이 내 성 하나를 노릴 수 있어요(본거지 제외). 다음 정산 전까지 아무 때나 방어전을 1번 하면 되고(군령 없음), 안 하면 그때 진형으로 자동 방어해요. 21곳을 모두 차지하면 세력 난이도에 따라 금과 보물 선택권 1, 합류 장수 1명의 증표(돌파 1회분)를 받아요.`,'margin:0')}
+  let h=`<div class="banner-card"><div class="big">群雄</div><h2>군웅할거</h2>${infoP('gw',`2주 시즌 · 성 21곳을 차지해 천하통일`,`세력 하나를 골라 본거지에서 시작해요. 진형의 내 장수는 고른 나라 장수만 넣을 수 있고, 성을 점령해 합류한 장수는 나라와 관계없이 넣을 수 있어요. 군령 1개로 내 성과 이웃한 성을 공격해요. 군령은 밤 10시마다 ${GW_GL}개 생기고 ${GW_GLMAX}개까지 쌓여요. 공성전은 잡병 파도를 지나 수비장과 싸우고, 체력은 한 번의 공격 안에서 이어져요. 성을 처음 점령하면 금과 그 성 수비장의 증표(★3 ${GW_TOK[3]} · ★4 ${GW_TOK[4]} · ★5 ${GW_TOK[5]})를 받고, 수비장이 합류 장수로 들어와 군웅할거 진형에 쓸 수 있어요. 점령한 성마다 하루 금 ${GW_INC}. 첫 점령 5곳마다 천명 3개 중 1개. 밤 10시 정산 때 AI 세력이 내 성 하나를 노릴 수 있어요(본거지 제외). 다음 정산 전까지 아무 때나 방어전을 1번 하면 되고(군령 없음), 안 하면 그때 진형으로 자동 방어해요. 21곳을 모두 차지하면 세력 난이도에 따라 금과 보물 선택권 1, 합류 장수 1명의 증표(돌파 1회분)를 받아요.`,'margin:0')}
    <div class="stats" style="grid-template-columns:repeat(3,1fr);margin:10px 0 0"><div class="stat"><small>시즌 ${gwSeasonRange(se)}</small><b>${dayN}일째</b></div><div class="stat"><small>군령</small><b>${s.f?`${s.gl}/${GW_GLMAX}`:'-'}</b></div><div class="stat"><small>내 성</small><b>${s.f?`${gwMine(s).length}/21`:'-'}</b></div></div></div>`;
-  if(!s.f){h+=gwMapHtml(s)+`<h3 style="margin:4px 0 8px">시작 세력 고르기</h3><p class="sub" style="margin:0 0 8px">본거지 위치와 이웃 세력에 따라 난이도와 통일 보상이 달라요. 시즌 중에는 바꿀 수 없어요.</p><div class="list">${Object.keys(GW_F).map(gwFacCard).join('')}</div>`;
+  if(!s.f){h+=gwMapHtml(s)+`<h3 style="margin:4px 0 8px">시작 세력 고르기</h3><p class="sub" style="margin:0 0 8px">본거지 위치와 이웃 세력에 따라 난이도와 통일 보상이 달라요. 처음에는 고른 나라 장수로만 싸우고, 성을 점령할수록 다른 나라 장수가 합류해요. 시즌 중에는 바꿀 수 없어요.</p><div class="list">${Object.keys(GW_F).map(gwFacCard).join('')}</div>`;
     if(s.prev)h+=`<p class="sub">지난 시즌: ${FAC[s.prev.f]||''} · 성 ${s.prev.c}곳${s.prev.u?' · 천하통일':''}</p>`;return h+gwRankHtml()}
   if(s.of){return h+`<h3 style="margin:4px 0 8px">성 ${s.fc.length}곳 점령 · 천명 고르기</h3><div class="list">${s.of.map(id=>{const m=TMAP[id];return `<button type="button" class="li" data-gwtm="${id}" style="text-align:left;border-color:${TM_T[m.t][1]}"><div class="info"><b>${esc(m.n)} <span class="chip" style="border-color:${TM_T[m.t][1]};color:${TM_T[m.t][1]}">${TM_T[m.t][0]}</span></b><span>${esc(m.d)}</span></div></button>`}).join('')}</div>`}
   if(s.u&&!s.up)return h+`<h3 style="margin:4px 0 8px">천하통일! 증표를 받을 합류 장수 고르기</h3><p class="sub" style="margin:0 0 8px">고른 장수의 증표를 돌파 1회분(★3 10 · ★4 30 · ★5 100) 받아요.</p><div class="dl-pick">${s.j.map(g=>`<button type="button" data-gwup="${g}">${seal(GMAP[g],'sm')}<small>${esc(GMAP[g].name)}</small></button>`).join('')}</div>`;
@@ -4688,8 +4706,8 @@ function vGw(){const s=gwState(),se=gwSeason(),dayN=Math.min(14,sDay()-gwDay0(se
   const sp=gwSpecs(s);
   h+=`<div class="labbox" style="margin-bottom:8px"><div class="row"><h3 style="margin:0">군웅할거 진형</h3><span class="sp"></span><span class="chip">전투력 ${fmt(deckPower(sp))}</span></div>
    <div class="chips" style="margin-top:6px">${Object.entries(FORM).map(([k,v])=>`<button type="button" data-gwff="${k}" aria-pressed="${(s.ff||curForm())===k}">${v.n}</button>`).join('')}</div>
-   <div class="sj-slots">${gwDeck(s).map((g,i)=>{const G=g&&GMAP[g];return `<button type="button" class="sj-slot" data-gwsl="${i}">${G?seal(G,'sm'):''}<span><b>${G?esc(G.name):'빈 자리'}</b><small>${G?(S.gens[g]?'내 장수':'합류 장수')+' · Lv '+slotLv(i):'눌러서 넣기'}</small></span></button>`}).join('')}</div>
-   <p class="sub" style="margin:4px 0 0;font-size:12px">합류 장수 ${s.j.length}명 · 자리를 눌러 바꿔요. 합류 장수는 그 자리 레벨로 싸워요(돌파·보물 없음).</p>
+   <div class="sj-slots">${gwDeck(s).map((g,i)=>{const G=g&&GMAP[g];return `<button type="button" class="sj-slot" data-gwsl="${i}">${G?seal(G,'sm'):''}<span><b>${G?esc(G.name):'빈 자리'}</b><small>${G?(gwMy(s,g)?'내 장수':'합류 장수')+' · Lv '+slotLv(i):'눌러서 넣기'}</small></span></button>`}).join('')}</div>
+   <p class="sub" style="margin:4px 0 0;font-size:12px">내 장수는 ${FAC[s.f]} 장수만 · 합류 장수 ${s.j.length}명은 나라 상관없이 · 자리를 눌러 바꿔요. 합류 장수는 그 자리 레벨로 싸워요(돌파·보물 없음).</p>
    ${s.tm.length?`<div class="chips" style="margin-top:6px">${s.tm.map(tmChip).join('')}</div>`:''}</div>`;
   h+=`<div class="row" style="gap:8px;margin-bottom:8px"><button type="button" class="btn ${s.inc?'red':'ghost'}" style="flex:1" data-gw="inc" ${s.inc?'':'disabled'}>성 수입 받기 · 금 ${fmt(s.inc)}</button></div>`;
   if(s.log.length)h+=`<details class="fold"><summary>전황 기록</summary><div class="in">${s.log.slice().reverse().map(l=>`<div class="sub" style="margin:2px 0">${esc(l)}</div>`).join('')}</div></details>`;
@@ -4699,17 +4717,17 @@ function gwRankHtml(){const rk=gwRank();return `<div class="labbox" style="margi
 function gwSlotSheet(i){const s=gwState(),dk=gwDeck(s),cur=dk[i],n5=dk.filter((g,j)=>g&&j!==i&&GMAP[g].rar===5).length;
   const ok=g=>!(dk.includes(g)&&g!==cur)&&!(GMAP[g].rar===5&&n5>=MAX5),srt=a=>a.sort((x,y)=>GMAP[y].rar-GMAP[x].rar||GMAP[x].name.localeCompare(GMAP[y].name,'ko'));
   const btn=g=>`<button type="button" data-gwpk="${i}:${g}" aria-pressed="${g===cur}" ${ok(g)?'':'disabled'}>${seal(GMAP[g],'sm')}<small>${esc(GMAP[g].name)}</small></button>`;
-  const jn=srt(s.j.filter(g=>!S.gens[g])),own=srt(Object.keys(S.gens).filter(g=>GMAP[g]));
+  const jn=srt(s.j.filter(g=>!gwMy(s,g))),own=srt(Object.keys(S.gens).filter(g=>gwMy(s,g)));
   openSheet(`<div class="sheet-h"><h2 style="margin:0">${i+1}번 자리</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    ${jn.length?`<h3 style="margin:0 0 6px">합류 장수</h3><div class="dl-pick" style="margin-bottom:10px">${jn.map(btn).join('')}</div>`:''}
-   <h3 style="margin:0 0 6px">내 장수</h3><div class="dl-pick">${own.map(btn).join('')}</div>
-   <p class="sub" style="font-size:12px">★5는 ${MAX5}명까지. 이미 다른 자리에 있는 장수는 고를 수 없어요.</p>
+   <h3 style="margin:0 0 6px">내 장수 · ${FAC[s.f]}</h3>${own.length?`<div class="dl-pick">${own.map(btn).join('')}</div>`:`<p class="sub" style="margin:0">${FAC[s.f]} 장수가 아직 없어요.</p>`}
+   <p class="sub" style="font-size:12px">내 장수는 ${FAC[s.f]} 장수만 넣을 수 있어요. 성을 점령해 합류한 장수는 나라와 관계없이 넣을 수 있어요. ★5는 ${MAX5}명까지. 이미 다른 자리에 있는 장수는 고를 수 없어요.</p>
    <button type="button" class="btn ghost wide" data-gwpk="${i}:" style="margin-top:6px">비우기</button>`)}
 document.addEventListener('click',e=>{
   const fb=e.target.closest('[data-gwf]');if(fb){const f=fb.dataset.gwf,s=gwState();if(s.f||!GW_F[f])return;
-    openSheet(`<div class="sheet-h"><h2 style="margin:0">${FAC[f]}(으)로 시작할까요?</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div><p class="sub">본거지 ${SIEGE[GW_F[f].h].n} · 난이도 ${GW_LVN[GW_LV[f]]} · 통일 금 ${fmt(GW_UG[GW_LV[f]])}. 이번 시즌(${gwSeasonRange(gwSeason())}) 동안 바꿀 수 없어요.</p><div class="row" style="gap:8px"><button type="button" class="btn ghost" data-close style="flex:1">다시 고르기</button><button type="button" class="btn red" data-gwfok="${f}" style="flex:1">시작</button></div>`);return}
+    openSheet(`<div class="sheet-h"><h2 style="margin:0">${FAC[f]}(으)로 시작할까요?</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div><p class="sub">본거지 ${SIEGE[GW_F[f].h].n} · 난이도 ${GW_LVN[GW_LV[f]]} · 통일 금 ${fmt(GW_UG[GW_LV[f]])}. 이번 시즌(${gwSeasonRange(gwSeason())}) 동안 바꿀 수 없어요.</p><p class="sub">진형의 내 장수는 ${FAC[f]} 장수만 넣을 수 있어요(지금 ${Object.keys(S.gens).filter(g=>GMAP[g]&&GMAP[g].fac===f).length}명). 시작 합류 장수: ${gwJ0(f).map(g=>esc(GMAP[g].name)).join('·')||'없음'}.</p><div class="row" style="gap:8px"><button type="button" class="btn ghost" data-close style="flex:1">다시 고르기</button><button type="button" class="btn red" data-gwfok="${f}" style="flex:1">시작</button></div>`);return}
   const fo=e.target.closest('[data-gwfok]');if(fo){const f=fo.dataset.gwfok,s=gwState();if(s.f||!GW_F[f])return;
-    Object.assign(s,{f,o:gwOwn0(),ld:sDay(),gl:GW_GL,inc:0,fc:[],j:[],tm:[],of:null,run:null,th:null,u:0,up:0,log:[],dk:null,ff:''});GW_F[f].c.forEach(k=>gwDefG(k).forEach(g=>{if(!s.j.includes(g))s.j.push(g)}));
+    Object.assign(s,{f,o:gwOwn0(),ld:sDay(),gl:GW_GL,inc:0,fc:[],j:gwJ0(f),tm:[],of:null,run:null,th:null,u:0,up:0,log:[],dk:null,ff:'',v2:1});
     gwLog(s,`${FAC[f]}(으)로 거병`);gwSx=null;closeSheet();save();renderView();toast(`${FAC[f]} 거병 · 군령 ${GW_GL}개`);return}
   const k=e.target.closest('[data-gwk]');if(k){gwSel=gwSel===k.dataset.gwk?'':k.dataset.gwk;renderView();return}
   const a=e.target.closest('[data-gwa]');if(a&&!a.disabled){gwAttack(a.dataset.gwa);return}
@@ -4907,7 +4925,7 @@ const pastDays=n=>Array.from({length:n},(_,i)=>dayOf(Date.now()-(i+1)*DAY_MS));
 const duelReward=rank=>rank<=3?DUEL_REWARD[rank-1]:DUEL_REWARD_REST;
 /* v9.4.0 치팅 방지: 야전·토벌 기록을 seed로 다시 계산해 확인해요 (결과는 문서 id별로 저장해 한 번만 계산).
    AC_FROM(이 빌드 시각) 이전 기록은 다시 계산할 수 없어 그대로 인정, 이후 기록은 같은 버전만 인정해요. */
-const AC_FROM=1793066368911, AC_K='sg_ac1', AC_VOK=['9.4.0','9.5.0',GAME_VERSION];
+const AC_FROM=1793066368911, AC_K='sg_ac1', AC_VOK=['9.4.0','9.5.0','9.5.1',GAME_VERSION];
 let AC_C={};try{AC_C=JSON.parse(localStorage.getItem(AC_K)||'{}')||{}}catch(e){}
 let acQ=[],acBusy=false,acSaveT=null,BAT_RAW=[],PRAW={};
 const acPlain=x=>JSON.parse(JSON.stringify(x));
