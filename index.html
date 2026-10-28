@@ -821,6 +821,7 @@ html.work #rt-notif,html.work #rt-cut{display:none}
 .sj-slots{display:grid;grid-template-columns:1fr 1fr;gap:6px}.sj-slot{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px;text-align:left;color:var(--fg)}.sj-slot.on{border-color:var(--cinnabar);box-shadow:0 0 0 1px var(--cinnabar)}.sj-slot span{display:flex;flex-direction:column;min-width:0}.sj-slot small{color:var(--mute);font-size:11px}
 .dl-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}.dl-pick button{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 2px;color:var(--fg)}.dl-pick button[aria-pressed="true"]{border-color:var(--bronze)}.dl-pick small{font-size:11px}
 body.tz-focus header.top,body.tz-focus #claim,body.tz-focus #mode-banner{display:none!important}
+.tz-warnb{position:relative}.tz-bdg{position:absolute;top:-6px;right:-6px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#f2c14e;color:#1a1a1a;font:700 10px/16px sans-serif;font-style:normal;text-align:center}
 .tz-top{position:sticky;top:-8px;z-index:5;display:flex;align-items:center;gap:6px;margin:-8px -16px 8px;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line)}.tz-back{background:none;border:0;color:var(--mute);font-size:13px;padding:4px 2px;white-space:nowrap}
 .tz-date{display:flex;flex-direction:column;line-height:1.15}.tz-date b{font-family:var(--display);font-weight:400;font-size:16px;white-space:nowrap}.tz-date small{color:var(--mute);font-size:11px}
 .tz-res{margin-left:auto;display:flex;flex-direction:column;align-items:flex-end;font-size:11px;color:var(--mute);font-variant-numeric:tabular-nums;line-height:1.3;min-width:0}.tz-res b{color:var(--fg);font-weight:600}.tz-top .btn{flex:none}
@@ -849,7 +850,7 @@ body.tz-focus header.top,body.tz-focus #claim,body.tz-focus #mode-banner{display
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v9.6.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v9.6.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -3022,11 +3023,16 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='9.6.2';
+const GAME_VERSION='9.6.3';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['角',{ap:30}],['將',{gpk:10}],['選',{isk:1}],['換',{xtk:1}]];  // v9.5.0: 4·5일 룰렛 소환권 → 나팔 30 · 등용권 10
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'9.6.3',date:'2026-10-28',title:'천하쟁패 위임 성 명령 · 턴 종료 경고',reward:{ap:30},items:[
+  '위임한 성의 장수는 이제 직접 명령할 수 없어요. 위임한 일은 턴 종료 때 장수들이 알아서 해요. 태수 임명 · 위임 설정 · 거래 · 하사는 그대로 할 수 있어요.',
+  '직접 다스리는 성에 아직 명령하지 않은 장수가 있으면 턴 종료 버튼에 남은 성 수가 표시되고, 누르면 한 번 더 물어봐요.',
+  '윗줄의 성 수와 규칙 설명이 31성 기준으로 바르게 나와요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'9.6.2',date:'2026-10-28',title:'천하쟁패 31성 · 보물 · 상인 · 자식 장수',reward:{ap:30},items:[
   '천하쟁패 지도가 31성으로 넓어졌어요. 낙양·허창·시상·성도·건업과 진류·남피·평원·서량·한중이 생겼고, 군주들은 삼국지 3처럼 원래 성에서 시작해요(동탁 낙양·장안, 조조 진류, 원소 남피, 유비 평원, 마등 서량, 장로 한중).',
   '치수와 홍수를 없앴어요. 내정은 농업·상업·방어·민심만 신경 쓰면 돼요.',
@@ -4926,7 +4932,8 @@ const tzGL=s=>{const X=(s&&s.X)||{},ks=Object.keys(X).filter(v=>GMAP[v]&&(!s.G||
 const tzIsL=(s,g)=>Object.values(s.F).some(F=>F.lord===g&&!F.dead);
 const tzCities=(s,f)=>TZ_K.filter(k=>s.C[k].o===f);
 const tzGensIn=(s,k,o)=>GENS.map(b=>b.id).filter(g=>s.G[g]&&s.G[g].c===k&&s.G[g].o===o);
-const tzIdle=(s,k)=>tzGensIn(s,k,s.me).filter(g=>!s.G[g].ac);
+const tzIdle=(s,k)=>tzDlOf(s,k)!=='self'?[]:tzGensIn(s,k,s.me).filter(g=>!s.G[g].ac);  // 위임한 성의 장수는 직접 명령 불가
+const tzIdleC=s=>tzMine(s).filter(k=>tzIdle(s,k).length);  // 행동 안 한 장수가 남은 직할 성
 const tzMine=s=>tzCities(s,s.me);
 const tzAlly=(s,a,b)=>a!==b&&a!=='neu'&&b!=='neu'&&!!s.F[a]&&s.F[a].al[b]>0;
 const tzPow=g=>{const b=GMAP[g];return tzStr(g)+tzInt(g)*.6+tzLead(g)+b.rar*12};
@@ -5223,8 +5230,8 @@ function tzRepSheet(){const s=tzState();const li=s.rep.map(l=>{const c=l[1]===' 
    <p class="sub" style="margin:8px 0 0;font-size:12px">戰 전투 · 委 위임한 성이 한 일 · 民 내 성 소식 · 報 천하 소식</p>`);$('#sheet').classList.add('tz-top')}
 function tzTopBar(s){const mine=tzMine(s),sum=key=>mine.reduce((a,k)=>a+s.C[k][key],0);
   return `<div class="tz-top"><button type="button" class="tz-back" data-tz="exit" aria-label="천하쟁패 나가기">← 나가기</button><div class="tz-date"><b>${s.y}년 ${s.m}월</b><small>${TZ_SEAN[tzSea(s.m)]} · ${s.t+1}턴</small></div>
-   <div class="tz-res"><span>금 <b>${fmt(sum('g'))}</b> · 군량 <b>${fmt(sum('fd'))}</b></span><span>병사 <b>${fmt(sum('tr'))}</b> · 성 <b>${mine.length}/21</b></span></div>
-   <button type="button" class="btn sm ghost" data-tz="rep">보고</button>${s.end?'':`<button type="button" class="btn sm red" data-tz="turn">턴 종료</button>`}</div>`}
+   <div class="tz-res"><span>금 <b>${fmt(sum('g'))}</b> · 군량 <b>${fmt(sum('fd'))}</b></span><span>병사 <b>${fmt(sum('tr'))}</b> · 성 <b>${mine.length}/${TZ_K.length}</b></span></div>
+   <button type="button" class="btn sm ghost" data-tz="rep">보고</button>${s.end?'':(()=>{const n=tzIdleC(s).length;return `<button type="button" class="btn sm red${n?' tz-warnb':''}" data-tz="turn"${n?` aria-label="턴 종료 · 명령 안 한 성 ${n}곳"`:''}>턴 종료${n?`<i class="tz-bdg">${n}</i>`:''}</button>`})()}</div>`}
 function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.g;
   let h=`<div class="tz-city"><div class="tz-ch"><h3>${tzCN(k)}</h3><span class="sub" style="margin:0">${tzHZ(k)}</span><span class="chip" style="border-color:${tzCol(o)};color:${tzCol(o)}">${tzFN(s,o)}${tzAlly(s,s.me,o)?' · 동맹':''}</span>${TZ_TRADE[k]?'<span class="tz-tag home">商</span>':''}
    ${my?`<button type="button" class="tz-gov" data-tzc="gov">태수 <b>${gov?esc(tzName(gov)):'없음'}</b></button>`:''}</div>`;
@@ -5247,10 +5254,10 @@ function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.
   if(my&&!s.end){const idle=tzIdle(s,k).length,cat=TZ_CAT.find(c=>c[0]===tzCat)||TZ_CAT[0];
     h+=`<div class="tz-cats" role="tablist">${TZ_CAT.map(([c,n,hz])=>`<button type="button" role="tab" data-tzcat="${c}" aria-pressed="${cat[0]===c}"><b>${n}</b><small>${hz}</small></button>`).join('')}</div>
      <div class="tz-cmd">${cat[3].map(c=>{const v=TZ_CMD[c];const ok=c==='trd'?!!TZ_TRADE[k]:c==='gift'?tzItIn(s,'t:'+s.me).length&&tzGensIn(s,k,s.me).length:TZ_FREE[c]||idle;return `<button type="button" data-tzc="${c}" ${ok?'':'disabled'}><b>${v[0]}</b><small>${v[2]}</small></button>`}).join('')}</div>
-     <p class="sub" style="margin:6px 0 0;font-size:12px">명령할 수 있는 장수 ${idle}명 · 장수마다 한 달에 명령 1개 · 금고 보물 ${tzItIn(s,'t:'+s.me).length}개</p>`}
+     <p class="sub" style="margin:6px 0 0;font-size:12px">${tzDlOf(s,k)!=='self'?'위임한 성이라 장수 명령은 할 수 없어요 · ':''}명령할 수 있는 장수 ${idle}명 · 장수마다 한 달에 명령 1개 · 금고 보물 ${tzItIn(s,'t:'+s.me).length}개</p>`}
   return h+`</div>`}
 function vTz(){const s=tzState();
-  const rule=infoP('tz','군주가 되어 한 달씩 천하를 다퉈요',`군주 1명을 골라 거점에서 가신과 함께 시작해요. 1턴은 1개월이에요. 내 성을 골라 내정·군사·인사·계략 탭에서 명령을 내리고, 장수마다 한 달에 명령 1개를 해요. 성마다 태수를 두면 태수 정치·통솔·매력만큼 농업·상업·방어·민심이 매달 저절로 자라고, 민심이 60을 넘으면 의용군이 와요. 태수 충성이 50 아래면 독립할 수 있어요. 교역 도시(商)에서는 상인과 군량·보물을 사고팔고, 탐색하면 숨은 보물을 찾을 수 있어요. 보물은 장수에게 하사하면 능력치와 충성이 올라요. 군주가 없는 성은 내정·수송·방어·공략으로 위임할 수 있어요. '턴 종료'를 누르면 위임한 성과 다른 군주들이 움직이고, 1월에 금, 9월에 군량이 들어와요. 병사는 매달 군량을 먹어요. 출진하면 장수마다 병사를 나눠 주고 지금 전투로 싸워요. 장수가 모자란 자리는 잡병 부대가 채워요. 이긴 쪽은 진 장수를 포로로 잡을 수 있고, 포로는 등용·해방·처형 중에 골라요. 처형하면 그 판에서 영원히 사라지고 우리 장수 충성이 떨어져요. 21성을 모두 차지하면 통일이에요. 시나리오마다 첫 통일 때 금 ${fmt(TZ_REW.gold)} · 보물 선택권 1 · 공적 1위 장수 증표(돌파 1회분)를 받아요. 본편 장수의 레벨·돌파·보물은 쓰지 않고, 모든 장수가 공적에 따라 레벨이 올라요.`,'margin:0');
+  const rule=infoP('tz','군주가 되어 한 달씩 천하를 다퉈요',`군주 1명을 골라 거점에서 가신과 함께 시작해요. 1턴은 1개월이에요. 내 성을 골라 내정·군사·인사·계략 탭에서 명령을 내리고, 장수마다 한 달에 명령 1개를 해요. 성마다 태수를 두면 태수 정치·통솔·매력만큼 농업·상업·방어·민심이 매달 저절로 자라고, 민심이 60을 넘으면 의용군이 와요. 태수 충성이 50 아래면 독립할 수 있어요. 교역 도시(商)에서는 상인과 군량·보물을 사고팔고, 탐색하면 숨은 보물을 찾을 수 있어요. 보물은 장수에게 하사하면 능력치와 충성이 올라요. 군주가 없는 성은 내정·수송·방어·공략으로 위임할 수 있어요. '턴 종료'를 누르면 위임한 성과 다른 군주들이 움직이고, 1월에 금, 9월에 군량이 들어와요. 병사는 매달 군량을 먹어요. 출진하면 장수마다 병사를 나눠 주고 지금 전투로 싸워요. 장수가 모자란 자리는 잡병 부대가 채워요. 이긴 쪽은 진 장수를 포로로 잡을 수 있고, 포로는 등용·해방·처형 중에 골라요. 처형하면 그 판에서 영원히 사라지고 우리 장수 충성이 떨어져요. ${TZ_K.length}성을 모두 차지하면 통일이에요. 시나리오마다 첫 통일 때 금 ${fmt(TZ_REW.gold)} · 보물 선택권 1 · 공적 1위 장수 증표(돌파 1회분)를 받아요. 본편 장수의 레벨·돌파·보물은 쓰지 않고, 모든 장수가 공적에 따라 레벨이 올라요.`,'margin:0');
   if(!s.on){const D=TZ_SC[189];return `<div class="banner-card"><div class="big">爭覇</div><h2>천하쟁패</h2>${rule}</div><h3 style="margin:8px 0 4px">${D.n}</h3><p class="sub" style="margin:0 0 8px">${D.d}${s.done[189]?' · <b style="color:var(--bronze)">통일 보상 받음</b>':''}</p><div class="list">`+
     Object.entries(D.L).map(([f,[k,vs]])=>`<button type="button" class="li" data-tzf="${f}" style="text-align:left;border-left:4px solid ${tzCol(f)}">${seal(GMAP[f],'sm')}<div class="info"><b>${tzName(f)} <span class="chip">${TZ_LV[TZ_DIF[f]]}</span></b><span>거점 ${tzCN(k)} · 가신 ${vs.map(tzName).join('·')}</span></div></button>`).join('')+`</div>`}
   let h=tzTopBar(s);const mine=tzMine(s);
@@ -5274,7 +5281,7 @@ function tzGovSheet(){const s=tzState(),k=tzSel,gs=tzGensIn(s,k,s.me).sort((a,b)
    ${gs.length?`<div class="dl-pick">${gs.map(g=>tzPickBtn(s,g,`data-tzgov="${g}"`,cur===g)).join('')}</div><button type="button" class="btn ghost wide" style="margin-top:8px" data-tzgov="">태수 없음</button>`:'<p class="sub">이 성에 장수가 없어요.</p>'}`)}
 function tzDlgSheet(){const s=tzState();
   openSheet(`<div class="sheet-h"><h2 style="margin:0">위임 설정</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
-   <p class="sub" style="margin:0 0 8px">턴 종료 때 위임한 성의 장수가 알아서 움직이고 보고에 적혀요. 그 달에 직접 명령한 장수는 빠져요.</p>
+   <p class="sub" style="margin:0 0 8px">턴 종료 때 위임한 성의 장수가 알아서 움직이고 보고에 적혀요. 위임한 성의 장수는 직접 명령할 수 없어요.</p>
    <div class="list">${tzMine(s).slice().sort((a,b)=>TZ_C[a][0]-TZ_C[b][0]).map(k=>{const home=tzHome(s,k),dl=tzDlOf(s,k),t=tzTag(s,k);return `<div class="li" style="flex-wrap:wrap"><div class="info"><b>${tzCN(k)} <span class="tz-tag ${t[0]}">${t[1]}</span></b><span>병사 ${fmt(s.C[k].tr)} · 장수 ${tzGensIn(s,k,s.me).length}명</span></div>
      <div class="tz-dl">${(home?['self']:Object.keys(TZ_DL)).map(m=>`<button type="button" data-tzdl="${k}:${m}" aria-pressed="${dl===m}">${TZ_DL[m][0]}</button>`).join('')}</div></div>`}).join('')}</div>
    <table class="tz-tb" style="margin-top:8px">${Object.values(TZ_DL).map(([n,d])=>`<tr><td>${n}</td><td>${d}</td></tr>`).join('')}</table>`);$('#sheet').dataset.tzdlg='1'}
@@ -5357,7 +5364,7 @@ document.addEventListener('click',e=>{
   const go=e.target.closest('[data-tzgo]');if(go&&!go.disabled){tzRng=Math.random;tzGo(go.dataset.tzgo);return}
   const cp=e.target.closest('[data-tzcap]');if(cp){const[a,x]=cp.dataset.tzcap.split(':');tzRng=Math.random;tzCapDo(tzState(),x,a);save();renderView();return}
   const b=e.target.closest('[data-tz]');if(b&&!b.disabled){const v=b.dataset.tz,s=tzState();
-    if(v==='turn'){if(s.cap.length&&!confirm('처리하지 않은 포로는 다음 달에도 남아 있어요. 턴을 넘길까요?'))return;tzTurn(s);renderView();$('#view').scrollTop=0;tzRepSheet()}
+    if(v==='turn'){const ic=tzIdleC(s);if(ic.length&&!confirm(`아직 명령하지 않은 장수가 있어요.\n${ic.map(k=>`${tzCN(k)} ${tzIdle(s,k).length}명`).join(' · ')}\n턴을 넘길까요?`))return;if(s.cap.length&&!confirm('처리하지 않은 포로는 다음 달에도 남아 있어요. 턴을 넘길까요?'))return;tzTurn(s);renderView();$('#view').scrollTop=0;tzRepSheet()}
     else if(v==='rep')tzRepSheet();
     else if(v==='map'||v==='list'){tzMapOn=v==='map'?1:0;renderView()}
     else if(v==='exit'){stMode='st';renderView();$('#view').scrollTop=0}
@@ -5545,7 +5552,7 @@ const pastDays=n=>Array.from({length:n},(_,i)=>dayOf(Date.now()-(i+1)*DAY_MS));
 const duelReward=rank=>rank<=3?DUEL_REWARD[rank-1]:DUEL_REWARD_REST;
 /* v9.4.0 치팅 방지: 야전·토벌 기록을 seed로 다시 계산해 확인해요 (결과는 문서 id별로 저장해 한 번만 계산).
    AC_FROM(이 빌드 시각) 이전 기록은 다시 계산할 수 없어 그대로 인정, 이후 기록은 같은 버전만 인정해요. */
-const AC_FROM=1793066368911, AC_K='sg_ac1', AC_VOK=['9.4.0','9.5.0','9.5.1','9.5.2','9.6.0','9.6.1',GAME_VERSION];
+const AC_FROM=1793066368911, AC_K='sg_ac1', AC_VOK=['9.4.0','9.5.0','9.5.1','9.5.2','9.6.0','9.6.1','9.6.2',GAME_VERSION];
 let AC_C={};try{AC_C=JSON.parse(localStorage.getItem(AC_K)||'{}')||{}}catch(e){}
 let acQ=[],acBusy=false,acSaveT=null,BAT_RAW=[],PRAW={};
 const acPlain=x=>JSON.parse(JSON.stringify(x));
