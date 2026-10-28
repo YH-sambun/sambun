@@ -821,6 +821,7 @@ html.work #rt-notif,html.work #rt-cut{display:none}
 .sj-slots{display:grid;grid-template-columns:1fr 1fr;gap:6px}.sj-slot{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px;text-align:left;color:var(--fg)}.sj-slot.on{border-color:var(--cinnabar);box-shadow:0 0 0 1px var(--cinnabar)}.sj-slot span{display:flex;flex-direction:column;min-width:0}.sj-slot small{color:var(--mute);font-size:11px}
 .dl-pick{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:6px}.dl-pick button{display:flex;flex-direction:column;align-items:center;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:6px 2px;color:var(--fg)}.dl-pick button[aria-pressed="true"]{border-color:var(--bronze)}.dl-pick small{font-size:11px}
 body.tz-focus header.top,body.tz-focus #claim,body.tz-focus #mode-banner{display:none!important}
+.tz-scs{margin:8px 0 4px}.tz-rs{display:grid;gap:6px;margin:0 0 8px}.tz-rs label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}.tz-rs select{flex:1;min-width:0;padding:6px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--fg);font-size:14px}.tz-gd{background:none;border:0;padding:0;cursor:pointer;flex:none;line-height:0}
 .tz-glf{display:flex;flex-wrap:wrap;gap:4px}.tz-glf button{border:1px solid var(--line);background:none;border-radius:8px;padding:4px 8px;font-size:12px;color:var(--mute)}.tz-glf button[aria-pressed="true"]{border-color:var(--bronze);color:var(--fg);background:var(--panel)}.tz-glf small{opacity:.7}
 .tz-glw{overflow-x:auto;margin-top:8px;border:1px solid var(--line);border-radius:10px;max-height:60vh;overflow-y:auto}.tz-gl{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}.tz-gl th{position:sticky;top:0;background:var(--panel);font-weight:600;color:var(--mute);padding:6px;text-align:left}.tz-gl td{padding:4px 6px;border-top:1px solid var(--line)}.tz-gl td.n{text-align:right;font-variant-numeric:tabular-nums}.tz-gl td.on{color:var(--bronze);font-weight:700}.tz-gl td.nm{display:flex;align-items:center;gap:6px}.tz-gl td.nm i{font-style:normal;font-size:10px;border:1px solid var(--line);border-radius:4px;padding:0 3px;color:var(--bronze)}.tz-gl tr[data-tzgo2]:not([data-tzgo2=""]){cursor:pointer}
 .tz-warnb{position:relative}.tz-bdg{position:absolute;top:-6px;right:-6px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#f2c14e;color:#1a1a1a;font:700 10px/16px sans-serif;font-style:normal;text-align:center}
@@ -852,7 +853,7 @@ body.tz-focus header.top,body.tz-focus #claim,body.tz-focus #mode-banner{display
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v9.7.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v9.8.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -3025,11 +3026,19 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='9.7.1';
+const GAME_VERSION='9.8.0';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['角',{ap:30}],['將',{gpk:10}],['選',{isk:1}],['換',{xtk:1}]];  // v9.5.0: 4·5일 룰렛 소환권 → 나팔 30 · 등용권 10
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'9.8.0',date:'2026-10-28',title:'천하쟁패 시나리오 6개 · 임의 시작 · 장수 상세',reward:{ap:30},items:[
+  '천하쟁패 시작 화면에서 시나리오를 고를 수 있어요. 184년 황건적의 난, 189년 반동탁 연합, 194년 군웅할거, 200년 관도대전, 208년 적벽대전, 219년 삼국정립 6개예요.',
+  '시나리오마다 시작 연월, 세력과 거점·영토, 가신, 난이도가 달라요. 모든 성이 처음부터 주인이 있지는 않아서 빈 성을 먼저 차지하는 싸움도 있어요.',
+  '임의 시작이 생겼어요. 배경 시나리오·군주·시작 성을 고르거나 무작위로 뽑아, 아무 장수나 군주로 세워 빈 성 하나에서 가신 없이 시작해요.',
+  '시나리오 연도에 이미 세상을 떠난 장수도 사라지지 않아요. 판이 시작되면 2달마다 아무 성의 재야로 다시 나타나서 등용할 수 있어요.',
+  '천하쟁패 장수 목록과 장수 일람에서 초상을 누르면 둔영 무장 칸처럼 상세창이 떠요. 모션, 천하쟁패 능력치, 전투 능력치, 스킬을 볼 수 있어요.',
+  '통일 보상은 시나리오마다(임의 시작은 1번) 처음 통일할 때 받아요. 진행 중이던 판은 그대로 이어서 할 수 있어요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'9.7.1',date:'2026-10-28',title:'천하쟁패 세이브 3칸 · 전용 장수 초상·모션',reward:{ap:30},items:[
   '천하쟁패 세이브가 3칸이 됐어요. 시작 화면과 게임 화면 아래의 1칸·2칸·3칸 버튼으로 다른 판을 따로 진행할 수 있어요. 지금까지 하던 판은 1칸에 그대로 있고, 통일 기록은 세 칸이 같이 써요.',
   '천하쟁패 전용 장수 48명(유표·유언·공융·도겸·조비·조창·사마사 등)에게 새 초상과 전용 모션이 생겼어요. 장수 목록·카드·상세창 초상이 바뀌고, 전투에서도 자기 무기로 움직여요. 상세창 초상을 누르면 모션을 볼 수 있어요.',
@@ -4852,20 +4861,92 @@ document.addEventListener('click',e=>{
    전투: 지금 실시간 전투(simulate). 장수마다 병사를 나눠 주고(체력 배율), 장수가 모자란 자리는 잡병 부대로 채워요.
    세이브는 본편과 따로(S.tz). 본편 장수 레벨·돌파·보물은 쓰지 않아요. 시나리오별 첫 통일 때만 본편 보상. */
 const TZ_PC={"lubu":[13,12,2],"guanyu":[64,96,100],"zhaoyun":[80,93,90],"zhangfei":[18,36,89],"zhugeliang":[92,95,98],"caocao":[90,98,70],"simayi":[90,80,89],"zhouyu":[86,95,97],"sunce":[74,89,90],"dengai":[81,74,60],"sunjian":[72,87,68],"diaochan":[63,100,50],"liubei":[82,99,100],"machao":[38,63,79],"huangzhong":[64,87,92],"pangtong":[82,88,88],"xiahoudun":[54,75,90],"xiahouyuan":[55,74,92],"zhangliao":[68,83,89],"xuchu":[19,69,90],"dianwei":[21,54,80],"guojia":[97,82,90],"sunquan":[71,98,86],"ganning":[42,58,76],"taishici":[59,70,77],"luxun":[87,88,89],"xusheng":[77,71,75],"dongzhuo":[46,42,39],"yuanshao":[64,61,35],"weiyan":[28,41,30],"guanping":[60,75,88],"madai":[39,73,76],"liaohua":[49,65,71],"lejin":[32,76,57],"lidian":[36,53,69],"chengpu":[70,85,88],"huanggai":[48,81,89],"zhoutai":[47,61,75],"lingtong":[57,74,84],"gaoshun":[43,69,73],"chengong":[71,67,78],"huaxiong":[23,40,76],"yanliang":[20,55,70],"wenchou":[10,56,70],"jiling":[30,50,62],"yuanshu":[61,53,39],"wenpin":[18,65,61],"yanyan":[68,76,80],"handang":[63,56,83],"haozhao":[70,83,93],"gongsunzan":[64,58,60],"zhugejin":[80,95,91],"liuxun":[37,60,75],"caoren":[57,67,85],"zhoucang":[24,58,78],"xunyu":[85,85,90],"fazheng":[78,80,69],"hansui":[64,78,72],"jianyong":[73,79,82],"yufan":[80,76,79],"jiaxu":[87,67,59],"lvmeng":[65,88,90],"lusu":[84,90,88],"xurong":[45,40,56],"zhangren":[65,76,97],"mateng":[49,88,91],"liru":[78,42,49],"zhangxiu":[49,67,53],"zhangji":[65,71,29],"lijue":[40,26,31],"guosi":[33,37,49],"zhanghe":[51,63,47],"jushou":[73,75,75],"tianfeng":[71,75,64],"shenpei":[80,75,90],"quyi":[31,53,63],"gaolan":[30,72,60],"guotu":[81,40,43],"xuyou":[76,42,47],"chunyuqiong":[50,61,60],"yuanshang":[57,51,78],"pangde":[58,70,59],"menghuo":[6,34,28],"zhangyan":[44,75,59],"zhanglu":[69,89,77],"huangquan":[72,64,70],"zhangwei":[31,64,70],"wangyun":[73,62,85],"xuhuang":[41,62,70],"jiangwei":[72,85,88],"guanxing":[61,72,90],"maliang":[92,85,81],"zhangzhao":[94,82,75],"caiyong":[71,68,71],"xunchen":[72,48,58],"yujin":[48,60,60],"wutugu":[9,24,50],"zhangjiao":[70,98,60],"zhangbao":[52,64,70],"zhangliang":[48,58,70],"zhurong":[13,36,40],"sunshangxiang":[42,78,75],"guanhai":[18,40,55],"huatuo":[78,85,90]};  // {id:[정치,매력,의리]}
-const TZ_SC={189:{n:'189년 반동탁 연합',y:189,m:1,d:'동탁이 낙양에 들어와 황제를 쥐고 흔들자, 각지의 군웅이 일어나요.',
+const TZ_SC={
+ 184:{n:'184년 황건적의 난',y:184,m:2,d:'장각이 "푸른 하늘은 이미 죽었다"를 외치며 일어나요. 관군과 의용군이 황건적을 막아서요.',
+  L:{zhangjiao:['yecheng',['zhangbao','zhangliang']],caocao:['xuchang',['xiahoudun','xiahouyuan','caoren']],liubei:['ji',['guanyu','zhangfei','jianyong']],
+   sunjian:['xiapi',['chengpu','huanggai','handang']],dongzhuo:['anding',['lijue','guosi','huaxiong','liru']],yuanshao:['luoyang',['yanliang','wenchou','xunchen']],
+   gongsunzan:['beiping',[]],hansui:['tianshui',['yanxing']],mateng:['xiliang',['pangde']],menghuo:['yunnan',['zhurong','wutugu']]},
+  X:{zhangjiao:{runan:['guanhai'],nanpi:[],wancheng:[]}},
+  dif:{zhangjiao:0,yuanshao:0,caocao:1,sunjian:1,dongzhuo:1,hansui:1,liubei:2,gongsunzan:2,mateng:2,menghuo:2}},
+ 189:{n:'189년 반동탁 연합',y:189,m:1,d:'동탁이 낙양에 들어와 황제를 쥐고 흔들자, 각지의 군웅이 일어나요.',
   L:{caocao:['chenliu',['xiahoudun','dianwei']],liubei:['pingyuan',['guanyu','zhangfei']],sunjian:['changsha',['chengpu','huanggai']],
    dongzhuo:['luoyang',['lubu','lijue','guosi']],yuanshao:['nanpi',['yanliang','wenchou']],gongsunzan:['beiping',['zhaoyun']],
    zhangjiao:['runan',['zhangbao','zhangliang']],mateng:['xiliang',['machao','madai']],zhanglu:['hanzhong',['zhangwei']],menghuo:['yunnan',['zhurong','wutugu']],
    yuanshu:['wancheng',['jiling']],liubiao:['xiangyang',['wenpin']],liuyan:['chengdu',['zhangren','yanyan']],hanfu:['yecheng',['jushou','shenpei']],
    kongrong:['beihai',[]],taoqian:['xuzhou',[]],gongsundu:['xiangping',[]],liuyu:['ji',[]],zhangmiao:['puyang',[]],zhangyang:['jinyang',[]],
    liuyao:['jianye',[]],yanbaihu:['wu',[]],wanglang:['kuaiji',[]]},
-  X:{dongzhuo:{changan:['lijue','guosi']},liubiao:{jiangxia:[]}}}};  // X: 거점 말고 더 가진 성과 그 성의 장수  // X: 거점 말고 더 가진 성과 그 성의 장수
+  X:{dongzhuo:{changan:['lijue','guosi']},liubiao:{jiangxia:[]}}},  // X: 거점 말고 더 가진 성과 그 성의 장수
+ 194:{n:'194년 군웅할거',y:194,m:6,d:'동탁이 죽은 뒤 장안은 이각·곽사가 쥐고, 여포는 조조가 비운 연주를 노려요. 원술 밑에서는 손책이 때를 기다려요.',
+  L:{caocao:['chenliu',['xiahoudun','xiahouyuan','dianwei','xunyu','caoren','yujin']],lubu:['puyang',['chengong','gaoshun','zhangliao','diaochan','zhangmiao']],
+   taoqian:['xuzhou',[]],liubei:['xiaopei',['guanyu','zhangfei','jianyong']],yuanshao:['yecheng',['tianfeng','jushou','shenpei','yanliang','wenchou','zhanghe','gaolan','guotu']],
+   gongsunzan:['beiping',[]],yuanshu:['shouchun',['jiling','sunce','chengpu','huanggai','handang']],liubiao:['xiangyang',['caimao','kuaiyue','wenpin']],
+   liuzhang:['chengdu',['zhangren','yanyan','huangquan','liuxun']],lijue:['changan',['guosi','jiaxu']],mateng:['xiliang',['machao','madai','pangde','maxiu','matie']],
+   hansui:['tianshui',['yanxing']],zhanglu:['hanzhong',['zhangwei']],gongsundu:['xiangping',[]],kongrong:['beihai',[]],liuyao:['jianye',['taishici']],
+   yanbaihu:['wu',[]],wanglang:['kuaiji',['yufan']],zhangyang:['jinyang',[]],menghuo:['yunnan',['zhurong','wutugu']]},
+  X:{taoqian:{xiapi:[]},yuanshao:{nanpi:[]},liubiao:{jiangxia:['huangzu'],jiangling:[]},lijue:{hongnong:['zhangji','zhangxiu']}},
+  R:{sunjian:'yuanshu',liuyan:'liuzhang',dongzhuo:'lijue'},
+  dif:{yuanshao:0,yuanshu:0,caocao:1,lubu:1,gongsunzan:1,liubiao:1,liuzhang:1,lijue:1,mateng:1,taoqian:2,liubei:2,hansui:2,zhanglu:2,gongsundu:2,kongrong:2,liuyao:2,yanbaihu:2,wanglang:2,zhangyang:2,menghuo:2}},
+ 200:{n:'200년 관도대전',y:200,m:2,d:'하북을 하나로 모은 원소가 남쪽으로 내려와요. 조조는 관도에서 운명을 건 결전을 준비하고, 강동의 손책은 허도를 노려요.',
+  L:{caocao:['xuchang',['xunyu','guojia','xuchu','jiaxu','zhangxiu','caoren','xiahouyuan']],
+   yuanshao:['yecheng',['jushou','tianfeng','shenpei','yanliang','wenchou','zhanghe','gaolan','guotu','xuyou','chunyuqiong','yuanshang']],
+   liubei:['runan',['guanyu','zhangfei','zhaoyun','jianyong']],sunce:['wu',['zhouyu','zhangzhao','sunquan','chengpu','huanggai','handang','zhoutai','taishici','lusu']],
+   liubiao:['xiangyang',['caimao','kuaiyue','wenpin','liuqi']],liuzhang:['chengdu',['zhangren','huangquan','fazheng','liuxun']],zhanglu:['hanzhong',['zhangwei']],
+   mateng:['xiliang',['machao','madai','pangde','maxiu','matie']],hansui:['tianshui',['yanxing']],gongsundu:['xiangping',['gongsunkang']],menghuo:['yunnan',['zhurong','wutugu']]},
+  X:{caocao:{chenliu:['xiahoudun','lejin'],puyang:['yujin'],xiapi:['zhangliao','lidian'],luoyang:['xuhuang'],xuzhou:[],xiaopei:[],wancheng:[]},
+   yuanshao:{pingyuan:['yuantan'],ji:['yuanxi'],jinyang:['gaogan'],nanpi:[],beiping:[],beihai:[]},
+   sunce:{jianye:[],kuaiji:['yufan'],lujiang:[],chaisang:[]},liubiao:{jiangxia:['huangzu','huangshe'],jiangling:[],changsha:['huangzhong']},liuzhang:{jiangzhou:['yanyan'],zitong:[]}},
+  R:{sunjian:'sunce',liuyan:'liuzhang'},
+  dif:{yuanshao:0,sunce:0,caocao:1,liubiao:1,liuzhang:1,mateng:1,liubei:2,zhanglu:2,hansui:2,gongsundu:2,menghuo:2}},
+ 208:{n:'208년 적벽대전',y:208,m:10,d:'형주를 손에 넣은 조조가 대군을 이끌고 장강을 내려와요. 쫓기던 유비와 강동의 손권이 손을 잡아요.',
+  L:{caocao:['xuchang',['xunyu','jiaxu','xuchu','caopi','caozhi']],liubei:['jiangxia',['guanyu','zhangfei','zhaoyun','zhugeliang','jianyong','liuqi','guanping','zhoucang']],
+   sunquan:['chaisang',['zhouyu','lusu','chengpu','huanggai','ganning','zhugejin','lvmeng','lingtong','zhoutai','handang']],
+   liuzhang:['chengdu',['zhangren','huangquan','fazheng','liuxun']],zhanglu:['hanzhong',['zhangwei']],mateng:['xiliang',['machao','madai','pangde','maxiu','matie']],
+   hansui:['tianshui',['yanxing']],gongsunkang:['xiangping',['gongsungong']],menghuo:['yunnan',['zhurong','wutugu']]},
+  X:{caocao:{yecheng:['simayi','caozhang'],luoyang:['xiahoudun'],changan:['xiahouyuan'],hongnong:[],chenliu:[],puyang:[],xuzhou:[],xiapi:[],xiaopei:[],wancheng:[],
+    nanpi:['zhanghe'],pingyuan:[],beihai:[],ji:['gaolan'],beiping:[],jinyang:[],runan:['lidian'],shouchun:['zhangliao','lejin'],
+    xiangyang:['yujin','caimao','kuaiyue','wenpin','liucong'],jiangling:['caoren','xuhuang'],xinye:[]},
+   sunquan:{jianye:['zhangzhao','xusheng','sunshangxiang'],wu:['luxun'],kuaiji:['yufan'],lujiang:[]},liuzhang:{jiangzhou:['yanyan'],zitong:[],yongan:[]}},
+  R:{sunjian:'sunquan',sunce:'sunquan',liuyan:'liuzhang',gongsundu:'gongsunkang',liubiao:'caocao'},
+  dif:{caocao:0,sunquan:1,liuzhang:1,mateng:1,liubei:2,zhanglu:2,hansui:2,gongsunkang:2,menghuo:2}},
+ 219:{n:'219년 삼국정립',y:219,m:7,d:'한중을 차지한 유비가 한중왕에 오르고, 관우는 번성을 향해 북으로 올라가요. 위·촉·오가 천하를 셋으로 나눠요.',
+  L:{caocao:['yecheng',['caopi','caozhi','caozhang','simayi','jiaxu','xuchu']],
+   liubei:['chengdu',['zhugeliang','fazheng','huangquan','maliang','jianyong','yanyan','guanxing']],
+   sunquan:['jianye',['zhangzhao','zhugejin','xusheng','sunshangxiang','yufan']],gongsunkang:['xiangping',['gongsungong','gongsunyuan']],menghuo:['yunnan',['zhurong','wutugu']]},
+  X:{caocao:{xuchang:[],luoyang:['xiahoudun'],changan:['zhanghe'],tianshui:['haozhao'],hongnong:[],chenliu:[],puyang:[],nanpi:[],ji:[],beiping:[],
+    jinyang:[],pingyuan:[],beihai:[],xuzhou:[],xiapi:[],xiaopei:[],runan:[],wancheng:['xuhuang'],xinye:[],xiangyang:['caoren','yujin','pangde','wenpin'],shouchun:['zhangliao']},
+   liubei:{hanzhong:['weiyan','huangzhong','machao','madai'],zitong:['zhangfei'],xiabian:[],jiangzhou:['zhaoyun'],yongan:[],shangyong:[],
+    jiangling:['guanyu','guanping','zhoucang','liaohua'],wuling:[],lingling:[]},
+   sunquan:{wu:[],kuaiji:[],lujiang:['luxun'],chaisang:['lvmeng','ganning'],jiangxia:['handang','zhoutai','lingtong'],changsha:[],guiyang:[]}},
+  R:{sunjian:'sunquan',sunce:'sunquan',liuyan:'liubei',gongsundu:'gongsunkang',liubiao:'caocao',hansui:'caocao',mateng:'liubei'},
+  dif:{caocao:0,liubei:0,sunquan:1,gongsunkang:2,menghuo:2}}};
+// v9.8.0 몰년(연 + 월/12). 시나리오 시작보다 먼저 죽은 장수는 대기 풀에 들어갔다가 2달마다 재야로 다시 나와요
+const TZ_DIE={zhangjiao:184.8,zhangliang:184.8,zhangbao:184.9,kongzhou:190.9,huaxiong:191.1,sunjian:191.3,hanfu:191.5,niufu:192.2,dongzhuo:192.3,baoxin:192.3,liru:192.4,
+  wangyun:192.5,caiyong:192.5,xurong:192.6,guanhai:193.5,liuyu:193.9,liuyan:194.4,taoqian:194.9,quyi:195,zhangmiao:195.6,zhangji:196.5,yanbaihu:196.5,dianwei:197.1,caoang:197.1,
+  guosi:197.4,liuyao:197.5,lijue:198.4,zhangyang:198.9,lubu:199,gaoshun:199,chengong:199,diaochan:199,gongsunzan:199.2,yuanshu:199.5,jiling:199.5,sunce:200.3,yanliang:200.3,
+  wenchou:200.6,chunyuqiong:200.8,jushou:200.9,tianfeng:200.9,xunchen:201,yuanshao:202.4,gongsundu:204,sunyi:204.5,xuyou:204.5,shenpei:204.6,guotu:205,yuantan:205,
+  taishici:206,gaogan:206.2,zhangxiu:207,guojia:207.6,yuanshang:207.9,yuanxi:207.9,huatuo:208,huangzu:208.2,liubiao:208.6,kongrong:208.6,lidian:209,liuqi:209.9,
+  chengpu:210.5,zhouyu:210.9,mateng:212.4,maxiu:212.4,matie:212.4,xunyu:212.9,zhangren:213.5,kuaiyue:214,pangtong:214.4,huanggai:215,hansui:215.4,zhangwei:215.6,
+  zhanglu:216.5,lingtong:237,lusu:217.6,lejin:218,xiahouyuan:219.1,pangde:219.7,guanyu:219.95,guanping:219.95,zhoucang:219.95,lvmeng:219.95,caocao:220.1,huangzhong:220,
+  fazheng:220,ganning:220,liuzhang:220,zhangquan:220,xiahoudun:220.3,yujin:221,zhangfei:221.5,gongsunkang:221,machao:222,zhangliao:222.6,maliang:222.6,liubei:223.3,
+  caoren:223.3,caozhang:223.5,jiaxu:223.6,xusheng:224,zhoutai:225,wutugu:225,caopi:226,baoxun:226,wenpin:226,xuhuang:227,handang:227,wanglang:228,haozhao:229,zhaoyun:229,
+  xuchu:230,zhanghe:231,caozhi:232,yufan:233,guanxing:234,zhugeliang:234.7,weiyan:234.7,zhangzhao:236,gongsunyuan:238,huangquan:240,zhugejin:241,luxun:245,simayi:251,
+  sunquan:252,zhugeke:253,simashi:255,wangsu:256,xiahouba:259,dengai:264,jiangwei:264,liaohua:264,liushan:271};
 const TZ_COL={caocao:'#3d5f8f',liubei:'#3f7f5f',sunjian:'#a8402f',dongzhuo:'#7e3556',yuanshao:'#93772a',gongsunzan:'#9aa3ad',zhangjiao:'#d4b13a',mateng:'#b06a2c',zhanglu:'#3f8a8a',menghuo:'#6a5288',
-  yuanshu:'#c79a3a',liubiao:'#4f7fa8',liuyan:'#5c8f3c',hanfu:'#8a6a4a',kongrong:'#7a8fb0',taoqian:'#a07890',gongsundu:'#5a6f7a',liuyu:'#b8a070',zhangmiao:'#8a5a3a',zhangyang:'#6a7a3a',liuyao:'#3a7a8a',yanbaihu:'#8a3a3a',wanglang:'#6a5aa0'};
+  yuanshu:'#c79a3a',liubiao:'#4f7fa8',liuyan:'#5c8f3c',hanfu:'#8a6a4a',kongrong:'#7a8fb0',taoqian:'#a07890',gongsundu:'#5a6f7a',liuyu:'#b8a070',zhangmiao:'#8a5a3a',zhangyang:'#6a7a3a',liuyao:'#3a7a8a',yanbaihu:'#8a3a3a',wanglang:'#6a5aa0',
+  lubu:'#5a2a3a',sunce:'#b8503a',sunquan:'#a8402f',liuzhang:'#5c8f3c',lijue:'#7e3556',hansui:'#8a7a4a',gongsunkang:'#5a6f7a'};
 const TZ_LV=['쉬움','보통','어려움'], TZ_DIF={caocao:0,yuanshao:0,dongzhuo:0,sunjian:1,liubei:2,gongsunzan:1,zhangjiao:1,mateng:1,zhanglu:2,menghuo:2,yuanshu:1,liubiao:1,liuyan:1,hanfu:2,kongrong:2,taoqian:2,gongsundu:2,liuyu:2,zhangmiao:2,zhangyang:2,liuyao:2,yanbaihu:2,wanglang:2};
 const TZ_BIG={luoyang:1,changan:1,yecheng:1,xuchang:1,xiangyang:1,chengdu:1,jianye:1,wancheng:1,xiapi:1,jiangling:1,ji:1,shouchun:1},
   TZ_SMALL={xiangping:1,xiliang:1,yunnan:1,kuaiji:1,guiyang:1,lingling:1,wuling:1,jianning:1,anding:1,xiabian:1,shangyong:1,yongan:1},
   TZ_PASS={luoyang:'사수관',hongnong:'동관',hanzhong:'양평관',zitong:'검각',shouchun:'합비',yongan:'백제성'};  // 관문이 있는 성: 처음 방어 70 · 수비 체력 ×1.15
+// v9.8.0 시나리오 도우미: 임의 시작(s.rs={f,k})이면 배경 시나리오에서 그 장수의 원래 세력을 빼고, 고른 빈 성 하나로 새 세력을 세워요
+function tzL(x){const D=TZ_SC[x.sc];if(!x.rs)return D.L;const f=x.rs.f,L={};for(const l in D.L)if(l!==f)L[l]=[D.L[l][0],D.L[l][1].filter(g=>g!==f)];L[f]=[x.rs.k,[]];return L}
+function tzXof(x){const D=TZ_SC[x.sc],X0=D.X||{};if(!x.rs)return X0;const f=x.rs.f,X={};for(const l in X0)if(l!==f){X[l]={};for(const k in X0[l])X[l][k]=X0[l][k].filter(g=>g!==f)}return X}
+const tzFR=(x,f)=>((TZ_SC[x.sc]||{}).R||{})[f]||f;  // 시나리오에서 이름이 바뀐 세력(예: 194년 유언 → 유장)
+const tzDif=(sc,f)=>{const d=(TZ_SC[sc]||{}).dif||{};return f in d?d[f]:f in TZ_DIF?TZ_DIF[f]:2};
+const tzDK=x=>x.rs?'rnd':x.sc;  // 통일 기록 칸: 임의 시작은 'rnd' 하나
+const TZ_SCK=Object.keys(TZ_SC).map(Number);
+// 임의 시작에 고를 수 있는 빈 성(배경 시나리오의 거점·추가 성이 아닌 곳)
+function tzFreeCities(sc){const D=TZ_SC[sc],u=new Set();for(const f in D.L)u.add(D.L[f][0]);for(const f in D.X||{})for(const k in D.X[f])u.add(k);return TZ_K.filter(k=>!u.has(k))}
 const TZ_REW={gold:8000}, TZ_MV=2;  // TZ_MV: 지도 판(45성 = 2)
 // 지도(v9.7.0): 삼국지 4 기준 43성 + 운남·건녕 = 45성, 13주. 서량·양평·운남·회계는 길이 하나뿐인 골방이에요
 const TZ_X={ji:['계','薊'],beiping:['북평','北平'],xiangping:['양평','襄平'],nanpi:['남피','南皮'],yecheng:['업','鄴'],jinyang:['진양','晉陽'],pingyuan:['평원','平原'],beihai:['북해','北海'],
@@ -4947,12 +5028,13 @@ const TZ_DL={self:['직접','내가 직접 명령해요. 태수가 있으면 매
   atk:['공략','징병 · 훈련 후, 이웃 적 성보다 병력이 1.3배 넘게 앞서면 장수 최대 5명으로 자동 출진해요(동맹은 공격 안 해요).']};
 const TZ_REPK={'戰':'war','委':'auto','民':'min','令':'cmd'};
 let tzSel='',tzDraft=null,tzRng=Math.random,tzSx=null,tzCat='nai',tzMapOn=0,tzGOpen=0;  // tzSx: 좁은 화면에서 지도 가로 위치
-function cleanTz(x){x=x&&typeof x==='object'?x:{};const done={};if(x.done&&typeof x.done==='object')for(const k in x.done)if(TZ_SC[k])done[k]=1;
+function cleanTz(x){x=x&&typeof x==='object'?x:{};const done={};if(x.done&&typeof x.done==='object')for(const k in x.done)if(TZ_SC[k]||k==='rnd')done[k]=1;
   const base={done,on:0};if(!x.on||x.mv!==TZ_MV||!TZ_SC[x.sc]||!x.F||!x.C||!x.G)return base;  /* 지도가 바뀐 옛 판(v9.7.0 전)은 이어 하지 않아요 */const n=(v,a,b)=>Math.max(a,Math.min(b,Math.round(Number(v)||0)));
   const X={};if(x.X&&typeof x.X==='object')for(const v in x.X){const e=x.X[v];if(/^k_/.test(v)&&e&&GMAP[e.p]&&!GMAP[e.p].kid&&Array.isArray(e.st)&&e.st.length===6)
     X[v]={p:e.p,nm:String(e.nm||'').slice(0,12),sx:e.sx==='女'?'女':'子',st:e.st.map(q=>n(q,1,100)),rar:n(e.rar,3,5),hd:String(e.hd||'').slice(0,40)}}
   tzReg(X);
-  const L=TZ_SC[x.sc].L,F={};for(const f in x.F){const v=x.F[f]||{};if(!L[f]&&!(v.rb&&GMAP[f]))continue;F[f]={lord:GMAP[v.lord]?v.lord:f,dead:v.dead?1:0,al:{},zn:(Array.isArray(v.zn)?v.zn:[]).filter(z=>TZ_ZH[z]),tt:n(v.tt,0,2)};if(!L[f])F[f].rb=1}
+  const rs=x.rs&&GMAP[x.rs.f]&&TZ_C[x.rs.k]?{f:x.rs.f,k:x.rs.k}:null;
+  const L=tzL({sc:x.sc,rs}),F={};for(const f in x.F){const v=x.F[f]||{};if(!L[f]&&!(v.rb&&GMAP[f]))continue;F[f]={lord:GMAP[v.lord]?v.lord:f,dead:v.dead?1:0,al:{},zn:(Array.isArray(v.zn)?v.zn:[]).filter(z=>TZ_ZH[z]),tt:n(v.tt,0,2)};if(!L[f])F[f].rb=1}
   for(const f in L)if(!F[f])F[f]={lord:f,dead:1,al:{},zn:[],tt:0};
   for(const f in F){const v=x.F[f]||{};if(v.al&&typeof v.al==='object')for(const a in v.al)if(F[a]&&a!==f)F[f].al[a]=Math.max(0,Math.min(99,v.al[a]|0))}
   if(!F[x.me])return base;const own=o=>o==='neu'||F[o]?o:'neu';
@@ -4965,7 +5047,7 @@ function cleanTz(x){x=x&&typeof x==='object'?x:{};const done={};if(x.done&&typeo
   const lc=x.lc&&TZ_C[x.lc.k]?{k:x.lc.k,n:n(x.lc.n,1,4)}:null;
   const kd=(Array.isArray(x.kd)?x.kd:[]).filter(e=>e&&GMAP[e.p]&&!GMAP[e.p].kid).slice(0,80).map(e=>({p:e.p,t:n(e.t,0,99999),hd:String(e.hd||'').slice(0,40)}));
   const o={done,on:1,mv:TZ_MV,sc:x.sc,me:x.me,y:n(x.y,180,300),m:n(x.m,1,12),t:n(x.t,0,9999),F,C,G,cap:(Array.isArray(x.cap)?x.cap:[]).filter(g=>G[g]&&G[g].o==='cap'),
-    rep:(Array.isArray(x.rep)?x.rep:[]).slice(-60).map(l=>String(l).slice(0,160)),end:x.end===1||x.end===-1?x.end:0,rw:x.rw?1:0,sd:x.sd|0,I,lc,kd,X};
+    rep:(Array.isArray(x.rep)?x.rep:[]).slice(-60).map(l=>String(l).slice(0,160)),end:x.end===1||x.end===-1?x.end:0,rw:x.rw?1:0,sd:x.sd|0,I,lc,kd,X,rs,rv:(Array.isArray(x.rv)?x.rv:[]).filter(g=>G[g]&&G[g].o==='wait')};
   if(!x.I)tzItemsInit(o,mulberry(((x.sd|0)^7919)>>>0));  // v9.6.1 세이브: 보물을 새로 숨겨요
   return o}
 // 처형한 장수의 자식(가상 장수)을 GMAP·TZ_PC에 숨은 속성으로 등록해요(Object.keys에 안 잡혀 본편 목록에 섞이지 않아요). 초상·모션은 부모 것을 써요
@@ -4984,7 +5066,7 @@ function tzState(){if(!S.tz||typeof S.tz!=='object'||!('on' in S.tz))S.tz=cleanT
 const TZ_SLOTS=3;
 function tzSlots(){if(!Array.isArray(S.tzs))S.tzs=[null,null,null];if(!(S.tzi>=0&&S.tzi<TZ_SLOTS))S.tzi=0;return S.tzs}
 function tzSlotOf(i){tzSlots();return i===S.tzi?tzState():S.tzs[i]}
-function tzSlotLabel(i){const x=tzSlotOf(i);if(!x||!x.on)return '빈 칸';return `${tzName(x.me)} · ${x.y}년 ${x.m}월${x.end===1?' · 통일':x.end===-1?' · 패배':''}`}
+function tzSlotLabel(i){const x=tzSlotOf(i);if(!x||!x.on)return '빈 칸';return `${x.rs?'임의':x.sc} ${tzName(x.me)} · ${x.y}년 ${x.m}월${x.end===1?' · 통일':x.end===-1?' · 패배':''}`}
 function tzSlotGo(i){tzSlots();if(i===S.tzi||!(i>=0&&i<TZ_SLOTS))return;const cur=tzState(),done=Object.assign({},cur.done);S.tzs[S.tzi]=cur;S.tzi=i;
   const nx=S.tzs[i];S.tzs[i]=null;S.tz=cleanTz(nx||{});Object.assign(done,S.tz.done);S.tz.done=done;tzSel='';tzSx=null;tzMapOn=0;tzDraft=null}
 function tzSlotBar(){tzSlots();return `<div class="tz-slots" role="group" aria-label="세이브 칸">${[0,1,2].map(i=>`<button type="button" data-tzslot="${i}" aria-pressed="${i===S.tzi}"><b>${i+1}칸</b><small>${esc(tzSlotLabel(i))}</small></button>`).join('')}</div>`}
@@ -5021,27 +5103,33 @@ function tzZhCheck(s){for(const f in s.F){const F=s.F[f];if(F.dead)continue;cons
 // 풍작: 농업이 상한의 70% 이상이면 9월 군량 ×1.2 ~ ×1.5(상한)
 function tzHarv(C){const r=C.fa/Math.max(1,tzCap(C,'fa'));return r>=.7?1.2+Math.min(1,(r-.7)/.3)*.3:1}
 function tzLog(s,t,ch){s.rep.push((ch||'報')+' '+t);if(s.rep.length>60)s.rep=s.rep.slice(-60)}
-function tzNew(sc,me){const D=TZ_SC[sc],r=mulberry((Date.now()^sjHash(me+sc))>>>0),s={done:(S.tz&&S.tz.done)||{},on:1,mv:TZ_MV,sc,me,y:D.y,m:D.m,t:0,F:{},C:{},G:{},cap:[],rep:[],end:0,rw:0,sd:Math.floor(r()*1e9),I:{},lc:null,kd:[],X:{}};
+function tzNew(sc,me,rs){const D=TZ_SC[sc],r=mulberry((Date.now()^sjHash(me+sc))>>>0),s={done:(S.tz&&S.tz.done)||{},on:1,mv:TZ_MV,sc,me,y:D.y,m:D.m,t:0,F:{},C:{},G:{},cap:[],rep:[],end:0,rw:0,sd:Math.floor(r()*1e9),I:{},lc:null,kd:[],X:{},rs:rs||null,rv:[]};
+  const L=tzL(s),XX=tzXof(s);
   const rr=r,used=new Set(),put=(g,o,c,ly)=>{used.add(g);s.G[g]={o,c,ly,mr:0,ac:0,fd:0,cb:'',tr:0,of:''}};
   TZ_K.forEach(k=>{s.C[k]=tzCity0(k)});
   for(const[g,[p,y]]of Object.entries(TZ_KID))if(D.y<y&&GMAP[g])put(g,'wait',TZ_K[0],100);  // 아직 어린 자식은 그해 1월에 합류
+  // v9.8.0 시작 전에 죽은 장수: 대기 풀(s.rv)에 섞어 두었다가 2달마다 재야로 다시 나와요(장수 수가 모자라지 않게)
+  const inSc=new Set();for(const f in L){inSc.add(f);L[f][1].forEach(g=>inSc.add(g))}for(const f in XX)for(const k in XX[f])XX[f][k].forEach(g=>inSc.add(g));
+  const t0=D.y+(D.m-1)/12;TZ_GA.forEach(b=>{const d=TZ_DIE[b.id];if(d!=null&&d<t0&&!inSc.has(b.id)&&!used.has(b.id)){put(b.id,'wait',TZ_K[0],0);s.rv.push(b.id)}});
+  for(let i=s.rv.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[s.rv[i],s.rv[j]]=[s.rv[j],s.rv[i]]}
   const own=(f,k,gs)=>{Object.assign(s.C[k],{o:f,g:1000,fd:5000,tr:3500,tn:45,ml:65});gs.forEach(g=>put(g,f,k,100))};
-  for(const[f,[k,vs]]of Object.entries(D.L)){s.F[f]={lord:f,dead:0,al:{},zn:[],tt:0};const ex=(D.X&&D.X[f])||{},mv=[].concat(...Object.values(ex));own(f,k,[f,...vs.filter(g=>!mv.includes(g))]);for(const[k2,gs]of Object.entries(ex))own(f,k2,gs)}
+  for(const[f,[k,vs]]of Object.entries(L)){s.F[f]={lord:f,dead:0,al:{},zn:[],tt:0};const ex=XX[f]||{},mv=[].concat(...Object.values(ex));own(f,k,[f,...vs.filter(g=>!mv.includes(g))]);for(const[k2,gs]of Object.entries(ex))own(f,k2,gs)}
   const pool=()=>GENS.map(b=>b.id).filter(g=>!used.has(g));
-  for(const[f,[k,vs]]of Object.entries(D.L)){const fac=GMAP[f].fac;let need=5-1-vs.length;const c=pool().filter(g=>GMAP[g].fac===fac);
+  if(rs)Object.assign(s.C[rs.k],{g:600,fd:3000,tr:2000,tn:35,ml:60});  // 임의 시작: 작은 성 하나, 가신 없음
+  for(const[f,[k,vs]]of Object.entries(L)){const fac=GMAP[f].fac;let need=rs&&f===rs.f?0:5-1-vs.length;const c=pool().filter(g=>GMAP[g].fac===fac);
     while(need>0&&c.length){const g=c.splice(Math.floor(r()*c.length),1)[0];put(g,f,k,Math.min(100,70+Math.round(tzGiri(g)/5)));need--}
     const ng=TZ_NG.filter(x=>x[13]===f&&!TZ_KID[x[0]]).length;need=Math.min(need,2-ng);  // 같은 색 장수가 모자라면 다른 장수로 2명까지 채워요
     const o2=pool().filter(g=>!TZ_KID[g]&&GMAP[g].rar<=3);while(need>0&&o2.length){const g=o2.splice(Math.floor(r()*o2.length),1)[0];put(g,f,k,Math.min(100,60+Math.round(tzGiri(g)/5)));need--}
     tzCities(s,f).forEach(x=>tzAutoGov(s,x))}
   // 전용 장수: 시작 세력이 있으면 그 세력(시작 성이 그 세력 성이면 그 성, 아니면 거점), 없으면 재야
-  TZ_NG.forEach(r=>{const[g]=r,f=r[13],k=r[14];if(used.has(g)||TZ_KID[g])return;
+  TZ_NG.forEach(r=>{const[g]=r,f=tzFR(s,r[13]),k=r[14];if(used.has(g))return;  // 아직 어린 자식은 위에서 대기(used)라 여기 안 와요. 이미 자란 자식(예: 208년 조비)은 부모 세력에 넣어요
     if(s.F[f]){const c=s.C[k]&&s.C[k].o===f?k:s.G[f].c;put(g,f,c,Math.min(100,75+Math.round(r[11]/5)))}else put(g,'free',TZ_C[k]?k:TZ_K[Math.floor(rr()*TZ_K.length)],0)});
   Object.keys(s.F).forEach(f=>tzCities(s,f).forEach(x=>{s.C[x].gov='';tzAutoGov(s,x)}));
   // 중립 성: 원래 수비 명장 최대 2명, 새 성은 이름 없는 수비군만
   TZ_K.filter(k=>s.C[k].o==='neu'&&SIEGE[k]).forEach(k=>{(SIEGE[k].def||[]).filter(g=>GMAP[g]&&!used.has(g)).slice(0,2).forEach(g=>put(g,'neu',k,80))});
   pool().forEach(g=>put(g,'free',TZ_K[Math.floor(r()*TZ_K.length)],0));
   tzItemsInit(s,r);
-  tzLog(s,`${D.y}년 ${D.m}월 · ${tzName(me)}(이)가 ${tzCN(D.L[me][0])}에서 일어났어요.`);return s}
+  tzLog(s,`${D.y}년 ${D.m}월 · ${D.n}${rs?' · 임의 시작':''} · ${tzName(me)}(이)가 ${tzCN(L[me][0])}에서 일어났어요.`);return s}
 // ---- 명령 ----
 const tzR=()=>.8+tzRng()*.4, tzRR=v=>Math.floor(v+tzRng());
 const tzInvV=(key,g)=>key==='df'?4+tzLead(g)*.08:12+tzPol(g)*.35;
@@ -5145,7 +5233,7 @@ function tzFree(s,g){const G=s.G[g],orig=Object.keys(s.F).find(f=>s.F[f].lord===
   Object.assign(G,{o:'free',cb:'',fd:0,of:''});return ''}
 // 몸값: 포로의 원래 세력이 가장 부유한 성에서 내요(군주였던 장수 2,000, 그 밖 300 + 등급×100)
 function tzRansom(s,g,from,to){if(!from||!s.F[from]||s.F[from].dead||!s.F[to]||s.F[to].dead)return 0;const src=tzCities(s,from).sort((a,b)=>s.C[b].g-s.C[a].g)[0],dst=s.G[s.F[to].lord].c;
-  const D=s.C[dst]&&s.C[dst].o===to?s.C[dst]:s.C[tzCities(s,to)[0]];if(!src||!D)return 0;const amt=TZ_SC[s.sc].L[g]||s.F[g]?2000:300+GMAP[g].rar*100,v=Math.min(amt,s.C[src].g);
+  const D=s.C[dst]&&s.C[dst].o===to?s.C[dst]:s.C[tzCities(s,to)[0]];if(!src||!D)return 0;const amt=tzL(s)[g]||s.F[g]?2000:300+GMAP[g].rar*100,v=Math.min(amt,s.C[src].g);
   s.C[src].g-=v;D.g=Math.min(99999,D.g+v);return v}
 // 내 포로 처리
 function tzCapDo(s,g,act){if(!s.cap.includes(g))return;const isL=tzIsL(s,g),me=s.F[s.me].lord;let msg='';
@@ -5163,10 +5251,14 @@ function tzLocust(s){if(!s.lc){if(s.m>=6&&s.m<=8&&tzRng()<.1){const k=TZ_K[Math.
   else{s.lc.n--;if(s.lc.n<=0){tzLog(s,'메뚜기 떼가 사라졌어요');s.lc=null;return}const nb=TZ_ADJ[s.lc.k];s.lc.k=nb[Math.floor(tzRng()*nb.length)]}
   if(s.lc){const C=s.C[s.lc.k];C.fd=Math.round(C.fd*.8);C.fa=Math.round(C.fa*.9);if(C.o===s.me)tzLog(s,`${tzCN(s.lc.k)} 메뚜기 떼 · 군량 −20% · 농업 −10%`,'民')}}
 // 자식 합류(성인이 되는 해 1월): 부모가 있는 세력 → 부모 쪽 원래 세력 → 재야
-function tzKids(s){for(const[g,[p,y,f0,k0]]of Object.entries(TZ_KID)){const G=s.G[g];if(!G||G.o!=='wait'||s.y<y)continue;const P=s.G[p],live=f=>s.F[f]&&!s.F[f].dead&&tzCities(s,f).length;
+function tzKids(s){const rv=new Set(s.rv||[]);for(const[g,[p,y,f00,k0]]of Object.entries(TZ_KID)){const G=s.G[g];if(!G||G.o!=='wait'||s.y<y||rv.has(g))continue;const f0=tzFR(s,f00);const P=s.G[p],live=f=>s.F[f]&&!s.F[f].dead&&tzCities(s,f).length;
   const f=P&&live(P.o)?P.o:live(f0)?f0:'';
   if(f){const c=P&&P.o===f?P.c:(tzCities(s,f).find(k=>tzHome(s,k))||tzCities(s,f)[0]);Object.assign(G,{o:f,c,ly:100,ac:0});tzLog(s,`${tzName(g)}이(가) 성인이 되어 ${tzFN(s,f)}에 합류했어요`,f===s.me?'民':'報')}
-  else{Object.assign(G,{o:'free',c:TZ_C[k0]?k0:TZ_SC[s.sc].L[f0]?TZ_SC[s.sc].L[f0][0]:TZ_K[Math.floor(tzRng()*TZ_K.length)],ly:0,fd:0});tzLog(s,`${tzName(g)}이(가) 성인이 되어 재야에 나타났어요`)}}}
+  else{Object.assign(G,{o:'free',c:TZ_C[k0]?k0:tzL(s)[f0]?tzL(s)[f0][0]:TZ_K[Math.floor(tzRng()*TZ_K.length)],ly:0,fd:0});tzLog(s,`${tzName(g)}이(가) 성인이 되어 재야에 나타났어요`)}}}
+// v9.8.0 대기 풀: 둘째 달부터 2달마다 1명(풀이 30명 넘으면 2명)이 아무 성의 재야로 나와요
+function tzRevive(s){if(!s.rv||!s.rv.length||s.t<2||s.t%2)return;let n=s.rv.length>30?2:1;
+  while(n>0&&s.rv.length){const g=s.rv.shift(),G=s.G[g];if(!G||G.o!=='wait')continue;const k=TZ_K[Math.floor(tzRng()*TZ_K.length)];
+    Object.assign(G,{o:'free',c:k,ly:0,fd:0});tzLog(s,`${tzName(g)}이(가) ${tzCN(k)}에 재야로 나타났어요`,s.C[k].o===s.me?'民':'報');n--}}
 // 처형한 장수의 자식: 처형 3년 뒤 옛 성 재야로. 능력치는 능력마다 부모의 0.8~1.2배(평균 0.93, 1.1배 넘는 일은 약 6%), 아들·딸 반반, 자식의 자식은 없어요
 function tzBirth(s,e){const p=e.p,v='k_'+p,P=GMAP[p];if(s.X[v]||!P||P.kid)return;const pc=TZ_PC[p]||[50,50,50],f=()=>.8+.4*Math.min(tzRng(),tzRng()),cl=q=>Math.max(1,Math.min(100,Math.round(q)));
   const st=[cl(P.str*f()),cl(P.int*f()),cl(P.lead*f()),cl(pc[0]*f()),cl(pc[1]*f()),cl(pc[2]*f())],sx=tzRng()<.5?'子':'女',nm=TZ_KIDN[p]&&TZ_KIDN[p][1]===sx?TZ_KIDN[p][0]:'';
@@ -5211,7 +5303,7 @@ function tzAtkGens(s,k,f,idleOnly){const all=tzGensIn(s,k,f).filter(g=>!idleOnly
 function tzPickAtk(s,f,min,skip,only){let best=null;
   for(const k of only?[only]:tzCities(s,f)){if(skip&&skip.has(k))continue;const C=s.C[k],food=Math.round(C.tr*.7*.3*(tzSea(s.m)==='winter'?1.5:1));if(C.tr<2500||C.fd<food)continue;
     const gs=tzAtkGens(s,k,f,!!only);if(!gs.length)continue;
-    for(const n of TZ_ADJ[k]){const T=s.C[n];if(T.o===f||tzAlly(s,f,T.o)||(s.t<12&&T.o!=='neu'&&(tzHome(s,n)||(TZ_SC[s.sc].L[T.o]||[])[0]===n)))continue;const r=tzAtkRatio(s,k,n,gs),sc=r+(T.o===s.me?.1:0)+(T.o==='neu'?.15:0);
+    for(const n of TZ_ADJ[k]){const T=s.C[n];if(T.o===f||tzAlly(s,f,T.o)||(s.t<12&&T.o!=='neu'&&(tzHome(s,n)||(tzL(s)[T.o]||[])[0]===n)))continue;const r=tzAtkRatio(s,k,n,gs),sc=r+(T.o===s.me?.1:0)+(T.o==='neu'?.15:0);
       if(r>min&&(!best||sc>best.sc))best={k,n,sc,gs,food}}}
   return best}
 function tzAtk(s,b,f,ch){const C=s.C[b.k],tr=Math.round(C.tr*.7);C.tr-=tr;C.fd=Math.max(0,C.fd-b.food);const tgt=s.C[b.n].o,o=tzBattle(s,b.k,b.n,b.gs,tr);
@@ -5257,7 +5349,7 @@ function tzTurn(s){if(s.end)return;tzRng=mulberry((s.sd+s.t*104729)>>>0);s.rep=[
       if(me)tzLog(s,`${tzCN(k)} 주민 반란 · 금·군량 −${Math.round(q*100)}% · 병사 −10%`,'民')}
     if(s.F[C.o]&&!tzHome(s,k)){const gv=tzGov(s,k);if(gv&&s.G[gv].ly<50&&tzRng()<(50-s.G[gv].ly)/200)tzRebel(s,k,gv)}}
   if(gold)tzLog(s,`1월 세금 · 금 +${fmt(gold)}`,'民');if(food)tzLog(s,`9월 수확 · 군량 +${fmt(food)}${hv?` (풍작 ${hv}성)`:''}`,'民');if(vol)tzLog(s,`의용군 ${fmt(vol)}명이 모였어요(${vc}성)`,'民');
-  tzLocust(s);if(s.m===1)tzKids(s);tzZhCheck(s);
+  tzLocust(s);if(s.m===1)tzKids(s);tzRevive(s);tzZhCheck(s);
   s.kd.filter(e=>e.t<=s.t).forEach(e=>tzBirth(s,e));s.kd=s.kd.filter(e=>e.t>s.t);
   for(const b of tzGL(s)){const G=s.G[b.id],fo=G.o,F=s.F[fo];G.ac=0;G.tr=0;if(!F||F.lord===b.id)continue;
     if(tzCha(F.lord)>=80)G.ly=Math.min(100,G.ly+1);
@@ -5268,7 +5360,7 @@ function tzTurn(s){if(s.end)return;tzRng=mulberry((s.sd+s.t*104729)>>>0);s.rep=[
   // 망한 세력 금고의 보물은 천하 어딘가에 다시 숨어요
   for(const id in s.I){const h=s.I[id];if(h[0]==='t'&&(!s.F[h.slice(2)]||s.F[h.slice(2)].dead))s.I[id]='h:'+TZ_K[Math.floor(tzRng()*TZ_K.length)]}
   if(!s.rep.length)tzLog(s,'조용한 한 달이었어요');save()}
-function tzReward(s){if(s.end!==1||s.rw)return null;s.rw=1;if(s.done[s.sc])return {again:1};s.done[s.sc]=1;
+function tzReward(s){if(s.end!==1||s.rw)return null;s.rw=1;const dk=tzDK(s);if(s.done[dk])return {again:1};s.done[dk]=1;
   const g=tzGL(s).map(b=>b.id).filter(x=>s.G[x].o===s.me).sort((a,b)=>s.G[b].mr-s.G[a].mr)[0],n={3:10,4:30,5:100}[GMAP[g].rar]||10;
   S.gold+=TZ_REW.gold;S.isk=(S.isk||0)+1;const tg=GMAP[g].pid||g;S.tok[tg]=Math.min(9999,tokOf(tg)+n);return {gold:TZ_REW.gold,g:tg,n}}
 // ---- 화면 ----
@@ -5279,7 +5371,7 @@ function tzMapHtml(s){const sea=tzSea(s.m);
   setTimeout(()=>{const w=document.querySelector('.gw-wrap');if(!w)return;if(tzSx==null){const k=tzSel||s.G[s.F[s.me].lord].c;tzSx=Math.max(0,w.scrollWidth*TZ_C[k][0]/100-w.clientWidth/2)}w.scrollLeft=tzSx;w.onscroll=()=>{tzSx=w.scrollLeft}},0);
   return `<div class="gw-wrap"><div class="gw-map"><img src="${gwMapSrc(sea)}" alt="" draggable="false"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${roads}</svg>${nodes}</div></div>`}
 function tzGenRow(s,g,mine){const b=GMAP[g],G=s.G[g],P=TZ_PC[g]||[50,50,50],isL=Object.values(s.F).some(F=>F.lord===g&&!F.dead),gov=G.o!=='free'&&s.C[G.c]&&tzGov(s,G.c)===g;
-  return `<div class="li tz-g ${G.ac?'done':''}">${seal(b,'sm')}<div class="info"><b>${esc(b.name)}${isL?' <span class="chip">군주</span>':''}${b.kid?` <span class="chip">${b.kid}</span>`:''}${gov?' <span class="chip">태수</span>':''}${G.ac&&mine?' <span class="chip">명령 끝</span>':''}${tzItOf(s,g)?` <span class="chip" style="color:var(--bronze)">${esc(IMAP[tzItOf(s,g)].name)}</span>`:''}</b>
+  return `<div class="li tz-g ${G.ac?'done':''}"><button type="button" class="tz-gd" data-tzgd="${g}" aria-label="${esc(b.name)} 상세">${seal(b,'sm')}</button><div class="info"><b>${esc(b.name)}${isL?' <span class="chip">군주</span>':''}${b.kid?` <span class="chip">${b.kid}</span>`:''}${gov?' <span class="chip">태수</span>':''}${G.ac&&mine?' <span class="chip">명령 끝</span>':''}${tzItOf(s,g)?` <span class="chip" style="color:var(--bronze)">${esc(IMAP[tzItOf(s,g)].name)}</span>`:''}</b>
    <span>무${tzStr(g)} 지${tzInt(g)} 통${tzLead(g)} 정${P[0]} 매${tzCha(g)}${mine||G.o==='free'?` · ${G.o==='free'?'의리 '+P[2]:'충성 '+G.ly} · Lv ${tzLv(s,g)}`:''}</span></div></div>`}
 const tzTag=(s,k)=>tzHome(s,k)?['home','거점']:tzFront(s,k)?['front','전선']:['rear','후방'];
 const tzF1=v=>Math.round(v*10)/10;
@@ -5334,11 +5426,10 @@ function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.
   return h+`</div>`}
 function vTz(){const s=tzState();
   const rule=infoP('tz','군주가 되어 한 달씩 천하를 다퉈요',`천하는 13주 ${TZ_K.length}성이에요. 한 주의 성을 모두 가지면 그 주 성들의 1월 금·9월 군량이 +10%(성 1개 주 +5%, 형주·익주 +15%)가 되고 민심이 매달 +1 올라요. 4개 주를 가지면 공, 7개 주를 가지면 왕이 돼요. 사수관·동관·양평관·검각·합비·백제성이 있는 성은 지키기 쉬워요. 군주 1명을 골라 거점에서 가신과 함께 시작해요. 1턴은 1개월이에요. 내 성을 골라 내정·군사·인사·계략 탭에서 명령을 내리고, 장수마다 한 달에 명령 1개를 해요. 성마다 태수를 두면 태수 정치·통솔·매력만큼 농업·상업·방어·민심이 매달 저절로 자라고, 민심이 60을 넘으면 의용군이 와요. 태수 충성이 50 아래면 독립할 수 있어요. 교역 도시(商)에서는 상인과 군량·보물을 사고팔고, 탐색하면 숨은 보물을 찾을 수 있어요. 보물은 장수에게 하사하면 능력치와 충성이 올라요. 군주가 없는 성은 내정·수송·방어·공략으로 위임할 수 있어요. '턴 종료'를 누르면 위임한 성과 다른 군주들이 움직이고, 1월에 금, 9월에 군량이 들어와요. 병사는 매달 군량을 먹어요. 출진하면 장수마다 병사를 나눠 주고 지금 전투로 싸워요. 장수가 모자란 자리는 잡병 부대가 채워요. 이긴 쪽은 진 장수를 포로로 잡을 수 있고, 포로는 등용·해방·처형 중에 골라요. 처형하면 그 판에서 영원히 사라지고 우리 장수 충성이 떨어져요. ${TZ_K.length}성을 모두 차지하면 통일이에요. 시나리오마다 첫 통일 때 금 ${fmt(TZ_REW.gold)} · 보물 선택권 1 · 공적 1위 장수 증표(돌파 1회분)를 받아요. 본편 장수의 레벨·돌파·보물은 쓰지 않고, 모든 장수가 공적에 따라 레벨이 올라요.`,'margin:0');
-  if(!s.on){const D=TZ_SC[189];return `<div class="banner-card"><div class="big">爭覇</div><h2>천하쟁패</h2>${rule}</div>${tzSlotBar()}<h3 style="margin:8px 0 4px">${D.n}</h3><p class="sub" style="margin:0 0 8px">${D.d}${s.done[189]?' · <b style="color:var(--bronze)">통일 보상 받음</b>':''}</p><div class="list">`+
-    Object.entries(D.L).map(([f,[k,vs]])=>`<button type="button" class="li" data-tzf="${f}" style="text-align:left;border-left:4px solid ${tzCol(f)}">${seal(GMAP[f],'sm')}<div class="info"><b>${tzName(f)} <span class="chip">${TZ_LV[TZ_DIF[f]]}</span></b><span>거점 ${tzCN(k)} · 가신 ${vs.map(tzName).join('·')}</span></div></button>`).join('')+`</div>`}
+  if(!s.on)return tzStartHtml(s,rule);
   let h=tzTopBar(s);const mine=tzMine(s);
   if(s.end){const R=s.end===1?tzReward(s):null;if(R)save();
-    h+=`<div class="labbox" style="margin:8px 0;border-color:${s.end===1?'var(--bronze)':'var(--cinnabar)'}"><h3 style="margin:0 0 6px">${s.end===1?'천하통일!':'패배'}</h3><p class="sub" style="margin:0 0 6px">${s.end===1?`${s.y}년 ${s.m}월, ${s.t}턴 만에 천하를 하나로 모았어요.${s.done[s.sc]&&!(R&&R.gold)?' (이 시나리오 통일 보상은 이미 받았어요)':''}`:'성을 모두 잃었어요.'}</p>
+    h+=`<div class="labbox" style="margin:8px 0;border-color:${s.end===1?'var(--bronze)':'var(--cinnabar)'}"><h3 style="margin:0 0 6px">${s.end===1?'천하통일!':'패배'}</h3><p class="sub" style="margin:0 0 6px">${s.end===1?`${s.y}년 ${s.m}월, ${s.t}턴 만에 천하를 하나로 모았어요.${s.done[tzDK(s)]&&!(R&&R.gold)?' (이 시나리오 통일 보상은 이미 받았어요)':''}`:'성을 모두 잃었어요.'}</p>
      ${R&&R.gold?`<div class="row" style="gap:6px;flex-wrap:wrap"><span class="coin"><b class="sl gold">金</b>+${fmt(R.gold)}</span><span class="coin">보물 선택권 +1</span><span class="coin">${esc(tzName(R.g))} 증표 +${R.n}</span></div>`:''}
      <button type="button" class="btn red wide" data-tz="reset" style="margin-top:8px">새로 시작</button></div>`}
   if(s.end)h+=tzSlotBar();
@@ -5362,6 +5453,40 @@ function tzDlgSheet(){const s=tzState();
    <div class="list">${tzMine(s).slice().sort((a,b)=>TZ_C[a][0]-TZ_C[b][0]).map(k=>{const home=tzHome(s,k),dl=tzDlOf(s,k),t=tzTag(s,k);return `<div class="li" style="flex-wrap:wrap"><div class="info"><b>${tzCN(k)} <span class="tz-tag ${t[0]}">${t[1]}</span></b><span>병사 ${fmt(s.C[k].tr)} · 장수 ${tzGensIn(s,k,s.me).length}명</span></div>
      <div class="tz-dl">${(home?['self']:Object.keys(TZ_DL)).map(m=>`<button type="button" data-tzdl="${k}:${m}" aria-pressed="${dl===m}">${TZ_DL[m][0]}</button>`).join('')}</div></div>`}).join('')}</div>
    <table class="tz-tb" style="margin-top:8px">${Object.values(TZ_DL).map(([n,d])=>`<tr><td>${n}</td><td>${d}</td></tr>`).join('')}</table>`);$('#sheet').dataset.tzdlg='1'}
+// ---- v9.8.0 시작 화면: 시나리오 6개 + 임의 시작 ----
+let tzScSel=189,tzRs={b:'',f:'',k:''};
+function tzStartHtml(s,rule){
+  let h=`<div class="banner-card"><div class="big">爭覇</div><h2>천하쟁패</h2>${rule}</div>${tzSlotBar()}
+   <div class="tz-glf tz-scs" role="group" aria-label="시나리오">${TZ_SCK.map(y=>`<button type="button" data-tzsc="${y}" aria-pressed="${tzScSel===y}">${y}년${s.done[y]?' ✓':''}</button>`).join('')}<button type="button" data-tzsc="rnd" aria-pressed="${tzScSel==='rnd'}">임의 시작${s.done.rnd?' ✓':''}</button></div>`;
+  if(tzScSel==='rnd'){const b=tzRs.b?+tzRs.b:0,cs=b?tzFreeCities(b):[],gs=TZ_GA.filter(x=>b?tzAdult(x.id,b):TZ_SCK.some(y=>tzAdult(x.id,y))).sort((a,c)=>a.name.localeCompare(c.name,'ko'));
+    return h+`<h3 style="margin:8px 0 4px">임의 시작</h3><p class="sub" style="margin:0 0 8px">아무 장수나 군주로 세워 빈 성 하나에서 가신 없이 시작해요. 다른 세력은 배경 시나리오대로 놓여요. 고른 장수가 원래 군주였다면 그 세력은 이번 판에 없고, 누군가의 가신이었다면 거기서 빠져요. 난이도는 어려움이에요.${s.done.rnd?' · <b style="color:var(--bronze)">통일 보상 받음</b>':''}</p>
+     <div class="tz-rs"><label>배경<select data-tzrs="b"><option value="">무작위</option>${TZ_SCK.map(y=>`<option value="${y}" ${b===y?'selected':''}>${TZ_SC[y].n}</option>`).join('')}</select></label>
+     <label>군주<select data-tzrs="f"><option value="">무작위</option>${gs.map(x=>`<option value="${x.id}" ${tzRs.f===x.id?'selected':''}>${esc(x.name)}</option>`).join('')}</select></label>
+     <label>시작 성<select data-tzrs="k" ${b?'':'disabled'}><option value="">무작위</option>${cs.map(k=>`<option value="${k}" ${tzRs.k===k?'selected':''}>${tzCN(k)}</option>`).join('')}</select></label></div>
+     ${b?`<p class="sub" style="margin:0 0 8px">이 배경에서 고를 수 있는 빈 성은 ${cs.length}곳이에요.</p>`:'<p class="sub" style="margin:0 0 8px">시작 성은 배경을 고르면 정할 수 있어요.</p>'}
+     <button type="button" class="btn red wide" data-tzrgo="1">뽑기</button>`}
+  const y=tzScSel,D=TZ_SC[y];
+  return h+`<h3 style="margin:8px 0 4px">${D.n}</h3><p class="sub" style="margin:0 0 8px">${D.d}${s.done[y]?' · <b style="color:var(--bronze)">통일 보상 받음</b>':''}</p><div class="list">`+
+    Object.entries(D.L).map(([f,[k,vs]])=>{const nx=Object.keys((D.X||{})[f]||{}).length;
+      return `<button type="button" class="li" data-tzf="${f}" style="text-align:left;border-left:4px solid ${tzCol(f)}">${seal(GMAP[f],'sm')}<div class="info"><b>${tzName(f)} <span class="chip">${TZ_LV[tzDif(y,f)]}</span></b><span>거점 ${tzCN(k)}${nx?` 외 ${nx}성`:''} · 가신 ${vs.length?vs.map(tzName).join('·'):'없음'}</span></div></button>`}).join('')+`</div>`}
+// 임의 시작 뽑기: 고르지 않은 칸은 무작위. 아직 어린 장수(자식 합류 전)는 그 배경에서 군주가 될 수 없어요
+const tzAdult=(g,b)=>{const kd=TZ_KID[g];return !(kd&&TZ_SC[b].y<kd[1])};
+function tzRsPick(){const ok=tzAdult;
+  const bs=tzRs.b?[+tzRs.b]:TZ_SCK.filter(b=>!tzRs.f||ok(tzRs.f,b)),b=bs.length?bs[Math.floor(Math.random()*bs.length)]:TZ_SCK[0];
+  const gs=TZ_GA.map(x=>x.id).filter(g=>ok(g,b)),f=tzRs.f&&ok(tzRs.f,b)?tzRs.f:gs[Math.floor(Math.random()*gs.length)];
+  const cs=tzFreeCities(b),k=tzRs.k&&cs.includes(tzRs.k)?tzRs.k:cs[Math.floor(Math.random()*cs.length)];return {b,f,k}}
+// ---- v9.8.0 장수 상세(둔영 무장 칸처럼): 모션 초상 · 천하쟁패 능력치 · 전투 능력치 · 스킬 ----
+function tzGenSheet(g,back){const s=tzState(),b=GMAP[g],G=s.G&&s.G[g];if(!b||!G)return;const P=TZ_PC[g]||[50,50,50],it=tzItOf(s,g),me=G.o===s.me;
+  const own=G.o==='free'?'재야':G.o==='cap'?`포로(${tzFN(s,G.cb)})`:G.o==='dead'?'사망':G.o==='wait'?'아직 안 나옴':tzFN(s,G.o);
+  const isL=tzIsL(s,g),gov=!!s.F[G.o]&&!!s.C[G.c]&&tzGov(s,G.c)===g,where=G.o==='dead'||G.o==='wait'?'-':G.o==='free'&&!G.fd&&!(s.C[G.c]&&s.C[G.c].o===s.me)?'알 수 없음':tzCN(G.c);
+  let u=null;try{u=mkUnit({g,lv:tzLv(s,g),d:0,i:it?[it+':0']:[]},0,0)}catch(e){u=null}
+  const st=(n,v)=>`<div class="stat"><small>${n}</small><b>${v}</b></div>`;
+  openSheet(`<div class="sheet-h">${mvSeal(b)}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz||'')}</span></h2>
+   <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]||''} · ${CLS[b.cls].g} ${CLS[b.cls].n} · <span style="color:${tzCol(G.o)}">${esc(own)}</span>${isL?' · 군주':''}${gov?' · 태수':''}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <h3>천하쟁패 능력치</h3><div class="stats">${st('무력',tzStr(g))}${st('지력',tzInt(g))}${st('통솔',tzLead(g))}</div><div class="stats" style="margin-top:4px">${st('정치',tzPol(g))}${st('매력',tzCha(g))}${st('의리',P[2])}</div>
+   <p class="sub" style="margin:6px 0">${me?`충성 ${G.ly} · `:''}Lv ${tzLv(s,g)} · 공적 ${G.mr} · 있는 곳 ${where}${it?` · 보물 ${esc(IMAP[it].name)}`:''}</p>
+   ${u?`<h3>전투 능력치 <span style="font-weight:400">· Lv ${tzLv(s,g)}</span></h3><div class="stats">${st('체력',fmt(u.maxhp))}${st('공격',fmt(u.atk))}${st('방어',fmt(u.def))}${st('속도',u.spd)}</div>`:''}
+   ${skill3Html(b,u)}${back?'<button type="button" class="btn ghost wide" data-tz="gl" style="margin-top:10px">장수 일람으로</button>':''}`)}
 // ---- 장수 일람 · 보물 일람 ----
 let tzGLf='all',tzGLs='lead';
 const TZ_GLS=[['lead','통솔',g=>tzLead(g)],['str','무력',g=>tzStr(g)],['int','지력',g=>tzInt(g)],['pol','정치',g=>tzPol(g)],['cha','매력',g=>tzCha(g)],['lv','공적',(g,s)=>s.G[g].mr]];
@@ -5375,7 +5500,7 @@ function tzGLSheet(){const s=tzState(),me=s.me,live=Object.keys(s.F).filter(f=>!
   const where=g=>{const G=s.G[g];if(G.o==='dead')return '-';if(G.o==='free'&&!G.fd&&!(s.C[G.c]&&s.C[G.c].o===me))return '?';return tzCN(G.c)};
   const own=g=>{const G=s.G[g];return G.o==='free'?'재야':G.o==='cap'?`포로(${tzFN(s,G.cb)})`:G.o==='dead'?'사망':`<span style="color:${tzCol(G.o)}">${tzFN(s,G.o)}</span>`};
   const rows=list.map(g=>{const G=s.G[g],b=GMAP[g],isL=Object.values(s.F).some(F=>F.lord===g&&!F.dead),it=tzItOf(s,g);
-    return `<tr data-tzgo2="${G.o==='dead'?'':G.c}"><td class="nm">${seal(b,'sm')}<b>${esc(b.name)}</b>${isL?'<i>主</i>':''}${b.kid?`<i>${b.kid}</i>`:''}</td><td>${own(g)}</td><td>${where(g)}</td>
+    return `<tr data-tzgo2="${G.o==='dead'?'':G.c}"><td class="nm"><button type="button" class="tz-gd" data-tzgd="${g}" data-tzgb="1" aria-label="${esc(b.name)} 상세">${seal(b,'sm')}</button><b>${esc(b.name)}</b>${isL?'<i>主</i>':''}${b.kid?`<i>${b.kid}</i>`:''}</td><td>${own(g)}</td><td>${where(g)}</td>
      ${TZ_GLS.slice(0,5).map(x=>`<td class="n${x[0]===tzGLs?' on':''}">${x[2](g,s)}</td>`).join('')}<td class="n">${G.o===me?G.ly:'-'}</td><td class="n${tzGLs==='lv'?' on':''}">${tzLv(s,g)}</td><td>${it?esc(IMAP[it].name):''}</td></tr>`}).join('');
   openSheet(`<div class="sheet-h"><h2 style="margin:0">장수 일람</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <div class="tz-glf">${chip('all','전체')}${chip('me','내 세력')}${live.filter(f=>f!==me).map(f=>chip(f,tzFN(s,f))).join('')}${chip('free','재야')}${chip('cap','포로')}${chip('dead','사망')}</div>
@@ -5448,11 +5573,17 @@ function tzGo(mode){const s=tzState(),D=tzDraft;if(!D)return;const k=D.k;
   C.tr-=tr;C.fd-=food;const foe=tzFN(s,s.C[to].o),o=tzBattle(s,k,to,D.gs.slice(),tr);tzDraft=null;closeSheet();o.txt.forEach(t=>tzLog(s,t,'戰'));save();
   if(mode==='watch')playBattle(o.res,`천하쟁패 · ${tzCN(to)}`,`${tzName(s.F[s.me].lord)}군`,foe,()=>`<p class="sub">${o.txt.map(esc).join('<br>')}</p>`,{scene:'siege'});
   else{toast(o.txt[0]);renderView()}}
+document.addEventListener('change',e=>{const t=e.target&&e.target.closest&&e.target.closest('[data-tzrs]');if(!t)return;tzRs[t.dataset.tzrs]=t.value;if(t.dataset.tzrs==='b')tzRs.k='';renderView()});
 document.addEventListener('toggle',e=>{if(e.target&&e.target.classList&&e.target.classList.contains('tz-gens'))tzGOpen=e.target.open?1:0},true);
 document.addEventListener('click',e=>{
-  const f=e.target.closest('[data-tzf]');if(f){const L=f.dataset.tzf,D=TZ_SC[189],v=D.L[L];if(!v)return;
-    openSheet(`<div class="sheet-h"><h2 style="margin:0">${tzName(L)}(으)로 시작할까요?</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div><p class="sub">거점 ${tzCN(v[0])} · 가신 ${v[1].map(tzName).join('·')} · 난이도 ${TZ_LV[TZ_DIF[L]]}. 진행 중인 천하쟁패가 있으면 지워져요.</p><div class="row" style="gap:8px"><button type="button" class="btn ghost" data-close style="flex:1">다시 고르기</button><button type="button" class="btn red" data-tzfok="${L}" style="flex:1">시작</button></div>`);return}
-  const fo=e.target.closest('[data-tzfok]');if(fo){S.tz=tzNew(189,fo.dataset.tzfok);tzSel='';tzSx=null;tzMapOn=0;tzCat='nai';closeSheet();save();renderView();$('#view').scrollTop=0;toast(`${tzName(fo.dataset.tzfok)} 거병`);return}
+  const gd=e.target.closest('[data-tzgd]');if(gd){e.stopPropagation();tzGenSheet(gd.dataset.tzgd,!!gd.dataset.tzgb);return}
+  const scb=e.target.closest('[data-tzsc]');if(scb){tzScSel=scb.dataset.tzsc==='rnd'?'rnd':+scb.dataset.tzsc;renderView();return}
+  const rg=e.target.closest('[data-tzrgo]');if(rg){const{b,f,k}=tzRsPick(),L0=TZ_SC[b].L,was=L0[f]?`원래 ${tzName(f)} 세력은 이번 판에 없어요. `:'';
+    openSheet(`<div class="sheet-h"><h2 style="margin:0">${tzName(f)}(으)로 시작할까요?</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div><p class="sub">배경 ${TZ_SC[b].n} · 시작 성 ${tzCN(k)} · 가신 없음 · 난이도 어려움. ${was}진행 중인 천하쟁패가 있으면 지워져요.</p><div class="row" style="gap:8px"><button type="button" class="btn ghost" data-tzrgo="1" style="flex:1">다시 뽑기</button><button type="button" class="btn red" data-tzrok="${b}|${f}|${k}" style="flex:1">시작</button></div>`);return}
+  const rk=e.target.closest('[data-tzrok]');if(rk){const[b,f,k]=rk.dataset.tzrok.split('|');if(!TZ_SC[b]||!GMAP[f]||!TZ_C[k])return;S.tz=tzNew(+b,f,{f,k});tzSel='';tzSx=null;tzMapOn=0;tzCat='nai';closeSheet();save();renderView();$('#view').scrollTop=0;toast(`${tzName(f)} 거병`);return}
+  const f=e.target.closest('[data-tzf]');if(f){const L=f.dataset.tzf,D=TZ_SC[tzScSel],v=D&&D.L[L];if(!v)return;
+    openSheet(`<div class="sheet-h"><h2 style="margin:0">${tzName(L)}(으)로 시작할까요?</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div><p class="sub">${D.n} · 거점 ${tzCN(v[0])} · 가신 ${v[1].length?v[1].map(tzName).join('·'):'없음'} · 난이도 ${TZ_LV[tzDif(tzScSel,L)]}. 진행 중인 천하쟁패가 있으면 지워져요.</p><div class="row" style="gap:8px"><button type="button" class="btn ghost" data-close style="flex:1">다시 고르기</button><button type="button" class="btn red" data-tzfok="${L}" style="flex:1">시작</button></div>`);return}
+  const fo=e.target.closest('[data-tzfok]');if(fo){if(!TZ_SC[tzScSel])return;S.tz=tzNew(tzScSel,fo.dataset.tzfok);tzSel='';tzSx=null;tzMapOn=0;tzCat='nai';closeSheet();save();renderView();$('#view').scrollTop=0;toast(`${tzName(fo.dataset.tzfok)} 거병`);return}
   const k=e.target.closest('[data-tzk]');if(k){tzSel=k.dataset.tzk;renderView();return}
   const ct=e.target.closest('[data-tzcat]');if(ct){tzCat=ct.dataset.tzcat;renderView();return}
   const hp=e.target.closest('[data-tzh]');if(hp&&!hp.disabled){tzHelp(tzState(),tzSel,hp.dataset.tzh);return}
