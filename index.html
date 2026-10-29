@@ -853,7 +853,7 @@ body.tz-focus header.top,body.tz-focus #claim,body.tz-focus #mode-banner{display
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v9.8.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v9.8.3</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -3026,11 +3026,17 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='9.8.2';
+const GAME_VERSION='9.8.3';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['角',{ap:30}],['將',{gpk:10}],['選',{isk:1}],['換',{xtk:1}]];  // v9.5.0: 4·5일 룰렛 소환권 → 나팔 30 · 등용권 10
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'9.8.3',date:'2026-10-29',title:'천하쟁패 포로 등용 고침',reward:{ap:30},items:[
+  '천하쟁패에서 포로를 가둬 둔 성을 빼앗긴 뒤 등용하면, 장수가 적의 성에 남아 성 장수 목록에 나오지 않던 문제를 고쳤어요. 이제 군주가 있는 성으로 와요.',
+  '이미 이 문제로 목록에서 사라진 장수도 세이브를 불러오면 군주가 있는 성으로 돌아와요.',
+  '적 군주가 파괴 공작을 하다 붙잡히면 그 자리에서 후계자가 정해져요. 잡은 그달에 바로 등용을 시도할 수 있어요.',
+  '포로는 가둬 둬도 의리와 충성이 줄지 않아요. 등용 확률은 내 군주의 매력이 높을수록, 포로의 의리가 낮을수록 올라가요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'9.8.2',date:'2026-10-28',title:'조운·마초 새 얼굴 · 초상 위치 정리',reward:{ap:30},items:[
   '조운과 마초를 수염 없는 젊은 미남으로 다시 그렸어요. 초상, 전투 모션, 상세창 모션이 모두 새 그림이에요. 갑옷, 백마, 무기는 그대로예요.',
   '장수 초상이 얼굴을 가운데에 두도록 다시 맞췄어요. 머리털이 크거나 술 달린 투구를 쓴 장수도 이제 이목구비가 잘 보여요.',
@@ -5054,6 +5060,8 @@ function cleanTz(x){x=x&&typeof x==='object'?x:{};const done={};if(x.done&&typeo
       gov:GMAP[v.gov]?v.gov:'',dl:TZ_DL[v.dl]?v.dl:'self'}});
   const G={};TZ_GA.map(b=>b.id).concat(Object.keys(X)).forEach(id=>{const v=x.G[id]||(X[id]?{o:'free'}:{});const o=['free','cap','dead','wait'].includes(v.o)?v.o:own(v.o);
     G[id]={o,c:TZ_C[v.c]?v.c:TZ_K[0],ly:n(v.ly,0,100),mr:n(v.mr,0,9999),ac:v.ac?1:0,fd:v.fd?1:0,cb:F[v.cb]?v.cb:'',tr:v.tr?1:0,of:F[v.of]?v.of:''}});
+  // v9.8.3: 빼앗긴 성에서 등용돼 남의 성에 남은 장수는 그 세력 군주가 있는 성(없으면 첫 성)으로 옮겨요
+  for(const id in G){const g=G[id],F0=F[g.o];if(!F0||F0.dead||C[g.c].o===g.o)continue;const lc=G[F0.lord]&&G[F0.lord].c,ks=TZ_K.filter(k=>C[k].o===g.o);if(ks.length)g.c=lc&&C[lc].o===g.o?lc:ks[0]}
   const I={};if(x.I&&typeof x.I==='object')for(const id in x.I){const h=String(x.I[id]),t=h[0],v=h.slice(2);if(IMAP[id]&&h[1]===':'&&((t==='g'&&G[v])||((t==='h'||t==='m')&&TZ_C[v])||(t==='t'&&F[v])))I[id]=h}
   const lc=x.lc&&TZ_C[x.lc.k]?{k:x.lc.k,n:n(x.lc.n,1,4)}:null;
   const kd=(Array.isArray(x.kd)?x.kd:[]).filter(e=>e&&GMAP[e.p]&&!GMAP[e.p].kid).slice(0,80).map(e=>({p:e.p,t:n(e.t,0,99999),hd:String(e.hd||'').slice(0,40)}));
@@ -5089,7 +5097,8 @@ const TZ_GA=GENS.concat(TZ_NGL);
 const tzGL=s=>{const X=(s&&s.X)||{},ks=Object.keys(X).filter(v=>GMAP[v]&&(!s.G||s.G[v]));return ks.length?TZ_GA.concat(ks.map(v=>({...GMAP[v],id:v}))):TZ_GA};
 const tzIsL=(s,g)=>Object.values(s.F).some(F=>F.lord===g&&!F.dead);
 const tzCities=(s,f)=>TZ_K.filter(k=>s.C[k].o===f);
-const tzGensIn=(s,k,o)=>TZ_GA.map(b=>b.id).filter(g=>s.G[g]&&s.G[g].c===k&&s.G[g].o===o);
+// v9.8.3: 처형된 장수의 자식(k_)도 성 장수로 셈해요(전엔 빠져서 목록·출진·포로에서 안 보였어요)
+const tzGensIn=(s,k,o)=>tzGL(s).map(b=>b.id).filter(g=>s.G[g]&&s.G[g].c===k&&s.G[g].o===o);
 const tzIdle=(s,k)=>tzDlOf(s,k)!=='self'?[]:tzGensIn(s,k,s.me).filter(g=>!s.G[g].ac);  // 위임한 성의 장수는 직접 명령 불가
 const tzIdleC=s=>tzMine(s).filter(k=>tzIdle(s,k).length);  // 행동 안 한 장수가 남은 직할 성
 const tzMine=s=>tzCities(s,s.me);
@@ -5180,7 +5189,7 @@ function tzDo(s,k,cmd,g,tg,it){const C=s.C[k],G=s.G[g],cha=tzCha(g),f=G.o,lc=tzC
     if(tzRng()<tzPrsP(s,g,x,it)){Object.assign(s.G[x],{o:f,c:k,ly:Math.min(100,40+Math.round(tzGiri(x)/4)+(it?20:0)),ac:1,cb:''});if(it){const o=tzItOf(s,x);if(o)s.I[o]='t:'+f;s.I[it]='g:'+x}msg=`${tzName(x)}이(가) 넘어왔어요!${it?` (${IMAP[it].name})`:''}`;tzLordCheck(s)}else msg=`${tzName(x)}이(가) 권유를 거절했어요`}
   else if(cmd==='sab'){const[tk,st]=String(tg||'').split('|'),T=s.C[tk];if(!T||!TZ_ADJ[k].includes(tk)||T.o===f||tzAlly(s,f,T.o))return '이웃 적 성이 아니에요';if(!TZ_INV[st])return '깎을 곳을 골라요';if(!pay(200))return '금이 모자라요';
     if(tzRng()<tzSabP(s,g,tk)){const v=Math.min(T[st],Math.round((5+tzInt(g)/10)*tzR()));T[st]-=v;msg=`${tzCN(tk)} ${TZ_INV[st]} −${v}`}
-    else if(T.o!=='neu'&&tzRng()<.1){G.ac=1;tzCapture(s,g,T.o,tk);return {ok:1,msg:`${tzCN(tk)} 파괴 실패 · ${tzName(g)}이(가) 붙잡혔어요`,fx:''}}
+    else if(T.o!=='neu'&&tzRng()<.1){G.ac=1;tzCapture(s,g,T.o,tk);tzLordCheck(s);return {ok:1,msg:`${tzCN(tk)} 파괴 실패 · ${tzName(g)}이(가) 붙잡혔어요`,fx:''}}
     else msg=`${tzCN(tk)} 파괴 실패`}
   else return '알 수 없는 명령';
   G.ac=1;G.mr=Math.min(9999,G.mr+8);return {ok:1,msg,fx}}
@@ -5235,21 +5244,25 @@ function tzLordCheck(s){for(const[f,F]of Object.entries(s.F)){if(F.dead)continue
 function tzEnd(s){if(s.end)return;const n=tzMine(s).length;if(n>=TZ_K.length){s.end=1;tzLog(s,'천하통일!')}else if(!n||s.F[s.me].dead){s.end=-1;tzLog(s,'우리 세력이 무너졌어요')}}
 // AI 포로 처리: 등용 → 아니면 대부분 해방(군주는 해방)
 function tzAiCap(s,f,g){const isL=tzIsL(s,g);
-  if(!isL&&tzRng()<(.35+tzCha(s.F[f].lord)/300-tzGiri(g)/500)*tzHate(s,g,f)){Object.assign(s.G[g],{o:f,ly:55,cb:'',of:''});tzLog(s,`${tzName(g)}이(가) ${tzFN(s,f)}에 들어갔어요`);return}
+  if(!isL&&tzRng()<(.35+tzCha(s.F[f].lord)/300-tzGiri(g)/500)*tzHate(s,g,f)){Object.assign(s.G[g],{o:f,ly:55,cb:'',of:''});tzRecC(s,g,f);tzLog(s,`${tzName(g)}이(가) ${tzFN(s,f)}에 들어갔어요`);return}
   if(!isL&&tzRng()<.08){s.G[g].o='dead';if(!GMAP[g].kid)s.kd.push({p:g,t:s.t+36,hd:f});tzLog(s,`${tzName(g)} 처형됨`);return}
   const from=s.G[g].of,v=tzRansom(s,g,from,f);tzFree(s,g);if(v&&from===s.me)tzLog(s,`${tzName(g)} 몸값 금 ${fmt(v)}을(를) 치르고 돌려받았어요`,'民')}
 // 해방: 군주였던 장수는 자기 세력 성으로 돌아가고, 나머지는 그 성의 재야가 돼요
 function tzFree(s,g){const G=s.G[g],orig=Object.keys(s.F).find(f=>s.F[f].lord===g&&!s.F[f].dead)||(s.F[G.of]&&!s.F[G.of].dead?G.of:'');
-  if(orig&&tzCities(s,orig).length){Object.assign(G,{o:orig,c:tzCities(s,orig).find(k=>tzHome(s,k))||tzCities(s,orig)[0],cb:'',of:''});return orig}
+  // v9.8.3: 잡힌 성(지금 빼앗기는 중일 수 있어요)으로는 돌아가지 않아요
+  const ks=orig?tzCities(s,orig).filter(k=>k!==G.c):[];
+  if(ks.length){Object.assign(G,{o:orig,c:ks.find(k=>tzHome(s,k))||ks[0],cb:'',of:''});return orig}
   Object.assign(G,{o:'free',cb:'',fd:0,of:''});return ''}
 // 몸값: 포로의 원래 세력이 가장 부유한 성에서 내요(군주였던 장수 2,000, 그 밖 300 + 등급×100)
 function tzRansom(s,g,from,to){if(!from||!s.F[from]||s.F[from].dead||!s.F[to]||s.F[to].dead)return 0;const src=tzCities(s,from).sort((a,b)=>s.C[b].g-s.C[a].g)[0],dst=s.G[s.F[to].lord].c;
   const D=s.C[dst]&&s.C[dst].o===to?s.C[dst]:s.C[tzCities(s,to)[0]];if(!src||!D)return 0;const amt=tzL(s)[g]||s.F[g]?2000:300+GMAP[g].rar*100,v=Math.min(amt,s.C[src].g);
   s.C[src].g-=v;D.g=Math.min(99999,D.g+v);return v}
+// 포로를 등용했는데 갇혀 있던 성을 그사이 빼앗겼으면, 그 세력 군주가 있는 성(없으면 첫 성)으로 옮겨요
+function tzRecC(s,g,f){const G=s.G[g];if(s.C[G.c]&&s.C[G.c].o===f)return;const lc=s.G[s.F[f].lord].c;G.c=s.C[lc]&&s.C[lc].o===f?lc:(tzCities(s,f)[0]||G.c)}
 // 내 포로 처리
 function tzCapDo(s,g,act){if(!s.cap.includes(g))return;const isL=tzIsL(s,g),me=s.F[s.me].lord;let msg='';
   if(act==='rec'){if(isL)return toast('군주는 등용할 수 없어요');if(s.G[g].tr)return toast('이번 달에는 이미 설득했어요');s.G[g].tr=1;
-    if(tzRng()<(.3+tzCha(me)/250-tzGiri(g)/600)*tzHate(s,g,s.me)){Object.assign(s.G[g],{o:s.me,ly:Math.min(100,45+Math.round(tzGiri(g)/4)),cb:'',ac:1,of:''});msg=`${tzName(g)} 등용 성공!`}else{msg=`${tzName(g)}이(가) 거절했어요`;toast(msg);return}}
+    if(tzRng()<(.3+tzCha(me)/250-tzGiri(g)/600)*tzHate(s,g,s.me)){Object.assign(s.G[g],{o:s.me,ly:Math.min(100,45+Math.round(tzGiri(g)/4)),cb:'',ac:1,of:''});tzRecC(s,g,s.me);msg=`${tzName(g)} 등용 성공!`}else{msg=`${tzName(g)}이(가) 거절했어요`;toast(msg);return}}
   else if(act==='rel'){const v=tzRansom(s,g,s.G[g].of,s.me);tzFree(s,g);msg=`${tzName(g)} 해방${v?` · 몸값 금 +${fmt(v)}`:''}`}
   else if(act==='exe'){s.G[g].o='dead';if(!GMAP[g].kid)s.kd.push({p:g,t:s.t+36,hd:s.me});const fac=GMAP[g].fac;tzGL(s).forEach(b=>{const G=s.G[b.id];if(G.o===s.me&&b.id!==me)G.ly=Math.max(0,G.ly-(b.fac===fac?8:3))});msg=`${tzName(g)} 처형 · 우리 장수 충성 −3(같은 나라 출신 −8)`;tzLordCheck(s)}
   s.cap=s.cap.filter(x=>x!==g);tzLog(s,msg,'令');toast(msg)}
@@ -5444,7 +5457,7 @@ function vTz(){const s=tzState();
      ${R&&R.gold?`<div class="row" style="gap:6px;flex-wrap:wrap"><span class="coin"><b class="sl gold">金</b>+${fmt(R.gold)}</span><span class="coin">보물 선택권 +1</span><span class="coin">${esc(tzName(R.g))} 증표 +${R.n}</span></div>`:''}
      <button type="button" class="btn red wide" data-tz="reset" style="margin-top:8px">새로 시작</button></div>`}
   if(s.end)h+=tzSlotBar();
-  if(s.cap.length)h+=`<div class="labbox" style="margin:8px 0;border-color:var(--cinnabar)"><b style="color:var(--cinnabar)">포로 ${s.cap.length}명</b><div class="list" style="margin-top:6px">${s.cap.map(g=>`<div class="li">${seal(GMAP[g],'sm')}<div class="info"><b>${esc(tzName(g))}</b><span>의리 ${tzGiri(g)}${Object.values(s.F).some(F=>F.lord===g)?' · 군주':''}</span></div><div class="row" style="gap:4px"><button type="button" class="btn sm" data-tzcap="rec:${g}">등용</button><button type="button" class="btn sm ghost" data-tzcap="rel:${g}">해방</button><button type="button" class="btn sm ghost" data-tzcap="exe:${g}">처형</button></div></div>`).join('')}</div></div>`;
+  if(s.cap.length)h+=`<div class="labbox" style="margin:8px 0;border-color:var(--cinnabar)"><b style="color:var(--cinnabar)">포로 ${s.cap.length}명</b><div class="list" style="margin-top:6px">${s.cap.map(g=>`<div class="li">${seal(GMAP[g],'sm')}<div class="info"><b>${esc(tzName(g))}</b><span>의리 ${tzGiri(g)}${tzIsL(s,g)?' · 군주':''}</span></div><div class="row" style="gap:4px"><button type="button" class="btn sm" data-tzcap="rec:${g}">등용</button><button type="button" class="btn sm ghost" data-tzcap="rel:${g}">해방</button><button type="button" class="btn sm ghost" data-tzcap="exe:${g}">처형</button></div></div>`).join('')}</div></div>`;
   if(!tzSel||!s.C[tzSel])tzSel=mine.includes(s.G[s.F[s.me].lord].c)?s.G[s.F[s.me].lord].c:(mine[0]||TZ_K[0]);
   h+=`<div class="tz-vt" role="group" aria-label="보기"><button type="button" data-tz="list" aria-pressed="${!tzMapOn}">내 성 목록</button><button type="button" data-tz="map" aria-pressed="${!!tzMapOn}">지도 보기</button><button type="button" data-tz="gl">장수 일람</button><button type="button" data-tz="il">보물 일람</button></div>`;
   if(tzMapOn)h+=tzMapHtml(s);
