@@ -1,0 +1,31 @@
+{
+ "name": "군웅할거",
+ "short_name": "군웅할거",
+ "description": "군주가 되어 한 달씩 천하를 다투는 삼국지 전략 게임",
+ "id": "./",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "any",
+ "background_color": "#0e1716",
+ "theme_color": "#0e1716",
+ "lang": "ko",
+ "icons": [
+  {
+   "src": "../icons/gunwoong-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "../icons/gunwoong-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "../icons/gunwoong-mask-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
+}
