@@ -856,51 +856,48 @@ body.tz-focus header.top,body.tz-focus #claim,body.tz-focus #mode-banner{display
 .tz-tb{width:100%;border-collapse:collapse;font-size:12.5px}.tz-tb td{padding:5px 2px;border-bottom:1px solid var(--line);vertical-align:top}.tz-tb td:first-child{color:var(--mute);width:72px}
 .ar-m{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px;text-align:left}.ar-p{display:flex;align-items:center;gap:6px;min-width:0;opacity:.55}.ar-p.w{opacity:1}.ar-p span{display:flex;flex-direction:column;min-width:0}.ar-p small{font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ar-p.me b{color:var(--bronze)}.ar-vs{font-style:normal;color:var(--mute);font-size:12px}
 
-/* v9.9.0 PC 가로 화면: 폭 1100px 이상에서만 바뀌어요(폰 화면은 그대로) */
-@media (min-width:1100px){
-  #app{max-width:1320px;display:grid;grid-template-columns:92px minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr);column-gap:24px}
-  #app>.top,#claim,#mode-banner{grid-column:2}
-  main#view{grid-column:2;grid-row:4;padding:8px 8px 32px}
-  #tabs{grid-column:1;grid-row:1/5;display:flex;flex-direction:column;justify-content:flex-start;gap:4px;border-top:0;border-right:1px solid var(--line);padding:18px 6px;background:transparent}
-  #tabs .tab{padding:14px 0;border-radius:12px}
-  #tabs .tab b{font-size:24px}
-  /* 둔영: 왼쪽 진형 · 오른쪽 보유 장수 */
-  .pc2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
-  .pc-r{position:sticky;top:0;max-height:calc(100dvh - 200px);overflow-y:auto;padding:0 6px 16px 0}
-  .pc-r>h2:first-child{margin-top:0}
-  /* 등용: 배너 두 줄 */
-  #view:has(>.banner-card){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px;align-content:start}
-  #view:has(>.banner-card)>:not(.banner-card){grid-column:1/-1}
-  /* 공지·장수 상세 같은 시트는 가운데 창으로 */
-  #sheet{align-items:center}
-  .sheet-body{max-width:640px;border-radius:18px;border:1px solid var(--line);max-height:88vh}
-  /* 전투: 넓은 16:9 전장, 아군·적군 카드를 좌우로 */
-  .bt{max-width:1240px}
-  .bt.rt .rt-stage{aspect-ratio:16/9;width:min(100%,calc((100dvh - 300px)*16/9));margin:0 auto}
-  .rt-cards{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
-  .rt-cards .grp{grid-template-columns:repeat(6,minmax(0,1fr))}
-  /* 천하쟁패·군웅할거: 지도(또는 성 목록)는 왼쪽 크게, 고른 성은 오른쪽에 고정 */
-  #view:has(>.tz-city){display:grid;grid-template-columns:minmax(0,1.45fr) minmax(400px,1fr);column-gap:22px;grid-auto-flow:row dense;align-content:start}
-  #view:has(>.tz-city)>*{grid-column:1/-1}
-  #view:has(>.tz-city)>.gw-wrap,#view:has(>.tz-city)>.tz-strip{grid-column:1;grid-row:3}
-  #view:has(>.tz-city)>.tz-city{grid-column:2;grid-row:3/span 30;position:sticky;top:0;align-self:start;max-height:calc(100dvh - 120px);overflow-y:auto}
-  #view:has(>.tz-city)>.tz-strip{flex-wrap:wrap;align-content:flex-start;overflow:visible}
-  body.tz-focus #app{grid-template-columns:minmax(0,1fr)}
-  body.tz-focus main#view{grid-column:1}
-}
+
+body.pc #app{max-width:1320px;display:grid;grid-template-columns:92px minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr);column-gap:24px}
+body.pc #app>.top,body.pc #claim,body.pc #mode-banner{grid-column:2}
+body.pc main#view{grid-column:2;grid-row:4;padding:8px 8px 32px}
+body.pc #tabs{grid-column:1;grid-row:1/5;display:flex;flex-direction:column;justify-content:flex-start;gap:4px;border-top:0;border-right:1px solid var(--line);padding:18px 6px;background:transparent}
+body.pc #tabs .tab{padding:14px 0;border-radius:12px}
+body.pc #tabs .tab b{font-size:24px}
+body.pc .pc2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+body.pc .pc-r{position:sticky;top:0;max-height:calc(100dvh - 200px);overflow-y:auto;padding:0 6px 16px 0}
+body.pc .pc-r>h2:first-child{margin-top:0}
+body.pc #view:has(>.banner-card){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px;align-content:start}
+body.pc #view:has(>.banner-card)>:not(.banner-card){grid-column:1/-1}
+body.pc #sheet{align-items:center}
+body.pc .sheet-body{max-width:640px;border-radius:18px;border:1px solid var(--line);max-height:88vh}
+body.pc .bt{max-width:1240px}
+body.pc .bt.rt .rt-stage{aspect-ratio:16/9;width:min(100%,calc((100dvh - 300px)*16/9));margin:0 auto}
+body.pc .rt-cards{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+body.pc .rt-cards .grp{grid-template-columns:repeat(6,minmax(0,1fr))}
+body.pc #view:has(>.tz-city){display:grid;grid-template-columns:minmax(0,1.45fr) minmax(400px,1fr);column-gap:22px;grid-auto-flow:row dense;align-content:start}
+body.pc #view:has(>.tz-city)>*{grid-column:1/-1}
+body.pc #view:has(>.tz-city)>.gw-wrap,body.pc #view:has(>.tz-city)>.tz-strip{grid-column:1;grid-row:3}
+body.pc #view:has(>.tz-city)>.tz-city{grid-column:2;grid-row:3/span 30;position:sticky;top:0;align-self:start;max-height:calc(100dvh - 120px);overflow-y:auto}
+body.pc #view:has(>.tz-city)>.tz-strip{flex-wrap:wrap;align-content:flex-start;overflow:visible}
+body.pc.tz-focus #app{grid-template-columns:minmax(0,1fr)}
+body.pc.tz-focus main#view{grid-column:1}
+body.pc #view:has(>.tz-city){grid-template-columns:minmax(0,1.5fr) minmax(330px,1fr)}
+body.pc #view:has(>.tz-city)>.gw-wrap{overflow:hidden}
+body.pc #view:has(>.tz-city)>.gw-wrap .gw-map{min-width:0;width:min(100%,calc((100dvh - 170px)*1200/896));margin:0 auto}
+
 
 #pwa-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:19;width:calc(100% - 24px);max-width:520px;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:var(--panel);border:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.35);font-size:14px}
 #pwa-bar[hidden]{display:none}#pwa-bar .t{flex:1;min-width:0}#pwa-bar .t small{display:block;color:var(--mute);font-size:12px}
-@media (min-width:1100px){#pwa-bar{bottom:20px}}
+body.pc #pwa-bar{bottom:20px}
 .pwa-steps{margin:10px 0 0;padding-left:20px;line-height:1.7}.pwa-steps b{color:var(--gold,#e9c66c)}
-.pwa-row{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.pwa-row .btn{flex:1 1 160px}
+.pwa-row{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.pwa-row .btn{flex:1 1 160px}.ly-row .btn{flex:1 1 60px}
 </style>
 </head>
 <body>
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v9.9.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v10.0.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1053,6 +1050,8 @@ const GENS_RAW=[
 ];
 const GENS=GENS_RAW.map(r=>({id:r[0],name:r[1],hz:r[2],fac:r[3],rar:r[4],cls:r[5],str:r[6],int:r[7],lead:r[8],spd:r[9],skill:r[10]||DEF_SKILL[r[5]]}));
 const GMAP=Object.fromEntries(GENS.map(g=>[g.id,g]));
+// v10.0.0 능력치 재조정(무력·지력·통솔)
+;(()=>{const T={"lubu":[100,28,88],"guanyu":[96,74,94],"zhaoyun":[95,75,90],"zhangfei":[96,32,86],"zhugeliang":[36,100,93],"caocao":[74,92,100],"simayi":[60,99,97],"zhouyu":[70,96,97],"sunce":[92,70,92],"dengai":[85,90,94],"sunjian":[91,72,91],"diaochan":[24,84,55],"liubei":[74,76,82],"machao":[95,46,88],"huangzhong":[92,62,86],"pangtong":[32,95,72],"xiahoudun":[90,60,86],"xiahouyuan":[90,56,84],"zhangliao":[91,78,93],"xuchu":[94,34,66],"dianwei":[94,34,58],"guojia":[18,96,62],"sunquan":[66,82,78],"ganning":[91,62,85],"taishici":[92,66,82],"luxun":[68,94,96],"xusheng":[82,76,85],"zhangjiao":[22,86,86],"dongzhuo":[86,68,84],"yuanshao":[70,70,82],"zhurong":[87,38,74],"weiyan":[90,68,82],"guanping":[82,70,78],"madai":[84,52,76],"liaohua":[76,64,70],"yujin":[79,68,84],"lejin":[85,50,76],"lidian":[77,76,76],"chengpu":[79,74,82],"huanggai":[83,72,78],"zhoutai":[89,46,78],"lingtong":[87,52,74],"gaoshun":[86,56,87],"chengong":[48,88,76],"huaxiong":[88,38,82],"yanliang":[90,34,82],"wenchou":[90,28,80],"jiling":[82,46,78],"yuanshu":[62,66,74],"wenpin":[80,68,83],"yanyan":[82,64,78],"handang":[80,56,76],"haozhao":[80,76,92],"gongsunzan":[88,62,84],"zhugejin":[44,84,74],"liuxun":[74,58,76],"caoren":[86,64,90],"zhoucang":[86,40,70],"sunshangxiang":[80,62,72],"xunyu":[30,95,84],"fazheng":[46,93,76],"hansui":[76,78,84],"jianyong":[44,78,70],"yufan":[40,84,68],"jiaxu":[36,95,84],"lvmeng":[86,90,92],"lusu":[42,93,84],"xurong":[86,70,90],"zhangren":[85,70,82],"mateng":[86,60,86],"liru":[24,92,66],"zhangxiu":[74,62,80],"zhangji":[44,78,72],"lijue":[74,22,76],"guosi":[76,14,72],"zhanghe":[90,70,90],"jushou":[34,92,80],"tianfeng":[28,93,72],"shenpei":[58,82,82],"quyi":[80,48,84],"gaolan":[82,66,76],"guotu":[48,80,62],"xuyou":[22,82,44],"chunyuqiong":[68,30,78],"yuanshang":[72,44,70],"pangde":[92,70,82],"menghuo":[88,40,80],"zhangbao":[70,80,82],"zhangyan":[82,54,82],"zhangliang":[80,68,78],"wutugu":[88,4,74],"zhanglu":[28,74,60],"huangquan":[60,84,80],"guanhai":[81,12,76],"zhangwei":[68,46,78],"wangyun":[8,70,36],"xuhuang":[89,74,88],"jiangwei":[89,91,92],"guanxing":[85,64,76],"maliang":[36,86,72],"zhangzhao":[24,88,70],"caiyong":[12,88,66],"xunchen":[30,82,62],"huatuo":[12,86,64],"liubiao":[40,74,62],"liuyan":[42,76,66],"kongrong":[20,82,30],"taoqian":[42,60,58],"gongsundu":[66,62,72],"liuyu":[30,72,50],"hanfu":[32,46,40],"zhangmiao":[42,58,50],"zhangyang":[62,40,60],"kongzhou":[20,66,30],"liuyao":[40,58,52],"yanbaihu":[70,30,62],"wanglang":[30,76,45],"baoxin":[68,72,70],"caimao":[66,66,74],"kuaiyue":[30,88,46],"huangzu":[66,42,70],"huangshe":[44,48,42],"liuqi":[36,58,40],"liucong":[24,50,30],"liuzhang":[30,52,38],"gongsunkang":[62,62,68],"gongsungong":[28,40,30],"gongsunyuan":[68,60,70],"liuhe":[36,56,40],"taoshang":[30,40,30],"wangsu":[26,86,42],"baoxun":[32,70,38],"maxiu":[68,34,54],"matie":[66,32,52],"panghui":[75,42,62],"yanxing":[85,52,60],"zhangquan":[46,36,40],"yuantan":[68,48,64],"yuanxi":[56,50,56],"gaogan":[70,58,72],"yuanyao":[40,36,36],"sunyi":[75,40,62],"caoang":[58,56,60],"caopi":[68,82,76],"caozhang":[91,40,84],"caozhi":[24,90,20],"xiahouba":[84,58,78],"liushan":[8,24,14],"zhangbao2":[87,40,74],"zhugeke":[44,90,72],"niufu":[64,30,62],"simashi":[62,86,84]};for(const id in T){const g=GMAP[id];if(g){g.str=T[id][0];g.int=T[id][1];g.lead=T[id][2]}}})();
 /* ---------------- 전법 · 진영 · 인연 데이터 ---------------- */
 // tg: front 맨앞 · back 맨뒤 · low 체력비율최저 · high 공격최고 · hpmax 체력비율최고 · rand 무작위 · all 전체 · none 공격 없음
 // m 배율 · h 타격 횟수 · ign 방어 무시 · crit 치명타 확정 · exe 처형(체력 비율 이하 시 배율) · cond 특정 아군 동반 시 배율
@@ -3073,11 +3072,14 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='9.9.0';
+const GAME_VERSION='10.0.0';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['角',{ap:30}],['將',{gpk:10}],['選',{isk:1}],['換',{xtk:1}]];  // v9.5.0: 4·5일 룰렛 소환권 → 나팔 30 · 등용권 10
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'10.0.0',date:'2026-10-31',title:'장수 능력치 재조정 · PC 화면 전환',items:[
+  '장수 무력·지력·통솔을 다시 매겼어요. 무력 100은 여포 한 명, 지력 100은 제갈량, 통솔 100은 조조예요. 둔영·전투 능력치가 조금씩 달라질 수 있어요.',
+  'PC 창 폭이 900px 이상이면 가로 화면이 돼요(1920 화면을 반으로 나눈 창도 가로로 나와요). 공지 창 위쪽 \'화면\' 버튼으로 자동·가로·세로를 고를 수 있어요.']},
  {v:'9.9.0',date:'2026-10-31',title:'앱으로 설치 · PC 넓은 화면 · 군웅할거 독립',reward:{ap:30},items:[
   '이제 홈 화면에 앱으로 설치할 수 있어요. 안드로이드·PC 크롬은 \'앱으로 설치\' 버튼을, 아이폰은 Safari 공유 버튼 → \'홈 화면에 추가\'를 누르면 돼요. 공지 창 위쪽에 설치 방법이 있어요.',
   '처음 열 때 받는 용량이 16MB에서 약 1.3MB로 줄었어요. 그림은 쓸 때 받아서 저장해 두고, 한 번 본 그림은 다음부터 인터넷 없이도 바로 떠요. 와이파이에서 \'그림 전체 미리 받기\'를 누르면 한꺼번에 받아요.',
@@ -8695,9 +8697,8 @@ $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet'||e.target.clos
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
 
 
-// v9.9.0 PC 가로 화면: 폭이 1100px을 넘나들면 다시 그려요
-const PC_MQ=matchMedia('(min-width:1100px)');const pcWide=()=>PC_MQ.matches;
-PC_MQ.addEventListener&&PC_MQ.addEventListener('change',()=>{if(typeof S!=='undefined'&&S&&$('#battle').hidden)renderView()});
+// v10.0.0 PC 가로 화면: body.pc(화면 방향 설정 · pwa_js의 lyApply)
+const pcWide=()=>document.body.classList.contains('pc');
 // v9.9.0 천하쟁패 → 군웅할거 앱. 열 때 세 칸 세이브를 넘겨요(같은 기기·같은 브라우저). 아이폰에서 따로 설치했다면 세이브 코드로 옮겨요
 function gwHas(){if(!S||typeof tzSlotOf!=='function')return 0;let n=0;for(let i=0;i<3;i++){const x=tzSlotOf(i);if(x&&x.on)n++}return n}
 function gwPack(){return JSON.stringify({t:Date.now(),v:GAME_VERSION,tz:S.tz,tzs:S.tzs,tzi:S.tzi})}
@@ -8737,7 +8738,17 @@ async function pwaPrefetch(){
   toast(`그림 전체(약 ${PWA_IMG_MB}MB)를 받는 중이에요`);
   const ch=new MessageChannel();ch.port1.onmessage=e=>{const d=e.data||{};if(d.done)toast(`그림 ${d.n}개를 저장했어요${d.fail?` · ${d.fail}개는 다음에 다시 받아요`:''}`)};
   navigator.serviceWorker.controller.postMessage({t:'prefetch'},[ch.port2])}
-function pwaRowHtml(){return `<div class="pwa-row">${pwaStandalone()?'':'<button type="button" class="btn ghost sm" data-pwa="guide">앱으로 설치하기</button>'}<button type="button" class="btn ghost sm" data-pwa="pre">그림 전체 미리 받기 · 약 ${PWA_IMG_MB}MB</button></div>`}
+// v10.0.0 화면 방향: 자동(창 폭 900px 이상이면 가로) · 늘 가로 · 늘 세로. 이 기기에만 저장
+const LY_K='sambun-layout',LY_N={auto:'자동',wide:'가로',narrow:'세로'};
+function lyMode(){try{const v=localStorage.getItem(LY_K);return LY_N[v]?v:'auto'}catch(e){return 'auto'}}
+const lyOn=()=>{const m=lyMode();return m==='wide'||(m==='auto'&&innerWidth>=900)};
+function lyApply(re){const on=lyOn(),was=document.body.classList.contains('pc');document.body.classList.toggle('pc',on);
+  if(re&&on!==was&&typeof S!=='undefined'&&S){const b=document.getElementById('battle');if(!b||b.hidden)renderView()}}
+lyApply(0);addEventListener('resize',()=>lyApply(1));
+function lyRowHtml(){const m=lyMode();return `<div class="pwa-row ly-row" role="group" aria-label="화면 방향"><span class="sub" style="margin:0;align-self:center;flex:none">화면</span>${Object.entries(LY_N).map(([k,n])=>`<button type="button" class="btn ${m===k?'':'ghost'} sm" data-ly="${k}" aria-pressed="${m===k}">${n}</button>`).join('')}</div>`}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-ly]');if(!t)return;try{localStorage.setItem(LY_K,t.dataset.ly)}catch(x){}lyApply(1);
+  document.querySelectorAll('[data-ly]').forEach(b=>{const on=b.dataset.ly===t.dataset.ly;b.setAttribute('aria-pressed',on);b.classList.toggle('ghost',!on)});toast(`화면: ${LY_N[t.dataset.ly]}${t.dataset.ly==='auto'?' (창 폭 900px 이상이면 가로)':''}`)});
+function pwaRowHtml(){return lyRowHtml()+`<div class="pwa-row">${pwaStandalone()?'':'<button type="button" class="btn ghost sm" data-pwa="guide">앱으로 설치하기</button>'}<button type="button" class="btn ghost sm" data-pwa="pre">그림 전체 미리 받기 · 약 ${PWA_IMG_MB}MB</button></div>`}
 document.addEventListener('click',e=>{const t=e.target.closest('[data-pwa]');if(!t)return;if(t.dataset.pwa==='guide')pwaInstall();else pwaPrefetch()});
 setTimeout(pwaBar,4000);
 
