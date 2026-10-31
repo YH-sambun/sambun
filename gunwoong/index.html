@@ -949,7 +949,7 @@ html.work .tzt{background:none}html.work .tzt:before{display:none}html.work .tzt
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v10.0.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v1.0.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -8724,7 +8724,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_NOTICES=[{v:'10.0.0',date:'2026-10-31',title:'국면 전투 · 병종 · 장수 168명',items:[
+const GW_VER='1.0.0';
+const GW_NOTICES=[{v:'1.0.0',date:'2026-10-31',title:'군웅할거 v1.0 · 국면 전투 · 병종 · 장수 168명',items:[
   '전투가 바뀌었어요. 장수마다 자기 부대를 이끌고 초반·중반·후반 세 국면으로 싸워요. 국면마다 공격·돌격(일제)·계략·수비를 고르고, 세 국면 안에 적을 무너뜨려야 성을 차지해요. \'출진 · 직접 지휘\'로 직접 고르거나 \'자동 전투\'로 바로 결과를 봐요.',
   '부대 힘은 그 장수의 무력·통솔·병종으로 정해져요. 계략은 지력이 가장 높은 장수가, 시작 사기는 통솔이 가장 높은 총대장이 정해요. 부대가 무너지면 무력이 낮은 장수일수록 잘 붙잡혀요(명마가 있으면 안전).',
   '병종: 보병·창병·궁병·기병. 기병은 궁병에, 궁병은 보병에, 창병은 기병에 강해요. 장수마다 출진할 때 골라요. 궁병·창병은 무기, 기병은 군마가 들어요. 군사 탭 \'군비\'에서 사고, 서량·북평 같은 군마 산지는 군마가 반값이에요.',
@@ -8733,7 +8734,7 @@ const GW_NOTICES=[{v:'10.0.0',date:'2026-10-31',title:'국면 전투 · 병종 �
   '\'나가기\'를 누르면 제목 화면이 떠요. 이어 하기 · 새로 시작 · 불러오기(칸마다 지우기) · 도움말 · 설정을 골라요. 도움말도 군웅할거 규칙으로 새로 썼어요.',
   '장수 능력치를 다시 매기고, 장수 168명(정욱·순유·방통 쪽 인물, 재야 명사, 후대 장수 등)이 새로 나와요. 진행 중이던 판도 그대로 이어져요.',
   'PC: 창 폭 900px 이상이면 가로 화면이고, 메뉴(☰)에서 자동·가로·세로를 고를 수 있어요. 지도는 칸에 맞춰 줄어들고, 업무 모드에서는 지도 대신 성 목록만 나와요. 장수 상세의 모션 버튼은 뺐어요. 오른쪽 위 ☰ 버튼이 턴 종료 버튼을 가리던 것과 창 제목도 고쳤어요.']},
- {v:'9.9.0',date:'2026-10-31',title:'군웅할거 앱으로 독립',items:[
+ {v:'0.9.0',date:'2026-10-31',title:'군웅할거 앱으로 독립',items:[
   '천하쟁패가 \'군웅할거\'라는 따로 된 앱이 됐어요. 홈 화면에 따로 설치할 수 있고, 처음 열 때 받는 용량도 작아요.',
   '본편에서 군웅할거를 열면 진행 중이던 세 칸 세이브가 함께 넘어와요. 아이폰에서 따로 설치했다면 본편의 \'세이브 코드 복사\' → 여기 메뉴(☰)의 \'세이브 코드 붙여넣기\'로 옮겨요.',
   '로그인 보너스가 생겼어요. 하루 첫 접속 때 진행 중인 판의 군주가 있는 성에 금(내 세력 한 달 금 수입의 절반, 최소 100)이 들어와요. 연속 3일째·7일째는 군량도, 7일째는 상인이 파는 보물(없으면 숨겨진 보물) 하나가 금고로 와요. 세이브 칸마다 따로 받아요.',
@@ -8773,7 +8774,7 @@ async function gwDecode(c){c=String(c||'').trim();const k=c.slice(0,4),b=c.slice
 function gwMenu(){const p=gwPref();openSheet(`<div class="sheet-h"><h2 style="margin:0">군웅할거</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${pwaRowHtml()}
   <div class="pwa-row"><button type="button" class="btn ghost sm" id="gwm-lb">로그인 보너스 ${p.lbOff?'켜기':'끄기'}</button><button type="button" class="btn ghost sm" id="gwm-paste">세이브 코드 붙여넣기</button><a class="btn ghost sm" href="../" style="text-align:center;text-decoration:none">본편(삼분) 열기</a></div>
   <div class="pwa-row"><button type="button" class="btn ghost sm" data-tzsl="1">저장 칸</button><button type="button" class="btn ghost sm" data-tzhelp>도움말</button></div>
-  <h3 style="margin:14px 0 6px">공지</h3>${gwNoticeHtml()}<p class="sub" style="margin-top:12px">현재 버전 v${GAME_VERSION}</p>`);
+  <h3 style="margin:14px 0 6px">공지</h3>${gwNoticeHtml()}<p class="sub" style="margin-top:12px">현재 버전 v${GW_VER}</p>`);
   $('#gwm-lb').onclick=()=>{gwPrefSet({lbOff:!gwPref().lbOff});toast(gwPref().lbOff?'로그인 보너스를 껐어요':'로그인 보너스를 켰어요');gwMenu()};
   $('#gwm-paste').onclick=()=>{openSheet(`<div class="sheet-h"><h2 style="margin:0">세이브 코드 붙여넣기</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div><p class="sub">본편 출정 → 군웅할거에서 복사한 코드를 넣어 주세요. 지금 군웅할거의 세 칸이 바뀌어요.</p><textarea id="gwm-code" style="width:100%;height:140px;font-size:11px"></textarea><button type="button" class="btn red wide" id="gwm-ok" style="margin-top:8px">가져오기</button>`);
     $('#gwm-ok').onclick=async()=>{try{const ex=await gwDecode($('#gwm-code').value);if(!ex||!ex.tz)throw 0;gwImportApply(ex);closeSheet();toast('세이브를 가져왔어요')}catch(e){toast('코드를 읽지 못했어요. 처음부터 끝까지 다 복사했는지 확인해 주세요')}}}}
@@ -8782,7 +8783,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 document.addEventListener('click',e=>{if(e.target.closest('[data-tzslot],[data-tzfok],[data-tzrok]'))setTimeout(()=>{if($('#sheet').hidden){const r=gwBonus();if(r)gwShow(r,false)}},350)});
 
 // v9.9.0 PWA: 홈 화면 설치 · 그림 저장(service worker) · 그림 전체 미리 받기
-const PWA_APP='gunwoong', PWA_IMG_MB=2.0;
+const PWA_APP='gunwoong', PWA_IMG_MB=1.9;
 const pwaStandalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 const pwaIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 let pwaPrompt=null;
@@ -9025,7 +9026,7 @@ function tzTitle(v){tzSlots();const cur=tzState(),slot=i=>{const x=tzSlotOf(i);r
   if(v==='load')body=`<h3>불러오기</h3>${rows('load')}<button type="button" class="tzt-b ghost" data-tzt0="main">뒤로</button>`;
   else if(v==='new')body=`<h3>새로 시작할 칸</h3><p class="sub" style="margin:0 0 8px;text-align:center">판이 있는 칸을 고르면 그 판은 지워져요.</p>${rows('new')}<button type="button" class="tzt-b ghost" data-tzt0="main">뒤로</button>`;
   else body=`${cur.on?'<button type="button" class="tzt-b" data-close>이어 하기</button>':''}<button type="button" class="tzt-b" data-tzt0="new">새로 시작</button><button type="button" class="tzt-b" data-tzt0="load">불러오기</button><button type="button" class="tzt-b" data-tzhelp>도움말</button><button type="button" class="tzt-b" data-tzt0="set">설정</button>`;
-  openSheet(`<div class="tzt"><div class="tzt-in"><div class="tzt-hz">群雄割據</div><h2>군웅할거</h2>${body}<p class="tzt-v">v${GAME_VERSION}</p></div></div>`);$('#sheet').classList.add('tzt-sheet')}
+  openSheet(`<div class="tzt"><div class="tzt-in"><div class="tzt-hz">群雄割據</div><h2>군웅할거</h2>${body}<p class="tzt-v">v${GW_VER}</p></div></div>`);$('#sheet').classList.add('tzt-sheet')}
 const tzSlotSheet=()=>tzTitle('load');
 document.addEventListener('click',e=>{if(e.target.closest('[data-tzsl]')){tzTitle('load');return}
   const t0=e.target.closest('[data-tzt0]');if(t0){const v=t0.dataset.tzt0;if(v==='set'){closeSheet();gwMenu()}else tzTitle(v);return}
