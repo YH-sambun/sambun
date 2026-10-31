@@ -930,9 +930,10 @@ body.pc .tz-grid{max-height:none;overflow-y:visible!important}
 .tzb-pr .tz-dl{flex:1;margin:0}
 .tz-help-b{margin-top:6px}
 .tz-top{padding-right:56px}
-#sheet.tzt-sheet .sheet-body{padding:0;overflow:hidden;max-width:560px}
-.tzt{position:relative;background:var(--tzt-bg) center/cover no-repeat;image-rendering:pixelated;min-height:min(560px,80vh);display:grid;place-items:center}
-.tzt:before{content:'';position:absolute;inset:0;background:linear-gradient(rgba(8,12,12,.55),rgba(8,12,12,.82))}
+#sheet.tzt-sheet .sheet-body{padding:0;overflow:hidden;max-width:820px}
+.tzt{position:relative;background:#0e1716 url('../img/title-l.webp') center/cover no-repeat;aspect-ratio:4/3;max-height:88vh;display:grid;place-items:center}
+.tzt:before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(8,12,12,.55),rgba(8,12,12,.15) 70%)}
+@media (orientation:portrait){.tzt{background-image:url('../img/title-p.webp');aspect-ratio:auto;min-height:82vh}#sheet.tzt-sheet .sheet-body{max-height:92%}}
 .tzt-in{position:relative;width:min(300px,84%);display:flex;flex-direction:column;gap:8px;padding:28px 0;color:#f3ead8}
 .tzt-hz{text-align:center;font-size:15px;letter-spacing:.5em;color:#e9c66c;opacity:.85}.tzt h2{text-align:center;margin:0 0 10px;font-size:32px;letter-spacing:.15em}
 .tzt h3{text-align:center;margin:0 0 4px;font-size:16px}
@@ -8781,7 +8782,7 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 document.addEventListener('click',e=>{if(e.target.closest('[data-tzslot],[data-tzfok],[data-tzrok]'))setTimeout(()=>{if($('#sheet').hidden){const r=gwBonus();if(r)gwShow(r,false)}},350)});
 
 // v9.9.0 PWA: 홈 화면 설치 · 그림 저장(service worker) · 그림 전체 미리 받기
-const PWA_APP='gunwoong', PWA_IMG_MB=1.9;
+const PWA_APP='gunwoong', PWA_IMG_MB=2.0;
 const pwaStandalone=()=>matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;
 const pwaIOS=()=>/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
 let pwaPrompt=null;
@@ -9024,7 +9025,7 @@ function tzTitle(v){tzSlots();const cur=tzState(),slot=i=>{const x=tzSlotOf(i);r
   if(v==='load')body=`<h3>불러오기</h3>${rows('load')}<button type="button" class="tzt-b ghost" data-tzt0="main">뒤로</button>`;
   else if(v==='new')body=`<h3>새로 시작할 칸</h3><p class="sub" style="margin:0 0 8px;text-align:center">판이 있는 칸을 고르면 그 판은 지워져요.</p>${rows('new')}<button type="button" class="tzt-b ghost" data-tzt0="main">뒤로</button>`;
   else body=`${cur.on?'<button type="button" class="tzt-b" data-close>이어 하기</button>':''}<button type="button" class="tzt-b" data-tzt0="new">새로 시작</button><button type="button" class="tzt-b" data-tzt0="load">불러오기</button><button type="button" class="tzt-b" data-tzhelp>도움말</button><button type="button" class="tzt-b" data-tzt0="set">설정</button>`;
-  openSheet(`<div class="tzt" style="--tzt-bg:url('${gwMapSrc(tzSea(cur.on?cur.m:3))}')"><div class="tzt-in"><div class="tzt-hz">群雄割據</div><h2>군웅할거</h2>${body}<p class="tzt-v">v${GAME_VERSION}</p></div></div>`);$('#sheet').classList.add('tzt-sheet')}
+  openSheet(`<div class="tzt"><div class="tzt-in"><div class="tzt-hz">群雄割據</div><h2>군웅할거</h2>${body}<p class="tzt-v">v${GAME_VERSION}</p></div></div>`);$('#sheet').classList.add('tzt-sheet')}
 const tzSlotSheet=()=>tzTitle('load');
 document.addEventListener('click',e=>{if(e.target.closest('[data-tzsl]')){tzTitle('load');return}
   const t0=e.target.closest('[data-tzt0]');if(t0){const v=t0.dataset.tzt0;if(v==='set'){closeSheet();gwMenu()}else tzTitle(v);return}
