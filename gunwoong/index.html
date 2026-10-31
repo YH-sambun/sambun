@@ -862,56 +862,94 @@ header.top,#claim,#tabs,#mode-banner{display:none!important}
 .tzs-u.dead{opacity:.45}.tzs-tr{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(127,127,127,.2);font-size:14px;flex:none}
 .tzs-res{font-size:22px;font-weight:700;text-align:center;margin:6px 0}
 
-/* v9.9.0 PC 가로 화면: 폭 1100px 이상에서만 바뀌어요(폰 화면은 그대로) */
-@media (min-width:1100px){
-  #app{max-width:1320px;display:grid;grid-template-columns:92px minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr);column-gap:24px}
-  #app>.top,#claim,#mode-banner{grid-column:2}
-  main#view{grid-column:2;grid-row:4;padding:8px 8px 32px}
-  #tabs{grid-column:1;grid-row:1/5;display:flex;flex-direction:column;justify-content:flex-start;gap:4px;border-top:0;border-right:1px solid var(--line);padding:18px 6px;background:transparent}
-  #tabs .tab{padding:14px 0;border-radius:12px}
-  #tabs .tab b{font-size:24px}
-  /* 둔영: 왼쪽 진형 · 오른쪽 보유 장수 */
-  .pc2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
-  .pc-r{position:sticky;top:0;max-height:calc(100dvh - 200px);overflow-y:auto;padding:0 6px 16px 0}
-  .pc-r>h2:first-child{margin-top:0}
-  /* 등용: 배너 두 줄 */
-  #view:has(>.banner-card){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px;align-content:start}
-  #view:has(>.banner-card)>:not(.banner-card){grid-column:1/-1}
-  /* 공지·장수 상세 같은 시트는 가운데 창으로 */
-  #sheet{align-items:center}
-  .sheet-body{max-width:640px;border-radius:18px;border:1px solid var(--line);max-height:88vh}
-  /* 전투: 넓은 16:9 전장, 아군·적군 카드를 좌우로 */
-  .bt{max-width:1240px}
-  .bt.rt .rt-stage{aspect-ratio:16/9;width:min(100%,calc((100dvh - 300px)*16/9));margin:0 auto}
-  .rt-cards{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
-  .rt-cards .grp{grid-template-columns:repeat(6,minmax(0,1fr))}
-  /* 천하쟁패·군웅할거: 지도(또는 성 목록)는 왼쪽 크게, 고른 성은 오른쪽에 고정 */
-  #view:has(>.tz-city){display:grid;grid-template-columns:minmax(0,1.45fr) minmax(400px,1fr);column-gap:22px;grid-auto-flow:row dense;align-content:start}
-  #view:has(>.tz-city)>*{grid-column:1/-1}
-  #view:has(>.tz-city)>.gw-wrap,#view:has(>.tz-city)>.tz-strip{grid-column:1;grid-row:3}
-  #view:has(>.tz-city)>.tz-city{grid-column:2;grid-row:3/span 30;position:sticky;top:0;align-self:start;max-height:calc(100dvh - 120px);overflow-y:auto}
-  #view:has(>.tz-city)>.tz-strip{flex-wrap:wrap;align-content:flex-start;overflow:visible}
-  body.tz-focus #app{grid-template-columns:minmax(0,1fr)}
-  body.tz-focus main#view{grid-column:1}
-}
+
+body.pc #app{max-width:1320px;display:grid;grid-template-columns:92px minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr);column-gap:24px}
+body.pc #app>.top,body.pc #claim,body.pc #mode-banner{grid-column:2}
+body.pc main#view{grid-column:2;grid-row:4;padding:8px 8px 32px}
+body.pc #tabs{grid-column:1;grid-row:1/5;display:flex;flex-direction:column;justify-content:flex-start;gap:4px;border-top:0;border-right:1px solid var(--line);padding:18px 6px;background:transparent}
+body.pc #tabs .tab{padding:14px 0;border-radius:12px}
+body.pc #tabs .tab b{font-size:24px}
+body.pc .pc2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px;align-items:start}
+body.pc .pc-r{position:sticky;top:0;max-height:calc(100dvh - 200px);overflow-y:auto;padding:0 6px 16px 0}
+body.pc .pc-r>h2:first-child{margin-top:0}
+body.pc #view:has(>.banner-card){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px;align-content:start}
+body.pc #view:has(>.banner-card)>:not(.banner-card){grid-column:1/-1}
+body.pc #sheet{align-items:center}
+body.pc .sheet-body{max-width:640px;border-radius:18px;border:1px solid var(--line);max-height:88vh}
+body.pc .bt{max-width:1240px}
+body.pc .bt.rt .rt-stage{aspect-ratio:16/9;width:min(100%,calc((100dvh - 300px)*16/9));margin:0 auto}
+body.pc .rt-cards{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+body.pc .rt-cards .grp{grid-template-columns:repeat(6,minmax(0,1fr))}
+body.pc #view:has(>.tz-city){display:grid;grid-template-columns:minmax(0,1.45fr) minmax(400px,1fr);column-gap:22px;grid-auto-flow:row dense;align-content:start}
+body.pc #view:has(>.tz-city)>*{grid-column:1/-1}
+body.pc #view:has(>.tz-city)>.gw-wrap,body.pc #view:has(>.tz-city)>.tz-strip{grid-column:1;grid-row:3}
+body.pc #view:has(>.tz-city)>.tz-city{grid-column:2;grid-row:3/span 30;position:sticky;top:0;align-self:start;max-height:calc(100dvh - 120px);overflow-y:auto}
+body.pc #view:has(>.tz-city)>.tz-strip{flex-wrap:wrap;align-content:flex-start;overflow:visible}
+body.pc.tz-focus #app{grid-template-columns:minmax(0,1fr)}
+body.pc.tz-focus main#view{grid-column:1}
+body.pc #view:has(>.tz-city){grid-template-columns:minmax(0,1.5fr) minmax(330px,1fr)}
+body.pc #view:has(>.tz-city)>.gw-wrap{overflow:hidden}
+body.pc #view:has(>.tz-city)>.gw-wrap .gw-map{min-width:0;width:min(100%,calc((100dvh - 170px)*1200/896));margin:0 auto}
+
 
 #pwa-bar{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(78px + env(safe-area-inset-bottom,0px));z-index:19;width:calc(100% - 24px);max-width:520px;display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:var(--panel);border:1px solid var(--line);box-shadow:0 6px 24px rgba(0,0,0,.35);font-size:14px}
 #pwa-bar[hidden]{display:none}#pwa-bar .t{flex:1;min-width:0}#pwa-bar .t small{display:block;color:var(--mute);font-size:12px}
-@media (min-width:1100px){#pwa-bar{bottom:20px}}
+body.pc #pwa-bar{bottom:20px}
 .pwa-steps{margin:10px 0 0;padding-left:20px;line-height:1.7}.pwa-steps b{color:var(--gold,#e9c66c)}
-.pwa-row{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.pwa-row .btn{flex:1 1 160px}
+.pwa-row{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.pwa-row .btn{flex:1 1 160px}.ly-row .btn{flex:1 1 60px}
 
 #gw-menu{position:fixed;top:calc(8px + env(safe-area-inset-top,0px));right:max(8px,calc(50% - 330px));z-index:18;width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--panel);color:inherit;font-size:18px;cursor:pointer}
 body.tz-focus #gw-menu{top:auto;bottom:calc(16px + env(safe-area-inset-bottom,0px))}
 body.tz-focus main#view{padding-bottom:76px}
-@media (min-width:1100px){#app{grid-template-columns:minmax(0,1fr)!important}main#view{grid-column:1!important}#gw-menu{right:max(12px,calc(50% - 650px))}}
+body.pc #app{grid-template-columns:minmax(0,1fr)!important}body.pc main#view{grid-column:1!important}body.pc #gw-menu{right:max(12px,calc(50% - 650px))}
+
+/* v10.0.0 군웅할거: 성 목록 격자 · 국면 전투 · 병종 고르기 */
+.tz-grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;overflow-x:visible!important;max-height:52vh;overflow-y:auto!important;padding:2px;align-content:start}
+body.pc .tz-grid{max-height:none;overflow-y:visible!important}
+.tz-grid .tz-gc{min-width:0;width:auto;text-align:left;display:flex;flex-direction:column;gap:2px}
+.tz-grid .tz-gc b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tz-wb{font-style:normal;display:inline-block;margin-left:3px;padding:0 4px;border-radius:5px;background:var(--cinnabar);color:#fff;font-size:11px;line-height:16px}
+.tz-gall{grid-column:1/-1;padding:9px;border-radius:10px;border:1px dashed var(--bronze);background:transparent;color:var(--bronze);font-weight:700;cursor:pointer}
+.tz-armln{margin:6px 0 4px;font-size:13px;color:var(--mute)}
+.tzb-phs{display:flex;gap:6px;margin:0 0 8px}.tzb-ph{flex:1;text-align:center;padding:5px 0;border-radius:8px;border:1px solid var(--line);font-size:13px;color:var(--mute)}
+.tzb-ph.on{border-color:var(--cinnabar);color:inherit;font-weight:700}.tzb-ph.did{opacity:.55}
+.tzb-sides{display:grid;grid-template-columns:1fr;gap:8px}@media (min-width:640px){.tzb-sides{grid-template-columns:1fr 1fr}}
+.tzb-side{border:1px solid var(--line);border-radius:10px;padding:8px}.tzb-side h3{margin:0 0 4px;display:flex;justify-content:space-between;align-items:baseline;font-size:15px}.tzb-side h3 small{color:var(--mute);font-weight:400}
+.tzb-mor{display:flex;align-items:center;gap:6px;font-size:12px;margin-bottom:6px}.tzb-mor span:first-child{width:52px}
+.tzb-bar{flex:1;height:8px;border-radius:4px;background:rgba(127,127,127,.22);overflow:hidden;display:block}.tzb-bar b{display:block;height:100%;background:var(--cinnabar);transition:width .35s}
+.tzb-u{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:13px}.tzb-u.out{opacity:.45}.tzb-u .nm{width:76px;min-width:0;display:flex;flex-direction:column;line-height:1.15}.tzb-u .nm small{color:var(--mute);font-size:10px}
+.tzb-u em{font-style:normal;width:52px;text-align:right;font-variant-numeric:tabular-nums}
+.tzb-ty{font-style:normal;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:13px;color:#fff;flex:none;background:#6b7280}
+.tzb-ty.spr{background:#7c5c2e}.tzb-ty.arc{background:#2f6f5e}.tzb-ty.cav{background:#8a3b2e}
+.tzb-log{margin:8px 0;padding:8px;border-radius:10px;background:rgba(127,127,127,.1);font-size:13px;line-height:1.55;max-height:150px;overflow-y:auto}
+.tzb-acts{display:grid;grid-template-columns:1fr 1fr;gap:6px}.tzb-acts button{padding:10px 8px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:inherit;text-align:left;cursor:pointer}
+.tzb-acts button b{display:block;font-size:16px}.tzb-acts button small{color:var(--mute);font-size:11px;line-height:1.3;display:block}
+.tzb-res{font-size:20px;font-weight:800;text-align:center;margin:4px 0}.tzb-res.win{color:var(--bronze)}.tzb-res.lose{color:var(--mute)}
+.tzb-ask{border:1px solid var(--cinnabar);border-radius:10px;padding:10px}
+.tzb-pick{display:flex;flex-direction:column;gap:4px}.tzb-pr{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.tzb-pr .nm{width:96px;display:flex;flex-direction:column;font-size:13px}.tzb-pr .nm small{color:var(--mute);font-size:11px}
+.tzb-pr .tz-dl{flex:1;margin:0}
+.tz-help-b{margin-top:6px}
+.tz-top{padding-right:56px}
+#sheet.tzt-sheet .sheet-body{padding:0;overflow:hidden;max-width:820px}
+.tzt{position:relative;background:#0e1716 url('../img/title-l.webp') center/cover no-repeat;aspect-ratio:4/3;max-height:88vh;display:grid;place-items:center}
+.tzt:before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(8,12,12,.55),rgba(8,12,12,.15) 70%)}
+@media (orientation:portrait){.tzt{background-image:url('../img/title-p.webp');aspect-ratio:auto;min-height:82vh}#sheet.tzt-sheet .sheet-body{max-height:92%}}
+.tzt-in{position:relative;width:min(300px,84%);display:flex;flex-direction:column;gap:8px;padding:28px 0;color:#f3ead8}
+.tzt-hz{text-align:center;font-size:15px;letter-spacing:.5em;color:#e9c66c;opacity:.85}.tzt h2{text-align:center;margin:0 0 10px;font-size:32px;letter-spacing:.15em}
+.tzt h3{text-align:center;margin:0 0 4px;font-size:16px}
+.tzt-b{padding:12px;border-radius:10px;border:1px solid rgba(233,198,108,.55);background:rgba(20,28,27,.85);color:#f3ead8;font-size:16px;font-weight:700;cursor:pointer}
+.tzt-b:hover,.tzt-b:focus-visible{border-color:#e9c66c;background:rgba(60,48,20,.85)}.tzt-b.ghost{background:transparent;font-weight:400}
+.tzt-slot{display:flex;gap:6px}.tzt-sb{flex:1;text-align:left;padding:10px 12px;border-radius:10px;border:1px solid rgba(233,198,108,.45);background:rgba(20,28,27,.85);color:#f3ead8;cursor:pointer;display:flex;flex-direction:column}
+.tzt-sb small{color:#bdb3a0}.tzt-sb:disabled{opacity:.5;cursor:default}.tzt-del{border-radius:10px;border:1px solid rgba(200,80,60,.6);background:rgba(20,28,27,.85);color:#e7a090;padding:0 10px;cursor:pointer}
+.tzt-v{text-align:center;font-size:11px;color:#bdb3a0;margin:6px 0 0}
+html.work .tzt{background:none}html.work .tzt:before{display:none}html.work .tzt-in{color:inherit}html.work .tzt-b,html.work .tzt-sb,html.work .tzt-del{background:var(--panel);color:inherit}
 </style>
 </head>
 <body>
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v9.9.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v1.0.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -1064,6 +1102,8 @@ const GENS_RAW=[
 ];
 const GENS=GENS_RAW.map(r=>({id:r[0],name:r[1],hz:r[2],fac:r[3],rar:r[4],cls:r[5],str:r[6],int:r[7],lead:r[8],spd:r[9],skill:r[10]||DEF_SKILL[r[5]]}));
 const GMAP=Object.fromEntries(GENS.map(g=>[g.id,g]));
+// v10.0.0 능력치 재조정(무력·지력·통솔)
+;(()=>{const T={"lubu":[100,28,88],"guanyu":[96,74,94],"zhaoyun":[95,75,90],"zhangfei":[96,32,86],"zhugeliang":[36,100,93],"caocao":[74,92,100],"simayi":[60,99,97],"zhouyu":[70,96,97],"sunce":[92,70,92],"dengai":[85,90,94],"sunjian":[91,72,91],"diaochan":[24,84,55],"liubei":[74,76,82],"machao":[95,46,88],"huangzhong":[92,62,86],"pangtong":[32,95,72],"xiahoudun":[90,60,86],"xiahouyuan":[90,56,84],"zhangliao":[91,78,93],"xuchu":[94,34,66],"dianwei":[94,34,58],"guojia":[18,96,62],"sunquan":[66,82,78],"ganning":[91,62,85],"taishici":[92,66,82],"luxun":[68,94,96],"xusheng":[82,76,85],"zhangjiao":[22,86,86],"dongzhuo":[86,68,84],"yuanshao":[70,70,82],"zhurong":[87,38,74],"weiyan":[90,68,82],"guanping":[82,70,78],"madai":[84,52,76],"liaohua":[76,64,70],"yujin":[79,68,84],"lejin":[85,50,76],"lidian":[77,76,76],"chengpu":[79,74,82],"huanggai":[83,72,78],"zhoutai":[89,46,78],"lingtong":[87,52,74],"gaoshun":[86,56,87],"chengong":[48,88,76],"huaxiong":[88,38,82],"yanliang":[90,34,82],"wenchou":[90,28,80],"jiling":[82,46,78],"yuanshu":[62,66,74],"wenpin":[80,68,83],"yanyan":[82,64,78],"handang":[80,56,76],"haozhao":[80,76,92],"gongsunzan":[88,62,84],"zhugejin":[44,84,74],"liuxun":[74,58,76],"caoren":[86,64,90],"zhoucang":[86,40,70],"sunshangxiang":[80,62,72],"xunyu":[30,95,84],"fazheng":[46,93,76],"hansui":[76,78,84],"jianyong":[44,78,70],"yufan":[40,84,68],"jiaxu":[36,95,84],"lvmeng":[86,90,92],"lusu":[42,93,84],"xurong":[86,70,90],"zhangren":[85,70,82],"mateng":[86,60,86],"liru":[24,92,66],"zhangxiu":[74,62,80],"zhangji":[44,78,72],"lijue":[74,22,76],"guosi":[76,14,72],"zhanghe":[90,70,90],"jushou":[34,92,80],"tianfeng":[28,93,72],"shenpei":[58,82,82],"quyi":[80,48,84],"gaolan":[82,66,76],"guotu":[48,80,62],"xuyou":[22,82,44],"chunyuqiong":[68,30,78],"yuanshang":[72,44,70],"pangde":[92,70,82],"menghuo":[88,40,80],"zhangbao":[70,80,82],"zhangyan":[82,54,82],"zhangliang":[80,68,78],"wutugu":[88,4,74],"zhanglu":[28,74,60],"huangquan":[60,84,80],"guanhai":[81,12,76],"zhangwei":[68,46,78],"wangyun":[8,70,36],"xuhuang":[89,74,88],"jiangwei":[89,91,92],"guanxing":[85,64,76],"maliang":[36,86,72],"zhangzhao":[24,88,70],"caiyong":[12,88,66],"xunchen":[30,82,62],"huatuo":[12,86,64],"liubiao":[40,74,62],"liuyan":[42,76,66],"kongrong":[20,82,30],"taoqian":[42,60,58],"gongsundu":[66,62,72],"liuyu":[30,72,50],"hanfu":[32,46,40],"zhangmiao":[42,58,50],"zhangyang":[62,40,60],"kongzhou":[20,66,30],"liuyao":[40,58,52],"yanbaihu":[70,30,62],"wanglang":[30,76,45],"baoxin":[68,72,70],"caimao":[66,66,74],"kuaiyue":[30,88,46],"huangzu":[66,42,70],"huangshe":[44,48,42],"liuqi":[36,58,40],"liucong":[24,50,30],"liuzhang":[30,52,38],"gongsunkang":[62,62,68],"gongsungong":[28,40,30],"gongsunyuan":[68,60,70],"liuhe":[36,56,40],"taoshang":[30,40,30],"wangsu":[26,86,42],"baoxun":[32,70,38],"maxiu":[68,34,54],"matie":[66,32,52],"panghui":[75,42,62],"yanxing":[85,52,60],"zhangquan":[46,36,40],"yuantan":[68,48,64],"yuanxi":[56,50,56],"gaogan":[70,58,72],"yuanyao":[40,36,36],"sunyi":[75,40,62],"caoang":[58,56,60],"caopi":[68,82,76],"caozhang":[91,40,84],"caozhi":[24,90,20],"xiahouba":[84,58,78],"liushan":[8,24,14],"zhangbao2":[87,40,74],"zhugeke":[44,90,72],"niufu":[64,30,62],"simashi":[62,86,84]};for(const id in T){const g=GMAP[id];if(g){g.str=T[id][0];g.int=T[id][1];g.lead=T[id][2]}}})();
 /* ---------------- 전법 · 진영 · 인연 데이터 ---------------- */
 // tg: front 맨앞 · back 맨뒤 · low 체력비율최저 · high 공격최고 · hpmax 체력비율최고 · rand 무작위 · all 전체 · none 공격 없음
 // m 배율 · h 타격 횟수 · ign 방어 무시 · crit 치명타 확정 · exe 처형(체력 비율 이하 시 배율) · cond 특정 아군 동반 시 배율
@@ -3084,7 +3124,7 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='9.9.0';
+const GAME_VERSION='10.0.0';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['角',{ap:30}],['將',{gpk:10}],['選',{isk:1}],['換',{xtk:1}]];  // v9.5.0: 4·5일 룰렛 소환권 → 나팔 30 · 등용권 10
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
@@ -4126,98 +4166,58 @@ document.addEventListener('click',e=>{
 });
 document.addEventListener('change',e=>{const c=e.target.closest('[data-infoall]');if(!c)return;infoAllSet(c.checked);toast(c.checked?'화면 설명을 항상 펼쳐 보여요':'긴 설명을 한 줄로 접어요')});
 const HELP=[
- {t:'기본 능력치',rows:[
-  ['무력','물리 공격과 체력의 바탕이 돼요. 보병·기병·궁병의 공격력은 무력으로 정해져요.'],
-  ['지력','책사의 공격력은 무력 대신 지력으로 정해져요. 다른 병종에는 영향이 없어요.'],
-  ['통솔','체력과 방어의 바탕이에요. 모든 병종의 공격력에도 조금 더해져요.'],
-  ['속도','한 턴 안에서 행동하는 순서예요. 빠른 장수부터 행동하고, 보물과 오 진영 보너스로 올릴 수 있어요.']]},
- {t:'전투 능력치',rows:[
-  ['체력','(통솔×10 + 무력×3 + 200) × 성장 배율. 0이 되면 쓰러져요.'],
-  ['공격','(무력 또는 책사는 지력)×1.6 + 통솔×0.3, 여기에 성장 배율을 곱해요. 주는 피해의 기준이에요.'],
-  ['방어','통솔×0.8 × 성장 배율, 보병은 +20을 더 받아요. 받는 피해에 120 ÷ (120 + 방어)를 곱해 줄여요. 책사의 공격은 방어의 25%를 무시해요.'],
-  ['전투력','공격×1.5 + 체력÷6 + 방어×1.2 + 속도. 강함을 한눈에 비교하는 참고 수치이고, 진형 전투력에는 진영·인연 보너스가 포함돼요.']]},
- {t:'성장',rows:[
-  ['등급','★3은 기본, ★4는 능력치 ×1.08, ★5는 ×1.16이에요.'],
-  ['레벨','1레벨 오를 때마다 능력치 +7%, 속도 +0.3. 최대 Lv '+MAXLV+'. 레벨은 장수가 아니라 진형의 자리(1~5번)마다 정해요. 둔영 탭에서 자리의 Lv 버튼을 눌러 올리거나 초기화(금 전액 환불)할 수 있어요.'],
-  ['돌파','같은 장수를 또 얻으면 한 단계 올라요. 단계마다 능력치 +6%, 최대 5단계(◆◆◆◆◆). 5단계 이후 중복은 금으로 바뀌어요(★4 300 · ★5 1,000).'],
-  ['한계돌파','★3 장수는 5단계 뒤에도 중복으로 6~10단계(✦)까지 더 오르고, 단계마다 똑같이 +6%예요. 10단계 이후 중복은 금 200으로 바뀌어요.'],
-  ['보물','장수마다 3칸이에요. ★5칸 · ★4칸 · ★3칸에 그 등급 보물을 1개씩 끼워요. 특수 효과는 ★5 보물에만 있어요. 공격·체력·방어는 퍼센트로, 속도는 수치로 더해져요. 아래 보물 항목에 자세히 있어요.'],
-  ['스킬 3종','장수마다 패시브 1개 + 기본 스킬 1개 + 궁극기 1개예요. 패시브는 전투 내내 자동으로 적용되고, 전법 차례(병종마다 2~4번째 행동)에 궁극기 확률만큼 궁극기가, 아니면 기본 스킬이 나가요.'],
-  ['궁극기 확률','기본 25% + 병종 능력치(책사 지력 · 기병·궁병 무력 · 보병 통솔, 60에서 100 사이에서 0~+10%p) + 보물 궁극기 확률(최대 +12%p) + 패시브, 최대 50%예요. 장수 화면에서 지금 확률을 볼 수 있어요.'],
-  ['저항','일부 장수의 패시브가 주는 효과예요. 기절·혼란·봉인·공격·방어 감소 같은 해로운 효과를 그 확률로 무시해요. 최대 60%.']]},
- {t:'전투 결과',rows:[
-  ['MVP','아군·적군에서 각각 (준 피해 + 회복량 × 0.6) 점수가 가장 높은 장수예요. 준 피해에는 일반 공격, 전법, 화상 같은 지속 피해가 모두 들어가요. 회복은 피해보다 0.6배로 쳐요.'],
-  ['전투 기록','경감한 피해는 방어력과 피해 감소로 막아 낸 양이고, 화상 피해는 전법 피해에 포함돼요. 보물·전법 이름을 누르면 설명이 나와요.'],
-  ['전투 연출','공격 돌진, 전법 강조, 치명타 흔들림, 마지막 일격 연출이 나와요. 4·8배속에서는 돌진·흔들림이 빠져요. 흔들림은 내 정보에서 끌 수 있고, 기기의 동작 줄이기를 켜면 모든 연출이 꺼져요. 전투 중 [그래프]를 누르면 장수별 피해를 실시간으로 볼 수 있어요.'],
-  ['패배 원인','진 전투의 결과 화면 위에 진형 상성, 판정패 여부, 피해를 가장 많이 낸 적, 가장 먼저 쓰러진 아군, 적 체력 대비 준 피해 중 해당하는 내용을 최대 3줄로 보여 줘요.']]},
- {t:'전투 규칙',rows:[
-  ['병종','기병·보병은 맨 앞 적을, 궁병은 기병을 먼저(기병 중 체력 비율이 가장 낮은 적), 기병이 없으면 책사를, 책사도 없으면 체력 비율이 가장 낮은 적을, 책사는 무작위 적을 공격해요.'],
-  ['전법 주기','기병은 2번째, 보병·궁병은 3번째, 책사는 4번째 행동마다 전법을 써요.'],
-  ['상성','기병 → 책사 → 보병 → 궁병 → 기병 순으로 물고 물려요. 유리하면 피해 +25%, 불리하면 -15%. 마주 보는 기병↔보병, 궁병↔책사는 대등해요.'],
-  ['기병 사냥','궁병의 일반 공격은 기병을 먼저 노려요. 기병이 없으면 책사를, 책사도 없으면 체력 비율이 가장 낮은 적을 노려요(각각 그중 체력 비율이 가장 낮은 적).'],
-  ['전법 봉인','봉인된 장수는 다음 전법 차례 1번을 일반 공격으로 대신해요. 순욱의 해제로 풀 수 있어요.'],
-  ['혈전부','★4 장신구 혈전부를 낀 장수는 전법을 쓰지 않아요. 대신 일반 공격이 체력 비율이 가장 낮은 적을 노리고(도발 중인 적이 있으면 그 적), 전법 차례에는 일반 공격을 2번 해요.'],
-  ['기병 전법','기병은 전법을 자주 쓰는 대신 전법 위력이 75%로 적용돼요.'],
-  ['치명타','공격마다 치명 확률(기본 10%, 최대 60%)로 치명타가 터지고, 그때 피해에 치명 피해 배율(기본 150%, 최대 300%)을 곱해요. 확정 치명 전법도 같은 배율을 써요. 피해는 매번 ±10% 범위에서 흔들려요.'],
-  ['숙적','상대 진형에 내 장수의 숙적이 있으면 두 장수 모두 공격·방어·속도 +3%를 받아요. 숙적 수만큼 겹쳐 최대 3명(+9%)까지예요. 숙적 41쌍은 도감 › 인연 아래와 장수 상세에서 볼 수 있어요.'],
-  ['도발','도발 중인 장수가 있으면 상대의 단일 대상 공격이 그 장수에게 향해요.'],
-  ['돌파','\'맨 앞 적\'을 노리는 전법은 도발 중인 적이 없으면 맨 앞 줄을 건너뛰고 둘째 줄을 노려요(줄이 하나뿐이면 맨 앞). 앞줄 수호 장수는 도발로 전법을 받아 내야 해요. 일반 공격은 그대로 맨 앞을 쳐요.'],
-  ['관통','수호가 아닌 장수의 \'맨 앞 적\' 전법은 맞은 적 뒤 줄의 무작위 1명에게 같은 전법 피해의 절반을 더 줘요.'],
-  ['혼란','혼란에 빠진 장수는 다음 행동이 일반 공격으로 바뀌고, 절반 확률로 아군을 공격해요. 해제 전법으로 풀 수 있어요.'],
-  ['출혈','매 턴 끝에 시전자 공격의 일정 비율만큼 방어를 무시하고 피해를 받아요. 화상과 달리 받는 화상 감소·등갑·화상 해제의 영향을 받지 않고, 해제 전법으로만 풀려요.'],
-  ['광분','허저의 특성이에요. 평타·전법으로 적을 쓰러뜨리면 바로 한 번 더 일반 공격을 하고(턴마다 1번), 처치마다 공격 +12% · 속도 +10 · 흡혈 +5%가 쌓여요(최대 3중첩, 전투 끝까지). 체력이 50% 아래로 떨어지면 1중첩을 받아요(전투마다 1번). 화상·출혈·역병으로 쓰러진 적은 처치로 치지 않아요.'],
-  ['행동 순서','속도가 빠른 장수부터 행동해요. 속도가 같으면 매 턴 무작위로 순서를 정해요.'],
-  ['판정','출정·원정군·탑은 25턴, 야전·연무장은 30턴 안에 결판이 나지 않으면 남은 체력 비율이 높은 쪽이 이겨요.'],
-  ['격전 · 역병','야전·연습전·연무장에서는 13턴부터 격전(양쪽 주는 피해 매 턴 +12%씩 누적, 회복·흡혈 -10%씩), 22턴부터 역병(양쪽 매 턴 끝에 최대 체력의 4%씩 누적 감소)이 걸려요. 역병은 방어·피해 감소·호위·불굴로 막을 수 없고 해제도 안 돼요. 출정·원정군·토벌전·공성전·탑에는 없어요.'],
-  ['연무장','둔영 탭의 연무장에서 모든 장수(Lv'+MAXLV+' · 돌파 최대)와 모든 보물(+1·+25·+50)로 공격덱·NPC 방어덱을 3개씩 저장해 시험할 수 있어요. 보상·기록은 없고 보물 도감 효과는 빠져요. 공격덱의 [내 진형에 적용]으로 보유한 장수·보물을 같은 배치로 내 진형에 옮길 수 있어요.']]},
- {t:'진형 효과',rows:[
-  ['진영 보너스','같은 진영의 ★3 이상 장수가 3·4·5명이면 그 진영 장수가 강해져요. 5명 전원 같은 진영이면 효과가 크게 올라요(v7.0.0). 무장 탭 › 도감 › 인연에 전체 표가 있어요.'],
-  ['인연','함께 편성하면 발동하고, 진형의 모든 장수 능력치가 올라요. 둔영 탭에서 발동 중인 인연을 볼 수 있어요.'],
-  ['타국 인연','서로 다른 진영의 장수로 이루어진 인연은 효과가 '+CROSS_MUL+'배예요. 여러 나라 장수를 섞어 쓰도록 돕는 보너스예요.'],
-  ['★5 인연','★5 장수가 들어 있고 ★3 장수가 없는 인연은 효과가 1.15배예요(오호대장군 제외). 타국 인연 2배와 함께 적용돼요.'],
-  ['완성도','레벨 45%, 돌파 20%, 보물 35%(2칸의 등급과 돌파)를 반영한 육성 정도예요.'],
-  ['★5 제한','진형(5명)에는 ★5 장수를 '+MAX5+'명까지 넣을 수 있어요. 야전 상대 진형에도 똑같이 적용돼요.'],
-  ['배치','진형마다 6가지 배치(추행진·학익진·어린진·방원진·안행진·봉시진) 중 하나를 골라요. 배치마다 선봉·중견·후위 인원과 줄 효과가 달라요.'],
-  ['상성','배치끼리 가위바위보처럼 상성이 있어요. 이긴 쪽은 전원 공격 +10%. 진형마다 강한 상대 2개, 약한 상대 2개가 있고, 둔영의 [상성 ?] 버튼으로 표를 볼 수 있어요. 스테이지·천명탑·수성전·원정군 적도 배치가 있어요(레이드 보스는 없음).'],
-  ['사용률','진형을 갖춘 군주 중 그 장수를 진형에 넣은 비율이에요.']]},
- {t:'보물',rows:[
-  ['장착','장수마다 3개. 한 보물은 한 진형에서 한 장수에게만, 무기와 명마는 장수당 1개까지예요.'],
-  ['병종별 무기','보병: 검·도끼·창·극·둔기 / 기병: 창·극·언월도·검 / 궁병: 활·검 / 책사: 부채·여의. 서책은 책사만 장착할 수 있어요. 방어구·명마·장신구는 모든 병종이 써요. 궁병만 활 1개와 검 1개를 함께 낄 수 있어요.'],
-  ['돌진 무기','★4 돌격창은 기병이 끼면 일반 공격이 적이 있는 줄(선봉·중견·후열)마다 무작위 1명에게 공격력의 50% 피해를 줘요. 빈 줄은 건너뛰고, 도발 중인 장수가 있는 줄은 그 장수를 때려요. 보병이 끼면 능력치만 적용돼요.'],
-  ['둔기','★4 낭아봉은 보병만 쓰는 둔기예요. 일반 공격이 맞으면 그 적의 방어가 2턴 동안 10% 내려가요(중첩되지 않고 다시 맞으면 지속만 갱신). 아군 전체가 그 적을 때릴 때 이득을 봐요.'],
-  ['등갑','★5 등갑은 체력 18 · 방어 30으로 다른 ★5 방어구보다 방어가 2배 높지만, 받는 화상 피해가 3배예요. 화전궁·화상 전법 상대에는 벗는 게 좋아요.'],
-  ['화상 보물','화전궁은 궁병이 끼면 일반 공격마다 2턴 화상을 걸어요(매 턴 공격의 6%, 강화 단계만큼 올라가 +50이면 15%, 방어 무시). 전투력과 추천 편성에도 반영돼요.'],
-  ['돌파','같은 보물이 또 나오면 돌파 +1, 최대 +'+ITEM_MAXD+'. 1단계마다 그 보물의 모든 효과 +3%, +50이면 2.5배예요.'],
-  ['보물 강화도 교환권','같은 등급 보물 두 개의 돌파 단계를 서로 맞바꿔요(정련 금 환급분도 함께). 보물 상세 화면에서 써요. 금화 룰렛(0.01%)과 쿠폰에서 얻어요.'],
-  ['정련','v3.5.0부터 금으로 정련할 수 없어요. 돌파는 같은 보물을 다시 얻을 때만 +1씩 올라가요(보물 획득 중복, 보물 선택권). 과거에 정련한 단계는 그대로이고, 그 보물을 팔면 정련에 쓴 금을 돌려받아요.'],
-  ['+50 이후','최대 돌파 뒤 같은 보물이 나오면 조각(★3 1 · ★4 3 · ★5 10개)으로 바뀌어요. 보물 조각 100개는 등용 탭 맨 위 \'선택권 · 조각\'에서 보물 선택권 1장으로 바꿔요. 장수도 돌파를 다 채우면 같은 방식으로 장수 조각을 받고, 장수 조각은 200개가 장수 선택권 1장이에요. 모두 끝까지 키운 뒤에는 금으로 받아요.'],
-  ['치명','치명타 확률이에요. 기본 10%에 그대로 더해져요(예: 치명 +12% → 22%). 최대 60%.'],
-  ['치명 피해','치명타가 터졌을 때의 피해 배율이에요. 기본 150%에 그대로 더해져요(예: 치명 피해 +20% → 170%, +50% → 200%). 최대 300%.'],
-  ['흡혈','준 피해의 일부만큼 체력을 회복해요. 최대 50%.'],
-  ['피해 감소','받는 피해를 줄여요. 화상 피해에는 적용되지 않고, 최대 50%.'],
-  ['스킬 피해','기본 스킬과 궁극기로 주는 피해가 늘어요.'],
-  ['궁극기 확률','궁극기가 나갈 확률이 올라요(보물 합계 최대 +12%p, 강화에는 절반만 올라요).'],
-  ['조건 효과','일부 보물은 특정 병종이 장착하면 추가 효과가 있어요. 장착 화면에 적용 여부가 표시돼요.'],
-  ['보물 도감','보물마다 +0(보유)·+10·+25·+50에 처음 도달하면 영구 등록돼 모든 장수가 강해져요. 팔아도 등록은 남아요. 세트를 완성하면 추가 효과가 있고, 야전에도 적용돼요. 연무장에는 적용되지 않아요.'],
-  ['전투력','치명·흡혈·피해 감소·스킬 피해·궁극기 확률도 전투력에 반영돼요.']]},
- {t:'등용·재화',rows:[
-  ['보물 획득권','보물 획득에 군량 대신 먼저 쓰여요. 1장이 1회예요.'],
-  ['장수 등용권','장수 등용에 군량 대신 먼저 쓰여요. 1장이 1회예요. 금화 룰렛과 출석 2일차에서 얻어요.'],
-  ['천장','장수 등용과 보물 획득을 각각 누적 100회 할 때마다 장수 선택권·보물 선택권을 1장 드려요. ★5가 나와도 횟수는 그대로 이어져요.'],
-  ['대량 소환','등용 탭의 [대량]에서 10회 단위로 한 번에 최대 300회까지 뽑아요. 획득권을 먼저 쓰고 모자란 만큼 군량으로 뽑으며, 10회마다 ★4 이상을 보장해요. 11회 이상은 결과를 요약해서 보여 줘요.'],
-  ['금화 룰렛','등용 탭 아래. 금 1,000으로 돌려 금·군량·나팔·보물 획득권·장수 등용권·장수 선택권·보물 선택권 중 하나를 받아요. 하루 200회, 매일 밤 10시(한국 시간)에 다시 채워져요. 금을 쓰는 곳이라 돌려받는 양은 적고, 보물 선택권 0.3% · 장수 선택권 0.15% · 보물 강화도 교환권 0.05%가 가끔 나와요. 선택권 3종이 나오면 당첨 연출과 함께 자랑 링크·사진 저장 버튼이 나와요.'],
-  ['룰렛 소환권','금 없이 금화 룰렛을 1장에 1회 돌려요. 1회·10회로 쓰고, 하루 200회 제한과 별개예요. 공지 보상, 쿠폰에서 얻어요.'],
-  ['출석 보상','매일 밤 10시에 새로 받을 수 있어요. 7일 주기: 1일 나팔 50 · 2일 장수 등용권 20장 · 3일 보물 획득권 30장 · 4일 나팔 30 · 5일 장수 등용권 10장 · 6일 보물 선택권 1장 · 7일 보물 강화도 교환권 1장. 하루라도 빠지면 1일차부터 다시 시작해요.'],
-  ['쿠폰','화면 위 券 버튼에서 쿠폰 목록(이름·보상·기한)을 보고 바로 받거나, 쿠폰 번호를 직접 입력할 수 있어요. 계정마다 한 번씩 받을 수 있어요.'],
-  ['다시 뽑기','등용·보물 획득 결과 창에서 같은 종류 획득권이 남아 있으면 [등용권 1회]·[획득권 10회]처럼 획득권만 써서 바로 다시 뽑아요. 룰렛 결과 창에서도 룰렛 소환권이 남아 있으면 [소환권 1회]·[소환권 10회]로 바로 돌려요.']]},
- {t:'전장 콘텐츠',rows:[
-  ['출정','일반 스테이지는 나팔 2개, 보스전(將)은 3개를 써요. 지면 돌려받아요. 1~20장, 모두 100스테이지이고 역사 순서(황건적의 난 → … → 오장원 → 검각 → 건업 → 천하통일)예요. 깬 장은 제목 한 줄로 접히고, 눌러서 펼쳐요.'],
-  ['보스 첫 격파','장마다 보스를 처음 깨면 장수 등용권 5 · 보물 획득권 5 · 룰렛 소환권 10장을 받아요. 4·8·12·16장은 보물 선택권 1장, 10·20장은 장수 선택권 1장이 더 나와요. 예전에 깬 보스의 보상은 출정 화면 위 [모두 받기]로 받아요.'],
-  ['장수 증표','깬 보스를 소탕하거나 다시 이기면 그 장 보스 장수의 증표를 1개씩 받아요(보스마다 하루 5회). ★3 10개 · ★4 30개 · ★5 100개를 모으면 출정 화면의 [증표함]에서 그 장수를 1회 등용해요(새 장수면 획득, 있으면 돌파 +1). 증표는 장수별로 쌓여요. 원정군(모병 합류 3개, 1막 돌파 2 · 2막 돌파 3 · 정복 5개씩 파티 전원), 수성전 순위 보상, 증표함의 증표 상점(매일 4명, 금으로 장수마다 하루 10개)에서도 받아요. 증표함은 출정 화면 [최근 평정 소탕·재도전] 옆에 있어요.'],
-  ['수성전','전장 탭의 수성전. 매일 밤 10시에 16곳 중 3곳이 열려요(이틀 연속 같은 성은 없어요). 성마다 하루 3판, 버틴 턴만큼 보상. 순위는 매일 새로 시작하고, 다음 날 그 성 수성 명장 증표를 받아요: 1위 30 · 2위 20 · 3위 15 · 4~10위 10 · 그 밖 5개. 공지 화면이나 수성전 화면에서 받아요.'],
-  ['원정군','전장 탭의 원정군. 무작위 ★3 장수 3명(레벨 고정 · 돌파·보물 없음)으로 3막을 돌파해요. 갈래길에서 전투·정예·주막·모병을 골라 가고 체력은 전투 사이에 이어져요. 하루 2회. 진행한 칸에 비례해 금, 칸마다 군량 150, 정복 시 보물 선택권 1장.'],
-  ['천명의 탑','전장 탭의 천명탑. 내 진형으로 30층까지 올라가요. 층을 깨면 천명 3개 중 하나를 골라 쌓고, 지면 끝나요. 하루 3회. 깬 층에 비례해 금, 깬 층마다 보물 획득권 1장, 30층 돌파 시 장수 등용권 10장. 적은 내 전투력과 층마다 정해진 기준을 반반 섞어 정해져서, 키울수록 더 높이 올라가요.'],
-  ['토벌전','전장 탭의 토벌전. 3일마다 새 적 3명(Lv'+MAXLV+' · 돌파 최대 · 보물 +50, 체력 20배)이 나와요. 내 진형으로 10턴 싸워 준 피해가 모두의 게이지에 쌓이고, 25·50·75·100%마다 그 회차에 1번 이상 도전한 군주 모두가 보상을 받아요. 하루 3회. 기여 1~3위는 회차가 끝난 뒤 추가 보상. 보상은 다음 회차가 끝날 때까지 받을 수 있어요.']]}
+ {t:'시작',rows:[
+  ['시나리오','184·189·194·200·208·219년 여섯 시나리오가 있어요. 군주를 고르면 거점에서 가신과 함께 시작해요. 어려운 군주일수록 통일 보상은 같고 시작이 힘들어요.'],
+  ['임의 시작','아무 장수나 군주로 세워 빈 성 하나에서 가신 없이 시작해요. 배경 시나리오·군주·시작 성을 고르거나 무작위로 뽑아요. 난이도는 어려움이에요.'],
+  ['저장 칸','위쪽 \'나가기\'를 누르면 제목 화면이 떠요. 이어 하기·새로 시작·불러오기로 세 칸을 오가요(메뉴 ☰의 \'저장 칸\'도 같아요). 진행은 매달 저절로 저장되고, 칸마다 지울 수 있어요.'],
+  ['한 턴','1턴은 1개월이에요. 장수마다 한 달에 명령 1개를 하고, \'턴 종료\'를 누르면 위임한 성과 다른 군주가 움직여요.'],
+  ['통일','모든 성을 차지하면 통일이에요. 시나리오마다 첫 통일 때 금·보물 선택권·공적 1위 장수 증표를 받아요.']]},
+ {t:'내정',rows:[
+  ['성 목록','내 성이 격자로 나와요. 民은 민심 40 아래, 糧은 군량이 석 달치도 안 남음, 叛은 태수 충성 50 아래, 蝗은 메뚜기 떼예요.'],
+  ['투자','금 300으로 농업·상업(정치)이나 방어(통솔)를 올려요. 농업은 9월 군량, 상업은 1월 금이 돼요.'],
+  ['시혜','군량 500으로 민심을 올려요(매력). 민심이 60을 넘으면 매달 의용군이 와요.'],
+  ['태수','성마다 태수를 두면 매달 농업·상업 +(1 + 정치/25), 방어 +통솔/50, 민심 +매력/50이 저절로 올라요. 추천 버튼은 정치 + 매력×0.4 + 통솔×0.2가 가장 높은 장수를 앉혀요. 태수 없는 성에 한꺼번에 임명할 수도 있어요.'],
+  ['위임','군주가 없는 성은 내정·수송·방어·공략으로 맡길 수 있어요. 위임한 성의 장수는 직접 명령할 수 없어요.'],
+  ['거래','교역 도시(商)에서 군량을 사고팔고 보물을 사고팔아요. 가을엔 군량이 싸요.'],
+  ['주와 칭호','한 주의 성을 모두 가지면 그 주 수입이 오르고 민심이 매달 +1 올라요. 4개 주면 공, 7개 주면 왕이 되고, 오를 때 장수 충성 +5예요.']]},
+ {t:'인사',rows:[
+  ['탐색','지력으로 재야 장수나 숨은 보물을 찾아요. 못 찾으면 금을 조금 얻어요.'],
+  ['등용','찾은 재야 장수를 매력으로 데려와요. 보물을 함께 주면 성공률 +20%예요.'],
+  ['포상·하사','포상은 금 100으로 충성을 올려요. 하사는 금고 보물을 주어 능력치와 충성을 올려요.'],
+  ['장수 일람','모든 장수의 소속·위치·능력치를 보고, 눌러서 상세를 봐요. 처형된 장수의 자식, 성인이 되어 합류하는 자식이 있어요.'],
+  ['재등장','시나리오 시작 전에 세상을 떠난 장수도 둘째 달부터 2달마다 어딘가의 재야로 나타나요. 자연사는 없어요.'],
+  ['이탈','충성이 45 아래인 장수는 떠날 수 있어요. 군주 매력이 80 이상이면 매달 충성 +1이에요.']]},
+ {t:'계략',rows:[
+  ['권유','이웃 성의 적 장수를 데려와요(금 300 · 매력). 충성과 의리가 낮을수록 잘 넘어와요.'],
+  ['이간','적 장수 충성을 깎아요(지력). 권유 전에 쓰면 좋아요.'],
+  ['파괴','이웃 적 성의 방어·농업·상업을 깎아요(금 200 · 지력). 실패하면 10% 확률로 잡혀요.'],
+  ['동맹·원조','동맹은 2년 동안 서로 공격하지 않아요. 동맹에게 금·군량 원조를 청할 수 있어요.'],
+  ['항복권고','우리 성이 상대의 4배 이상이면 세력을 통째로 받아들일 수 있어요(금 1,000 · 매력).']]},
+ {t:'전쟁',rows:[
+  ['출진','장수 최대 5명이 각자 자기 부대를 이끌고 나가요. 부대 크기는 장수 통솔×100명까지이고, 넘는 병사는 성에 남아요. 군량은 데려간 병사×0.3(겨울 1.5배)이 들어요.'],
+  ['국면 전투','초반·중반·후반 세 국면이에요. 국면마다 공격·돌격(일제)·계략·수비 중 하나를 골라요. 세 국면 안에 적 병사를 30% 아래로 줄이거나 사기를 20 이하로 떨어뜨리면 성을 차지하고, 못 하면 물러나요.'],
+  ['부대 힘','부대마다 그 장수의 무력·통솔·병종과 성의 훈련으로 정해져요. 평균을 내지 않아요. 사기가 높을수록 세요.'],
+  ['병종','보병·창병·궁병·기병. 기병은 궁병에, 궁병은 보병에, 창병은 기병에 강해요(주는 피해 ×1.3, 반대면 ×0.8). 공성에서는 보병이 ×1.2예요.'],
+  ['작전','돌격은 기병 ×1.5, 궁병 일제는 통솔 70 이상이면 ×1.4(아니면 ×1.15), 대신 받는 피해 ×1.25. 계략은 우리 쪽 가장 높은 지력과 상대 가장 높은 지력으로 성공률이 정해지고, 성공하면 적 사기 −15. 수비는 주고받는 피해가 모두 줄어요.'],
+  ['총대장·군사','통솔이 가장 높은 장수가 총대장으로 시작 사기를 정해요. 계략은 지력이 가장 높은 장수가 맡아요.'],
+  ['일기토','국면 사이에 가끔, 또는 \'일기토 신청\'으로 한 판에 한 번 벌어져요. 무력 차이로 승패가 나고, 지면 그 부대 병사 −30% · 사기 −20, 60% 확률로 포로예요. 신청을 받으면 받기·대리·거절(사기 −10) 중에 골라요.'],
+  ['포로','부대가 무너지면 무력이 낮은 장수일수록 잘 붙잡혀요. 적토마·한혈마·절영·적로 같은 명마가 있으면 안전하게 빠져나와요.'],
+  ['군비','군사 탭의 \'군비\'로 무기·군마를 사요(행동 안 씀). 궁병·창병은 병사 10명에 무기 1, 기병은 군마 1이 들어요. 살아남은 만큼 돌아오고, 이기면 적이 잃은 것의 30%를 주워요. 군마 산지(서량·안정·천수·북평·계·양평·진양)는 군마가 반값이에요.'],
+  ['지키기','방어가 높을수록, 관문(사수관·동관·양평관·검각·합비·백제성)이 있을수록 수비군이 받는 피해가 줄어요.']]},
+ {t:'포로',rows:[
+  ['등용','붙잡혀도 의리·충성은 그대로예요. 우리 군주 매력이 높고 포로 의리가 낮을수록 잘 넘어와요. 한 달에 한 번 설득해요.'],
+  ['해방','풀어 주면 원래 세력이 몸값을 내요(군주였던 장수 2,000, 그 밖 300 + 등급×100).'],
+  ['처형','그 판에서 영원히 사라지고 우리 장수 충성이 떨어져요(같은 나라 출신은 더). 3년 뒤 그 장수의 자식이 원한을 품고 재야로 나타나요.']]},
+ {t:'사건',rows:[
+  ['수입','1월에 금, 9월에 군량이 들어와요. 병사는 매달 병사×4%의 군량을 먹고, 군량이 떨어지면 병사가 흩어져요.'],
+  ['풍작·대풍년','농업이 상한의 70% 이상이면 9월 군량이 최대 ×1.5예요. 가끔 대풍년으로 +30%예요.'],
+  ['메뚜기 떼','6~8월에 드물게 나타나 3~4달 동안 이웃 성으로 옮겨 다니며 군량 −20% · 농업 −10%예요.'],
+  ['반란','민심이 40 아래면 주민 반란으로 금·군량·병사를 잃어요. 충성 50 아래 태수는 성을 들고 독립할 수 있어요.'],
+  ['거점 유예','첫 1년 동안 다른 군주는 각 세력의 거점을 공격하지 않아요.']]},
+ {t:'보상',rows:[
+  ['로그인 보너스','하루 첫 접속 때 군주가 있는 성에 금이 들어와요. 연속 3·7일째는 군량, 7일째는 보물도 와요. 어려움은 절반, 메뉴(☰)에서 끌 수 있어요.'],
+  ['칭호 보상','공·왕에 오르면 장수 충성 +5예요.'],
+  ['통일 보상','시나리오마다 첫 통일 때 금 · 보물 선택권 1 · 공적 1위 장수 증표를 받아 본편에서 써요.']]}
 ];
 // v3.7.4: 분류를 골라 보고, 항목 이름을 눌러 펼쳐요. 검색하면 모든 분류에서 찾아요
 let helpCat=0, helpAll=false;
@@ -5063,6 +5063,13 @@ const TZ_KID={sunce:['sunjian',190,'sunjian'],guanping:['guanyu',191,'liubei'],y
 // (TZ_NG 정의 뒤에 전용 장수 중 190년보다 늦게 나오는 장수를 더해요)
 // v9.7.0 군웅할거 전용 장수(군웅·부자): [id,이름,한자,세력색,등급,병종,무력,지력,통솔,정치,매력,의리,등장 해,시작 세력,시작 성,부모]. 본편 목록에는 안 나오게 GMAP·TZ_PC에 숨은 속성으로 등록해요
 const TZ_NG=[["liubiao","유표","劉表","qun",4,"inf",40,72,62,80,82,60,190,"liubiao","xiangyang",""],["liuyan","유언","劉焉","qun",4,"inf",40,74,66,78,74,55,190,"liuyan","chengdu",""],["kongrong","공융","孔融","qun",4,"tac",20,82,30,72,90,75,190,"kongrong","beihai",""],["taoqian","도겸","陶謙","qun",4,"inf",42,58,58,64,66,45,190,"taoqian","xuzhou",""],["gongsundu","공손도","公孫度","qun",4,"arc",64,62,72,60,52,40,190,"gongsundu","xiangping",""],["liuyu","유우","劉虞","qun",4,"inf",30,70,50,86,90,80,190,"liuyu","ji",""],["hanfu","한복","韓馥","qun",4,"inf",32,48,40,62,48,40,190,"hanfu","yecheng",""],["zhangmiao","장막","張邈","qun",4,"inf",42,56,50,62,74,60,190,"zhangmiao","puyang",""],["zhangyang","장양","張楊","qun",4,"inf",62,40,60,50,66,72,190,"zhangyang","jinyang",""],["kongzhou","공주","孔伷","qun",3,"inf",20,66,30,60,62,50,190,"","",""],["liuyao","유요","劉繇","qun",4,"inf",40,58,52,66,70,60,190,"liuyao","jianye",""],["yanbaihu","엄백호","嚴白虎","qun",4,"inf",70,30,62,30,46,40,190,"yanbaihu","wu",""],["wanglang","왕랑","王朗","qun",4,"inf",30,74,45,80,72,62,190,"wanglang","kuaiji",""],["baoxin","포신","鮑信","wei",3,"arc",68,70,70,64,72,90,190,"caocao","chenliu",""],["caimao","채모","蔡瑁","qun",3,"arc",64,64,72,58,50,40,190,"liubiao","xiangyang",""],["kuaiyue","괴월","蒯越","qun",4,"tac",30,86,45,80,62,55,190,"liubiao","xiangyang",""],["huangzu","황조","黃祖","qun",3,"inf",66,42,70,45,42,70,190,"liubiao","jiangxia",""],["huangshe","황사","黃射","qun",3,"inf",42,50,42,52,54,60,190,"liubiao","jiangxia","huangzu"],["liuqi","유기","劉琦","qun",3,"inf",36,56,40,52,74,72,190,"liubiao","xiangyang","liubiao"],["liucong","유종","劉琮","qun",3,"inf",25,50,30,50,62,40,195,"liubiao","xiangyang","liubiao"],["liuzhang","유장","劉璋","qun",3,"inf",30,50,36,66,70,50,190,"liuyan","chengdu","liuyan"],["gongsunkang","공손강","公孫康","qun",3,"arc",62,62,68,62,54,45,190,"gongsundu","xiangping","gongsundu"],["gongsungong","공손공","公孫恭","qun",3,"inf",30,40,30,50,40,50,195,"gongsundu","xiangping","gongsundu"],["gongsunyuan","공손연","公孫淵","qun",3,"arc",68,60,70,48,42,10,210,"gongsundu","xiangping","gongsunkang"],["liuhe","유화","劉和","qun",3,"inf",36,58,40,60,68,80,190,"liuyu","ji","liuyu"],["taoshang","도상","陶商","qun",3,"inf",30,40,30,50,46,60,192,"taoqian","xuzhou","taoqian"],["wangsu","왕숙","王肅","qun",4,"tac",25,84,40,82,62,70,213,"wanglang","kuaiji","wanglang"],["baoxun","포훈","鮑勛","wei",3,"inf",30,70,36,74,62,96,200,"caocao","","baoxin"],["maxiu","마휴","馬休","qun",3,"inf",66,32,52,30,48,72,190,"mateng","xiliang","mateng"],["matie","마철","馬鐵","qun",3,"inf",64,30,50,30,46,72,190,"mateng","xiliang","mateng"],["panghui","방회","龐會","wei",3,"inf",74,40,62,36,46,60,215,"","","pangde"],["yanxing","염행","閻行","qun",4,"cav",84,52,58,40,48,60,190,"mateng","xiliang","hansui"],["zhangquan","장천","張泉","dong",3,"inf",46,36,40,34,40,40,200,"","","zhangxiu"],["yuantan","원담","袁譚","yuan",3,"inf",66,48,64,52,62,50,190,"yuanshao","nanpi","yuanshao"],["yuanxi","원희","袁熙","yuan",3,"inf",54,48,56,54,58,62,190,"yuanshao","nanpi","yuanshao"],["gaogan","고간","高幹","yuan",3,"arc",68,56,70,52,60,55,190,"yuanshao","nanpi","yuanshao"],["yuanyao","원요","袁耀","yuan",3,"inf",40,36,36,40,40,40,197,"yuanshu","","yuanshu"],["sunyi","손익","孫翊","wu",3,"inf",74,40,62,36,64,60,197,"sunjian","","sunjian"],["caoang","조앙","曹昂","wei",3,"inf",58,54,60,58,74,90,190,"caocao","chenliu","caocao"],["caopi","조비","曹丕","wei",4,"arc",68,80,76,84,78,60,202,"caocao","","caocao"],["caozhang","조창","曹彰","wei",5,"cav",90,40,84,30,62,72,205,"caocao","","caocao"],["caozhi","조식","曹植","wei",5,"tac",26,90,20,60,84,52,208,"caocao","","caocao"],["xiahouba","하후패","夏侯霸","wei",4,"cav",82,58,78,40,60,58,205,"xiahouyuan","","xiahouyuan"],["liushan","유선","劉禪","shu",3,"inf",6,22,12,32,64,60,220,"liubei","","liubei"],["zhangbao2","장포","張苞","shu",4,"cav",86,40,74,30,56,82,215,"zhangfei","","zhangfei"],["zhugeke","제갈각","諸葛恪","wu",5,"tac",45,88,72,76,70,40,222,"zhugejin","","zhugejin"],["niufu","우보","牛輔","dong",3,"inf",64,30,62,26,30,46,190,"dongzhuo","changan","dongzhuo"],["simashi","사마사","司馬師","wei",4,"arc",62,86,84,80,70,40,225,"simayi","","simayi"]];
+// v10.0.0 능력치 재조정 + 새 장수 168명
+;(()=>{const T={"lubu":[100,28,88,14,38,8],"guanyu":[96,74,94,60,92,99],"zhaoyun":[95,75,90,72,90,96],"zhangfei":[96,32,86,20,45,95],"zhugeliang":[36,100,93,95,93,99],"caocao":[74,92,100,93,95,62],"simayi":[60,99,97,92,82,55],"zhouyu":[70,96,97,85,93,95],"sunce":[92,70,92,70,92,85],"dengai":[85,90,94,82,70,72],"sunjian":[91,72,91,70,88,80],"diaochan":[24,84,55,60,97,55],"liubei":[74,76,82,80,100,92],"machao":[95,46,88,40,72,70],"huangzhong":[92,62,86,58,80,90],"pangtong":[32,95,72,84,70,85],"xiahoudun":[90,60,86,62,78,95],"xiahouyuan":[90,56,84,50,70,93],"zhangliao":[91,78,93,64,82,85],"xuchu":[94,34,66,22,62,96],"dianwei":[94,34,58,20,58,97],"guojia":[18,96,62,80,78,85],"sunquan":[66,82,78,84,95,80],"ganning":[91,62,85,40,62,72],"taishici":[92,66,82,56,74,88],"luxun":[68,94,96,86,85,90],"xusheng":[82,76,85,70,70,82],"zhangjiao":[22,86,86,72,96,58],"dongzhuo":[86,68,84,40,40,25],"yuanshao":[70,70,82,68,85,48],"zhurong":[87,38,74,15,60,82],"weiyan":[90,68,82,38,50,58],"guanping":[82,70,78,62,74,95],"madai":[84,52,76,48,68,90],"liaohua":[76,64,70,56,64,85],"yujin":[79,68,84,52,62,55],"lejin":[85,50,76,38,62,80],"lidian":[77,76,76,62,66,80],"chengpu":[79,74,82,72,80,92],"huanggai":[83,72,78,58,76,96],"zhoutai":[89,46,78,44,62,94],"lingtong":[87,52,74,50,70,86],"gaoshun":[86,56,87,46,66,96],"chengong":[48,88,76,78,70,85],"huaxiong":[88,38,82,24,48,72],"yanliang":[90,34,82,26,58,78],"wenchou":[90,28,80,16,54,78],"jiling":[82,46,78,36,52,70],"yuanshu":[62,66,74,58,66,40],"wenpin":[80,68,83,58,66,80],"yanyan":[82,64,78,62,74,82],"handang":[80,56,76,58,62,86],"haozhao":[80,76,92,68,78,92],"gongsunzan":[88,62,84,60,72,62],"zhugejin":[44,84,74,86,92,94],"liuxun":[74,58,76,40,58,72],"caoren":[86,64,90,58,72,88],"zhoucang":[86,40,70,26,60,97],"sunshangxiang":[80,62,72,46,82,78],"xunyu":[30,95,84,100,88,88],"fazheng":[46,93,76,80,70,72],"hansui":[76,78,84,66,72,50],"jianyong":[44,78,70,72,80,85],"yufan":[40,84,68,82,62,76],"jiaxu":[36,95,84,85,64,55],"lvmeng":[86,90,92,72,82,88],"lusu":[42,93,84,88,88,90],"xurong":[86,70,90,48,48,62],"zhangren":[85,70,82,62,72,98],"mateng":[86,60,86,52,85,85],"liru":[24,92,66,76,40,62],"zhangxiu":[74,62,80,50,62,55],"zhangji":[44,78,72,64,64,40],"lijue":[74,22,76,26,30,30],"guosi":[76,14,72,20,30,36],"zhanghe":[90,70,90,54,66,60],"jushou":[34,92,80,80,74,94],"tianfeng":[28,93,72,78,62,92],"shenpei":[58,82,82,77,72,96],"quyi":[80,48,84,30,54,55],"gaolan":[82,66,76,40,62,62],"guotu":[48,80,62,74,48,40],"xuyou":[22,82,44,70,40,30],"chunyuqiong":[68,30,78,44,58,64],"yuanshang":[72,44,70,52,72,70],"pangde":[92,70,82,52,72,94],"menghuo":[88,40,80,10,74,55],"zhangbao":[70,80,82,54,70,80],"zhangyan":[82,54,82,46,70,60],"zhangliang":[80,68,78,46,66,82],"wutugu":[88,4,74,6,40,72],"zhanglu":[28,74,60,78,86,70],"huangquan":[60,84,80,78,72,80],"guanhai":[81,12,76,14,44,72],"zhangwei":[68,46,78,32,48,66],"wangyun":[8,70,36,80,66,88],"xuhuang":[89,74,88,46,66,82],"jiangwei":[89,91,92,74,84,92],"guanxing":[85,64,76,58,74,94],"maliang":[36,86,72,88,84,90],"zhangzhao":[24,88,70,93,80,86],"caiyong":[12,88,66,76,78,74],"xunchen":[30,82,62,74,52,64],"huatuo":[12,86,64,72,88,80],"liubiao":[40,74,62,78,82,70],"liuyan":[42,76,66,76,72,66],"kongrong":[20,82,30,72,86,74],"taoqian":[42,60,58,68,80,76],"gongsundu":[66,62,72,60,50,52],"liuyu":[30,72,50,84,86,82],"hanfu":[32,46,40,48,40,40],"zhangmiao":[42,58,50,56,66,52],"zhangyang":[62,40,60,40,48,56],"kongzhou":[20,66,30,58,62,58],"liuyao":[40,58,52,62,64,64],"yanbaihu":[70,30,62,30,46,60],"wanglang":[30,76,45,80,62,64],"baoxin":[68,72,70,70,72,78],"caimao":[66,66,74,62,50,45],"kuaiyue":[30,88,46,84,60,64],"huangzu":[66,42,70,40,44,70],"huangshe":[44,48,42,30,40,60],"liuqi":[36,58,40,52,70,80],"liucong":[24,50,30,46,54,50],"liuzhang":[30,52,38,58,62,60],"gongsunkang":[62,62,68,58,52,58],"gongsungong":[28,40,30,40,40,50],"gongsunyuan":[68,60,70,50,42,30],"liuhe":[36,56,40,50,52,56],"taoshang":[30,40,30,40,48,56],"wangsu":[26,86,42,86,64,74],"baoxun":[32,70,38,62,58,72],"maxiu":[68,34,54,30,52,80],"matie":[66,32,52,28,50,80],"panghui":[75,42,62,40,52,70],"yanxing":[85,52,60,32,48,64],"zhangquan":[46,36,40,30,40,56],"yuantan":[68,48,64,46,56,62],"yuanxi":[56,50,56,52,58,68],"gaogan":[70,58,72,52,58,66],"yuanyao":[40,36,36,40,46,62],"sunyi":[75,40,62,34,56,80],"caoang":[58,56,60,54,72,90],"caopi":[68,82,76,82,74,72],"caozhang":[91,40,84,32,70,82],"caozhi":[24,90,20,64,84,72],"xiahouba":[84,58,78,46,62,70],"liushan":[8,24,14,40,70,60],"zhangbao2":[87,40,74,30,64,90],"zhugeke":[44,90,72,76,70,60],"niufu":[64,30,62,24,36,60],"simashi":[62,86,84,82,70,60]},N=[["chengyu","정욱","程昱","wei",4,"tac",50,90,74,80,60,82,192,"","chenliu",""],["xunyou","순유","荀攸","wei",4,"tac",40,93,72,84,72,86,196,"","xuchang",""],["liuye","유엽","劉曄","wei",4,"tac",38,88,62,80,66,74,200,"","xuchang",""],["manchong","만총","滿寵","wei",4,"tac",66,82,84,80,70,86,194,"","chenliu",""],["zhonghui","종회","鍾會","wei",4,"tac",52,93,82,76,70,22,240,"","luoyang",""],["zhongyao","종요","鍾繇","wei",4,"tac",20,82,62,92,74,80,192,"","xuchang",""],["chenqun","진군","陳群","wei",3,"tac",30,86,64,90,76,80,198,"","xuchang",""],["huaxin","화흠","華歆","wei",3,"tac",24,80,46,86,68,50,200,"","xuchang",""],["cuiyan","최염","崔琰","wei",3,"tac",52,80,52,84,84,82,189,"","yecheng",""],["maojie","모개","毛玠","wei",3,"tac",28,78,50,86,70,84,192,"","chenliu",""],["jiangji","장제","蔣濟","wei",3,"tac",30,86,62,82,64,78,208,"","shouchun",""],["dongzhao","동소","董昭","wei",3,"tac",30,84,52,80,58,64,192,"","xuchang",""],["xinpi","신비","辛毗","wei",3,"tac",40,82,56,76,68,80,194,"","pingyuan",""],["yangxiu","양수","楊修","wei",3,"tac",26,88,36,72,66,58,200,"","xuchang",""],["xushu","서서","徐庶","wei",4,"tac",64,90,76,80,80,90,201,"","xuchang",""],["caohong","조홍","曹洪","wei",4,"cav",82,46,76,40,58,90,189,"","chenliu",""],["caochun","조순","曹純","wei",3,"cav",80,58,78,54,66,90,190,"","chenliu",""],["caoxiu","조휴","曹休","wei",3,"cav",80,62,80,50,62,86,200,"","xuchang",""],["caozhen","조진","曹真","wei",4,"cav",82,66,84,56,68,88,205,"","xuchang",""],["xiahoushang","하후상","夏侯尙","wei",3,"inf",74,66,76,60,70,80,205,"","yecheng",""],["zangba","장패","臧霸","wei",4,"inf",84,58,78,50,70,70,189,"","xiapi",""],["wangshuang","왕쌍","王雙","wei",3,"inf",87,26,70,18,40,72,219,"","changan",""],["guohuai","곽회","郭淮","wei",4,"arc",78,76,84,66,68,82,211,"","changan",""],["zhangji2","장기","張既","wei",3,"tac",40,80,70,84,72,80,200,"","changan",""],["lvqian","여건","呂虔","wei",3,"inf",72,62,72,62,64,82,192,"","chenliu",""],["zhuling","주령","朱靈","wei",3,"inf",76,48,74,40,52,72,191,"","chenliu",""],["hanhao","한호","韓浩","wei",3,"inf",72,64,74,62,62,84,190,"","chenliu",""],["shihuan","사환","史渙","wei",3,"cav",72,48,70,40,56,80,190,"","chenliu",""],["wangcan","왕찬","王粲","wei",3,"tac",14,84,24,74,72,64,194,"","xiangyang",""],["chenlin","진림","陳琳","wei",3,"tac",18,82,24,72,62,56,189,"","yecheng",""],["simazhao","사마소","司馬昭","wei",4,"arc",62,84,84,80,74,52,230,"","luoyang",""],["qianzhao","견초","牽招","wei",3,"cav",74,68,76,62,68,84,189,"","yecheng",""],["tianyu","전예","田豫","wei",3,"inf",72,76,82,72,70,86,189,"","beiping",""],["wangyi","왕이","王異","wei",3,"tac",40,74,50,60,72,88,208,"","tianshui",""],["zhenji","견씨","甄氏","wei",3,"tac",10,70,10,50,92,70,200,"","ji",""],["dongcheng","동승","董承","wei",3,"inf",62,52,66,50,60,90,192,"","xuchang",""],["songxian","송헌","宋憲","dong",3,"cav",74,40,62,30,44,40,194,"","puyang",""],["weixu","위속","魏續","dong",3,"cav",72,36,60,24,38,36,194,"","puyang",""],["houcheng","후성","侯成","dong",3,"cav",72,40,62,30,42,40,194,"","puyang",""],["caoxing","조성","曹性","dong",3,"arc",78,34,60,22,40,62,194,"","puyang",""],["chendeng","진등","陳登","wei",4,"tac",60,84,78,82,74,70,194,"","xuzhou",""],["chengui","진규","陳珪","wei",3,"tac",22,82,40,76,62,56,194,"","xuzhou",""],["caobao","조표","曹豹","qun",3,"inf",66,38,60,40,44,50,194,"","xuzhou",""],["mizhu","미축","糜竺","shu",3,"tac",30,72,46,80,82,90,194,"","xuzhou",""],["mifang","미방","糜芳","shu",3,"inf",64,40,56,40,46,22,194,"","xuzhou",""],["sunqian","손건","孫乾","shu",3,"tac",26,74,40,76,80,88,194,"","xuzhou",""],["chendao","진도","陳到","shu",3,"inf",82,56,74,40,58,92,194,"","runan",""],["huangyueying","황월영","黃月英","shu",4,"tac",22,88,40,74,74,84,200,"","jiangxia",""],["masu","마속","馬謖","shu",3,"tac",56,82,64,72,64,78,208,"","chengdu",""],["wuyi","오의","吳懿","shu",3,"inf",76,64,80,62,68,80,189,"","chengdu",""],["wuban","오반","吳班","shu",3,"inf",74,52,72,46,58,80,200,"","chengdu",""],["liyan","이엄","李嚴","shu",4,"inf",80,80,84,82,64,52,194,"","xiangyang",""],["mengda","맹달","孟達","shu",3,"inf",74,72,74,64,54,20,196,"","chengdu",""],["liufeng","유봉","劉封","shu",3,"cav",80,48,72,40,58,62,208,"","jiangxia",""],["huojun","곽준","霍峻","shu",3,"inf",72,64,78,54,64,88,208,"","jiangxia",""],["zhangyi","장익","張翼","shu",3,"inf",76,62,76,56,62,82,211,"","chengdu",""],["zhangni","장억","張嶷","shu",3,"inf",80,64,78,58,70,86,215,"","chengdu",""],["wangping","왕평","王平","shu",4,"inf",80,66,82,40,62,86,215,"","hanzhong",""],["jiangwan","장완","蔣琬","shu",4,"tac",30,84,62,90,80,86,209,"","chengdu",""],["feiyi","비의","費禕","shu",4,"tac",32,84,64,88,82,84,214,"","chengdu",""],["dongyun","동윤","董允","shu",3,"tac",24,78,40,86,74,90,221,"","chengdu",""],["yiji","이적","伊籍","shu",3,"tac",26,76,40,74,76,80,194,"","xiangyang",""],["liaoli","요립","廖立","shu",3,"tac",22,80,40,74,48,40,209,"","chengdu",""],["dengzhi","등지","鄧芝","shu",3,"tac",58,78,72,78,74,82,214,"","chengdu",""],["qiaozhou","초주","譙周","shu",3,"tac",16,80,24,74,62,40,220,"","chengdu",""],["leitong","뇌동","雷銅","shu",3,"inf",76,40,66,30,48,74,208,"","chengdu",""],["liuba","유파","劉巴","shu",3,"tac",20,86,36,90,62,70,200,"","xiangyang",""],["panjun","반준","潘濬","wu",3,"tac",40,78,64,80,66,70,200,"","jiangxia",""],["shamoke","사마가","沙摩柯","qun",3,"inf",86,20,72,10,40,72,219,"","wuling",""],["yongkai","옹개","雍闓","qun",3,"inf",70,52,66,40,50,20,219,"","yunnan",""],["gaoding","고정","高定","qun",3,"inf",74,36,66,24,46,40,219,"","yunnan",""],["mengyou","맹우","孟優","qun",3,"inf",76,36,62,18,40,80,184,"","yunnan",""],["jinhuan","금환삼결","金環三結","qun",3,"inf",82,20,66,8,30,70,200,"","yunnan",""],["dongtuna","동도나","董荼那","qun",3,"inf",80,24,64,10,32,50,200,"","yunnan",""],["ahuinan","아회남","阿會喃","qun",3,"inf",78,22,64,10,32,60,200,"","yunnan",""],["mulu","목록대왕","木鹿大王","qun",3,"inf",80,40,74,14,44,72,200,"","yunnan",""],["duosi","타사대왕","朶思大王","qun",3,"inf",74,56,70,18,44,72,200,"","yunnan",""],["zhanghong","장굉","張紘","wu",3,"tac",26,84,44,86,74,84,194,"","wu",""],["lvfan","여범","呂範","wu",3,"tac",58,74,78,74,70,90,194,"","shouchun",""],["zhuhuan","주환","朱桓","wu",4,"inf",82,66,82,56,70,80,208,"","wu",""],["zhuran","주연","朱然","wu",4,"inf",80,70,82,62,70,88,208,"","chaisang",""],["panzhang","반장","潘璋","wu",3,"inf",82,52,74,40,50,72,200,"","wu",""],["dingfeng","정봉","丁奉","wu",4,"inf",84,62,76,48,64,86,208,"","chaisang",""],["jiangqin","장흠","蔣欽","wu",3,"inf",82,60,76,52,66,86,194,"","shouchun",""],["chenwu","진무","陳武","wu",3,"inf",82,50,72,42,66,88,194,"","shouchun",""],["dongxi","동습","董襲","wu",3,"inf",84,44,72,40,62,88,196,"","wu",""],["zhuzhi","주치","朱治","wu",3,"inf",66,66,74,72,74,90,184,"","xiapi",""],["sunjing","손정","孫靜","wu",3,"inf",60,60,66,62,66,88,184,"","changsha",""],["sunyu","손유","孫瑜","wu",3,"inf",66,70,72,66,72,86,200,"","wu",""],["sunhuan","손환","孫桓","wu",3,"inf",76,62,72,52,64,84,219,"","jianye",""],["sunshao","손소","孫韶","wu",3,"inf",72,62,74,54,64,86,200,"","wu",""],["guyong","고옹","顧雍","wu",4,"tac",22,82,44,92,74,86,200,"","wu",""],["bushi","보즐","步騭","wu",3,"tac",44,82,72,84,72,82,208,"","jianye",""],["kanze","감택","闞澤","wu",3,"tac",24,84,40,82,66,84,208,"","chaisang",""],["luji","육적","陸績","wu",3,"tac",16,80,24,70,66,78,200,"","wu",""],["hesi","하제","賀齊","wu",3,"inf",78,70,82,66,70,86,196,"","kuaiji",""],["quancong","전종","全琮","wu",3,"inf",74,66,78,64,70,80,208,"","jianye",""],["lvdai","여대","呂岱","wu",3,"inf",70,72,78,76,70,86,200,"","wu",""],["daqiao","대교","大喬","wu",3,"tac",10,52,16,40,92,80,196,"","wu",""],["xiaoqiao","소교","小喬","wu",3,"tac",12,60,18,42,92,90,196,"","wu",""],["fengji","봉기","逢紀","yuan",3,"tac",30,80,46,72,46,40,189,"","nanpi",""],["hanmeng","한맹","韓猛","yuan",3,"cav",78,40,70,30,48,62,194,"","yecheng",""],["lvkuang","여광","呂曠","yuan",3,"inf",70,40,62,30,40,50,200,"","yecheng",""],["lvxiang","여상","呂翔","yuan",3,"inf",68,38,60,28,40,50,200,"","yecheng",""],["tadun","답돈","蹋頓","qun",4,"cav",84,40,78,20,58,60,190,"","beiping",""],["kebineng","가비능","軻比能","qun",4,"cav",82,56,80,30,62,40,210,"","beiping",""],["qiaorui","교유","橋蕤","yuan",3,"inf",72,44,70,34,50,66,189,"","wancheng",""],["zhangxun","장훈","張勳","yuan",3,"inf",72,52,72,46,52,64,189,"","wancheng",""],["leibo","뇌박","雷薄","yuan",3,"inf",68,34,62,30,40,40,194,"","shouchun",""],["chenlan","진란","陳蘭","yuan",3,"inf",68,36,62,30,40,40,194,"","shouchun",""],["yanxiang","염상","閻象","yuan",3,"tac",22,78,40,72,58,76,189,"","wancheng",""],["yangfeng","양봉","楊奉","dong",3,"cav",74,40,66,30,44,30,192,"","changan",""],["dongmin","동민","董旻","dong",3,"inf",60,36,56,34,30,50,189,"","luoyang",""],["duanwei","단외","段煨","dong",3,"inf",66,58,70,62,60,60,189,"","hongnong",""],["fanchou","번조","樊稠","dong",3,"cav",76,30,70,24,40,40,189,"","changan",""],["lisu","이숙","李肅","dong",3,"tac",50,66,56,50,52,30,189,"","luoyang",""],["huzhen","호진","胡軫","dong",3,"cav",74,36,68,30,38,40,189,"","luoyang",""],["chengyi","성의","成宜","qun",3,"cav",72,30,60,24,40,60,184,"","tianshui",""],["houxuan","후선","侯選","qun",3,"cav",70,36,62,28,40,50,194,"","tianshui",""],["liangxing","양흥","梁興","qun",3,"cav",72,34,62,28,40,50,194,"","xiliang",""],["mawan","마완","馬玩","qun",3,"cav",70,34,60,26,38,50,194,"","tianshui",""],["yangqiu","양추","楊秋","qun",3,"cav",70,46,66,40,48,50,194,"","tianshui",""],["liupan","유반","劉磐","qun",3,"cav",78,48,70,40,54,70,194,"","changsha",""],["zhangyun","장윤","張允","qun",3,"inf",66,48,66,40,40,40,194,"","xiangyang",""],["kuailiang","괴량","蒯良","qun",3,"tac",30,86,48,80,64,76,189,"","xiangyang",""],["hanxuan","한현","韓玄","qun",3,"inf",46,44,52,52,40,40,200,"","changsha",""],["jinxuan","김선","金旋","qun",3,"inf",62,44,60,44,46,58,200,"","wuling",""],["zhaofan","조범","趙範","qun",3,"inf",50,52,52,52,46,30,200,"","guiyang",""],["liudu","유도","劉度","qun",3,"inf",40,40,46,50,52,56,200,"","lingling",""],["xingdaorong","형도영","邢道榮","qun",3,"inf",76,22,62,16,30,60,200,"","lingling",""],["shixie","사섭","士燮","qun",4,"inf",40,78,62,88,84,72,187,"","guiyang",""],["pangxi","방희","龐羲","qun",3,"inf",66,64,72,62,60,60,194,"","chengdu",""],["gaopei","고패","高沛","qun",3,"inf",72,40,66,30,40,70,200,"","chengdu",""],["yanghuai","양회","楊懷","qun",3,"inf",70,42,66,32,40,70,200,"","chengdu",""],["lengbao","냉포","冷苞","qun",3,"inf",76,44,70,34,44,72,208,"","chengdu",""],["dengxian","등현","鄧賢","qun",3,"inf",72,40,66,30,40,72,208,"","chengdu",""],["zhangsong","장송","張松","qun",3,"tac",18,86,30,80,40,30,200,"","chengdu",""],["wanglei","왕루","王累","qun",3,"tac",20,72,30,70,52,98,200,"","chengdu",""],["yangren","양임","楊任","qun",3,"inf",74,48,70,40,44,72,200,"","hanzhong",""],["yangang","양앙","楊昻","qun",3,"inf",72,44,68,36,40,60,200,"","hanzhong",""],["yangsong","양송","楊松","qun",3,"tac",22,64,30,54,30,10,200,"","hanzhong",""],["yanpu","염포","閻圃","qun",3,"tac",24,82,40,80,62,80,189,"","hanzhong",""],["bocai","파재","波才","qun",3,"inf",72,44,70,30,52,70,184,"","runan",""],["zhangmancheng","장만성","張曼成","qun",3,"inf",70,40,68,28,50,70,184,"","wancheng",""],["hanzhong2","한충","韓忠","qun",3,"inf",66,36,62,24,42,64,184,"","wancheng",""],["peiyuanshao","배원소","裴元紹","qun",3,"inf",70,22,56,14,36,72,184,"","nanpi",""],["gongdu","공도","龔都","qun",3,"inf",68,30,60,20,42,72,184,"","runan",""],["liupi","유벽","劉辟","qun",3,"inf",68,34,60,24,44,80,184,"","runan",""],["heyi","하의","何儀","qun",3,"inf",66,30,60,20,40,60,184,"","runan",""],["huangshao","황소","黃邵","qun",3,"inf",64,30,58,20,38,60,184,"","runan",""],["yuji","우길","于吉","qun",3,"tac",10,86,30,60,88,70,184,"","wu",""],["zuoci","좌자","左慈","qun",4,"tac",20,88,40,60,80,40,184,"","lujiang",""],["guanlu","관로","管輅","qun",3,"tac",12,88,20,60,70,60,208,"","pingyuan",""],["simahui","사마휘","司馬徽","qun",4,"tac",14,90,30,70,86,70,189,"","xiangyang",""],["cuizhouping","최주평","崔州平","qun",3,"tac",30,82,30,66,70,60,200,"","xiangyang",""],["shitao","석도","石韜","qun",3,"tac",30,76,40,66,60,60,200,"","xiangyang",""],["huangchengyan","황승언","黃承彦","qun",3,"tac",12,84,20,60,72,70,189,"","xiangyang",""],["pangdegong","방덕공","龐德公","qun",3,"tac",10,86,20,62,80,70,189,"","xiangyang",""],["caiwenji","채염","蔡琰","qun",3,"tac",10,86,14,70,86,80,189,"","changan",""],["huangfusong","황보숭","皇甫嵩","qun",5,"cav",74,74,90,72,78,90,184,"","luoyang",""],["zhujun","주준","朱儁","qun",4,"inf",72,70,86,70,74,88,184,"","luoyang",""],["lushi","노식","盧植","qun",4,"tac",50,82,84,80,86,88,184,"","luoyang",""],["hejin","하진","何進","qun",3,"inf",56,30,66,40,62,50,184,"","luoyang",""],["dingyuan","정원","丁原","qun",3,"cav",74,50,72,52,58,60,184,"","jinyang",""],["wangkuang","왕광","王匡","qun",3,"inf",62,50,60,50,58,60,189,"","luoyang",""],["qiaomao","교모","橋瑁","qun",3,"inf",46,58,50,58,62,60,189,"","chenliu",""],["zhangchao","장초","張超","qun",3,"inf",54,58,58,56,60,70,189,"","puyang",""],["liudai","유대","劉岱","qun",3,"inf",52,56,58,56,58,50,189,"","puyang",""]],P=[["chengyu",194,"caocao","chenliu"],["chengyu",200,"caocao","puyang"],["chengyu",208,"caocao","xuchang"],["chengyu",219,"caocao","yecheng"],["xunyou",200,"caocao","xuchang"],["xunyou",208,"caocao","xuchang"],["liuye",200,"caocao","xuchang"],["liuye",208,"caocao","xuchang"],["liuye",219,"caocao","yecheng"],["manchong",194,"caocao","chenliu"],["manchong",200,"caocao","xuchang"],["manchong",208,"caocao","jiangling"],["manchong",219,"caocao","xiangyang"],["zhongyao",200,"caocao","xuchang"],["zhongyao",208,"caocao","changan"],["zhongyao",219,"caocao","changan"],["chenqun",200,"caocao","xuchang"],["chenqun",208,"caocao","xuchang"],["chenqun",219,"caocao","yecheng"],["huaxin",200,"caocao","xuchang"],["huaxin",208,"caocao","xuchang"],["huaxin",219,"caocao","yecheng"],["cuiyan",194,"yuanshao","yecheng"],["cuiyan",200,"yuanshao","yecheng"],["cuiyan",208,"caocao","yecheng"],["maojie",194,"caocao","chenliu"],["maojie",200,"caocao","xuchang"],["maojie",208,"caocao","xuchang"],["jiangji",208,"caocao","shouchun"],["jiangji",219,"caocao","yecheng"],["dongzhao",200,"caocao","xuchang"],["dongzhao",208,"caocao","xuchang"],["dongzhao",219,"caocao","yecheng"],["xinpi",200,"yuanshao","pingyuan"],["xinpi",208,"caocao","yecheng"],["xinpi",219,"caocao","yecheng"],["yangxiu",208,"caocao","xuchang"],["xushu",208,"caocao","xuchang"],["xushu",219,"caocao","yecheng"],["caohong",189,"caocao","chenliu"],["caohong",194,"caocao","chenliu"],["caohong",200,"caocao","xuchang"],["caohong",208,"caocao","xuchang"],["caohong",219,"caocao","changan"],["caochun",194,"caocao","chenliu"],["caochun",200,"caocao","xuchang"],["caochun",208,"caocao","xuchang"],["caoxiu",208,"caocao","xuchang"],["caoxiu",219,"caocao","changan"],["caozhen",208,"caocao","xuchang"],["caozhen",219,"caocao","changan"],["xiahoushang",219,"caocao","yecheng"],["zangba",194,"taoqian","xiapi"],["zangba",200,"caocao","xuzhou"],["zangba",208,"caocao","xuzhou"],["zangba",219,"caocao","xuzhou"],["wangshuang",219,"caocao","changan"],["guohuai",219,"caocao","changan"],["zhangji2",208,"caocao","changan"],["zhangji2",219,"caocao","tianshui"],["lvqian",194,"caocao","chenliu"],["lvqian",200,"caocao","xuchang"],["lvqian",208,"caocao","puyang"],["zhuling",194,"caocao","chenliu"],["zhuling",200,"caocao","xuchang"],["zhuling",208,"caocao","xuchang"],["zhuling",219,"caocao","yecheng"],["hanhao",194,"caocao","chenliu"],["hanhao",200,"caocao","xuchang"],["hanhao",208,"caocao","changan"],["shihuan",194,"caocao","chenliu"],["shihuan",200,"caocao","xuchang"],["shihuan",208,"caocao","xuchang"],["wangcan",194,"liubiao","xiangyang"],["wangcan",200,"liubiao","xiangyang"],["wangcan",208,"caocao","xiangyang"],["chenlin",194,"yuanshao","yecheng"],["chenlin",200,"yuanshao","yecheng"],["chenlin",208,"caocao","xuchang"],["qianzhao",194,"yuanshao","yecheng"],["qianzhao",200,"yuanshao","yecheng"],["qianzhao",208,"caocao","nanpi"],["tianyu",189,"gongsunzan","beiping"],["tianyu",194,"gongsunzan","beiping"],["tianyu",208,"caocao","beiping"],["wangyi",219,"caocao","tianshui"],["zhenji",200,"yuanshao","ji"],["zhenji",208,"caocao","yecheng"],["zhenji",219,"caocao","yecheng"],["dongcheng",200,"caocao","xuchang"],["songxian",194,"lubu","puyang"],["weixu",194,"lubu","puyang"],["houcheng",194,"lubu","puyang"],["caoxing",194,"lubu","puyang"],["chendeng",194,"taoqian","xuzhou"],["chendeng",200,"caocao","xuzhou"],["chengui",194,"taoqian","xuzhou"],["chengui",200,"caocao","xuzhou"],["caobao",194,"taoqian","xuzhou"],["mizhu",194,"taoqian","xuzhou"],["mizhu",200,"liubei","runan"],["mizhu",208,"liubei","jiangxia"],["mizhu",219,"liubei","chengdu"],["mifang",194,"taoqian","xuzhou"],["mifang",200,"liubei","runan"],["mifang",208,"liubei","jiangxia"],["mifang",219,"liubei","jiangling"],["sunqian",194,"taoqian","xuzhou"],["sunqian",200,"liubei","runan"],["sunqian",208,"liubei","jiangxia"],["chendao",200,"liubei","runan"],["chendao",208,"liubei","jiangxia"],["chendao",219,"liubei","chengdu"],["huangyueying",208,"liubei","jiangxia"],["masu",219,"liubei","chengdu"],["wuyi",194,"liuzhang","chengdu"],["wuyi",200,"liuzhang","chengdu"],["wuyi",208,"liuzhang","chengdu"],["wuyi",219,"liubei","chengdu"],["wuban",208,"liuzhang","chengdu"],["wuban",219,"liubei","chengdu"],["liyan",200,"liubiao","xiangyang"],["liyan",208,"liuzhang","chengdu"],["liyan",219,"liubei","chengdu"],["mengda",200,"liuzhang","chengdu"],["mengda",208,"liuzhang","chengdu"],["mengda",219,"liubei","chengdu"],["liufeng",208,"liubei","jiangxia"],["liufeng",219,"liubei","chengdu"],["huojun",208,"liubei","jiangxia"],["zhangyi",219,"liubei","chengdu"],["zhangni",219,"liubei","chengdu"],["wangping",219,"liubei","hanzhong"],["jiangwan",219,"liubei","chengdu"],["feiyi",219,"liubei","chengdu"],["yiji",200,"liubiao","xiangyang"],["yiji",208,"liubei","jiangxia"],["yiji",219,"liubei","chengdu"],["liaoli",219,"liubei","chengdu"],["dengzhi",219,"liubei","chengdu"],["leitong",208,"liuzhang","chengdu"],["liuba",208,"caocao","xiangyang"],["liuba",219,"liubei","chengdu"],["panjun",208,"liubei","jiangxia"],["panjun",219,"liubei","jiangling"],["shamoke",219,"liubei","wuling"],["yongkai",219,"menghuo","yunnan"],["gaoding",219,"menghuo","yunnan"],["mengyou",184,"menghuo","yunnan"],["mengyou",189,"menghuo","yunnan"],["mengyou",194,"menghuo","yunnan"],["mengyou",200,"menghuo","yunnan"],["mengyou",208,"menghuo","yunnan"],["mengyou",219,"menghuo","yunnan"],["jinhuan",200,"menghuo","yunnan"],["jinhuan",208,"menghuo","yunnan"],["jinhuan",219,"menghuo","yunnan"],["dongtuna",200,"menghuo","yunnan"],["dongtuna",208,"menghuo","yunnan"],["dongtuna",219,"menghuo","yunnan"],["ahuinan",200,"menghuo","yunnan"],["ahuinan",208,"menghuo","yunnan"],["ahuinan",219,"menghuo","yunnan"],["mulu",208,"menghuo","yunnan"],["mulu",219,"menghuo","yunnan"],["duosi",208,"menghuo","yunnan"],["duosi",219,"menghuo","yunnan"],["zhanghong",200,"sunce","wu"],["zhanghong",208,"sunquan","jianye"],["lvfan",194,"yuanshu","shouchun"],["lvfan",200,"sunce","wu"],["lvfan",208,"sunquan","jianye"],["lvfan",219,"sunquan","jianye"],["zhuhuan",208,"sunquan","wu"],["zhuhuan",219,"sunquan","jianye"],["zhuran",208,"sunquan","chaisang"],["zhuran",219,"sunquan","jianye"],["panzhang",200,"sunce","wu"],["panzhang",208,"sunquan","chaisang"],["panzhang",219,"sunquan","jianye"],["dingfeng",208,"sunquan","chaisang"],["dingfeng",219,"sunquan","jianye"],["jiangqin",194,"yuanshu","shouchun"],["jiangqin",200,"sunce","wu"],["jiangqin",208,"sunquan","chaisang"],["jiangqin",219,"sunquan","jianye"],["chenwu",194,"yuanshu","shouchun"],["chenwu",200,"sunce","wu"],["chenwu",208,"sunquan","chaisang"],["dongxi",200,"sunce","wu"],["dongxi",208,"sunquan","chaisang"],["zhuzhi",184,"sunjian","xiapi"],["zhuzhi",189,"sunjian","changsha"],["zhuzhi",194,"yuanshu","shouchun"],["zhuzhi",200,"sunce","wu"],["zhuzhi",208,"sunquan","wu"],["zhuzhi",219,"sunquan","jianye"],["sunjing",189,"sunjian","changsha"],["sunjing",200,"sunce","wu"],["sunjing",208,"sunquan","wu"],["sunyu",200,"sunce","wu"],["sunyu",208,"sunquan","chaisang"],["sunhuan",219,"sunquan","jianye"],["sunshao",200,"sunce","wu"],["sunshao",208,"sunquan","jianye"],["sunshao",219,"sunquan","jianye"],["guyong",208,"sunquan","wu"],["guyong",219,"sunquan","jianye"],["bushi",208,"sunquan","jianye"],["bushi",219,"sunquan","jianye"],["kanze",208,"sunquan","chaisang"],["kanze",219,"sunquan","jianye"],["luji",200,"sunce","wu"],["luji",208,"sunquan","wu"],["hesi",200,"sunce","kuaiji"],["hesi",208,"sunquan","kuaiji"],["hesi",219,"sunquan","kuaiji"],["quancong",219,"sunquan","jianye"],["lvdai",208,"sunquan","wu"],["lvdai",219,"sunquan","jianye"],["daqiao",200,"sunce","wu"],["daqiao",208,"sunquan","wu"],["xiaoqiao",200,"sunce","wu"],["xiaoqiao",208,"sunquan","chaisang"],["fengji",189,"yuanshao","nanpi"],["fengji",194,"yuanshao","yecheng"],["fengji",200,"yuanshao","yecheng"],["hanmeng",194,"yuanshao","yecheng"],["hanmeng",200,"yuanshao","yecheng"],["lvkuang",200,"yuanshao","yecheng"],["lvxiang",200,"yuanshao","yecheng"],["tadun",200,"yuanshao","beiping"],["qiaorui",189,"yuanshu","wancheng"],["qiaorui",194,"yuanshu","shouchun"],["zhangxun",189,"yuanshu","wancheng"],["zhangxun",194,"yuanshu","shouchun"],["leibo",194,"yuanshu","shouchun"],["chenlan",194,"yuanshu","shouchun"],["yanxiang",189,"yuanshu","wancheng"],["yanxiang",194,"yuanshu","shouchun"],["yangfeng",194,"lijue","changan"],["dongmin",189,"dongzhuo","luoyang"],["duanwei",194,"lijue","hongnong"],["fanchou",189,"dongzhuo","changan"],["fanchou",194,"lijue","changan"],["lisu",189,"dongzhuo","luoyang"],["huzhen",189,"dongzhuo","luoyang"],["chengyi",184,"hansui","tianshui"],["chengyi",194,"hansui","tianshui"],["chengyi",200,"hansui","tianshui"],["chengyi",208,"hansui","tianshui"],["houxuan",194,"hansui","tianshui"],["houxuan",200,"hansui","tianshui"],["houxuan",208,"hansui","tianshui"],["liangxing",194,"mateng","xiliang"],["liangxing",200,"mateng","xiliang"],["liangxing",208,"mateng","xiliang"],["mawan",194,"hansui","tianshui"],["mawan",200,"hansui","tianshui"],["mawan",208,"hansui","tianshui"],["yangqiu",194,"hansui","tianshui"],["yangqiu",200,"hansui","tianshui"],["yangqiu",208,"hansui","tianshui"],["yangqiu",219,"caocao","changan"],["liupan",200,"liubiao","changsha"],["zhangyun",194,"liubiao","xiangyang"],["zhangyun",200,"liubiao","xiangyang"],["zhangyun",208,"caocao","xiangyang"],["kuailiang",189,"liubiao","xiangyang"],["kuailiang",194,"liubiao","xiangyang"],["kuailiang",200,"liubiao","xiangyang"],["pangxi",194,"liuzhang","chengdu"],["pangxi",200,"liuzhang","chengdu"],["pangxi",208,"liuzhang","chengdu"],["pangxi",219,"liubei","chengdu"],["gaopei",208,"liuzhang","chengdu"],["yanghuai",208,"liuzhang","chengdu"],["lengbao",208,"liuzhang","chengdu"],["dengxian",208,"liuzhang","chengdu"],["zhangsong",200,"liuzhang","chengdu"],["zhangsong",208,"liuzhang","chengdu"],["wanglei",200,"liuzhang","chengdu"],["wanglei",208,"liuzhang","chengdu"],["yangren",200,"zhanglu","hanzhong"],["yangren",208,"zhanglu","hanzhong"],["yangang",200,"zhanglu","hanzhong"],["yangang",208,"zhanglu","hanzhong"],["yangsong",200,"zhanglu","hanzhong"],["yangsong",208,"zhanglu","hanzhong"],["yanpu",194,"zhanglu","hanzhong"],["yanpu",200,"zhanglu","hanzhong"],["yanpu",208,"zhanglu","hanzhong"],["bocai",184,"zhangjiao","runan"],["zhangmancheng",184,"zhangjiao","wancheng"],["hanzhong2",184,"zhangjiao","wancheng"],["peiyuanshao",184,"zhangjiao","nanpi"],["gongdu",184,"zhangjiao","runan"],["gongdu",200,"liubei","runan"],["liupi",184,"zhangjiao","runan"],["liupi",200,"liubei","runan"],["heyi",184,"zhangjiao","runan"],["huangshao",184,"zhangjiao","runan"],["zhangchao",189,"zhangmiao","puyang"]],D={"chengyu":220.5,"xunyou":214.5,"liuye":234.5,"manchong":242.5,"zhonghui":264.5,"zhongyao":230.5,"chenqun":236.5,"huaxin":231.5,"cuiyan":216.5,"maojie":216.5,"jiangji":249.5,"dongzhao":236.5,"xinpi":235.5,"yangxiu":219.5,"xushu":234.5,"caohong":232.5,"caochun":210.5,"caoxiu":228.5,"caozhen":231.5,"xiahoushang":225.5,"zangba":230.5,"wangshuang":228.5,"guohuai":255.5,"zhangji2":223.5,"lvqian":230.5,"zhuling":230.5,"hanhao":215.5,"shihuan":209.5,"wangcan":217.5,"chenlin":217.5,"simazhao":265.5,"qianzhao":231.5,"tianyu":252.5,"wangyi":230.5,"zhenji":221.5,"dongcheng":200.5,"songxian":200.5,"weixu":200.5,"houcheng":200.5,"caoxing":198.5,"chendeng":209.5,"chengui":209.5,"caobao":196.5,"mizhu":221.5,"mifang":222.5,"sunqian":215.5,"chendao":230.5,"huangyueying":234.5,"masu":228.5,"wuyi":237.5,"wuban":232.5,"liyan":234.5,"mengda":228.5,"liufeng":220.5,"huojun":217.5,"zhangyi":264.5,"zhangni":254.5,"wangping":248.5,"jiangwan":246.5,"feiyi":253.5,"dongyun":246.5,"yiji":222.5,"liaoli":234.5,"dengzhi":251.5,"qiaozhou":270.5,"leitong":218.5,"liuba":222.5,"panjun":239.5,"shamoke":222.5,"yongkai":225.5,"gaoding":225.5,"mengyou":225.5,"jinhuan":225.5,"dongtuna":225.5,"ahuinan":225.5,"mulu":225.5,"duosi":225.5,"zhanghong":212.5,"lvfan":228.5,"zhuhuan":238.5,"zhuran":249.5,"panzhang":234.5,"dingfeng":271.5,"jiangqin":219.5,"chenwu":215.5,"dongxi":217.5,"zhuzhi":224.5,"sunjing":210.5,"sunyu":215.5,"sunhuan":223.5,"sunshao":241.5,"guyong":243.5,"bushi":247.5,"kanze":243.5,"luji":219.5,"hesi":227.5,"quancong":249.5,"lvdai":256.5,"daqiao":230.5,"xiaoqiao":230.5,"fengji":202.5,"hanmeng":200.5,"lvkuang":210.5,"lvxiang":210.5,"tadun":207.5,"kebineng":235.5,"qiaorui":197.5,"zhangxun":199.5,"leibo":209.5,"chenlan":209.5,"yanxiang":199.5,"yangfeng":197.5,"dongmin":192.5,"duanwei":209.5,"fanchou":195.5,"lisu":192.5,"huzhen":192.5,"chengyi":211.5,"houxuan":215.5,"liangxing":212.5,"mawan":211.5,"yangqiu":230.5,"liupan":208.5,"zhangyun":208.5,"kuailiang":208.5,"hanxuan":209.5,"jinxuan":209.5,"zhaofan":209.5,"liudu":209.5,"xingdaorong":209.5,"shixie":226.5,"pangxi":220.5,"gaopei":212.5,"yanghuai":212.5,"lengbao":214.5,"dengxian":214.5,"zhangsong":212.5,"wanglei":211.5,"yangren":215.5,"yangang":215.5,"yangsong":215.5,"yanpu":230.5,"bocai":184.5,"zhangmancheng":184.5,"hanzhong2":184.5,"peiyuanshao":200.5,"gongdu":201.5,"liupi":201.5,"heyi":196.5,"huangshao":196.5,"yuji":200.5,"zuoci":230.5,"guanlu":256.5,"simahui":208.5,"cuizhouping":230.5,"shitao":230.5,"huangchengyan":230.5,"pangdegong":230.5,"caiwenji":240.5,"huangfusong":195.5,"zhujun":195.5,"lushi":192.5,"hejin":189.5,"dingyuan":189.5,"wangkuang":190.5,"qiaomao":190.5,"zhangchao":195.5,"liudai":192.5};
+  TZ_NG.forEach(r=>{const v=T[r[0]];if(v)for(let i=0;i<6;i++)r[6+i]=v[i]});
+  for(const id in T)if(!TZ_NG.some(r=>r[0]===id))TZ_PC[id]=T[id].slice(3);
+  N.forEach(r=>TZ_NG.push(r));for(const id in D)TZ_DIE[id]=D[id];
+  P.forEach(([id,y,f,k])=>{const sc=TZ_SC[y];if(!sc||!sc.L[f])return;const cap=sc.L[f][0];if(k===cap||!(sc.X&&sc.X[f]&&sc.X[f][k])){if(!sc.L[f][1].includes(id))sc.L[f][1].push(id)}else sc.X[f][k].push(id)})})();
+
 TZ_NG.forEach(r=>{const[id,name,hz,fac,rar,cls,str,int,lead,pol,cha,giri]=r;if(GMAP[id])return;
   Object.defineProperty(GMAP,id,{value:{id,name,hz,fac,rar,cls,str,int,lead,spd:cls==='cav'?80:62,skill:DEF_SKILL[cls],ng:1},configurable:true,writable:true,enumerable:false});
   Object.defineProperty(TZ_PC,id,{value:[pol,cha,giri],configurable:true,writable:true,enumerable:false})});
@@ -5089,12 +5096,12 @@ const TZ_SEAN={spring:'봄',summer:'여름',autumn:'가을',winter:'겨울'};
 // 명령: [이름, 효과, 비용 · 쓰는 능력]. 분류 탭(내정·군사·인사·계략)으로 나눠 보여요
 const TZ_CMD={inv:['투자','농업·상업·방어 중 1개 +','금 300 · 정치(방어는 통솔)'],ben:['시혜','민심 +','군량 500 · 매력'],gov:['태수 임명','매달 자동 성장','행동 안 씀'],trd:['거래','군량·보물 사고팔기','교역 도시 · 행동 안 씀'],
   drf:['징병','병사 +1,000','금 300 · 매력 · 민심 −3'],trn:['훈련','훈련 +','통솔'],war:['출진','이웃 성 공격','군량'],mov:['이동','이웃 내 성으로','-'],
-  snd:['수송','금·군량·병사 절반을 이웃 내 성으로','-'],dlg:['위임 설정','성마다 맡길 일','행동 안 씀'],
+  snd:['수송','금·군량·병사·무기·군마 절반을 이웃 내 성으로','-'],arm:['군비','무기·군마 사기','금 · 행동 안 씀'],dlg:['위임 설정','성마다 맡길 일','행동 안 씀'],
   sch:['탐색','재야 장수 · 보물 찾기','지력'],rec:['등용','찾은 재야 장수 등용','매력'],rwd:['포상','충성 +','금 100'],gift:['하사','보물을 주고 충성 +','금고 보물 · 행동 안 씀'],
   ali:['동맹','동맹 맺기','금 500 · 매력'],aid:['원조','동맹에게 금·군량 받기','매력'],sur:['항복권고','약한 세력을 통째로','금 1,000 · 매력'],
   spy:['이간','적 장수 충성 −','지력'],prs:['권유','적 장수 데려오기','금 300 · 매력'],sab:['파괴','이웃 적 성 방어·농업·상업 −','금 200 · 지력']};
-const TZ_CAT=[['nai','내정','內',['inv','ben','gov','trd']],['gun','군사','軍',['drf','trn','war','mov','snd','dlg']],['ins','인사','人',['sch','rec','rwd','gift']],['gye','계략','計',['ali','aid','sur','spy','prs','sab']]];
-const TZ_FREE={gov:1,dlg:1,trd:1,gift:1};  // 장수 행동을 쓰지 않는 명령
+const TZ_CAT=[['nai','내정','內',['inv','ben','gov','trd']],['gun','군사','軍',['drf','trn','war','arm','mov','snd','dlg']],['ins','인사','人',['sch','rec','rwd','gift']],['gye','계략','計',['ali','aid','sur','spy','prs','sab']]];
+const TZ_FREE={gov:1,dlg:1,trd:1,gift:1,arm:1};  // 장수 행동을 쓰지 않는 명령
 const TZ_INV={fa:'농업',co:'상업',df:'방어'};
 const TZ_DL={self:['직접','내가 직접 명령해요. 태수가 있으면 매달 능력치만큼 자동으로 자라요.'],
   dev:['내정','남는 금으로 투자하고, 민심이 낮으면 시혜, 충성이 낮은 장수는 포상해요. 탐색·등용도 해요.'],
@@ -5115,7 +5122,7 @@ function cleanTz(x){x=x&&typeof x==='object'?x:{};const done={};if(x.done&&typeo
   if(!F[x.me])return base;const own=o=>o==='neu'||F[o]?o:'neu';
   const C={};TZ_K.forEach(k=>{const v=x.C[k];if(!v||typeof v!=='object'){C[k]=tzCity0(k);return}const pop=n(v.pop,10000,300000),cp=Math.floor(pop/100);
     C[k]={o:own(v.o),g:n(v.g,0,99999),fd:n(v.fd,0,99999),tr:n(v.tr,0,99999),tn:n(v.tn,0,100),pop,fa:n(v.fa,0,cp),co:n(v.co,0,cp),ml:n(v.ml,0,100),df:n(v.df,0,100),
-      gov:GMAP[v.gov]?v.gov:'',dl:TZ_DL[v.dl]?v.dl:'self'}});
+      gov:GMAP[v.gov]?v.gov:'',dl:TZ_DL[v.dl]?v.dl:'self',wp:v.wp==null?500:n(v.wp,0,99999),hs:v.hs==null?300:n(v.hs,0,99999)}});
   const G={};TZ_GA.map(b=>b.id).concat(Object.keys(X)).forEach(id=>{const v=x.G[id]||(X[id]?{o:'free'}:{});const o=['free','cap','dead','wait'].includes(v.o)?v.o:own(v.o);
     G[id]={o,c:TZ_C[v.c]?v.c:TZ_K[0],ly:n(v.ly,0,100),mr:n(v.mr,0,9999),ac:v.ac?1:0,fd:v.fd?1:0,cb:F[v.cb]?v.cb:'',tr:v.tr?1:0,of:F[v.of]?v.of:''}});
   // v9.8.3: 빼앗긴 성에서 등용돼 남의 성에 남은 장수는 그 세력 군주가 있는 성(없으면 첫 성)으로 옮겨요
@@ -5131,7 +5138,7 @@ function cleanTz(x){x=x&&typeof x==='object'?x:{};const done={};if(x.done&&typeo
 function tzReg(X){for(const v in X){const e=X[v],P=GMAP[e.p];if(!P)continue;const st=e.st;
   Object.defineProperty(GMAP,v,{value:{...P,name:e.nm||`${P.name}의 ${e.sx==='女'?'딸':'아들'}`,str:st[0],int:st[1],lead:st[2],rar:e.rar,kid:e.sx,pid:e.p},configurable:true,writable:true,enumerable:false});
   Object.defineProperty(TZ_PC,v,{value:[st[3],st[4],st[5]],configurable:true,writable:true,enumerable:false})}}
-function tzCity0(k){const pop=TZ_BIG[k]?150000:TZ_SMALL[k]?60000:85000;return {o:'neu',g:300,fd:2000,tr:1500,tn:30,pop,fa:Math.round(pop/700),co:Math.round(pop/800),ml:50,df:TZ_PASS[k]?70:k==='luoyang'?60:40,gov:'',dl:'self'}}
+function tzCity0(k){const pop=TZ_BIG[k]?150000:TZ_SMALL[k]?60000:85000;return {o:'neu',g:300,fd:2000,tr:1500,tn:30,pop,fa:Math.round(pop/700),co:Math.round(pop/800),ml:50,df:TZ_PASS[k]?70:k==='luoyang'?60:40,gov:'',dl:'self',wp:300,hs:0}}
 function tzItemsInit(s,r){const pick=ITEMS.filter(it=>it.rar===5).map(it=>it.id),f4=ITEMS.filter(it=>it.rar===4).map(it=>it.id);
   while(pick.length<24&&f4.length)pick.push(f4.splice(Math.floor(r()*f4.length),1)[0]);
   const I={};for(const[g,id]of Object.entries(TZ_IT0))if(s.G[g]&&s.F[s.G[g].o]&&IMAP[id])I[id]='g:'+g;
@@ -5190,7 +5197,7 @@ function tzNew(sc,me,rs){const D=TZ_SC[sc],r=mulberry((Date.now()^sjHash(me+sc))
   const inSc=new Set();for(const f in L){inSc.add(f);L[f][1].forEach(g=>inSc.add(g))}for(const f in XX)for(const k in XX[f])XX[f][k].forEach(g=>inSc.add(g));
   const t0=D.y+(D.m-1)/12;TZ_GA.forEach(b=>{const d=TZ_DIE[b.id];if(d!=null&&d<t0&&!inSc.has(b.id)&&!used.has(b.id)){put(b.id,'wait',TZ_K[0],0);s.rv.push(b.id)}});
   for(let i=s.rv.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[s.rv[i],s.rv[j]]=[s.rv[j],s.rv[i]]}
-  const own=(f,k,gs)=>{Object.assign(s.C[k],{o:f,g:1000,fd:5000,tr:3500,tn:45,ml:65});gs.forEach(g=>put(g,f,k,100))};
+  const own=(f,k,gs)=>{Object.assign(s.C[k],{o:f,g:1000,fd:5000,tr:3500,tn:45,ml:65,wp:800,hs:TZ_HORSE[k]?1200:400});gs.forEach(g=>put(g,f,k,100))};
   for(const[f,[k,vs]]of Object.entries(L)){s.F[f]={lord:f,dead:0,al:{},zn:[],tt:0};const ex=XX[f]||{},mv=[].concat(...Object.values(ex));own(f,k,[f,...vs.filter(g=>!mv.includes(g))]);for(const[k2,gs]of Object.entries(ex))own(f,k2,gs)}
   const pool=()=>GENS.map(b=>b.id).filter(g=>!used.has(g));
   if(rs)Object.assign(s.C[rs.k],{g:600,fd:3000,tr:2000,tn:35,ml:60});  // 임의 시작: 작은 성 하나, 가신 없음
@@ -5232,7 +5239,7 @@ function tzDo(s,k,cmd,g,tg,it){const C=s.C[k],G=s.G[g],cha=tzCha(g),f=G.o,lc=tzC
   else if(cmd==='rwd'){const x=tg;if(!x||!s.G[x]||s.G[x].o!==f)return '대상이 없어요';if(!pay(100))return '금이 모자라요';const v=Math.round((6+lc/20)*tzR());s.G[x].ly=Math.min(100,s.G[x].ly+v);msg=`${tzName(x)} 충성 +${v}`}
   else if(cmd==='mov'){if(!tg||!s.C[tg]||s.C[tg].o!==f||!TZ_ADJ[k].includes(tg))return '이웃한 내 성이 아니에요';G.c=tg;msg=`${tzCN(tg)}(으)로 이동`}
   else if(cmd==='snd'){if(!tg||!s.C[tg]||s.C[tg].o!==f||!TZ_ADJ[k].includes(tg))return '이웃한 내 성이 아니에요';const T=s.C[tg],a=Math.floor(C.g/2),d=Math.floor(C.fd/2),t=Math.floor(C.tr/2);
-    if(t>0)T.tn=Math.round((T.tn*T.tr+C.tn*t)/(T.tr+t));C.g-=a;C.fd-=d;C.tr-=t;T.g=Math.min(99999,T.g+a);T.fd=Math.min(99999,T.fd+d);T.tr=Math.min(99999,T.tr+t);msg=`${tzCN(tg)}(으)로 금 ${fmt(a)} · 군량 ${fmt(d)} · 병사 ${fmt(t)}`}
+    if(t>0)T.tn=Math.round((T.tn*T.tr+C.tn*t)/(T.tr+t));C.g-=a;C.fd-=d;C.tr-=t;T.g=Math.min(99999,T.g+a);T.fd=Math.min(99999,T.fd+d);T.tr=Math.min(99999,T.tr+t);const w=Math.floor((C.wp||0)/2),h=Math.floor((C.hs||0)/2);C.wp=(C.wp||0)-w;C.hs=(C.hs||0)-h;T.wp=Math.min(99999,(T.wp||0)+w);T.hs=Math.min(99999,(T.hs||0)+h);msg=`${tzCN(tg)}(으)로 금 ${fmt(a)} · 군량 ${fmt(d)} · 병사 ${fmt(t)}${w||h?` · 무기 ${fmt(w)} · 군마 ${fmt(h)}`:''}`}
   else if(cmd==='ali'){const t=tg;if(!s.F[t]||s.F[t].dead||t===f)return '대상이 없어요';if(tzAlly(s,f,t))return '이미 동맹이에요';if(!pay(500))return '금이 모자라요';
     const r=tzCities(s,t).length/Math.max(1,tzCities(s,f).length);if(tzRng()<.25+cha/250-Math.max(0,r-1)*.1){s.F[f].al[t]=24;s.F[t].al[f]=24;msg=`${tzFN(s,t)}과(와) 2년 동맹!`}else msg=`${tzFN(s,t)}이(가) 동맹을 거절했어요`}
   else if(cmd==='aid'){const t=tg;if(!s.F[t]||!tzAlly(s,f,t))return '동맹 세력에게만 원조를 청할 수 있어요';const src=tzCities(s,t).sort((a,b)=>s.C[b].g-s.C[a].g)[0];if(!src)return '대상이 없어요';
@@ -5398,7 +5405,7 @@ function tzAi(s,f){const F=s.F[f];if(F.dead)return;
     const n=TZ_ADJ[k].filter(x=>s.C[x].o!==f&&s.C[x].o!=='neu'&&!tzAlly(s,f,s.C[x].o)).sort((a,b)=>s.C[b].df-s.C[a].df)[0];if(!n)continue;
     const tgt=s.C[n].o,r=tzDo(s,k,'sab',g,n+'|df');if(r&&r.ok&&tgt===s.me)tzLog(s,`${tzFN(s,f)} ${tzName(g)} 파괴 공작 · ${r.msg}`,'戰');break}
   for(const k of tzCities(s,f))tzShip(s,k,{g:800,fd:2000,tr:1500},1);
-  for(const k of tzCities(s,f))tzWork(s,k,'ai');
+  tzAiArm(s,f);for(const k of tzCities(s,f))tzWork(s,k,'ai');
   // 보물: 상인 보물은 금이 넉넉하면 사고, 금고 보물은 맞는 장수에게 줘요
   for(const k of tzCities(s,f))if(TZ_TRADE[k])for(const id of tzItIn(s,'m:'+k)){const C=s.C[k];if(C.g>=tzItP(id)*2+1500&&tzRng()<.3){C.g-=tzItP(id)*2;s.I[id]='t:'+f;tzLog(s,`${tzFN(s,f)}이(가) ${tzCN(k)} 상인에게서 ${IMAP[id].name}을(를) 샀어요`)}}
   for(const id of tzItIn(s,'t:'+f)){const cat=tzItCat(id),sv=g=>cat==='cha'?tzCha(g):GMAP[g][cat],gs=tzGL(s).map(b=>b.id).filter(g=>s.G[g].o===f&&!tzItOf(s,g)).sort((a,b)=>sv(b)-sv(a));
@@ -5409,7 +5416,7 @@ function tzDeleg(s){for(const k of tzMine(s)){const m=tzDlOf(s,k);if(m==='self'|
   if(m==='snd'){const t=tzShip(s,k,{g:500,fd:3000,tr:2000},0);if(t)out.push('수송 '+t)}
   if(m==='def'&&C.tr>4000){const n=TZ_ADJ[k].filter(x=>s.C[x].o===s.me&&tzFront(s,x)&&s.C[x].tr<C.tr*.5).sort((a,b)=>s.C[a].tr-s.C[b].tr)[0];
     if(n){const T=s.C[n],t=Math.round((C.tr-T.tr)/3);T.tn=Math.round((T.tn*T.tr+C.tn*t)/(T.tr+t));C.tr-=t;T.tr+=t;out.push(`${tzCN(n)}에 병사 ${fmt(t)} 지원`)}}
-  if(s.C[k].o===s.me)out.push(...tzWork(s,k,m==='snd'?'dev':m));
+  if((m==='atk'||m==='def')&&s.C[k].o===s.me){const t=tzArmAuto(s,k);if(t)out.push(t)}if(s.C[k].o===s.me)out.push(...tzWork(s,k,m==='snd'?'dev':m));
   if(out.length)tzLog(s,`${tzCN(k)} · ${out.join(' · ')}`,'委')}}
 // ---- 턴 종료 ----
 function tzTurn(s){if(s.end)return;tzRng=mulberry((s.sd+s.t*104729)>>>0);s.rep=[];
@@ -5484,14 +5491,14 @@ function tzTopBar(s){const mine=tzMine(s),sum=key=>mine.reduce((a,k)=>a+s.C[k][k
    <button type="button" class="btn sm ghost" data-tz="rep">보고</button>${s.end?'':(()=>{const n=tzIdleC(s).length;return `<button type="button" class="btn sm red${n?' tz-warnb':''}" data-tz="turn"${n?` aria-label="턴 종료 · 명령 안 한 성 ${n}곳"`:''}>턴 종료${n?`<i class="tz-bdg">${n}</i>`:''}</button>`})()}</div>`}
 function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.g;
   let h=`<div class="tz-city"><div class="tz-ch"><h3>${tzCN(k)}</h3><span class="sub" style="margin:0">${tzHZ(k)} · ${TZ_ZH[TZ_ZK[k]][0]}${tzZOwn(s,TZ_ZK[k])?` <b style="color:${tzCol(tzZOwn(s,TZ_ZK[k]))}">평정</b>`:''}</span>${TZ_PASS[k]?`<span class="tz-tag front" title="관문: 수비 체력 ×1.15">${TZ_PASS[k]}</span>`:''}<span class="chip" style="border-color:${tzCol(o)};color:${tzCol(o)}">${tzFN(s,o)}${tzAlly(s,s.me,o)?' · 동맹':''}</span>${TZ_TRADE[k]?'<span class="tz-tag home">商</span>':''}
-   ${my?`<button type="button" class="tz-gov" data-tzc="gov">태수 <b>${gov?esc(tzName(gov)):'없음'}</b></button>`:''}</div>`;
+   ${my?`<button type="button" class="tz-gov" data-tzc="gov">태수 <b>${gov?esc(tzName(gov)):'없음'}</b></button>`:''}${my?tzGovRecBtn(s,k):''}</div>`;
   if(my){const home=tzHome(s,k),dl=tzDlOf(s,k);
     h+=`<div class="tz-dl" role="group" aria-label="위임">${(home?['self']:Object.keys(TZ_DL)).map(m=>`<button type="button" data-tzdl="${k}:${m}" aria-pressed="${dl===m}">${TZ_DL[m][0]}</button>`).join('')}</div>
      <p class="tz-note">${home?'군주가 있는 성은 직접 다스려요.':TZ_DL[dl][1]}</p>`}
   const bar=(key,nm,col)=>{const cp=tzCap(C,key),v=C[key],show=my||key==='tr'||key==='df';
     return `<button type="button" class="tz-sb" data-tzh="${key}" ${my?'':'disabled'}><span>${nm}</span><i style="--p:${show?Math.min(100,Math.round(v/cp*100)):0}%;--c:${col}"></i><em>${show?fmt(v):'?'}${my?`<small>/${fmt(cp)}</small>`:''}</em></button>`};
   h+=`<div class="tz-num">${[['g','금'],['fd','군량'],['pop','인구']].map(([key,nm])=>`<button type="button" data-tzh="${key}" ${my?'':'disabled'}><small>${nm}</small><b>${my?fmt(C[key]):'?'}</b></button>`).join('')}</div>
-   <div class="tz-bars">${bar('tr','병사','var(--cinnabar)')}${bar('tn','훈련','var(--cinnabar)')}${bar('fa','농업','var(--jade)')}${bar('co','상업','var(--bronze)')}${bar('df','방어','#9aa3ad')}${bar('ml','민심','var(--jade)')}</div>`;
+   ${tzArmLine(s,k,my)}<div class="tz-bars">${bar('tr','병사','var(--cinnabar)')}${bar('tn','훈련','var(--cinnabar)')}${bar('fa','농업','var(--jade)')}${bar('co','상업','var(--bronze)')}${bar('df','방어','#9aa3ad')}${bar('ml','민심','var(--jade)')}</div>`;
   if(my){const up=(n,v)=>v>0?`${n} <b class="up">+${tzF1(v)}</b>`:'';
     h+=`<div class="tz-inc"><span>다음 달 자동 ${[up('농업',Math.min(W.fa,tzCap(C,'fa')-C.fa)),up('상업',Math.min(W.co,tzCap(C,'co')-C.co)),up('방어',Math.min(W.df,100-C.df)),W.ml?`민심 <b class="${W.ml>0?'up':'dn'}">${W.ml>0?'+':''}${tzF1(W.ml)}</b>`:''].filter(Boolean).join(' · ')||'없음'}</span>
      <span>의용군 <b class="up">+${fmt(Math.round(W.vol))}</b></span><span>군량 소모 <b class="dn">−${fmt(Math.round(W.eat))}</b></span><span>1월 금 <b>+${fmt(Math.round(W.gold))}</b>${W.zb?` (주 평정 +${Math.round(W.zb*100)}%)`:''}</span><span>9월 군량 <b>+${fmt(Math.round(W.food))}</b>${W.hv>1?` (풍작 ×${tzF1(W.hv)})`:''}</span></div>`}
@@ -5507,22 +5514,21 @@ function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.
      <p class="sub" style="margin:6px 0 0;font-size:12px">${tzDlOf(s,k)!=='self'?'위임한 성이라 장수 명령은 할 수 없어요 · ':''}명령할 수 있는 장수 ${idle}명 · 장수마다 한 달에 명령 1개 · 금고 보물 ${tzItIn(s,'t:'+s.me).length}개</p>`}
   return h+`</div>`}
 function vTz(){const s=tzState();
-  const rule=infoP('tz','군주가 되어 한 달씩 천하를 다퉈요',`천하는 13주 ${TZ_K.length}성이에요. 한 주의 성을 모두 가지면 그 주 성들의 1월 금·9월 군량이 +10%(성 1개 주 +5%, 형주·익주 +15%)가 되고 민심이 매달 +1 올라요. 4개 주를 가지면 공, 7개 주를 가지면 왕이 돼요. 사수관·동관·양평관·검각·합비·백제성이 있는 성은 지키기 쉬워요. 군주 1명을 골라 거점에서 가신과 함께 시작해요. 1턴은 1개월이에요. 내 성을 골라 내정·군사·인사·계략 탭에서 명령을 내리고, 장수마다 한 달에 명령 1개를 해요. 성마다 태수를 두면 태수 정치·통솔·매력만큼 농업·상업·방어·민심이 매달 저절로 자라고, 민심이 60을 넘으면 의용군이 와요. 태수 충성이 50 아래면 독립할 수 있어요. 교역 도시(商)에서는 상인과 군량·보물을 사고팔고, 탐색하면 숨은 보물을 찾을 수 있어요. 보물은 장수에게 하사하면 능력치와 충성이 올라요. 군주가 없는 성은 내정·수송·방어·공략으로 위임할 수 있어요. '턴 종료'를 누르면 위임한 성과 다른 군주들이 움직이고, 1월에 금, 9월에 군량이 들어와요. 병사는 매달 군량을 먹어요. 출진하면 장수마다 병사를 나눠 주고 지금 전투로 싸워요. 장수가 모자란 자리는 잡병 부대가 채워요. 이긴 쪽은 진 장수를 포로로 잡을 수 있고, 포로는 등용·해방·처형 중에 골라요. 처형하면 그 판에서 영원히 사라지고 우리 장수 충성이 떨어져요. ${TZ_K.length}성을 모두 차지하면 통일이에요. 시나리오마다 첫 통일 때 금 ${fmt(TZ_REW.gold)} · 보물 선택권 1 · 공적 1위 장수 증표(돌파 1회분)를 받아요. 본편 장수의 레벨·돌파·보물은 쓰지 않고, 모든 장수가 공적에 따라 레벨이 올라요.`,'margin:0');
+  const rule=infoP('tz','군주가 되어 한 달씩 천하를 다퉈요',`천하는 13주 ${TZ_K.length}성이에요. 1턴은 1개월이고, 장수마다 한 달에 명령 1개를 해요. 성마다 태수를 두면 저절로 자라고, 1월에 금·9월에 군량이 들어와요. 출진하면 장수마다 자기 병종 부대를 이끌고 세 국면으로 싸워요. 자세한 규칙은 도움말에 있어요.`,'margin:0')+`<button type="button" class="btn ghost sm tz-help-b" data-tzhelp>도움말</button>`;
   if(!s.on)return tzStartHtml(s,rule);
   let h=tzTopBar(s);const mine=tzMine(s);
   if(s.end){const R=s.end===1?tzReward(s):null;if(R)save();
     h+=`<div class="labbox" style="margin:8px 0;border-color:${s.end===1?'var(--bronze)':'var(--cinnabar)'}"><h3 style="margin:0 0 6px">${s.end===1?'천하통일!':'패배'}</h3><p class="sub" style="margin:0 0 6px">${s.end===1?`${s.y}년 ${s.m}월, ${s.t}턴 만에 천하를 하나로 모았어요.${s.done[tzDK(s)]&&!(R&&R.gold)?' (이 시나리오 통일 보상은 이미 받았어요)':''}`:'성을 모두 잃었어요.'}</p>
      ${R&&R.gold?`<div class="row" style="gap:6px;flex-wrap:wrap"><span class="coin"><b class="sl gold">金</b>+${fmt(R.gold)}</span><span class="coin">보물 선택권 +1</span><span class="coin">${esc(tzName(R.g))} 증표 +${R.n}</span></div>`:''}
      <button type="button" class="btn red wide" data-tz="reset" style="margin-top:8px">새로 시작</button></div>`}
-  if(s.end)h+=tzSlotBar();
   if(s.cap.length)h+=`<div class="labbox" style="margin:8px 0;border-color:var(--cinnabar)"><b style="color:var(--cinnabar)">포로 ${s.cap.length}명</b><div class="list" style="margin-top:6px">${s.cap.map(g=>`<div class="li">${seal(GMAP[g],'sm')}<div class="info"><b>${esc(tzName(g))}</b><span>의리 ${tzGiri(g)}${tzIsL(s,g)?' · 군주':''}</span></div><div class="row" style="gap:4px"><button type="button" class="btn sm" data-tzcap="rec:${g}">등용</button><button type="button" class="btn sm ghost" data-tzcap="rel:${g}">해방</button><button type="button" class="btn sm ghost" data-tzcap="exe:${g}">처형</button></div></div>`).join('')}</div></div>`;
   if(!tzSel||!s.C[tzSel])tzSel=mine.includes(s.G[s.F[s.me].lord].c)?s.G[s.F[s.me].lord].c:(mine[0]||TZ_K[0]);
-  h+=`<div class="tz-vt" role="group" aria-label="보기"><button type="button" data-tz="list" aria-pressed="${!tzMapOn}">내 성 목록</button><button type="button" data-tz="map" aria-pressed="${!!tzMapOn}">지도 보기</button><button type="button" data-tz="gl">장수 일람</button><button type="button" data-tz="il">보물 일람</button></div>`;
-  if(tzMapOn)h+=tzMapHtml(s);
-  else h+=`<div class="tz-strip">${mine.slice().sort((a,b)=>TZ_C[a][0]-TZ_C[b][0]).map(k=>{const t=tzTag(s,k),dl=tzDlOf(s,k);
+  h+=`<div class="tz-vt" role="group" aria-label="보기"><button type="button" data-tz="list" aria-pressed="${!tzMapOn||isWork()}">내 성 목록</button>${isWork()?'':`<button type="button" data-tz="map" aria-pressed="${!!tzMapOn}">지도 보기</button>`}<button type="button" data-tz="gl">장수 일람</button><button type="button" data-tz="il">보물 일람</button></div>`;
+  if(tzMapOn&&!isWork())h+=tzMapHtml(s);
+  else if(1)h+=tzGridHtml(s);else h+=`<div class="tz-strip">${mine.slice().sort((a,b)=>TZ_C[a][0]-TZ_C[b][0]).map(k=>{const t=tzTag(s,k),dl=tzDlOf(s,k);
     return `<button type="button" class="tz-cc" data-tzk="${k}" aria-pressed="${tzSel===k}"><b>${tzCN(k)}${s.lc&&s.lc.k===k?' <span class="tz-tag front">蝗</span>':''}</b><small><span class="tz-tag ${t[0]}">${t[1]}</span> 병 ${fmt(s.C[k].tr)}</small><small>${TZ_DL[dl][0]}${dl==='self'?` · 명령 ${tzIdle(s,k).length}`:''}</small></button>`}).join('')}</div>`;
   h+=tzCityCard(s,tzSel);
-  h+=`<div class="tz-foot">${rule}${tzSlotBar()}${s.end?'':`<button type="button" class="tz-reset" data-tz="reset">처음부터</button>`}</div>`;
+  h+=`<div class="tz-foot">${rule}${s.end?'':`<button type="button" class="tz-reset" data-tz="reset">처음부터</button>`}</div>`;
   return h}
 function tzPickBtn(s,g,attr,on){const b=GMAP[g],P=TZ_PC[g]||[50,50];return `<button type="button" ${attr} aria-pressed="${!!on}">${seal(b,'sm')}<small>${esc(b.name)}</small><small style="color:var(--mute)">무${b.str} 지${b.int} 통${b.lead} 정${P[0]} 매${P[1]}</small></button>`}
 function tzGovSheet(){const s=tzState(),k=tzSel,gs=tzGensIn(s,k,s.me).sort((a,b)=>tzPol(b)-tzPol(a)),cur=tzGov(s,k);
@@ -5563,7 +5569,7 @@ function tzGenSheet(g,back){const s=tzState(),b=GMAP[g],G=s.G&&s.G[g];if(!b||!G)
   const isL=tzIsL(s,g),gov=!!s.F[G.o]&&!!s.C[G.c]&&tzGov(s,G.c)===g,where=G.o==='dead'||G.o==='wait'?'-':G.o==='free'&&!G.fd&&!(s.C[G.c]&&s.C[G.c].o===s.me)?'알 수 없음':tzCN(G.c);
   let u=null;try{u=mkUnit({g,lv:tzLv(s,g),d:0,i:it?[it+':0']:[]},0,0)}catch(e){u=null}
   const st=(n,v)=>`<div class="stat"><small>${n}</small><b>${v}</b></div>`;
-  openSheet(`<div class="sheet-h">${mvSeal(b)}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz||'')}</span></h2>
+  openSheet(`<div class="sheet-h">${seal(b,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz||'')}</span></h2>
    <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]||''} · ${CLS[b.cls].g} ${CLS[b.cls].n} · <span style="color:${tzCol(G.o)}">${esc(own)}</span>${isL?' · 군주':''}${gov?' · 태수':''}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <h3>군웅할거 능력치</h3><div class="stats">${st('무력',tzStr(g))}${st('지력',tzInt(g))}${st('통솔',tzLead(g))}</div><div class="stats" style="margin-top:4px">${st('정치',tzPol(g))}${st('매력',tzCha(g))}${st('의리',P[2])}</div>
    <p class="sub" style="margin:6px 0">${me?`충성 ${G.ly} · `:''}Lv ${tzLv(s,g)} · 공적 ${G.mr} · 있는 곳 ${where}${it?` · 보물 ${esc(IMAP[it].name)}`:''}</p>
@@ -5598,7 +5604,7 @@ function tzILSheet(){const s=tzState(),me=s.me,ids=Object.keys(s.I).sort((a,b)=>
    <p class="sub" style="margin:0 0 6px">이번 판 보물 ${ids.length}개 · 우리 세력 ${mine}개 · 숨은 보물 ${hid}개 (탐색으로 찾아요)</p>
    <div class="tz-glw"><table class="tz-gl"><thead><tr><th>보물</th><th>등급</th><th>효과</th><th>하사 충성</th><th>있는 곳</th></tr></thead><tbody>${ids.map(id=>{const it=IMAP[id];
      return `<tr><td class="nm"><b>${esc(it.name)}</b></td><td>${'★'.repeat(it.rar)}</td><td>${nm[tzItCat(id)]} +${tzItV(id)}</td><td class="n">+${tzItLy(id)}</td><td>${loc(id)}</td></tr>`}).join('')}</tbody></table></div>`)}
-function tzCmdSheet(c){const s=tzState(),k=tzSel;if(c==='gov')return tzGovSheet();if(c==='dlg')return tzDlgSheet();if(c==='trd')return tzTrdSheet();if(c==='gift')return tzGiftSheet();const idle=tzIdle(s,k),v=TZ_CMD[c];if(!idle.length)return;
+function tzCmdSheet(c){const s=tzState(),k=tzSel;if(c==='gov')return tzGovSheet();if(c==='dlg')return tzDlgSheet();if(c==='trd')return tzTrdSheet();if(c==='gift')return tzGiftSheet();if(c==='arm')return tzArmSheet();const idle=tzIdle(s,k),v=TZ_CMD[c];if(!idle.length)return;
   if(!tzDraft||tzDraft.c!==c||tzDraft.k!==k)tzDraft={c,k,g:'',tg:c==='inv'?(tzBestInv(s.C[k])||'fa'):'',gs:[],pct:70,st:'df',it:''};const D=tzDraft;
   const best={inv:x=>D.tg==='df'?tzLead(x):tzPol(x),ben:x=>tzCha(x),drf:x=>tzCha(x),trn:x=>tzLead(x),sch:x=>tzInt(x),rec:x=>tzCha(x),spy:x=>tzInt(x),ali:x=>tzCha(x),prs:x=>tzCha(x),aid:x=>tzCha(x),sur:x=>tzCha(x),sab:x=>tzInt(x)}[c]||(x=>tzPow(x));
   const srt=idle.slice().sort((a,b)=>best(b)-best(a));if(!D.g&&c!=='war')D.g=srt[0];
@@ -5608,9 +5614,9 @@ function tzCmdSheet(c){const s=tzState(),k=tzSel;if(c==='gov')return tzGovSheet(
       body=`<h3 style="margin:0 0 6px">공격할 성</h3><div class="chips">${ts.map(n=>`<button type="button" data-tzt="${n}" aria-pressed="${D.tg===n}">${tzCN(n)} · ${tzFN(s,s.C[n].o)}</button>`).join('')}</div>
        <p class="sub" style="margin:6px 0">적 병사 ${fmt(T.tr)} · 방어 ${T.df} · 장수 ${tzGensIn(s,D.tg,T.o).length}명</p>
        <h3 style="margin:8px 0 6px">출진 장수 (최대 ${NSLOT}명)</h3><div class="dl-pick">${srt.map(g=>tzPickBtn(s,g,`data-tzgs="${g}"`,D.gs.includes(g))).join('')}</div>
-       <h3 style="margin:8px 0 6px">데려갈 병사</h3><div class="chips">${[50,70,90].map(p=>`<button type="button" data-tzp="${p}" aria-pressed="${D.pct===p}">${p}% · ${fmt(Math.round(s.C[k].tr*p/100))}</button>`).join('')}</div>
+       ${tzTyPick(s,k,D,tr)}<h3 style="margin:8px 0 6px">데려갈 병사</h3><div class="chips">${[50,70,90].map(p=>`<button type="button" data-tzp="${p}" aria-pressed="${D.pct===p}">${p}% · ${fmt(Math.round(s.C[k].tr*p/100))}</button>`).join('')}</div>
        <p class="sub" style="margin:6px 0">군량 ${fmt(food)} 필요${tzSea(s.m)==='winter'?'(겨울 1.5배)':''} · 남은 군량 ${fmt(s.C[k].fd)}</p>
-       <div class="row" style="gap:8px"><button type="button" class="btn ghost" style="flex:1" data-tzgo="quick" ${D.gs.length&&s.C[k].fd>=food&&tr>=300?'':'disabled'}>결과만 보기</button><button type="button" class="btn red" style="flex:1" data-tzgo="watch" ${D.gs.length&&s.C[k].fd>=food&&tr>=300?'':'disabled'}>출진 · 전황 보기</button></div>`}}
+       <div class="row" style="gap:8px"><button type="button" class="btn ghost" style="flex:1" data-tzgo="quick" ${D.gs.length&&s.C[k].fd>=food&&tr>=300?'':'disabled'}>자동 전투</button><button type="button" class="btn red" style="flex:1" data-tzgo="watch" ${D.gs.length&&s.C[k].fd>=food&&tr>=300?'':'disabled'}>출진 · 직접 지휘</button></div>`}}
   else{let tgt='';const C=s.C[k];
     if(c==='inv'){tgt=`<h3 style="margin:8px 0 6px">투자할 곳</h3><div class="chips">${Object.entries(TZ_INV).map(([x,n])=>{const cp=tzCap(C,x);return `<button type="button" data-tzt="${x}" aria-pressed="${D.tg===x}" ${C[x]>=cp?'disabled':''}>${n} ${fmt(C[x])}/${fmt(cp)} · +${Math.round(tzInvV(x,D.g||srt[0]))}</button>`}).join('')}</div>
       <p class="sub" style="margin:6px 0 0;font-size:12px">농업은 9월 군량(상한의 70% 넘으면 풍작), 상업은 1월 금, 방어는 수비 병사 체력에 영향을 줘요.</p>`}
@@ -5707,7 +5713,7 @@ document.addEventListener('click',e=>{
     else if(v==='rep')tzRepSheet();
     else if(v==='gl')tzGLSheet();else if(v==='il')tzILSheet();
     else if(v==='map'||v==='list'){tzMapOn=v==='map'?1:0;renderView()}
-    else if(v==='exit'){stMode='st';renderView();$('#view').scrollTop=0}
+    else if(v==='exit')tzTitle('main')
     else if(v==='reset'){if(s.on&&!s.end&&!confirm('지금 군웅할거를 지우고 처음부터 할까요?'))return;S.tz=cleanTz({done:s.done});tzSel='';tzSx=null;save();renderView()}}
 });
 /* ---------------- 출정 ---------------- */
@@ -6457,7 +6463,7 @@ document.addEventListener('click',e=>{
 // 업무 모드(이 기기에만 저장): 버튼 또는 ` 키
 const WORK_K='yeonhap-work';
 function applyWork(on){document.documentElement.classList.toggle('work',on);const h=document.querySelector('.brand-hz');if(h)h.textContent=on?'업무 현황':'연합 삼국지';
-  document.title=on?'업무 현황':'연합 삼국지 · 창천토벌';const m=document.querySelector('meta[name=theme-color]');if(m)m.content=on?'#f4f5f7':'#0e1716';
+  document.title=on?'업무 현황':'군웅할거';const m=document.querySelector('meta[name=theme-color]');if(m)m.content=on?'#f4f5f7':'#0e1716';
   const b=$('#work-btn');if(b)b.setAttribute('aria-pressed',String(on));try{localStorage.setItem(WORK_K,on?'1':'0')}catch(e){}
   if(on)workScan(document.body);if(typeof S!=='undefined'&&S){try{render()}catch(e){}}}
 // 업무 모드: 화면 글자 속 ★(★5, ★★★)을 R5 같은 글자로
@@ -8711,14 +8717,24 @@ function openBattleLog(res,l0,l1){
   draw();$('#bl-x').focus({preventScroll:true})}
 
 /* ---------------- sheet ---------------- */
-function openSheet(html){const s=$('#sheet');s.innerHTML=`<div class="sheet-body" role="dialog" aria-modal="true">${html}</div>`;s.hidden=false;const f=s.querySelector('button');f&&f.focus({preventScroll:true})}
-function closeSheet(){const s=$('#sheet');s.classList.remove('tz-top');s.hidden=true;s.innerHTML=''}
+function openSheet(html){const s=$('#sheet');s.classList.remove('tzt-sheet');s.innerHTML=`<div class="sheet-body" role="dialog" aria-modal="true">${html}</div>`;s.hidden=false;const f=s.querySelector('button');f&&f.focus({preventScroll:true})}
+function closeSheet(){const s=$('#sheet');s.classList.remove('tz-top','tzt-sheet');s.hidden=true;s.innerHTML=''}
 $('#sheet').addEventListener('click',e=>{if(e.target.id==='sheet'||e.target.closest('[data-close]'))closeSheet()});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden)closeSheet()});
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_NOTICES=[{v:'9.9.0',date:'2026-10-31',title:'군웅할거 앱으로 독립',items:[
+const GW_VER='1.0.0';
+const GW_NOTICES=[{v:'1.0.0',date:'2026-10-31',title:'군웅할거 v1.0 · 국면 전투 · 병종 · 장수 168명',items:[
+  '전투가 바뀌었어요. 장수마다 자기 부대를 이끌고 초반·중반·후반 세 국면으로 싸워요. 국면마다 공격·돌격(일제)·계략·수비를 고르고, 세 국면 안에 적을 무너뜨려야 성을 차지해요. \'출진 · 직접 지휘\'로 직접 고르거나 \'자동 전투\'로 바로 결과를 봐요.',
+  '부대 힘은 그 장수의 무력·통솔·병종으로 정해져요. 계략은 지력이 가장 높은 장수가, 시작 사기는 통솔이 가장 높은 총대장이 정해요. 부대가 무너지면 무력이 낮은 장수일수록 잘 붙잡혀요(명마가 있으면 안전).',
+  '병종: 보병·창병·궁병·기병. 기병은 궁병에, 궁병은 보병에, 창병은 기병에 강해요. 장수마다 출진할 때 골라요. 궁병·창병은 무기, 기병은 군마가 들어요. 군사 탭 \'군비\'에서 사고, 서량·북평 같은 군마 산지는 군마가 반값이에요.',
+  '일기토: 국면 사이에 가끔 벌어지거나 \'일기토 신청\'으로 걸어요. 상대가 걸어오면 받기·대리·거절 중에 골라요.',
+  '내 성 목록이 격자로 바뀌고 병사·금·군량·태수·경고(民 糧 叛 蝗)가 한눈에 보여요. 태수 없는 성에 추천 장수를 한꺼번에 앉힐 수 있어요.',
+  '\'나가기\'를 누르면 제목 화면이 떠요. 이어 하기 · 새로 시작 · 불러오기(칸마다 지우기) · 도움말 · 설정을 골라요. 도움말도 군웅할거 규칙으로 새로 썼어요.',
+  '장수 능력치를 다시 매기고, 장수 168명(정욱·순유·방통 쪽 인물, 재야 명사, 후대 장수 등)이 새로 나와요. 진행 중이던 판도 그대로 이어져요.',
+  'PC: 창 폭 900px 이상이면 가로 화면이고, 메뉴(☰)에서 자동·가로·세로를 고를 수 있어요. 지도는 칸에 맞춰 줄어들고, 업무 모드에서는 지도 대신 성 목록만 나와요. 장수 상세의 모션 버튼은 뺐어요. 오른쪽 위 ☰ 버튼이 턴 종료 버튼을 가리던 것과 창 제목도 고쳤어요.']},
+ {v:'0.9.0',date:'2026-10-31',title:'군웅할거 앱으로 독립',items:[
   '천하쟁패가 \'군웅할거\'라는 따로 된 앱이 됐어요. 홈 화면에 따로 설치할 수 있고, 처음 열 때 받는 용량도 작아요.',
   '본편에서 군웅할거를 열면 진행 중이던 세 칸 세이브가 함께 넘어와요. 아이폰에서 따로 설치했다면 본편의 \'세이브 코드 복사\' → 여기 메뉴(☰)의 \'세이브 코드 붙여넣기\'로 옮겨요.',
   '로그인 보너스가 생겼어요. 하루 첫 접속 때 진행 중인 판의 군주가 있는 성에 금(내 세력 한 달 금 수입의 절반, 최소 100)이 들어와요. 연속 3일째·7일째는 군량도, 7일째는 상인이 파는 보물(없으면 숨겨진 보물) 하나가 금고로 와요. 세이브 칸마다 따로 받아요.',
@@ -8757,7 +8773,8 @@ async function gwDecode(c){c=String(c||'').trim();const k=c.slice(0,4),b=c.slice
   if(k==='GW1:'){const x=atob(b),u=new Uint8Array(x.length);for(let i=0;i<x.length;i++)u[i]=x.charCodeAt(i);return JSON.parse(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('gzip'))).text())}throw 0}
 function gwMenu(){const p=gwPref();openSheet(`<div class="sheet-h"><h2 style="margin:0">군웅할거</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${pwaRowHtml()}
   <div class="pwa-row"><button type="button" class="btn ghost sm" id="gwm-lb">로그인 보너스 ${p.lbOff?'켜기':'끄기'}</button><button type="button" class="btn ghost sm" id="gwm-paste">세이브 코드 붙여넣기</button><a class="btn ghost sm" href="../" style="text-align:center;text-decoration:none">본편(삼분) 열기</a></div>
-  <h3 style="margin:14px 0 6px">공지</h3>${gwNoticeHtml()}<p class="sub" style="margin-top:12px">현재 버전 v${GAME_VERSION}</p>`);
+  <div class="pwa-row"><button type="button" class="btn ghost sm" data-tzsl="1">저장 칸</button><button type="button" class="btn ghost sm" data-tzhelp>도움말</button></div>
+  <h3 style="margin:14px 0 6px">공지</h3>${gwNoticeHtml()}<p class="sub" style="margin-top:12px">현재 버전 v${GW_VER}</p>`);
   $('#gwm-lb').onclick=()=>{gwPrefSet({lbOff:!gwPref().lbOff});toast(gwPref().lbOff?'로그인 보너스를 껐어요':'로그인 보너스를 켰어요');gwMenu()};
   $('#gwm-paste').onclick=()=>{openSheet(`<div class="sheet-h"><h2 style="margin:0">세이브 코드 붙여넣기</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div><p class="sub">본편 출정 → 군웅할거에서 복사한 코드를 넣어 주세요. 지금 군웅할거의 세 칸이 바뀌어요.</p><textarea id="gwm-code" style="width:100%;height:140px;font-size:11px"></textarea><button type="button" class="btn red wide" id="gwm-ok" style="margin-top:8px">가져오기</button>`);
     $('#gwm-ok').onclick=async()=>{try{const ex=await gwDecode($('#gwm-code').value);if(!ex||!ex.tz)throw 0;gwImportApply(ex);closeSheet();toast('세이브를 가져왔어요')}catch(e){toast('코드를 읽지 못했어요. 처음부터 끝까지 다 복사했는지 확인해 주세요')}}}}
@@ -8791,9 +8808,234 @@ async function pwaPrefetch(){
   toast(`그림 전체(약 ${PWA_IMG_MB}MB)를 받는 중이에요`);
   const ch=new MessageChannel();ch.port1.onmessage=e=>{const d=e.data||{};if(d.done)toast(`그림 ${d.n}개를 저장했어요${d.fail?` · ${d.fail}개는 다음에 다시 받아요`:''}`)};
   navigator.serviceWorker.controller.postMessage({t:'prefetch'},[ch.port2])}
-function pwaRowHtml(){return `<div class="pwa-row">${pwaStandalone()?'':'<button type="button" class="btn ghost sm" data-pwa="guide">앱으로 설치하기</button>'}<button type="button" class="btn ghost sm" data-pwa="pre">그림 전체 미리 받기 · 약 ${PWA_IMG_MB}MB</button></div>`}
+// v10.0.0 화면 방향: 자동(창 폭 900px 이상이면 가로) · 늘 가로 · 늘 세로. 이 기기에만 저장
+const LY_K='sambun-layout',LY_N={auto:'자동',wide:'가로',narrow:'세로'};
+function lyMode(){try{const v=localStorage.getItem(LY_K);return LY_N[v]?v:'auto'}catch(e){return 'auto'}}
+const lyOn=()=>{const m=lyMode();return m==='wide'||(m==='auto'&&innerWidth>=900)};
+function lyApply(re){const on=lyOn(),was=document.body.classList.contains('pc');document.body.classList.toggle('pc',on);
+  if(re&&on!==was&&typeof S!=='undefined'&&S){const b=document.getElementById('battle');if(!b||b.hidden)renderView()}}
+lyApply(0);addEventListener('resize',()=>lyApply(1));
+function lyRowHtml(){const m=lyMode();return `<div class="pwa-row ly-row" role="group" aria-label="화면 방향"><span class="sub" style="margin:0;align-self:center;flex:none">화면</span>${Object.entries(LY_N).map(([k,n])=>`<button type="button" class="btn ${m===k?'':'ghost'} sm" data-ly="${k}" aria-pressed="${m===k}">${n}</button>`).join('')}</div>`}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-ly]');if(!t)return;try{localStorage.setItem(LY_K,t.dataset.ly)}catch(x){}lyApply(1);
+  document.querySelectorAll('[data-ly]').forEach(b=>{const on=b.dataset.ly===t.dataset.ly;b.setAttribute('aria-pressed',on);b.classList.toggle('ghost',!on)});toast(`화면: ${LY_N[t.dataset.ly]}${t.dataset.ly==='auto'?' (창 폭 900px 이상이면 가로)':''}`)});
+function pwaRowHtml(){return lyRowHtml()+`<div class="pwa-row">${pwaStandalone()?'':'<button type="button" class="btn ghost sm" data-pwa="guide">앱으로 설치하기</button>'}<button type="button" class="btn ghost sm" data-pwa="pre">그림 전체 미리 받기 · 약 ${PWA_IMG_MB}MB</button></div>`}
 document.addEventListener('click',e=>{const t=e.target.closest('[data-pwa]');if(!t)return;if(t.dataset.pwa==='guide')pwaInstall();else pwaPrefetch()});
 setTimeout(pwaBar,4000);
+
+
+// ================= v10.0.0 군웅할거 1차: 국면 전투 · 병종 · 일기토 · 군비 · 성 목록 · 태수 추천 · 저장 칸 =================
+const TZB_TY={inf:['보병','步'],spr:['창병','槍'],arc:['궁병','弓'],cav:['기병','騎']};
+const TZB_ADV={cav:'arc',spr:'cav',arc:'inf'};  // 기병 → 궁병 → 보병, 창병 → 기병
+const TZB_BASE={inf:1,spr:1,arc:1.08,cav:1.15};
+const TZB_PH=['초반','중반','후반'];
+const TZB_K={dmg:.12,m1:50,m2:25,dfd:180,brk:.3,mb:20};  // 밸런스 값: 피해율 · 사기(잃은 비율 ×m1, 차이 ×m2) · 방어 감쇠 · 무너짐(병사 비율 · 사기)
+const TZB_ACT={atk:['공격','보통으로 싸워요'],chg:['돌격·일제','기병 돌격 ×1.5 · 궁병 일제 ×1.4(통솔 70+) · 받는 피해 ×1.25'],sch:['계략','성공하면 적 사기 −15 · 실패하면 아군 사기 −5'],def:['수비','주는 피해 ×0.5 · 받는 피해 ×0.55']};
+const TZ_HORSE={xiliang:1,anding:1,tianshui:1,beiping:1,ji:1,xiangping:1,jinyang:1};  // 군마 산지: 군마 반값
+const TZB_SAFE=['chitu','hanxue','jueying','dilu'];  // 명마: 부대가 무너져도 붙잡히지 않아요
+const tzBSafe=(s,g)=>{const it=g&&tzItOf(s,g);return !!it&&TZB_SAFE.includes(it)};
+const tzBNeed=(ty,n)=>ty==='arc'||ty==='spr'?{wp:Math.ceil(n/10),hs:0}:ty==='cav'?{wp:0,hs:Math.ceil(n/10)}:{wp:0,hs:0};
+const tzUCap=g=>Math.max(500,tzLead(g)*100);
+// 병사 나누기: 장수마다 통솔×100명까지, 남는 병사는 성에 남아요
+function tzAlloc(gs,tr){const cap=gs.map(tzUCap),sum=cap.reduce((a,b)=>a+b,0)||1;let n=gs.map((g,i)=>Math.min(cap[i],Math.floor(tr*cap[i]/sum)));
+  let left=tr-n.reduce((a,b)=>a+b,0);for(let i=0;i<gs.length&&left>0;i++){const d=Math.min(left,cap[i]-n[i]);n[i]+=d;left-=d}return {n,left}}
+const tzTyDef=g=>{const c=GMAP[g].cls;return c==='cav'?'cav':c==='arc'||c==='tac'?'arc':'inf'};
+// 병종 자동: 장수 병과대로, 무기·군마가 모자라면 보병
+function tzAutoTy(gs,n,wp,hs){const ty={};let w=wp,h=hs;gs.forEach((g,i)=>{let t=tzTyDef(g);const q=tzBNeed(t,n[i]);if(q.wp>w||q.hs>h)t=GMAP[g].cls==='cav'&&w>=tzBNeed('spr',n[i]).wp?'spr':'inf';const q2=tzBNeed(t,n[i]);w-=q2.wp;h-=q2.hs;ty[g]=t});return ty}
+function tzTyFix(gs,ty,n,wp,hs){const o={};let w=wp,h=hs;gs.forEach((g,i)=>{let t=TZB_TY[ty[g]]?ty[g]:tzTyDef(g);const q=tzBNeed(t,n[i]);if(q.wp>w||q.hs>h)t='inf';const q2=tzBNeed(t,n[i]);w-=q2.wp;h-=q2.hs;o[g]=t});return o}
+const tzBUse=(gs,ty,n)=>gs.reduce((a,g,i)=>{const q=tzBNeed(ty[g],n[i]);a.wp+=q.wp;a.hs+=q.hs;return a},{wp:0,hs:0});
+const tzBQ=(g,ty,tn)=>(.6+tzStr(g)/250+tzLead(g)/250)*TZB_BASE[ty]*(.85+tn/100*.3);
+// 전투 준비(세이브는 아직 안 바꿔요)
+function tzBInit(s,from,to,gens,tr,ty0,rng){const A=s.C[from],B=s.C[to],af=A.o,bf=B.o;
+  const al=tzAlloc(gens,tr),aty=tzTyFix(gens,ty0||tzAutoTy(gens,al.n,A.wp||0,A.hs||0),al.n,A.wp||0,A.hs||0);
+  const dg=tzGensIn(s,to,bf).sort((a,b)=>tzPow(b)-tzPow(a)).slice(0,NSLOT),btr=Math.max(300,B.tr),bl=tzAlloc(dg,btr),bty=tzAutoTy(dg,bl.n,B.wp||0,B.hs||0);
+  const mkU=(g,ty,n,tn,side)=>({g,ty,n,n0:n,q:tzBQ(g,ty,tn),side,out:0,cap:0});
+  const U0=gens.map((g,i)=>mkU(g,aty[g],al.n[i],A.tn,0)),U1=dg.map((g,i)=>mkU(g,bty[g],bl.n[i],B.tn,1)).filter(u=>u.n>0);
+  if(bl.left>0)U1.push({g:'',ty:'inf',n:bl.left,n0:bl.left,q:1.04*(.85+B.tn/100*.3),side:1,out:0,cap:0});
+  const ua=tzBUse(gens,aty,al.n),ub=tzBUse(dg,bty,bl.n);
+  const best=(U,k)=>U.filter(u=>u.g).reduce((m,u)=>Math.max(m,k(u.g)),0);
+  const L0=gens.slice().sort((a,b)=>tzLead(b)-tzLead(a))[0],L1=dg.slice().sort((a,b)=>tzLead(b)-tzLead(a))[0]||'';
+  const mor=g=>Math.max(40,Math.min(90,Math.round(60+(g?tzLead(g):40)/10)));
+  return {k:from,to,af,bf,tr,left:al.left,U:[U0,U1],M:[mor(L0),mor(L1)],L:[L0,L1],ph:0,log:[],duel:0,done:0,win:0,ask:null,use:[ua,ub],
+    I:[best(U0,tzInt),best(U1,tzInt)],r:rng||tzRng,cm:[[],[]],last:[null,null],pass:!!TZ_PASS[to],df:B.df}}
+const tzBLive=(bt,i)=>bt.U[i].filter(u=>!u.out&&u.n>0);
+const tzBSum=(bt,i)=>tzBLive(bt,i).reduce((a,u)=>a+u.n,0);
+const tzBSum0=(bt,i)=>bt.U[i].reduce((a,u)=>a+u.n0,0);
+const tzBSchP=(bt,i)=>Math.max(.1,Math.min(.85,.35+(bt.I[i]-bt.I[1-i])/150));
+const tzBGn=u=>u.g?tzName(u.g):'수비군';
+// AI 작전
+function tzBAi(bt,i){const me=tzBLive(bt,i),en=tzBLive(bt,1-i),r=bt.r();if(!me.length)return 'atk';
+  const mine=tzBSum(bt,i),foe=Math.max(1,tzBSum(bt,1-i)),cav=me.filter(u=>u.ty==='cav').reduce((a,u)=>a+u.n,0)/Math.max(1,mine),arc=me.filter(u=>u.ty==='arc').reduce((a,u)=>a+u.n,0)/Math.max(1,mine);
+  if(bt.I[i]-bt.I[1-i]>=15&&r<.55)return 'sch';
+  if(i===1&&mine/foe<.8&&r<.7)return 'def';
+  if((cav>.35||arc>.45)&&(bt.ph===0||(i===0&&bt.ph===2))&&r<.75)return 'chg';
+  if(i===0&&bt.ph===2&&r<.5)return 'chg';
+  if(bt.I[i]-bt.I[1-i]>=5&&r<.25)return 'sch';
+  return r<.12?'def':'atk'}
+// 한 국면: 두 쪽 작전으로 피해를 주고받아요
+function tzBPhase(bt,a0,a1){const act=[a0,a1],lg=[],start=[tzBSum(bt,0),tzBSum(bt,1)],mf=[.6+bt.M[0]/175,.6+bt.M[1]/175];
+  lg.push(`${TZB_PH[bt.ph]} · 아군 ${TZB_ACT[a0][0]} · 적군 ${TZB_ACT[a1][0]}`);
+  const sch=[1,1];
+  for(let i=0;i<2;i++)if(act[i]==='sch'){if(bt.r()<tzBSchP(bt,i)){bt.M[1-i]=Math.max(0,bt.M[1-i]-15);const ex=Math.round(start[1-i]*.06);sch[i]=ex;lg.push(`${i?'적':'아군'} 계략 성공 · ${i?'아군':'적'} 사기 −15`)}
+    else{bt.M[i]=Math.max(0,bt.M[i]-5);sch[i]=0;lg.push(`${i?'적':'아군'} 계략 실패 · ${i?'적':'아군'} 사기 −5`)}}
+  const dmg=[bt.U[0].map(()=>0),bt.U[1].map(()=>0)];
+  for(let i=0;i<2;i++){const j=1-i,me=tzBLive(bt,i),en=tzBLive(bt,j),tot=en.reduce((a,u)=>a+u.n,0);if(!me.length||!tot)continue;
+    const take=act[j]==='def'?.55:act[j]==='chg'?1.25:1,defC=j===1?(1-bt.df/TZB_K.dfd)*(bt.pass?.87:1)*(act[j]==='def'?1:1):1;
+    me.forEach(u=>{let m=act[i]==='chg'?(u.ty==='cav'?1.5:u.ty==='arc'?(u.g&&tzLead(u.g)>=70?1.4:1.15):1.15):act[i]==='sch'?.6:act[i]==='def'?(i===1?.5:.5):1;
+      if(i===0&&u.ty==='inf')m*=1.2;  // 공성: 보병이 성벽 싸움에 강해요
+      const base=u.n*u.q*mf[i]*m*TZB_K.dmg*(.9+bt.r()*.2);
+      en.forEach(v=>{const c=TZB_ADV[u.ty]===v.ty?1.3:TZB_ADV[v.ty]===u.ty?.8:1;dmg[j][bt.U[j].indexOf(v)]+=base*(v.n/tot)*c*take*defC})});
+    if(sch[i]>1)en.forEach(v=>{dmg[j][bt.U[j].indexOf(v)]+=sch[i]*(v.n/tot)})}
+  for(let j=0;j<2;j++)bt.U[j].forEach((u,x)=>{if(u.out||!u.n)return;const d=Math.min(u.n,Math.round(dmg[j][x]));u.n-=d;
+    if(u.n<=Math.max(30,u.n0*.05)){u.n=0;u.out=1;bt.M[j]=Math.max(0,bt.M[j]-10);
+      const p=u.g?Math.max(.05,Math.min(.6,.25+(60-tzStr(u.g))/200)):0,S0=bt.s0;
+      if(u.g&&!(S0&&tzBSafe(S0,u.g))&&bt.r()<p){u.cap=1;lg.push(`${j?'적':'아군'} ${tzBGn(u)} 부대 궤멸 · ${tzBGn(u)} 포로`)}else lg.push(`${j?'적':'아군'} ${tzBGn(u)} 부대 궤멸${u.g&&S0&&tzBSafe(S0,u.g)?' · 명마로 빠져나갔어요':''}`)}});
+  const now=[tzBSum(bt,0),tzBSum(bt,1)],lf=[0,1].map(i=>start[i]?(start[i]-now[i])/start[i]:0);
+  for(let i=0;i<2;i++)bt.M[i]=Math.max(0,Math.min(100,Math.round(bt.M[i]-lf[i]*TZB_K.m1+(lf[1-i]-lf[i])*TZB_K.m2)));
+  lg.push(`아군 −${fmt(start[0]-now[0])} (사기 ${bt.M[0]}) · 적군 −${fmt(start[1]-now[1])} (사기 ${bt.M[1]})`);
+  bt.last=act;bt.ph++;bt.log.push(...lg);tzBCheck(bt)}
+const tzBBroke=(bt,i)=>!tzBLive(bt,i).length||tzBSum(bt,i)<tzBSum0(bt,i)*TZB_K.brk||bt.M[i]<=TZB_K.mb;
+function tzBCheck(bt){if(bt.done)return;const a=tzBBroke(bt,0),b=tzBBroke(bt,1);
+  if(a){bt.done=1;bt.win=0;bt.log.push('아군이 무너졌어요 · 퇴각')}
+  else if(b){bt.done=1;bt.win=1;bt.log.push('적군이 무너졌어요 · 성을 차지해요')}
+  else if(bt.ph>=3){bt.done=1;bt.win=0;bt.log.push('세 국면 안에 성을 떨어뜨리지 못했어요 · 퇴각')}}
+// 일기토: ch 쪽이 신청. 상대 쪽 응답은 resp(받기 acc · 대리 sub · 거절 ref), 없으면 AI가 정해요
+function tzBDuelPick(bt,ch){const C=tzBLive(bt,ch).filter(u=>u.g).sort((a,b)=>tzStr(b.g)-tzStr(a.g))[0],T=tzBLive(bt,1-ch).filter(u=>u.g);if(!C||!T.length)return null;
+  T.sort((a,b)=>tzStr(a.g)-tzStr(b.g));return {ch,c:C,t:bt.r()<.6?T[0]:T[T.length-1]}}
+function tzBDuelAi(bt,d){const bar=tzStr(d.c.g)-8;if(tzStr(d.t.g)>=bar)return 'acc';const sub=tzBLive(bt,1-d.ch).filter(u=>u.g&&tzStr(u.g)>=bar);return sub.length?'sub':'ref'}
+function tzBDuel(bt,d,resp){bt.duel=1;const side=d.ch,o=1-side,nm=x=>tzName(x.g),who=i=>i?'적':'아군';
+  if(resp==='ref'){bt.M[o]=Math.max(0,bt.M[o]-10);bt.log.push(`${who(side)} ${nm(d.c)}의 일기토 신청 · ${who(o)}이 거절 · ${who(o)} 사기 −10`);tzBCheck(bt);return}
+  let t=d.t;if(resp==='sub'){t=tzBLive(bt,o).filter(u=>u.g).sort((a,b)=>tzStr(b.g)-tzStr(a.g))[0]||t;bt.log.push(`${who(o)} ${nm(t)}이(가) ${nm(d.t)} 대신 나섰어요`)}
+  const p=1/(1+Math.exp(-(tzStr(d.c.g)-tzStr(t.g))/5)),cw=bt.r()<p,W=cw?d.c:t,L=cw?t:d.c,ws=W.side,ls=L.side;
+  L.n=Math.round(L.n*.7);bt.M[ls]=Math.max(0,bt.M[ls]-20);bt.M[ws]=Math.min(100,bt.M[ws]+5);
+  let tx=`일기토 ${nm(d.c)}(무력 ${tzStr(d.c.g)}) 대 ${nm(t)}(무력 ${tzStr(t.g)}) · ${nm(W)} 승리 · ${who(ls)} 사기 −20`;
+  if(bt.r()<.6&&!(bt.s0&&tzBSafe(bt.s0,L.g))){L.cap=1;L.out=1;tx+=` · ${nm(L)} 포로`}bt.log.push(tx);tzBCheck(bt)}
+// 남은 국면을 자동으로(플레이어 쪽도 AI 작전)
+function tzBAuto(bt){let guard=0;while(!bt.done&&guard++<10){if(bt.ask){const d=bt.ask;bt.ask=null;tzBDuel(bt,d,tzBDuelAi(bt,d));continue}
+  tzBPhase(bt,tzBAi(bt,0),tzBAi(bt,1));if(!bt.done&&bt.ph===1&&!bt.duel&&bt.r()<.35){const d=tzBDuelPick(bt,tzBTop(bt,0)>=tzBTop(bt,1)?0:1);if(d)tzBDuel(bt,d,tzBDuelAi(bt,d))}}}
+const tzBTop=(bt,i)=>tzBLive(bt,i).filter(u=>u.g).reduce((m,u)=>Math.max(m,tzStr(u.g)),0);
+// 결과 반영
+function tzBApply(s,bt){const A=s.C[bt.k],B=s.C[bt.to],af=bt.af,bf=bt.bf,to=bt.to,out=[],gens=bt.U[0].map(u=>u.g);
+  const surv=i=>bt.U[i].reduce((a,u)=>a+(u.cap?0:u.n),0),s0=[surv(0),surv(1)],f0=[s0[0]/Math.max(1,tzBSum0(bt,0)),s0[1]/Math.max(1,tzBSum0(bt,1))];
+  // 무기·군마: 쓴 만큼 빼고, 살아남은 비율만큼 돌아와요. 이긴 쪽은 진 쪽이 잃은 것의 30%를 주워요
+  const ua=bt.use[0],ub=bt.use[1];A.wp=Math.max(0,(A.wp||0)-ua.wp);A.hs=Math.max(0,(A.hs||0)-ua.hs);B.wp=Math.max(0,(B.wp||0)-ub.wp);B.hs=Math.max(0,(B.hs||0)-ub.hs);
+  const back=(u,f)=>({wp:Math.round(u.wp*f),hs:Math.round(u.hs*f)}),ba=back(ua,f0[0]),bb=back(ub,f0[1]),la={wp:ua.wp-ba.wp,hs:ua.hs-ba.hs},lb={wp:ub.wp-bb.wp,hs:ub.hs-bb.hs};
+  const add=(C,x,m)=>{C.wp=Math.min(99999,(C.wp||0)+Math.round(x.wp*m));C.hs=Math.min(99999,(C.hs||0)+Math.round(x.hs*m))};
+  gens.forEach(g=>{s.G[g].mr=Math.min(9999,s.G[g].mr+(bt.win?40:20));s.G[g].ac=1});
+  bt.U[1].forEach(u=>{if(u.g&&s.G[u.g])s.G[u.g].mr=Math.min(9999,s.G[u.g].mr+(bt.win?10:20))});
+  const flee=(g,fo)=>{const nb=TZ_ADJ[to].filter(n=>s.C[n].o===fo&&n!==to);if(fo!=='neu'&&nb.length)s.G[g].c=nb[0];else Object.assign(s.G[g],{o:'free',c:to,fd:0})};
+  const capd=new Set(bt.U[1].filter(u=>u.cap&&u.g).map(u=>u.g)),capA=bt.U[0].filter(u=>u.cap).map(u=>u.g);
+  A.tr=Math.min(99999,A.tr+bt.left);
+  if(bt.win){out.push(`${tzFN(s,af)}이(가) ${tzCN(to)}을(를) 점령했어요`);
+    tzGensIn(s,to,bf).forEach(g=>{if(capd.has(g)||tzRng()<(bf==='neu'?.5:.4)){const it=tzItOf(s,g);out.push(`${tzName(g)} 포로${it?` · 보물 ${IMAP[it].name} 획득`:''}`);tzCapture(s,g,af,to)}else flee(g,bf)});
+    B.o=af;B.dl='self';B.gov='';B.tr=s0[0];B.tn=A.tn;add(B,ba,1);add(B,lb,.3);gens.forEach(g=>{if(s.G[g].o===af)s.G[g].c=to});
+    tzGL(s).forEach(b=>{if(s.G[b.id].o==='free'&&s.G[b.id].c===to)s.G[b.id].fd=0});
+    if(capA.length)out.push(`${capA.map(tzName).join('·')}은(는) 붙잡혔다가 성을 차지하며 풀려났어요`)}
+  else{out.push(`${tzFN(s,af)}이(가) ${tzCN(to)} 공격에 실패했어요`);A.tr=Math.min(99999,A.tr+Math.round(s0[0]*.85));B.tr=s0[1];add(A,ba,1);add(B,bb,1);add(B,la,.3);
+    capA.forEach(g=>{if(bf!=='neu'){out.push(`${tzName(g)} 포로`);tzCapture(s,g,bf,to)}});
+    capd.forEach(g=>{if(s.G[g]&&s.G[g].c===to&&s.G[g].o===bf){out.push(`${tzName(g)}을(를) 붙잡아 왔어요`);tzCapture(s,g,af,bt.k)}})}
+  const lost=tzBSum0(bt,0)-s0[0],lost1=tzBSum0(bt,1)-s0[1];out.push(`잃은 병사 ${tzFN(s,af)} ${fmt(Math.max(0,lost))} · ${tzFN(s,bf)} ${fmt(Math.max(0,lost1))}`);
+  tzLordCheck(s);return {win:bt.win,txt:out}}
+// AI·위임·결과만 보기: 바로 끝까지
+function tzBattle(s,from,to,gens,tr,ty){const bt=tzBInit(s,from,to,gens,tr,ty,tzRng);bt.s0=s;tzBAuto(bt);const o=tzBApply(s,bt);o.bt=bt;return o}
+// ---- 직접 지휘 ----
+let tzBT=null;
+document.addEventListener('click',e=>{if(tzBT&&e.target&&e.target.id==='sheet')e.stopPropagation()},true);
+document.addEventListener('keydown',e=>{if(tzBT&&e.key==='Escape')e.stopImmediatePropagation()},true);
+function tzBUnitHtml(bt,u){const w=Math.round(u.n/Math.max(1,u.n0)*100),T=TZB_TY[u.ty];
+  return `<div class="tzb-u${u.out?' out':''}"><i class="tzb-ty ${u.ty}" title="${T[0]}">${T[1]}</i>${u.g?seal(GMAP[u.g],'sm'):''}<span class="nm">${esc(tzBGn(u))}${u.g?`<small>무${tzStr(u.g)} 통${tzLead(u.g)}</small>`:''}</span><span class="tzb-bar"><b style="width:${w}%"></b></span><em>${u.cap?'포로':u.out?'궤멸':fmt(u.n)}</em></div>`}
+function tzBSheet(){const bt=tzBT;if(!bt)return;const s=tzState(),side=i=>{const nm=i?tzFN(s,bt.bf):tzFN(s,bt.af),m=bt.M[i];
+    return `<div class="tzb-side"><h3><span style="color:${tzCol(i?bt.bf:bt.af)}">${esc(nm)}</span><small>병사 ${fmt(tzBSum(bt,i))}/${fmt(tzBSum0(bt,i))}</small></h3>
+     <div class="tzb-mor"><span>사기 ${m}</span><span class="tzb-bar"><b style="width:${m}%;background:${m<=30?'var(--cinnabar)':'var(--jade)'}"></b></span></div>${bt.U[i].map(u=>tzBUnitHtml(bt,u)).join('')}</div>`};
+  const pills=TZB_PH.map((p,i)=>`<span class="tzb-ph${i===bt.ph&&!bt.done?' on':i<bt.ph?' did':''}">${p}</span>`).join('');
+  let ctl='';
+  if(bt.done)ctl=`<div class="tzb-res ${bt.win?'win':'lose'}">${bt.win?'승리 · '+tzCN(bt.to)+' 점령':'패배 · 퇴각'}</div>${(bt.txt||[]).map(t=>`<p class="sub" style="margin:2px 0">${esc(t)}</p>`).join('')}<button type="button" class="btn red wide" data-tzbx="ok" style="margin-top:8px">확인</button>`;
+  else if(bt.ask){const d=bt.ask;ctl=`<div class="tzb-ask"><b>적 ${esc(tzName(d.c.g))}(무력 ${tzStr(d.c.g)})이(가) ${esc(tzName(d.t.g))}(무력 ${tzStr(d.t.g)})에게 일기토를 걸어 왔어요</b>
+     <p class="sub" style="margin:4px 0 8px">지면 그 부대 병사 −30% · 사기 −20, 60% 확률로 포로가 돼요. 거절하면 사기 −10이에요.</p>
+     <div class="row" style="gap:6px"><button type="button" class="btn red" style="flex:1" data-tzbx="dacc">받기</button><button type="button" class="btn" style="flex:1" data-tzbx="dsub">대리(가장 센 장수)</button><button type="button" class="btn ghost" style="flex:1" data-tzbx="dref">거절</button></div></div>`}
+  else ctl=`<div class="tzb-acts">${Object.entries(TZB_ACT).map(([k,v])=>`<button type="button" data-tzbx="${k}"><b>${v[0]}</b><small>${k==='sch'?`성공 ${Math.round(tzBSchP(bt,0)*100)}% · 지력 ${bt.I[0]} 대 ${bt.I[1]}`:v[1]}</small></button>`).join('')}</div>
+     <div class="row" style="gap:6px;margin-top:6px"><button type="button" class="btn ghost" style="flex:1" data-tzbx="duel" ${bt.duel||!tzBDuelPick(Object.assign({},bt,{r:()=>.5}),0)?'disabled':''}>일기토 신청</button><button type="button" class="btn ghost" style="flex:1" data-tzbx="auto">나머지 자동</button></div>`;
+  const html=`<div class="sheet-h"><h2 style="margin:0">${tzCN(bt.to)} 전투</h2></div><div class="tzb-phs">${pills}</div><div class="tzb-sides">${side(0)}${side(1)}</div>
+   <div class="tzb-log">${bt.log.slice(-8).map(l=>`<div>${esc(l)}</div>`).join('')||'<div class="sub" style="margin:0">작전을 골라요. 세 국면 안에 적을 무너뜨려야(병사 30% 아래 · 사기 20 이하) 성을 차지해요.</div>'}</div>${ctl}`;
+  const sb=$('#sheet .sheet-body');if(!$('#sheet').hidden&&sb&&sb.querySelector('.tzb-phs'))sb.innerHTML=html;else openSheet(html);
+  const lg=$('#sheet .tzb-log');if(lg)lg.scrollTop=lg.scrollHeight}
+function tzBFin(){const bt=tzBT,s=tzState(),A=s.C[bt.k];
+  const ok=A&&A.o===s.me&&s.C[bt.to].o!==s.me&&bt.U[0].every(u=>s.G[u.g]&&s.G[u.g].o===s.me&&s.G[u.g].c===bt.k&&!s.G[u.g].ac)&&A.tr>=bt.tr&&A.fd>=bt.food;
+  if(!ok){bt.txt=['상황이 바뀌어 이번 출진은 없던 일이 됐어요'];return}
+  A.tr-=bt.tr;A.fd-=bt.food;bt.s0=s;const o=tzBApply(s,bt);bt.txt=o.txt;o.txt.forEach(t=>tzLog(s,t,'戰'));save()}
+function tzBAfter(){const bt=tzBT;if(!bt.done&&bt.ph===1&&!bt.duel&&bt.r()<.35){const ch=tzBTop(bt,0)>=tzBTop(bt,1)?0:1,d=tzBDuelPick(bt,ch);if(d){if(ch===1)bt.ask=d;else tzBDuel(bt,d,tzBDuelAi(bt,d))}}
+  if(bt.done&&!bt.txt)tzBFin()}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tzbx]');if(!b||b.disabled||!tzBT)return;const bt=tzBT,v=b.dataset.tzbx;
+  if(v==='ok'){tzBT=null;closeSheet();renderView();return}
+  if(bt.done)return;
+  if(v==='dacc'||v==='dsub'||v==='dref'){const d=bt.ask;bt.ask=null;tzBDuel(bt,d,v.slice(1));}
+  else if(v==='duel'){if(bt.duel)return;const d=tzBDuelPick(bt,0);if(d)tzBDuel(bt,d,tzBDuelAi(bt,d))}
+  else if(v==='auto'){tzBAuto(bt)}
+  else if(TZB_ACT[v]){tzBPhase(bt,v,tzBAi(bt,1));tzBAfter()}
+  if(bt.done&&!bt.txt)tzBFin();tzBSheet()});
+// ---- 출진 시트: 장수마다 병종 고르기 ----
+function tzTyPick(s,k,D,tr){if(!D.gs.length)return '';const C=s.C[k];D.ty=D.ty||{};const al=tzAlloc(D.gs,tr);
+  D.gs.forEach((g,i)=>{if(!TZB_TY[D.ty[g]])D.ty[g]=tzAutoTy([g],[al.n[i]],C.wp||0,C.hs||0)[g]});
+  const use=tzBUse(D.gs,D.ty,al.n),fix=tzTyFix(D.gs,D.ty,al.n,C.wp||0,C.hs||0),bad=D.gs.filter(g=>fix[g]!==D.ty[g]);
+  return `<h3 style="margin:8px 0 6px">병종</h3><div class="tzb-pick">${D.gs.map((g,i)=>`<div class="tzb-pr"><span class="nm">${esc(tzName(g))}<small>${fmt(al.n[i])}명 · 통솔 ${tzLead(g)}</small></span><div class="tz-dl">${Object.entries(TZB_TY).map(([t,v])=>`<button type="button" data-tzty="${g}|${t}" aria-pressed="${D.ty[g]===t}">${v[1]} ${v[0]}</button>`).join('')}</div></div>`).join('')}</div>
+   <p class="sub" style="margin:6px 0 0;font-size:12px">기병은 궁병에, 궁병은 보병에, 창병은 기병에 강해요(×1.3). 궁병·창병은 병사 10명에 무기 1, 기병은 병사 10명에 군마 1이 들어요. 필요 무기 ${fmt(use.wp)}/${fmt(C.wp||0)} · 군마 ${fmt(use.hs)}/${fmt(C.hs||0)}${bad.length?` · <b style="color:var(--cinnabar)">모자라서 ${bad.map(tzName).join('·')}은(는) 보병으로 나가요</b>`:''}${al.left?` · 장수가 이끌 수 있는 수(통솔×100)를 넘는 병사 ${fmt(al.left)}명은 성에 남아요`:''}</p>`}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tzty]');if(!b||!tzDraft)return;const[g,t]=b.dataset.tzty.split('|');tzDraft.ty=tzDraft.ty||{};tzDraft.ty[g]=t;tzCmdSheet('war')});
+function tzGo(mode){const s=tzState(),D=tzDraft;if(!D)return;const k=D.k;
+  if(D.c!=='war'){const r=D.c==='gift'?tzGift(s,k,D.g,D.tg):tzDo(s,k,D.c,D.g,D.c==='sab'?D.tg+'|'+(D.st||'df'):D.tg,D.it);tzDraft=null;closeSheet();if(typeof r==='string')toast(r);else{toast(`${tzName(D.g)} · ${r.msg}`);tzLog(s,`${tzCN(k)} ${tzName(D.g)} · ${r.msg}`,'令')}save();renderView();return}
+  const C=s.C[k],tr=Math.round(C.tr*D.pct/100),food=Math.round(tr*.3*(tzSea(s.m)==='winter'?1.5:1)),to=D.tg;if(!D.gs.length||C.fd<food||tr<300)return;
+  const gs=D.gs.slice(),ty=Object.assign({},D.ty||{});tzDraft=null;
+  if(mode==='watch'){const bt=tzBInit(s,k,to,gs,tr,ty,mulberry((Date.now()^s.sd)>>>0));bt.food=food;bt.s0=s;tzBT=bt;tzBSheet();return}
+  C.tr-=tr;C.fd-=food;const o=tzBattle(s,k,to,gs,tr,ty);closeSheet();o.txt.forEach(t=>tzLog(s,t,'戰'));save();toast(o.txt[0]);renderView()}
+// ---- 군비: 무기·군마 사기 ----
+const tzArmP=(k,key)=>key==='wp'?150:TZ_HORSE[k]?125:250;  // 100개 값
+function tzArmBuy(s,k,key,n){const C=s.C[k],v=Math.ceil(n/100*tzArmP(k,key));if(C.g<v)return 0;C.g-=v;C[key]=Math.min(99999,(C[key]||0)+n);return v}
+function tzArmSheet(){const s=tzState(),k=tzSel,C=s.C[k];if(C.o!==s.me)return;
+  const row=(key,nm)=>`<h3 style="margin:10px 0 6px">${nm} ${fmt(C[key]||0)} · 100개에 금 ${tzArmP(k,key)}${key==='hs'&&TZ_HORSE[k]?' (군마 산지 반값)':''}</h3><div class="chips">${[100,500,1000].map(n=>{const v=Math.ceil(n/100*tzArmP(k,key));return `<button type="button" data-tzarm="${key}:${n}" ${C.g<v?'disabled':''}>${fmt(n)}개 · 금 ${fmt(v)}</button>`}).join('')}</div>`;
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">${tzCN(k)} · 군비</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub" style="margin:0">이 성 금 ${fmt(C.g)} · 장수 행동을 쓰지 않아요. 궁병·창병은 병사 10명에 무기 1, 기병은 병사 10명에 군마 1이 들어요. 싸우고 살아남은 병사만큼 돌아오고, 이기면 적이 잃은 것의 30%를 주워요. 수송하면 절반이 함께 가요.</p>
+   ${row('wp','무기')}${row('hs','군마')}<p class="sub" style="margin:8px 0 0;font-size:12px">군마 산지: ${Object.keys(TZ_HORSE).map(tzCN).join('·')}</p>`)}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tzarm]');if(!b||b.disabled)return;const s=tzState(),[key,n]=b.dataset.tzarm.split(':'),v=tzArmBuy(s,tzSel,key,+n);
+  if(v){const m=`${key==='wp'?'무기':'군마'} +${fmt(+n)} · 금 −${fmt(v)}`;toast(m);tzLog(s,`${tzCN(tzSel)} 군비 · ${m}`,'令');save();renderView()}tzArmSheet()});
+// AI·위임: 전선 성은 금이 넉넉하면 무기·군마를 채워요
+function tzArmAuto(s,k){const C=s.C[k],out=[];if(!tzFront(s,k))return '';const want=Math.round(C.tr/20);
+  if((C.wp||0)<want&&C.g>=1500){const n=Math.min(1000,Math.ceil((want-(C.wp||0))/100)*100);if(tzArmBuy(s,k,'wp',n))out.push('무기 +'+fmt(n))}
+  if((C.hs||0)<want&&C.g>=(TZ_HORSE[k]?1200:2000)){const n=Math.min(1000,Math.ceil((want-(C.hs||0))/100)*100);if(tzArmBuy(s,k,'hs',n))out.push('군마 +'+fmt(n))}
+  return out.length?'군비 '+out.join(' · '):''}
+function tzAiArm(s,f){for(const k of tzCities(s,f))tzArmAuto(s,k)}
+function tzArmLine(s,k,my){const C=s.C[k];if(!my)return '';return `<p class="tz-armln">무기 <b>${fmt(C.wp||0)}</b> · 군마 <b>${fmt(C.hs||0)}</b>${TZ_HORSE[k]?' · <span class="tz-tag home">馬</span> 군마 산지':''}</p>`}
+// ---- 성 목록(격자) · 태수 추천 ----
+const tzGovSc=g=>tzPol(g)+tzCha(g)*.4+tzLead(g)*.2;
+const tzGovRec=(s,k)=>tzGensIn(s,k,s.C[k].o).sort((a,b)=>tzGovSc(b)-tzGovSc(a))[0]||'';
+function tzGridHtml(s){const mine=tzMine(s).slice().sort((a,b)=>TZ_C[a][0]-TZ_C[b][0]),nog=mine.filter(k=>!tzGov(s,k)&&tzGovRec(s,k));
+  const card=k=>{const C=s.C[k],t=tzTag(s,k),dl=tzDlOf(s,k),gv=tzGov(s,k),w=[];if(C.ml<40)w.push('民');if(C.fd<C.tr*.12)w.push('糧');if(gv&&!tzHome(s,k)&&s.G[gv].ly<50)w.push('叛');if(s.lc&&s.lc.k===k)w.push('蝗');
+    return `<button type="button" class="tz-cc tz-gc" data-tzk="${k}" aria-pressed="${tzSel===k}"><b>${tzCN(k)} <span class="tz-tag ${t[0]}">${t[1]}</span>${w.map(x=>`<i class="tz-wb">${x}</i>`).join('')}</b>
+     <small>병 ${fmt(C.tr)} · 금 ${fmt(C.g)} · 량 ${fmt(C.fd)}</small><small>${gv?`태수 ${esc(tzName(gv))}`:'<span style="color:var(--cinnabar)">태수 없음</span>'} · ${dl==='self'?`명령 ${tzIdle(s,k).length}`:TZ_DL[dl][0]}</small></button>`};
+  return `<div class="tz-strip tz-grid">${nog.length?`<button type="button" class="tz-gall" data-tzgr="all">태수 없는 성 ${nog.length}곳에 추천 장수 임명</button>`:''}${mine.map(card).join('')}</div>`}
+function tzGovRecBtn(s,k){if(tzGov(s,k))return '';const r=tzGovRec(s,k);return r?`<button type="button" class="tz-gov" data-tzgr="${k}">추천 <b>${esc(tzName(r))}</b> 임명</button>`:''}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tzgr]');if(!b)return;const s=tzState(),v=b.dataset.tzgr,ks=v==='all'?tzMine(s).filter(k=>!tzGov(s,k)):[v],done=[];
+  ks.forEach(k=>{if(!s.C[k]||s.C[k].o!==s.me)return;const r=tzGovRec(s,k);if(r){s.C[k].gov=r;done.push(`${tzCN(k)} ${tzName(r)}`)}});
+  if(done.length){save();toast(done.length>2?`${done.length}곳에 태수를 임명했어요`:`태수 임명 · ${done.join(' · ')}`)}renderView()});
+function tzGovSheet(){const s=tzState(),k=tzSel,gs=tzGensIn(s,k,s.me).sort((a,b)=>tzGovSc(b)-tzGovSc(a)),cur=tzGov(s,k),rec=gs[0];
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">${tzCN(k)} · 태수 임명</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub" style="margin:0 0 8px">태수는 매달 농업·상업 +(1 + 정치/25), 방어 +통솔/50, 민심 +매력/50만큼 올려요. 행동을 쓰지 않고, 태수도 다른 명령을 할 수 있어요. 추천은 정치 + 매력×0.4 + 통솔×0.2가 가장 높은 장수예요.</p>
+   ${rec&&rec!==cur?`<button type="button" class="btn red wide" data-tzgov="${rec}" style="margin-bottom:8px">추천: ${esc(tzName(rec))} 임명 (정치 ${tzPol(rec)} · 매력 ${tzCha(rec)} · 통솔 ${tzLead(rec)})</button>`:''}
+   ${gs.length?`<div class="dl-pick">${gs.map(g=>tzPickBtn(s,g,`data-tzgov="${g}"`,cur===g)).join('')}</div><button type="button" class="btn ghost wide" style="margin-top:8px" data-tzgov="">태수 없음</button>`:'<p class="sub">이 성에 장수가 없어요.</p>'}`)}
+// ---- 제목 화면(나가기): 이어 하기 · 새로 시작 · 불러오기 · 도움말 · 설정 ----
+function tzTitle(v){tzSlots();const cur=tzState(),slot=i=>{const x=tzSlotOf(i);return x&&x.on};
+  const rows=act=>[0,1,2].map(i=>{const on=slot(i),me=i===S.tzi;return `<div class="tzt-slot"><button type="button" class="tzt-sb" ${act==='load'?(on?`data-tzslot2="${i}"`:'disabled'):`data-tznew="${i}"`}><b>${i+1}칸${me?' · 지금':''}</b><small>${esc(tzSlotLabel(i))}</small></button>${act==='load'&&on?`<button type="button" class="tzt-del" data-tzsdel="${i}" aria-label="${i+1}칸 지우기">지우기</button>`:''}</div>`}).join('');
+  let body='';
+  if(v==='load')body=`<h3>불러오기</h3>${rows('load')}<button type="button" class="tzt-b ghost" data-tzt0="main">뒤로</button>`;
+  else if(v==='new')body=`<h3>새로 시작할 칸</h3><p class="sub" style="margin:0 0 8px;text-align:center">판이 있는 칸을 고르면 그 판은 지워져요.</p>${rows('new')}<button type="button" class="tzt-b ghost" data-tzt0="main">뒤로</button>`;
+  else body=`${cur.on?'<button type="button" class="tzt-b" data-close>이어 하기</button>':''}<button type="button" class="tzt-b" data-tzt0="new">새로 시작</button><button type="button" class="tzt-b" data-tzt0="load">불러오기</button><button type="button" class="tzt-b" data-tzhelp>도움말</button><button type="button" class="tzt-b" data-tzt0="set">설정</button>`;
+  openSheet(`<div class="tzt"><div class="tzt-in"><div class="tzt-hz">群雄割據</div><h2>군웅할거</h2>${body}<p class="tzt-v">v${GW_VER}</p></div></div>`);$('#sheet').classList.add('tzt-sheet')}
+const tzSlotSheet=()=>tzTitle('load');
+document.addEventListener('click',e=>{if(e.target.closest('[data-tzsl]')){tzTitle('load');return}
+  const t0=e.target.closest('[data-tzt0]');if(t0){const v=t0.dataset.tzt0;if(v==='set'){closeSheet();gwMenu()}else tzTitle(v);return}
+  const ld=e.target.closest('[data-tzslot2]');if(ld){const i=+ld.dataset.tzslot2;if(i!==S.tzi)tzSlotGo(i);save();closeSheet();renderView();$('#view').scrollTop=0;toast(`${i+1}칸 · ${tzSlotLabel(i)}`);return}
+  const nw=e.target.closest('[data-tznew]');if(nw){const i=+nw.dataset.tznew,x=tzSlotOf(i);if(x&&x.on&&!confirm(`${i+1}칸의 판(${tzSlotLabel(i)})을 지우고 새로 시작할까요?`))return;
+    if(i!==S.tzi)tzSlotGo(i);const done=tzState().done;S.tz=cleanTz({done});tzSel='';save();closeSheet();renderView();$('#view').scrollTop=0;toast(`${i+1}칸 · 시나리오를 골라요`);return}
+  const d=e.target.closest('[data-tzsdel]');if(!d)return;const i=+d.dataset.tzsdel;
+  if(!confirm(`${i+1}칸의 판(${tzSlotLabel(i)})을 지울까요? 되돌릴 수 없어요.`))return;if(i===S.tzi){const done=tzState().done;S.tz=cleanTz({done});tzSel=''}else S.tzs[i]=null;save();renderView();tzTitle('load');toast(`${i+1}칸을 지웠어요`)});
+document.addEventListener('click',e=>{if(e.target.closest('[data-tzhelp]'))openHelp(0)});
 
 boot();
 </script>
