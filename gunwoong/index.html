@@ -8724,8 +8724,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.2.0';
-const GW_NOTICES=[{v:'1.2.0',date:'2026-10-31',title:'군웅할거 v1.2 · 외교·계략',items:[
+const GW_VER='1.2.1';
+const GW_NOTICES=[{v:'1.2.1',date:'2026-10-31',title:'군웅할거 v1.2.1 · 남의 성에서 바로',items:[
+  '지도에서 다른 군주나 공백지의 성을 누르면 성 카드 위에 행동 줄이 생겨요. 출진 · 파괴 · 내응 · 권유 · 독립 유도 · 정전 · 동맹 · 외교 현황을 바로 누를 수 있어요.',
+  '출진·파괴는 이웃한 내 성 중 병력이 가장 많은 성에서 떠나요(버튼 옆 작은 글씨가 출발 성). 이웃한 내 성이 없으면 \'이웃한 내 성이 없어요\'라고 알려줘요.',
+  '제목 화면 \'이어 하기\' 아래에 몇 번째 칸인지, 군주, 연월을 작게 보여줘요.']},
+ {v:'1.2.0',date:'2026-10-31',title:'군웅할거 v1.2 · 외교·계략',items:[
   '세력 사이에 관계(우호 · 보통 · 험악)가 생겼어요. 싸우거나 계략을 쓰면 험악해지고, 동맹·정전·사신 요구를 들어주면 누그러져요. 험악한 상대일수록 먼저 쳐들어와요. 계략 탭 \'외교 현황\'과 천하 표에서 볼 수 있어요.',
   '사신: 3~4달에 한 번꼴로 이웃 세력이 사신을 보내 금·군량을 요구하거나 동맹을 제안해요(우리가 아주 약하면 항복을 권해요). 평정 맨 위에서 답하고, 답하지 않으면 거절한 걸로 쳐요.',
   '새 계략 5가지: 공동 작전(동맹에게 적 성 공격 요청) · 정전(금을 주고 1년 불가침) · 내응(적 장수와 약속, 3달 안에 그 성을 치면 전투 중에 넘어와요) · 이간책(두 적 세력을 싸우게) · 독립 유도(충성 낮은 적 태수를 독립시켜요).',
@@ -9041,7 +9045,7 @@ function tzTitle(v){tzSlots();const cur=tzState(),slot=i=>{const x=tzSlotOf(i);r
   let body='';
   if(v==='load')body=`<h3>불러오기</h3>${rows('load')}<button type="button" class="tzt-b ghost" data-tzt0="main">뒤로</button>`;
   else if(v==='new')body=`<h3>새로 시작할 칸</h3><p class="sub" style="margin:0 0 8px;text-align:center">판이 있는 칸을 고르면 그 판은 지워져요.</p>${rows('new')}<button type="button" class="tzt-b ghost" data-tzt0="main">뒤로</button>`;
-  else body=`${cur.on?'<button type="button" class="tzt-b main" data-close>이어 하기</button>':''}<button type="button" class="tzt-b" data-tzt0="new">새로 시작</button><button type="button" class="tzt-b" data-tzt0="load">불러오기</button><button type="button" class="tzt-b" data-tzhelp>도움말</button><button type="button" class="tzt-b" data-tzt0="set">설정</button>`;
+  else body=`${cur.on?`<button type="button" class="tzt-b main" data-close>이어 하기<small>${(S.tzi|0)+1}칸 · ${esc(tzName(cur.me))} · ${cur.y}년 ${cur.m}월</small></button>`:''}<button type="button" class="tzt-b" data-tzt0="new">새로 시작</button><button type="button" class="tzt-b" data-tzt0="load">불러오기</button><button type="button" class="tzt-b" data-tzhelp>도움말</button><button type="button" class="tzt-b" data-tzt0="set">설정</button>`;
   openSheet(`<div class="tzt"><div class="tzt-in"><div class="tzt-hz">群雄割據</div><h2>군웅할거</h2>${body}<p class="tzt-v">v${GW_VER}</p></div></div>`);$('#sheet').classList.add('tzt-sheet')}
 const tzSlotSheet=()=>tzTitle('load');
 document.addEventListener('click',e=>{if(e.target.closest('[data-tzsl]')){tzTitle('load');return}
@@ -9515,6 +9519,38 @@ document.addEventListener('click',e=>{if(!e.target.closest('[data-tzzn]'))return
 HELP.forEach(c=>{if(c.t==='평정·군사')c.rows.push(['주 경계','지도에 13주를 옅게 칠해 보여요. 다 가진 주는 금색 \'평정\', 일부만 가진 주는 초록 \'2/3\'처럼 나오고, 마저 차지해야 할 성에는 점선 고리가 둘려요. 지도 왼쪽 위 \'주 경계\'로 켜고 꺼요.'])});
 // 출진 대상에 주 · 점령하면 주 평정
 function tzZTag(s,n){const z=TZ_ZK[n],ks=TZ_ZH[z][1],left=ks.filter(k=>s.C[k].o!==s.me);return `${TZ_ZH[z][0]}${left.length===1&&left[0]===n&&ks.length>1||ks.length===1?' · 점령하면 평정!':` ${ks.length-left.length}/${ks.length}`}`}
+
+// ── v1.2.1: 남의 성 카드에서 바로 행동 ──
+function tzQaSrc(s,k,c){const T=s.C[k],o=T.o,adj=TZ_ADJ[k].filter(n=>s.C[n].o===s.me&&tzIdle(s,n).length);
+  const best=a=>a.sort((x,y)=>s.C[y].tr-s.C[x].tr)[0]||'';
+  if(c==='war'||c==='sab')return tzAlly(s,s.me,o)?'':best(adj);
+  if(c==='prs')return s.F[o]&&tzGensIn(s,k,o).some(g=>g!==s.F[o].lord)?best(adj):'';
+  if(c==='nae')return best(adj.filter(n=>tzNaeTg(s,n).some(g=>s.G[g].c===k)));
+  if(c==='ind')return best(adj.filter(n=>tzIndTg(s,n).includes(k)));
+  if(c==='tru'||c==='ali'){if(!s.F[o]||(c==='tru'&&(tzAllyR(s,s.me,o)||tzTruce(s,s.me,o)))||(c==='ali'&&tzAllyR(s,s.me,o)))return '';
+    const all=tzIdleC(s),key=tzCha;return all.sort((x,y)=>Math.max(0,...tzIdle(s,y).map(key))-Math.max(0,...tzIdle(s,x).map(key)))[0]||''}
+  return ''}
+const TZ_QA=[['war','출진'],['sab','파괴'],['nae','내응'],['prs','권유'],['ind','독립 유도'],['tru','정전'],['ali','동맹']];
+function tzQaRow(s,k){const o=s.C[k].o;if(o===s.me||s.end)return '';const near=TZ_ADJ[k].some(n=>s.C[n].o===s.me);
+  const bs=TZ_QA.filter(([c])=>o!=='neu'||c==='war'||c==='sab').map(([c,nm])=>{const src=tzQaSrc(s,k,c);return src?`<button type="button" data-tzqa="${c}|${k}" title="${tzCN(src)}에서">${nm}<small>${tzCN(src)}</small></button>`:''}).join('');
+  const dip=o!=='neu'?'<button type="button" data-tzqa="dip|'+k+'">외교 현황</button>':'';
+  return `<div class="tz-qa" role="group" aria-label="이 성에 할 일">${bs}${dip}${!near?'<span class="tz-qan">이웃한 내 성이 없어요</span>':(!bs?'<span class="tz-qan">지금 맡길 장수가 없어요</span>':'')}</div>`}
+{const _cc=tzCityCard;tzCityCard=function(s,k){const h=_cc.apply(this,arguments);if(!s.C[k]||s.C[k].o===s.me)return h;const r=tzQaRow(s,k);const i=h.indexOf('</div>');return i<0?h+r:h.slice(0,i+6)+r+h.slice(i+6)}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tzqa]');if(!b)return;e.stopPropagation();const s=tzState(),[c,k]=b.dataset.tzqa.split('|');if(!s.C[k])return;
+  if(c==='dip')return tzDipSheet();const src=tzQaSrc(s,k,c);if(!src){toast('지금은 할 수 없어요');return}const o=s.C[k].o;
+  tzSel=src;tzDraft=null;renderView();tzCmdSheet(c);const D=tzDraft;if(!D)return;
+  if(c==='war'||c==='sab'||c==='ind')D.tg=k;
+  else if(c==='tru'||c==='ali')D.tg=o;
+  else if(c==='nae'){const g=tzNaeTg(s,src).find(g=>s.G[g].c===k);if(g)D.tg=g}
+  else if(c==='prs'){const g=tzGensIn(s,k,o).filter(g=>g!==s.F[o].lord).sort((a,b)=>tzPrsP(s,D.g,b,'')-tzPrsP(s,D.g,a,''))[0];if(g)D.tg=g}
+  tzCmdSheet(c)},true);
+(()=>{const st=document.createElement('style');st.textContent=`.tz-qa{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 8px;align-items:center}
+.tz-qa button{font:inherit;font-size:13px;font-weight:700;padding:5px 10px;border-radius:999px;border:1px solid var(--line,#8886);background:var(--card2,transparent);color:inherit;cursor:pointer;display:inline-flex;gap:5px;align-items:baseline}
+.tz-qa button small{font-weight:400;font-size:11px;opacity:.7}
+.tz-qa button[data-tzqa^="war"]{border-color:#c0392b;color:#c0392b}
+.tz-qan{font-size:12px;opacity:.7}
+.tzt-b small{display:block;font-size:11.5px;font-weight:400;opacity:.78;margin-top:2px;letter-spacing:0}`;document.head.appendChild(st)})();
+HELP.forEach(c=>{if(c.t==='외교·계략')c.rows.push(['남의 성 누르기','지도나 천하 표에서 다른 군주·공백지 성을 누르면 성 카드에 행동 줄이 생겨요. 출진·파괴는 이웃한 내 성 중 병력이 가장 많은 성에서, 정전·동맹은 매력이 가장 높은 장수가 있는 성에서 시작해요. 버튼 옆 작은 글씨가 출발 성이에요.'])});
 
 boot();
 </script>
