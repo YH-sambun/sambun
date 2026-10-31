@@ -5168,7 +5168,8 @@ const tzGensIn=(s,k,o)=>tzGL(s).map(b=>b.id).filter(g=>s.G[g]&&s.G[g].c===k&&s.G
 const tzIdle=(s,k)=>!tzDirect(tzDlOf(s,k))?[]:tzGensIn(s,k,s.me).filter(g=>!s.G[g].ac);  // 위임한 성의 장수는 직접 명령 불가
 const tzIdleC=s=>tzMine(s).filter(k=>tzIdle(s,k).length);  // 행동 안 한 장수가 남은 직할 성
 const tzMine=s=>tzCities(s,s.me);
-const tzAlly=(s,a,b)=>a!==b&&a!=='neu'&&b!=='neu'&&!!s.F[a]&&s.F[a].al[b]>0;
+const tzAllyR=(s,a,b)=>a!==b&&a!=='neu'&&b!=='neu'&&!!s.F[a]&&s.F[a].al[b]>0;
+const tzAlly=(s,a,b)=>tzAllyR(s,a,b)||tzTruce(s,a,b);  // 정전 중에도 서로 공격하지 않아요
 const tzPow=g=>{const b=GMAP[g];return tzStr(g)+tzInt(g)*.6+tzLead(g)+b.rar*12};
 const tzCap=(C,key)=>key==='fa'||key==='co'?Math.floor(C.pop/100):key==='tr'?Math.round(C.pop*.12):100;
 // 거점: 군주가 있는 성(위임 불가) · 전선: 동맹이 아닌 남의 성과 맞닿은 성 · 나머지는 후방
@@ -5241,9 +5242,9 @@ function tzDo(s,k,cmd,g,tg,it){const C=s.C[k],G=s.G[g],cha=tzCha(g),f=G.o,lc=tzC
   else if(cmd==='mov'){if(!tg||!s.C[tg]||s.C[tg].o!==f||!TZ_ADJ[k].includes(tg))return '이웃한 내 성이 아니에요';G.c=tg;msg=`${tzCN(tg)}(으)로 이동`}
   else if(cmd==='snd'){if(!tg||!s.C[tg]||s.C[tg].o!==f||!TZ_ADJ[k].includes(tg))return '이웃한 내 성이 아니에요';const T=s.C[tg],a=Math.floor(C.g/2),d=Math.floor(C.fd/2),t=Math.floor(C.tr/2);
     if(t>0)T.tn=Math.round((T.tn*T.tr+C.tn*t)/(T.tr+t));C.g-=a;C.fd-=d;C.tr-=t;T.g=Math.min(99999,T.g+a);T.fd=Math.min(99999,T.fd+d);T.tr=Math.min(99999,T.tr+t);const w=Math.floor((C.wp||0)/2),h=Math.floor((C.hs||0)/2);C.wp=(C.wp||0)-w;C.hs=(C.hs||0)-h;T.wp=Math.min(99999,(T.wp||0)+w);T.hs=Math.min(99999,(T.hs||0)+h);msg=`${tzCN(tg)}(으)로 금 ${fmt(a)} · 군량 ${fmt(d)} · 병사 ${fmt(t)}${w||h?` · 무기 ${fmt(w)} · 군마 ${fmt(h)}`:''}`}
-  else if(cmd==='ali'){const t=tg;if(!s.F[t]||s.F[t].dead||t===f)return '대상이 없어요';if(tzAlly(s,f,t))return '이미 동맹이에요';if(!pay(500))return '금이 모자라요';
+  else if(cmd==='ali'){const t=tg;if(!s.F[t]||s.F[t].dead||t===f)return '대상이 없어요';if(tzAllyR(s,f,t))return '이미 동맹이에요';if(!pay(500))return '금이 모자라요';
     const r=tzCities(s,t).length/Math.max(1,tzCities(s,f).length);if(tzRng()<.25+cha/250-Math.max(0,r-1)*.1){s.F[f].al[t]=24;s.F[t].al[f]=24;msg=`${tzFN(s,t)}과(와) 2년 동맹!`}else msg=`${tzFN(s,t)}이(가) 동맹을 거절했어요`}
-  else if(cmd==='aid'){const t=tg;if(!s.F[t]||!tzAlly(s,f,t))return '동맹 세력에게만 원조를 청할 수 있어요';const src=tzCities(s,t).sort((a,b)=>s.C[b].g-s.C[a].g)[0];if(!src)return '대상이 없어요';
+  else if(cmd==='aid'){const t=tg;if(!s.F[t]||!tzAllyR(s,f,t))return '동맹 세력에게만 원조를 청할 수 있어요';const src=tzCities(s,t).sort((a,b)=>s.C[b].g-s.C[a].g)[0];if(!src)return '대상이 없어요';
     if(tzRng()<Math.min(.9,.4+cha/250)){const R=s.C[src],a=Math.min(1000,Math.round(R.g*.3)),d=Math.min(3000,Math.round(R.fd*.2));R.g-=a;R.fd-=d;C.g=Math.min(99999,C.g+a);C.fd=Math.min(99999,C.fd+d);msg=`${tzFN(s,t)} 원조 · 금 +${fmt(a)} · 군량 +${fmt(d)}`}
     else msg=`${tzFN(s,t)}이(가) 원조를 거절했어요`}
   else if(cmd==='sur'){const t=tg;if(!s.F[t]||s.F[t].dead||t===f)return '대상이 없어요';if(!pay(1000))return '금이 모자라요';const nm=tzFN(s,t),n=tzCities(s,t).length;
@@ -5393,7 +5394,7 @@ function tzAtkGens(s,k,f,idleOnly){const all=tzGensIn(s,k,f).filter(g=>!idleOnly
 function tzPickAtk(s,f,min,skip,only){let best=null;
   for(const k of only?[only]:tzCities(s,f)){if(skip&&skip.has(k))continue;const C=s.C[k],food=Math.round(C.tr*.7*.3*(tzSea(s.m)==='winter'?1.5:1));if(C.tr<2500||C.fd<food)continue;
     const gs=tzAtkGens(s,k,f,!!only);if(!gs.length)continue;
-    for(const n of TZ_ADJ[k]){const T=s.C[n];if(T.o===f||tzAlly(s,f,T.o)||(s.t<12&&T.o!=='neu'&&(tzHome(s,n)||(tzL(s)[T.o]||[])[0]===n)))continue;const r=tzAtkRatio(s,k,n,gs),sc=r+(T.o===s.me?.1:0)+(T.o==='neu'?.15:0);
+    for(const n of TZ_ADJ[k]){const T=s.C[n];if(T.o===f||tzAlly(s,f,T.o)||(s.t<12&&T.o!=='neu'&&(tzHome(s,n)||(tzL(s)[T.o]||[])[0]===n)))continue;const r=tzAtkRatio(s,k,n,gs),sc=r+(T.o===s.me?.1:0)+(T.o==='neu'?.15:0)+tzHB(s,f,T.o);
       if(r>min&&(!best||sc>best.sc))best={k,n,sc,gs,food}}}
   return best}
 function tzAtk(s,b,f,ch){const C=s.C[b.k],tr=Math.round(C.tr*.7);C.tr-=tr;C.fd=Math.max(0,C.fd-b.food);const tgt=s.C[b.n].o,o=tzBattle(s,b.k,b.n,b.gs,tr);
@@ -5491,7 +5492,7 @@ function tzTopBar(s){const mine=tzMine(s),sum=key=>mine.reduce((a,k)=>a+s.C[k][k
    <div class="tz-res"><span>금 <b>${fmt(sum('g'))}</b> · 군량 <b>${fmt(sum('fd'))}</b></span><span>병사 <b>${fmt(sum('tr'))}</b> · 성 <b>${mine.length}/${TZ_K.length}</b></span></div>
    <button type="button" class="btn sm ghost" data-tz="rep">보고</button>${s.end?'':(()=>{const n=tzIdleC(s).length;return `<button type="button" class="btn sm red${n?' tz-warnb':''}" data-tz="turn"${n?` aria-label="턴 종료 · 명령 안 한 성 ${n}곳"`:''}>턴 종료${n?`<i class="tz-bdg">${n}</i>`:''}</button>`})()}</div>`}
 function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.g;
-  let h=`<div class="tz-city"><div class="tz-ch"><h3>${tzCN(k)}</h3><span class="sub" style="margin:0">${tzHZ(k)} · ${TZ_ZH[TZ_ZK[k]][0]}${tzZOwn(s,TZ_ZK[k])?` <b style="color:${tzCol(tzZOwn(s,TZ_ZK[k]))}">평정</b>`:''}</span>${TZ_PASS[k]?`<span class="tz-tag front" title="관문: 수비 체력 ×1.15">${TZ_PASS[k]}</span>`:''}<span class="chip" style="border-color:${tzCol(o)};color:${tzCol(o)}">${tzFN(s,o)}${tzAlly(s,s.me,o)?' · 동맹':''}</span>${TZ_TRADE[k]?'<span class="tz-tag home">商</span>':''}
+  let h=`<div class="tz-city"><div class="tz-ch"><h3>${tzCN(k)}</h3><span class="sub" style="margin:0">${tzHZ(k)} · ${TZ_ZH[TZ_ZK[k]][0]}${tzZOwn(s,TZ_ZK[k])?` <b style="color:${tzCol(tzZOwn(s,TZ_ZK[k]))}">평정</b>`:''}</span>${TZ_PASS[k]?`<span class="tz-tag front" title="관문: 수비 체력 ×1.15">${TZ_PASS[k]}</span>`:''}<span class="chip" style="border-color:${tzCol(o)};color:${tzCol(o)}">${tzFN(s,o)}${tzRelTxt(s,o)}</span>${TZ_TRADE[k]?'<span class="tz-tag home">商</span>':''}
    ${my?`<button type="button" class="tz-gov" data-tzc="gov">태수 <b>${gov?esc(tzName(gov)):'없음'}</b></button>`:''}${my?tzGovRecBtn(s,k):''}</div>`;
   if(my){const home=tzHome(s,k),dl=tzDlOf(s,k);
     h+=`<div class="tz-dl" role="group" aria-label="위임">${(home?['self','pj']:Object.keys(TZ_DL)).map(m=>`<button type="button" data-tzdl="${k}:${m}" aria-pressed="${dl===m}">${TZ_DL[m][0]}</button>`).join('')}</div>
@@ -5610,8 +5611,8 @@ function tzCmdSheet(c){const s=tzState(),k=tzSel;if(c==='gov')return tzGovSheet(
   let body='';
   if(c==='war'){const ts=TZ_ADJ[k].filter(n=>s.C[n].o!==s.me&&!tzAlly(s,s.me,s.C[n].o));if(!ts.length)body='<p class="sub">공격할 수 있는 이웃 성이 없어요(동맹 성은 공격할 수 없어요).</p>';
     else{if(!D.tg||!ts.includes(D.tg))D.tg=ts[0];const T=s.C[D.tg],tr=Math.round(s.C[k].tr*D.pct/100),food=Math.round(tr*.3*(tzSea(s.m)==='winter'?1.5:1));
-      body=`<h3 style="margin:0 0 6px">공격할 성</h3><div class="chips">${ts.map(n=>`<button type="button" data-tzt="${n}" aria-pressed="${D.tg===n}">${tzCN(n)} · ${tzFN(s,s.C[n].o)}</button>`).join('')}</div>
-       <p class="sub" style="margin:6px 0">적 병사 ${fmt(T.tr)} · 방어 ${T.df} · 장수 ${tzGensIn(s,D.tg,T.o).length}명</p>
+      body=`<h3 style="margin:0 0 6px">공격할 성</h3><div class="chips">${ts.map(n=>`<button type="button" data-tzt="${n}" aria-pressed="${D.tg===n}">${tzCN(n)} · ${tzFN(s,s.C[n].o)}<small style="display:block;opacity:.75;font-size:11px">${tzZTag(s,n)}</small></button>`).join('')}</div>
+       <p class="sub" style="margin:6px 0">${TZ_ZH[TZ_ZK[D.tg]][0]} · 적 병사 ${fmt(T.tr)} · 방어 ${T.df} · 장수 ${tzGensIn(s,D.tg,T.o).length}명</p>
        <h3 style="margin:8px 0 6px">출진 장수 (최대 ${NSLOT}명)</h3><div class="dl-pick">${srt.map(g=>tzPickBtn(s,g,`data-tzgs="${g}"`,D.gs.includes(g))).join('')}</div>
        ${tzTyPick(s,k,D,tr)}<h3 style="margin:8px 0 6px">데려갈 병사</h3><div class="chips">${[50,70,90].map(p=>`<button type="button" data-tzp="${p}" aria-pressed="${D.pct===p}">${p}% · ${fmt(Math.round(s.C[k].tr*p/100))}</button>`).join('')}</div>
        <p class="sub" style="margin:6px 0">군량 ${fmt(food)} 필요${tzSea(s.m)==='winter'?'(겨울 1.5배)':''} · 남은 군량 ${fmt(s.C[k].fd)}</p>
@@ -5626,7 +5627,7 @@ function tzCmdSheet(c){const s=tzState(),k=tzSel;if(c==='gov')return tzGovSheet(
     else if(c==='spy'||c==='prs'){const es=[];TZ_ADJ[k].forEach(n=>{const o=s.C[n].o;if(s.F[o]&&o!==s.me)tzGensIn(s,n,o).filter(g=>g!==s.F[o].lord).forEach(g=>es.push(g))});
       if(!es.length)tgt=`<p class="sub">이웃 성에 ${c==='spy'?'이간':'권유'}할 적 장수가 없어요.</p>`;else{if(!es.includes(D.tg))D.tg=es[0];
         tgt=`<h3 style="margin:8px 0 6px">${c==='spy'?'이간':'권유'}할 장수</h3><div class="chips">${es.map(g=>`<button type="button" data-tzt="${g}" aria-pressed="${D.tg===g}">${esc(tzName(g))}(${tzCN(s.G[g].c)})${c==='prs'?` · ${Math.round(tzPrsP(s,D.g||srt[0],g,D.it)*100)}%`:''}</button>`).join('')}</div>${c==='prs'?'<p class="sub" style="margin:6px 0 0;font-size:12px">충성과 의리가 낮을수록, 맡긴 장수 매력이 높을수록 잘 넘어와요. 이간으로 충성을 먼저 낮추면 좋아요.</p>':''}`}}
-    else if(c==='aid'){const fs=Object.keys(s.F).filter(f=>tzAlly(s,s.me,f));if(!fs.length)tgt='<p class="sub">동맹 세력이 없어요. 먼저 동맹을 맺으세요.</p>';else{if(!fs.includes(D.tg))D.tg=fs[0];
+    else if(c==='aid'){const fs=Object.keys(s.F).filter(f=>tzAllyR(s,s.me,f));if(!fs.length)tgt='<p class="sub">동맹 세력이 없어요. 먼저 동맹을 맺으세요.</p>';else{if(!fs.includes(D.tg))D.tg=fs[0];
       tgt=`<h3 style="margin:8px 0 6px">원조를 청할 동맹</h3><div class="chips">${fs.map(f=>`<button type="button" data-tzt="${f}" aria-pressed="${D.tg===f}">${tzFN(s,f)} · ${Math.round(Math.min(.9,.4+tzCha(D.g||srt[0])/250)*100)}%</button>`).join('')}</div><p class="sub" style="margin:6px 0 0;font-size:12px">동맹의 가장 부유한 성에서 금(최대 1,000)과 군량(최대 3,000)을 보내 줘요.</p>`}}
     else if(c==='sur'){const fs=Object.keys(s.F).filter(f=>f!==s.me&&!s.F[f].dead);if(!D.tg||!fs.includes(D.tg))D.tg=fs[0];
       tgt=`<h3 style="margin:8px 0 6px">항복을 권할 세력</h3><div class="chips">${fs.map(f=>`<button type="button" data-tzt="${f}" aria-pressed="${D.tg===f}">${tzFN(s,f)} · 성 ${tzCities(s,f).length} · ${Math.round(tzSurP(s,s.me,f,D.g||srt[0])*100)}%</button>`).join('')}</div><p class="sub" style="margin:6px 0 0;font-size:12px">우리 성이 상대의 4배 이상이어야 받아들일 가능성이 생겨요. 성공하면 그 세력의 성·장수·보물이 모두 우리 것이 돼요.</p>`}
@@ -8723,8 +8724,17 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.1.0';
-const GW_NOTICES=[{v:'1.1.0',date:'2026-10-31',title:'군웅할거 v1.1 · 평정 · 군사 · 천하 표',items:[
+const GW_VER='1.2.0';
+const GW_NOTICES=[{v:'1.2.0',date:'2026-10-31',title:'군웅할거 v1.2 · 외교·계략',items:[
+  '세력 사이에 관계(우호 · 보통 · 험악)가 생겼어요. 싸우거나 계략을 쓰면 험악해지고, 동맹·정전·사신 요구를 들어주면 누그러져요. 험악한 상대일수록 먼저 쳐들어와요. 계략 탭 \'외교 현황\'과 천하 표에서 볼 수 있어요.',
+  '사신: 3~4달에 한 번꼴로 이웃 세력이 사신을 보내 금·군량을 요구하거나 동맹을 제안해요(우리가 아주 약하면 항복을 권해요). 평정 맨 위에서 답하고, 답하지 않으면 거절한 걸로 쳐요.',
+  '새 계략 5가지: 공동 작전(동맹에게 적 성 공격 요청) · 정전(금을 주고 1년 불가침) · 내응(적 장수와 약속, 3달 안에 그 성을 치면 전투 중에 넘어와요) · 이간책(두 적 세력을 싸우게) · 독립 유도(충성 낮은 적 태수를 독립시켜요).',
+  'AI 세력끼리도 동맹과 정전을 맺어요.',
+  '평정: \'모두 승인하고 마치기\'를 누르면 바로 모두 승인하고 실행해요. 몇 개만 거절하려면 거절을 누르고 \'고른 대로 마치기\'를 눌러요.',
+  '지도에 주(州) 경계를 그려요. 다 가진 주는 금색 \'평정\', 일부만 가진 주는 \'2/3\'처럼 보이고, 마저 차지해야 할 성에 점선 고리가 둘려요. 지도 왼쪽 위 \'주 경계\'로 켜고 꺼요.',
+  '출진할 때 공격할 성마다 어느 주인지, 그 주를 몇 곳 가졌는지 보여요. 점령하면 주 평정이 되는 성에는 \'점령하면 평정!\'이 붙어요.',
+  '제목 화면: 아주 넓은 창에서는 그림 바깥을 검게 채워요. 제목 화면에서 도움말·설정을 열어도 게임 화면으로 넘어가지 않고, 닫으면 제목 화면으로 돌아와요.']},
+ {v:'1.1.0',date:'2026-10-31',title:'군웅할거 v1.1 · 평정 · 군사 · 천하 표',items:[
   '평정이 생겼어요. 매달 초 보고를 닫으면 평정이 열리고, 평정으로 둔 성의 장수들이 할 일을 제안해요(성마다 3장, 모두 8장까지). 승인하면 바로 실행되고 그 장수 충성 +2, 거절해도 벌칙 없이 직접 명령하면 돼요. \'모두 승인\'도 있어요.',
   '성마다 직접 · 평정 · 내정 · 수송 · 방어 · 공략 중에 골라요. 내 성은 평정이 기본이 됐어요(진행 중이던 판도 직접으로 두었던 성이 평정으로 바뀌어요). 메뉴(☰)에서 평정 시트를 끌 수 있어요.',
   '군사: 지력 80 이상 장수 1명을 군사로 두면(위쪽 날짜 아래 \'군사\') 평정 제안과 직접 명령마다 승인·거절 한마디를 해요. 지력 80이면 약 60%, 90이면 80%, 100이면 거의 맞아요. 평정에서 \'군사 의견대로\'로 한 번에 고를 수도 있어요.',
@@ -9194,7 +9204,7 @@ function tzPjSheet(){const s=tzState(),P=tzPjEnsure(s);if(!P)return;const L=P.L.
    <div class="tz-pj-h"><span class="tz-pj-adv">${a?`군사 <b>${esc(tzName(a))}</b> · 지력 ${tzInt(a)} · 한마디가 맞을 확률 약 ${Math.round(tzAdvAcc(a)*100)}%`:'군사가 없어요. 지력 80 이상 장수를 군사로 두면 제안마다 한마디 해요.'}</span><button type="button" class="btn ghost sm" data-tzadv="1">군사 ${a?'바꾸기':'임명'}</button></div>
    ${body}
    ${L.length?`<div class="tz-pjf"><span class="sum">승인 ${on.length}건 · 금 −${fmt(g)} · 군량 −${fmt(f)} · 거절한 장수 ${L.length-on.length}명은 직접 명령할 수 있어요 · 승인한 장수 충성 +2</span>
-    <button type="button" class="btn ghost sm" data-tzpja="all">모두 승인</button>${a?'<button type="button" class="btn ghost sm" data-tzpja="adv">군사 의견대로</button>':''}<button type="button" class="btn ghost sm" data-close>나중에</button><button type="button" class="btn red" data-tzpjgo="1">평정 마치기</button></div>`:''}`);
+    <button type="button" class="btn ghost sm" data-tzpja="all">모두 승인하고 마치기</button>${a?'<button type="button" class="btn ghost sm" data-tzpja="adv">군사 의견대로</button>':''}<button type="button" class="btn ghost sm" data-close>나중에</button><button type="button" class="btn red" data-tzpjgo="1">고른 대로 마치기</button></div>`:''}`);
   $('#sheet').classList.add('tz-pjs')}
 
 function tzPjRun(s){const P=s.pj;if(!P||P.done)return [];const out=[],winter=tzSea(s.m)==='winter'?1.5:1;tzRng=Math.random;
@@ -9229,7 +9239,7 @@ function tzTblHtml(s){const mine=tzMine(s),near=new Set(mine.flatMap(k=>TZ_ADJ[k
     for(const k of vk){const C=s.C[k],o=C.o,me=o===s.me,gv=tzGov(s,k),q='<span class="q">?</span>',dl=me?tzDlOf(s,k):'';
       const w=[];if(me){if(C.ml<40)w.push('民');if(C.fd<C.tr*.12)w.push('糧');if(gv&&!tzHome(s,k)&&s.G[gv].ly<50)w.push('叛')}if(s.lc&&s.lc.k===k)w.push('蝗');
       const tg=me?(tzHome(s,k)?'<span class="tg">거점</span>':tzFront(s,k)?'<span class="tg f">전선</span>':'<span class="tg">후방</span>'):near.has(k)?'<span class="tg a">공격 가능</span>':tzAlly(s,s.me,o)?'<span class="tg">동맹</span>':'';
-      h+=`<tr class="ct${me?' me':''}${tzSel===k?' sel':''}" data-tzk="${k}"><td>${tzCN(k)}<small>${tzHZ(k)}</small></td><td><span class="dot" style="--fac:${tzCol(o)}"></span>${esc(tzFN(s,o))}</td>
+      h+=`<tr class="ct${me?' me':''}${tzSel===k?' sel':''}" data-tzk="${k}"><td>${tzCN(k)}<small>${tzHZ(k)}</small></td><td><span class="dot" style="--fac:${tzCol(o)}"></span>${esc(tzFN(s,o))}${tzRelTag(s,o)}</td>
        <td>${gv?esc(tzName(gv)):me?'<span class="w">없음</span>':o==='neu'?'—':q}</td><td class="n">${fmt(C.tr)}</td><td class="n">${me?fmt(C.g):q}</td><td class="n">${me?fmt(C.fd):q}</td><td class="n">${me?(C.ml<40?`<span class="w">${C.ml}</span>`:C.ml):q}</td>
        <td>${tg}</td><td>${me?TZ_DL[dl][0]+(tzDirect(dl)?` · 명령 ${tzIdle(s,k).length}`:''):''}</td><td>${w.length?`<span class="w">${w.join('')}</span>`:''}</td></tr>`}}
   return h+`</tbody></table></div>`}
@@ -9284,6 +9294,227 @@ HELP.splice(Math.min(2,HELP.length),0,{t:'평정·군사',rows:[
   ['제안 성향','무력·통솔이 높은 장수는 출진·훈련, 정치가 높은 장수는 투자, 매력이 높은 장수는 징병·시혜·포상·등용, 지력이 높은 장수는 탐색을 주로 제안해요.'],
   ['군사','지력 80 이상 장수 1명을 군사로 둬요(위쪽 날짜 아래 \'군사\'). 평정 제안과 직접 명령마다 승인·거절 한마디를 해요. 지력 80이면 약 60%, 90이면 80%, 100이면 거의 맞아요. 틀린 말도 같은 말투라 가려 들어야 해요.'],
   ['천하 표','13주로 묶어 성·세력·태수·병사·금·군량·민심을 표로 봐요. 남의 성은 병사만 보이고 나머지는 ?예요. 업무 모드(` 키)에서는 지도 대신 천하 표가 나와요.']]});
+
+
+// ==== 군웅할거 v1.2.0: 외교·계략 보강 (적대도 · 사신 · 공동 작전 · 정전 · 내응 · 이간책 · 독립 유도) ====
+(()=>{const st=document.createElement('style');st.textContent=`
+.tz-ev{border:1px solid var(--bronze);border-radius:10px;padding:10px 12px;margin:0 0 10px;background:rgba(201,162,74,.08)}
+.tz-ev b.t{display:block;font-size:14px;margin-bottom:4px}.tz-ev p{margin:0 0 8px;font-size:13px}
+.tz-ev .row{display:flex;gap:6px;flex-wrap:wrap}
+.tz-rel{font-size:11px;border:1px solid var(--line);border-radius:3px;padding:0 5px;margin-left:5px;color:var(--mute)}
+.tz-rel.r3{border-color:var(--cinnabar);color:var(--cinnabar)}.tz-rel.r1{border-color:var(--jade);color:var(--jade)}.tz-rel.al{border-color:var(--bronze);color:var(--bronze)}
+.tz-dip td,.tz-dip th{font-size:13px}.tz-tbl.tz-dip{min-width:0}
+`;document.head.appendChild(st)})();
+
+// ---- 적대도(0~100, 기본 40) · 정전 ----
+function tzHK(a,b){return a<b?a+'|'+b:b+'|'+a}
+function tzH(s,a,b){if(!s.F[a]||!s.F[b]||a===b)return 40;const v=(s.H||{})[tzHK(a,b)];return v==null?40:v}
+function tzHAdd(s,a,b,d){if(!s.F[a]||!s.F[b]||a===b)return;s.H=s.H||{};s.H[tzHK(a,b)]=Math.max(0,Math.min(100,Math.round(tzH(s,a,b)+d)))}
+function tzTruce(s,a,b){return !!(s&&s.TR&&s.F[a]&&s.F[b]&&(s.TR[tzHK(a,b)]||0)>0)}
+function tzHB(s,f,o){return !s.F[o]?0:(tzH(s,f,o)-40)/150}  // AI 공격 우선순위 가산
+const tzRel=(s,o)=>{if(!s.F[o]||o===s.me)return null;if(tzAllyR(s,s.me,o))return ['al',`동맹 ${s.F[s.me].al[o]}달`];if(tzTruce(s,s.me,o))return ['al',`정전 ${s.TR[tzHK(s.me,o)]}달`];
+  const h=tzH(s,s.me,o);return h<30?['r1','우호']:h>=70?['r3','험악']:['r2','보통']};
+function tzRelTxt(s,o){const r=tzRel(s,o);return r?' · '+r[1]:''}
+const tzRelTag=(s,o)=>{const r=tzRel(s,o);return r?`<span class="tz-rel ${r[0]}">${r[1]}</span>`:''};
+
+// 저장
+{const _cl=cleanTz;cleanTz=function(x){const o=_cl(x);if(!o.on)return o;x=x||{};const n=(v,a,b)=>Math.max(a,Math.min(b,Math.round(Number(v)||0))),okF=f=>!!o.F[f];
+  o.H={};if(x.H&&typeof x.H==='object')for(const k in x.H){const[a,b]=k.split('|');if(okF(a)&&okF(b))o.H[k]=n(x.H[k],0,100)}
+  o.TR={};if(x.TR&&typeof x.TR==='object')for(const k in x.TR){const[a,b]=k.split('|');if(okF(a)&&okF(b)&&x.TR[k]>0)o.TR[k]=n(x.TR[k],1,12)}
+  o.NE={};if(x.NE&&typeof x.NE==='object')for(const g in x.NE){const e=x.NE[g];if(o.G[g]&&e&&okF(e.f))o.NE[g]={f:e.f,t:n(e.t,0,99999)}}
+  o.jo=(Array.isArray(x.jo)?x.jo:[]).filter(j=>j&&okF(j.f)&&TZ_C[j.k]).slice(0,4).map(j=>({f:j.f,k:j.k,t:n(j.t,0,99999)}));
+  o.ev=x.ev&&typeof x.ev==='object'&&okF(x.ev.f)&&['dem','ali','sur'].includes(x.ev.ty)?{t:n(x.ev.t,0,99999),f:x.ev.f,ty:x.ev.ty,g:n(x.ev.g,0,99999),fd:n(x.ev.fd,0,99999),done:x.ev.done?1:0}:null;
+  return o}}
+{const _new=tzNew;tzNew=function(){const s=_new.apply(this,arguments);s.H={};s.TR={};s.NE={};s.jo=[];s.ev=null;return s}}
+
+// ---- 새 명령 ----
+Object.assign(TZ_CMD,{jnt:['공동 작전','동맹에게 이번 달 적 성 공격을 청해요','금 300 · 매력'],tru:['정전','금을 주고 1년 동안 서로 공격하지 않아요','금 · 매력'],
+  nae:['내응','적 장수와 약속 · 3달 안에 그 성을 치면 전투 중에 넘어와요','금 300 · 지력'],ijg:['이간책','두 적 세력 사이를 벌려 서로 싸우게 해요','금 300 · 지력'],
+  ind:['독립 유도','충성 낮은 적 태수를 부추겨 독립시켜요','금 500 · 지력'],dip:['외교 현황','세력마다 관계 · 동맹 · 정전','행동 안 씀']});
+TZ_FREE.dip=1;{const g=TZ_CAT.find(c=>c[0]==='gye');if(g)g[3].push('jnt','tru','nae','ijg','ind','dip')}
+const TZ_NEWC=['jnt','tru','nae','ijg','ind'];
+const tzP=(v,a,b)=>Math.max(a,Math.min(b,v));
+const tzTruP=(s,g,t)=>tzP(.3+tzCha(g)/250-(tzH(s,s.me,t)-40)/200,.05,.85);
+const tzTruCost=(s,t)=>Math.min(3000,500+tzCities(s,t).length*100);
+const tzNaeP=(s,g,x)=>tzP(.15+tzInt(g)/300+(70-s.G[x].ly)/120-tzGiri(x)/400,.03,.8);
+const tzIjgP=(s,g,a,b)=>tzP(.35+tzInt(g)/250-(tzAllyR(s,a,b)?.15:0),.05,.85);
+const tzIndP=(s,g,tk)=>{const gv=tzGov(s,tk);return gv?tzP(.1+tzInt(g)/250+(60-s.G[gv].ly)/100-tzGiri(gv)/400,.03,.7):0};
+const tzJntP=(s,g,a)=>tzP(.4+tzCha(g)/250+(tzH(s,s.me,a)<30?.2:0),.1,.95);
+// 공동 작전 대상: 그 동맹의 성과 맞닿은 적 성(우리·그 동맹·그 동맹의 동맹 성 제외)
+const tzJntTg=(s,a)=>TZ_K.filter(n=>{const o=s.C[n].o;return o!=='neu'&&o!==s.me&&o!==a&&!tzAlly(s,a,o)&&TZ_ADJ[n].some(x=>s.C[x].o===a)});
+// 내응 대상: 이웃 적 성의 장수(군주 제외)
+const tzNaeTg=(s,k)=>TZ_ADJ[k].filter(n=>s.C[n].o!==s.me&&s.F[s.C[n].o]&&!tzAlly(s,s.me,s.C[n].o)).flatMap(n=>tzGensIn(s,n,s.C[n].o).filter(g=>g!==s.F[s.C[n].o].lord&&!(s.NE&&s.NE[g])));
+const tzIndTg=(s,k)=>TZ_ADJ[k].filter(n=>{const o=s.C[n].o,gv=tzGov(s,n);return s.F[o]&&o!==s.me&&!tzHome(s,n)&&gv&&gv!==s.F[o].lord});
+const tzLiveF=s=>Object.keys(s.F).filter(f=>!s.F[f].dead&&tzCities(s,f).length);
+
+{const _do=tzDo;tzDo=function(s,k,cmd,g,tg,it){
+  if(!TZ_NEWC.includes(cmd)){const r=_do.apply(this,arguments);
+    if(r&&r.ok&&['spy','prs','sab'].includes(cmd)){const x=cmd==='sab'?(s.C[String(tg).split('|')[0]]||{}).o:(s.G[tg]||{}).o;if(s.F[x])tzHAdd(s,s.G[g].o,x,5)}return r}
+  const C=s.C[k],G=s.G[g],f=G.o;let msg='';const pay=n=>{if(C.g<n)return false;C.g-=n;return true};s.H=s.H||{};s.TR=s.TR||{};s.NE=s.NE||{};s.jo=s.jo||[];
+  if(cmd==='jnt'){const[a,n]=String(tg||'').split('|');if(!s.F[a]||!tzAllyR(s,f,a))return '동맹 세력을 골라요';if(!tzJntTg(s,a).includes(n))return '공격할 성을 골라요';if(s.jo.some(j=>j.f===a&&j.t===s.t))return '이 동맹은 이번 달 이미 요청을 받았어요';if(!pay(300))return '금이 모자라요';
+    if(tzRng()<tzJntP(s,g,a)){s.jo.push({f:a,k:n,t:s.t});msg=`${tzFN(s,a)}이(가) 이번 달 ${tzCN(n)}을(를) 치기로 했어요`}else msg=`${tzFN(s,a)}이(가) 공동 작전을 미뤘어요`}
+  else if(cmd==='tru'){const t=tg;if(!s.F[t]||s.F[t].dead||t===f)return '대상이 없어요';if(tzAllyR(s,f,t))return '이미 동맹이에요';if(tzTruce(s,f,t))return '이미 정전 중이에요';const c=tzTruCost(s,t);if(!pay(c))return `금이 모자라요(금 ${fmt(c)})`;
+    if(tzRng()<tzTruP(s,g,t)){s.TR[tzHK(f,t)]=12;tzHAdd(s,f,t,-10);msg=`${tzFN(s,t)}과(와) 1년 정전!`}else{tzHAdd(s,f,t,5);msg=`${tzFN(s,t)}이(가) 정전을 거절했어요`}}
+  else if(cmd==='nae'){const x=tg;if(!x||!s.G[x]||!tzNaeTg(s,k).includes(x))return '대상이 없어요';if(!pay(300))return '금이 모자라요';
+    if(tzRng()<tzNaeP(s,g,x)){s.NE[x]={f,t:s.t+3};msg=`${tzName(x)}(${tzCN(s.G[x].c)})이(가) 내응을 약속했어요 · 3달 안에 그 성을 치세요`}else{tzHAdd(s,f,s.G[x].o,5);msg=`${tzName(x)}이(가) 내응을 거절했어요`}}
+  else if(cmd==='ijg'){const[a,b]=String(tg||'').split('|');if(!s.F[a]||!s.F[b]||a===b||a===f||b===f||s.F[a].dead||s.F[b].dead)return '두 세력을 골라요';if(!pay(300))return '금이 모자라요';
+    if(tzRng()<tzIjgP(s,g,a,b)){tzHAdd(s,a,b,30);let br='';if(tzAllyR(s,a,b)&&tzRng()<.5){delete s.F[a].al[b];delete s.F[b].al[a];br=' · 동맹이 깨졌어요'}msg=`${tzFN(s,a)}과(와) ${tzFN(s,b)} 사이가 험악해졌어요${br}`}
+    else{tzHAdd(s,f,a,5);msg='이간책이 들통났어요'}}
+  else if(cmd==='ind'){const tk=tg;if(!tzIndTg(s,k).includes(tk))return '대상이 없어요';if(!pay(500))return '금이 모자라요';const gv=tzGov(s,tk),o=s.C[tk].o;
+    if(tzRng()<tzIndP(s,g,tk)){tzRebel(s,tk,gv);tzHAdd(s,f,gv,-20);msg=`${tzName(gv)}이(가) ${tzCN(tk)}에서 독립했어요!`}else{tzHAdd(s,f,o,8);msg=`${tzName(gv)}이(가) 꾐에 넘어가지 않았어요`}}
+  G.ac=1;G.mr=Math.min(9999,G.mr+8);return {ok:1,msg,fx:''}}}
+
+// ---- 새 명령 시트 ----
+function tzDipSheet(){const s=tzState(),fs=tzLiveF(s).filter(f=>f!==s.me).sort((a,b)=>tzCities(s,b).length-tzCities(s,a).length);
+  const ne=Object.entries(s.NE||{}).filter(([g,e])=>e.f===s.me&&e.t>=s.t&&s.G[g]&&s.F[s.G[g].o]);const jo=(s.jo||[]).filter(j=>j.t===s.t);
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">외교 현황</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub" style="margin:0 0 8px">관계는 우호 · 보통 · 험악으로 보여요. 싸우거나 계략을 쓰면 험악해지고, 동맹·정전·사신 요구를 들어주면 누그러져요. 험악한 상대일수록 먼저 쳐들어와요.</p>
+   <div class="tz-tbx"><table class="tz-tbl tz-dip"><thead><tr><th>세력</th><th class="n">성</th><th class="n">병사</th><th>관계</th></tr></thead><tbody>${fs.map(f=>`<tr><td><span class="dot" style="--fac:${tzCol(f)}"></span>${esc(tzFN(s,f))}</td><td class="n">${tzCities(s,f).length}</td><td class="n">${fmt(tzCities(s,f).reduce((a,k)=>a+s.C[k].tr,0))}</td><td>${tzRelTag(s,f)}</td></tr>`).join('')}</tbody></table></div>
+   ${ne.length?`<h3 style="margin:10px 0 4px">내응 약속</h3><p class="sub" style="margin:0">${ne.map(([g,e])=>`${esc(tzName(g))}(${tzCN(s.G[g].c)}) · ${e.t-s.t+1}달 남음`).join('<br>')}</p>`:''}
+   ${jo.length?`<h3 style="margin:10px 0 4px">이번 달 공동 작전</h3><p class="sub" style="margin:0">${jo.map(j=>`${esc(tzFN(s,j.f))} → ${tzCN(j.k)}`).join('<br>')}</p>`:''}`)}
+function tzNewCmdSheet(c){const s=tzState(),k=tzSel,idle=tzIdle(s,k),v=TZ_CMD[c];if(!idle.length)return;
+  if(!tzDraft||tzDraft.c!==c||tzDraft.k!==k)tzDraft={c,k,g:'',tg:'',ta:'',tb:'',gs:[],pct:70,it:''};const D=tzDraft;
+  const key=['tru','jnt'].includes(c)?tzCha:tzInt,srt=idle.slice().sort((a,b)=>key(b)-key(a));if(!D.g||!idle.includes(D.g))D.g=srt[0];const g=D.g;
+  const chip=(attr,val,on,txt,dis)=>`<button type="button" data-tzx="${attr}:${val}" aria-pressed="${!!on}" ${dis?'disabled':''}>${txt}</button>`;
+  const fs=tzLiveF(s).filter(f=>f!==s.me);let tgt='',ok=false,note='';
+  if(c==='jnt'){const al=fs.filter(f=>tzAllyR(s,s.me,f));if(!al.length)tgt='<p class="sub">동맹 세력이 없어요. 먼저 동맹을 맺으세요.</p>';else{if(!al.includes(D.ta))D.ta=al[0];const ts=tzJntTg(s,D.ta);if(!ts.includes(D.tb))D.tb=ts[0]||'';
+      tgt=`<h3 style="margin:8px 0 6px">부탁할 동맹</h3><div class="chips">${al.map(f=>chip('ta',f,D.ta===f,`${esc(tzFN(s,f))} · 성 ${tzCities(s,f).length}`)).join('')}</div>
+       <h3 style="margin:8px 0 6px">칠 성</h3>${ts.length?`<div class="chips">${ts.map(n=>chip('tb',n,D.tb===n,`${tzCN(n)} · ${esc(tzFN(s,s.C[n].o))} · 병사 ${fmt(s.C[n].tr)}`)).join('')}</div>`:'<p class="sub">그 동맹과 맞닿은 적 성이 없어요.</p>'}`;
+      D.tg=D.ta&&D.tb?D.ta+'|'+D.tb:'';ok=!!D.tb;note=`받아들일 가능성 약 ${Math.round(tzJntP(s,g,D.ta)*100)}% · 받아들이면 이번 턴 종료 때 동맹이 그 성을 공격해요(동맹 병력이 모자라면 못 칠 수 있어요).`}}
+  else if(c==='tru'){const ts=fs.filter(f=>!tzAllyR(s,s.me,f)&&!tzTruce(s,s.me,f));if(!ts.includes(D.tg))D.tg=ts[0]||'';
+    tgt=ts.length?`<h3 style="margin:8px 0 6px">정전할 세력</h3><div class="chips">${ts.map(f=>chip('tg',f,D.tg===f,`${esc(tzFN(s,f))} · ${tzRel(s,f)[1]} · 금 ${fmt(tzTruCost(s,f))}`)).join('')}</div>`:'<p class="sub">정전할 세력이 없어요.</p>';
+    ok=!!D.tg;if(D.tg)note=`가능성 약 ${Math.round(tzTruP(s,g,D.tg)*100)}% · 성공하면 12달 동안 서로 공격하지 않아요. 험악한 상대일수록 어려워요.`}
+  else if(c==='nae'){const ts=tzNaeTg(s,k);if(!ts.includes(D.tg))D.tg=ts[0]||'';
+    tgt=ts.length?`<h3 style="margin:8px 0 6px">내응할 장수(이웃 적 성)</h3><div class="chips">${ts.map(x=>chip('tg',x,D.tg===x,`${esc(tzName(x))}(${tzCN(s.G[x].c)}) · ${Math.round(tzNaeP(s,g,x)*100)}%`)).join('')}</div>`:'<p class="sub">이웃한 적 성에 꾈 장수가 없어요.</p>';
+    ok=!!D.tg;note='충성·의리가 낮을수록, 맡긴 장수 지력이 높을수록 잘 넘어와요. 약속하면 3달 안에 그 장수가 있는 성을 칠 때 첫 국면이 끝나고 부대째 우리 편이 돼요.'}
+  else if(c==='ijg'){if(!fs.includes(D.ta))D.ta=fs[0]||'';const fb=fs.filter(f=>f!==D.ta);if(!fb.includes(D.tb))D.tb=fb.sort((a,b)=>tzH(s,D.ta,a)-tzH(s,D.ta,b))[0]||'';
+    tgt=`<h3 style="margin:8px 0 6px">첫째 세력</h3><div class="chips">${fs.map(f=>chip('ta',f,D.ta===f,esc(tzFN(s,f)))).join('')}</div><h3 style="margin:8px 0 6px">둘째 세력</h3><div class="chips">${fb.map(f=>chip('tb',f,D.tb===f,`${esc(tzFN(s,f))}${tzAllyR(s,D.ta,f)?' · 동맹':''}`)).join('')}</div>`;
+    D.tg=D.ta&&D.tb?D.ta+'|'+D.tb:'';ok=!!D.tg;if(ok)note=`가능성 약 ${Math.round(tzIjgP(s,g,D.ta,D.tb)*100)}% · 성공하면 두 세력 사이가 크게 험악해져 서로를 먼저 노려요. 동맹이면 절반 확률로 깨져요.`}
+  else if(c==='ind'){const ts=tzIndTg(s,k);if(!ts.includes(D.tg))D.tg=ts[0]||'';
+    tgt=ts.length?`<h3 style="margin:8px 0 6px">부추길 성(이웃 적 성의 태수)</h3><div class="chips">${ts.map(n=>chip('tg',n,D.tg===n,`${tzCN(n)} · 태수 ${esc(tzName(tzGov(s,n)))} · ${Math.round(tzIndP(s,g,n)*100)}%`)).join('')}</div>`:'<p class="sub">이웃한 적 성 중 부추길 태수가 없어요(거점·군주 성 제외).</p>';
+    ok=!!D.tg;note='태수 충성이 낮을수록 잘 돼요. 성공하면 그 성이 새 세력으로 떨어져 나가요.'}
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">${tzCN(k)} · ${v[0]}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div><p class="sub" style="margin:0 0 8px">${v[1]} · ${v[2]}</p>
+   <h3 style="margin:0 0 6px">맡길 장수</h3><div class="dl-pick">${srt.map(x=>tzPickBtn(s,x,`data-tzg="${x}"`,D.g===x)).join('')}</div>${tgt}${note?`<p class="sub" style="margin:6px 0 0;font-size:12px">${note}</p>`:''}
+   <button type="button" class="btn red wide" style="margin-top:8px" data-tzgo="do" ${ok?'':'disabled'}>${v[0]}</button>`)}
+{const _cs=tzCmdSheet;tzCmdSheet=function(c){if(c==='dip')return tzDipSheet();if(TZ_NEWC.includes(c))return tzNewCmdSheet(c);return _cs.apply(this,arguments)}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tzx]');if(!b||b.disabled||!tzDraft)return;const[a,v]=b.dataset.tzx.split(':');tzDraft[a]=v;if(a==='ta')tzDraft.tb='';tzCmdSheet(tzDraft.c)});
+
+// ---- 전투: 내응 · 적대도 ----
+{const _ph=tzBPhase;tzBPhase=function(bt){_ph.apply(this,arguments);if(bt.done||bt.ph!==1||bt.neDone)return;bt.neDone=1;const S0=bt.s0||tzState();if(!S0||!S0.NE)return;
+  const us=bt.U[1].filter(u=>u.g&&!u.out&&u.n>0&&S0.NE[u.g]&&S0.NE[u.g].f===bt.af&&S0.NE[u.g].t>=S0.t);if(!us.length)return;
+  us.forEach(u=>{bt.U[1].splice(bt.U[1].indexOf(u),1);u.side=0;u.ne=1;bt.U[0].push(u);bt.M[1]=Math.max(0,bt.M[1]-15);bt.log.push(`내응! ${tzName(u.g)} 부대 ${fmt(u.n)}명이 ${bt.af===S0.me?'아군':'공격군'}으로 넘어왔어요 · 적 사기 −15`)});
+  tzBCheck(bt)}}
+{const _ap=tzBApply;tzBApply=function(s,bt){(bt.U[0]||[]).filter(u=>u.ne&&u.g&&s.G[u.g]).forEach(u=>{Object.assign(s.G[u.g],{o:bt.af,ly:65,c:bt.k,cb:''});if(s.NE)delete s.NE[u.g]});
+  const o=_ap.apply(this,arguments);if(s.F[bt.af]&&s.F[bt.bf])tzHAdd(s,bt.af,bt.bf,10);
+  const nd=(bt.U[0]||[]).filter(u=>u.ne&&u.g);if(nd.length&&o&&o.txt)o.txt.splice(1,0,`${nd.map(u=>tzName(u.g)).join('·')}이(가) 내응해 넘어왔어요`);return o}}
+
+// ---- AI: 공동 작전 실행 · AI끼리 동맹·정전 ----
+{const _ai=tzAi;tzAi=function(s,f){const js=(s.jo||[]).filter(j=>j.f===f&&j.t===s.t);
+  for(const j of js){const T=s.C[j.k];if(!T||T.o===f||T.o==='neu'||tzAlly(s,f,T.o)){continue}const src=TZ_ADJ[j.k].filter(x=>s.C[x].o===f).sort((a,b)=>s.C[b].tr-s.C[a].tr)[0];
+    const C=src&&s.C[src],food=C?Math.round(C.tr*.7*.3*(tzSea(s.m)==='winter'?1.5:1)):0,gs=src?tzAtkGens(s,src,f,true):[];
+    if(!src||C.tr<2000||C.fd<food||!gs.length){tzLog(s,`동맹 ${tzFN(s,f)}이(가) ${tzCN(j.k)}을(를) 치려 했지만 병력이 모자랐어요`,'戰');continue}
+    tzLog(s,`공동 작전 · 동맹 ${tzFN(s,f)}이(가) ${tzCN(j.k)}을(를) 공격해요`,'戰');tzAtk(s,{k:src,n:j.k,gs,food},f,'戰');if(s.F[f].dead)return}
+  return _ai.apply(this,arguments)}}
+function tzAiDip(s){const fs=tzLiveF(s).filter(f=>f!==s.me);
+  for(const f of fs){if(tzRng()>.06)continue;const nb=[...new Set(tzCities(s,f).flatMap(k=>TZ_ADJ[k]).map(n=>s.C[n].o))].filter(x=>x!==f&&x!==s.me&&s.F[x]&&!s.F[x].dead);if(!nb.length)continue;
+    const x=nb[Math.floor(tzRng()*nb.length)],h=tzH(s,f,x);if(tzAllyR(s,f,x)||tzTruce(s,f,x))continue;
+    if(h<28){s.F[f].al[x]=12;s.F[x].al[f]=12;tzLog(s,`${tzFN(s,f)}과(와) ${tzFN(s,x)}이(가) 동맹을 맺었어요`,'報')}
+    else if(h>=65&&tzCities(s,f).length*2<=tzCities(s,x).length){s.TR=s.TR||{};s.TR[tzHK(f,x)]=12;tzHAdd(s,f,x,-10);tzLog(s,`${tzFN(s,f)}이(가) ${tzFN(s,x)}에 금을 바치고 정전했어요`,'報')}}}
+
+// ---- 사신 ----
+const tzEvLive=s=>!!(s.ev&&!s.ev.done&&s.ev.t===s.t&&s.F[s.ev.f]&&!s.F[s.ev.f].dead&&!s.end);
+function tzEvRoll(s){if(s.end||tzRng()>.3)return;const mine=tzMine(s);if(!mine.length)return;const myTr=mine.reduce((a,k)=>a+s.C[k].tr,0),myG=mine.reduce((a,k)=>a+s.C[k].g,0);
+  const nb=[...new Set(mine.flatMap(k=>TZ_ADJ[k]).map(n=>s.C[n].o))].filter(f=>s.F[f]&&!s.F[f].dead&&f!==s.me&&!tzTruce(s,s.me,f));if(!nb.length)return;
+  const f=nb[Math.floor(tzRng()*nb.length)],fc=tzCities(s,f).length,ftr=tzCities(s,f).reduce((a,k)=>a+s.C[k].tr,0),h=tzH(s,s.me,f);let ev=null;
+  if(fc>=mine.length*4&&mine.length<=3&&tzRng()<.4)ev={ty:'sur'};
+  else if(h<35&&!tzAllyR(s,s.me,f))ev={ty:'ali'};
+  else if(!tzAllyR(s,s.me,f)&&ftr>myTr*1.2){const g=Math.max(200,Math.min(1500,Math.round(myG*.2/100)*100));ev=myG>=g+300?{ty:'dem',g}:{ty:'dem',g:0,fd:Math.max(500,Math.min(5000,Math.round(mine.reduce((a,k)=>a+s.C[k].fd,0)*.15/100)*100))}}
+  if(ev){s.ev=Object.assign({t:s.t,f,g:0,fd:0,done:0},ev);tzLog(s,`${tzFN(s,f)}의 사신이 왔어요 · 평정에서 답해요`,'令')}}
+function tzEvPay(s,key,n){const ks=tzMine(s).sort((a,b)=>s.C[b][key]-s.C[a][key]);if(ks.reduce((a,k)=>a+s.C[k][key],0)<n)return false;for(const k of ks){const d=Math.min(n,s.C[k][key]);s.C[k][key]-=d;n-=d;if(!n)break}return true}
+function tzEvAnswer(s,yes){const E=s.ev;if(!E||E.done)return '';E.done=1;const f=E.f,nm=tzFN(s,f);let t='';
+  if(E.ty==='dem'){if(yes){if(!(E.g?tzEvPay(s,'g',E.g):tzEvPay(s,'fd',E.fd))){E.done=0;return '바칠 재물이 모자라요'}tzHAdd(s,s.me,f,-15);t=`${nm}에 ${E.g?'금 '+fmt(E.g):'군량 '+fmt(E.fd)}을(를) 바쳤어요 · 관계가 누그러졌어요`}
+    else{tzHAdd(s,s.me,f,15);t=`${nm}의 요구를 거절했어요 · 관계가 험악해졌어요`}}
+  else if(E.ty==='ali'){if(yes){s.F[s.me].al[f]=24;s.F[f].al[s.me]=24;s.H=s.H||{};s.H[tzHK(s.me,f)]=Math.min(tzH(s,s.me,f),20);t=`${nm}과(와) 2년 동맹!`}else{tzHAdd(s,s.me,f,5);t=`${nm}의 동맹 제안을 거절했어요`}}
+  else if(E.ty==='sur'){if(yes){tzAbsorb(s,s.me,f);tzEnd(s);t=`${nm}에 항복했어요`}else{tzHAdd(s,s.me,f,10);t=`${nm}의 항복 권고를 물리쳤어요`}}
+  tzLog(s,'사신 · '+t,'令');return t}
+function tzEvHtml(s){const E=s.ev,nm=esc(tzFN(s,E.f)),L=esc(tzName(s.F[E.f].lord)),a=tzAdv(s);
+  const txt=E.ty==='dem'?`${L}이(가) ${E.g?'금 '+fmt(E.g):'군량 '+fmt(E.fd)}을(를) 바치라고 해요. 들어주면 관계가 누그러지고, 거절하면 험악해져요.`
+    :E.ty==='ali'?`${L}이(가) 2년 동맹을 맺자고 해요.`:`${L}이(가) 항복하라고 해요. 받아들이면 우리 세력이 그쪽에 들어가며 이 판은 끝나요.`;
+  let adv='';if(a){const good=E.ty==='ali'?1:E.ty==='sur'?0:(tzCities(s,E.f).reduce((x,k)=>x+s.C[k].tr,0)>tzMine(s).reduce((x,k)=>x+s.C[k].tr,0)*2?1:0);
+    const r=mulberry(((s.sd|0)^(s.t*31337))>>>0),ok=r()<tzAdvAcc(a)?good:1-good;adv=`<p class="tz-advl${ok?'':' bad'}" style="margin:0 0 8px"><b>군사 ${esc(tzName(a))}</b> · ${ok?'받아들이소서.':'물리치소서.'} ${ok?(E.ty==='ali'?'등 뒤를 맡길 벗이 생깁니다.':'지금 맞서기엔 저들이 너무 강합니다.'):(E.ty==='sur'?'아직 끝나지 않았습니다.':'저들의 속셈에 넘어가선 안 됩니다.')}</p>`}
+  return `<div class="tz-ev"><b class="t">${nm}의 사신 · ${tzRel(s,E.f)[1]}</b><p>${txt}</p>${adv}<div class="row"><button type="button" class="btn sm${E.ty==='sur'?' ghost':' red'}" data-tzev="1">받아들이기</button><button type="button" class="btn sm ghost" data-tzev="0">거절</button></div></div>`}
+function tzEvSheet(){const s=tzState();if(!tzEvLive(s))return;openSheet(`<div class="sheet-h"><h2 style="margin:0">${s.y}년 ${s.m}월 사신</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${tzEvHtml(s)}`)}
+{const _pp=tzPjPend;tzPjPend=function(s){const L=_pp(s);return tzEvLive(s)?L.concat([{ev:1}]):L}}
+{const _ps=tzPjSheet;tzPjSheet=function(){const s=tzState();if(!tzPjEnsure(s)){if(tzEvLive(s))tzEvSheet();return}_ps.apply(this,arguments);
+  if(tzEvLive(s)){const h=$('#sheet .tz-pj-h');if(h)h.insertAdjacentHTML('afterend',tzEvHtml(s))}}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tzev]');if(!b)return;const s=tzState();if(!tzEvLive(s))return;
+  const conf=s.ev.ty==='sur'&&b.dataset.tzev==='1';if(conf&&!confirm('정말 항복할까요? 이 판은 패배로 끝나요.'))return;
+  const t=tzEvAnswer(s,b.dataset.tzev==='1');if(t)toast(t);save();renderView();if(s.end)closeSheet();else if($('#sheet .tz-pj-h'))tzPjSheet();else closeSheet()});
+
+// ---- 턴: 답 안 한 사신은 거절 · 적대도 흐름 · 정전·내응 기한 · 사신 ----
+{const _tt=tzTurn;tzTurn=function(s){if(tzEvLive(s))tzEvAnswer(s,false);const r=_tt.apply(this,arguments);if(!s.on)return r;
+  s.H=s.H||{};s.TR=s.TR||{};s.NE=s.NE||{};
+  for(const k in s.H){const[a,b]=k.split('|');if(!s.F[a]||!s.F[b]||s.F[a].dead||s.F[b].dead){delete s.H[k];continue}const tgt=tzAllyR(s,a,b)?15:40,v=s.H[k];s.H[k]=v>tgt?v-1:v<tgt?v+1:v}
+  for(const k in s.TR){s.TR[k]--;const[a,b]=k.split('|');if(s.TR[k]<=0||!s.F[a]||!s.F[b]||s.F[a].dead||s.F[b].dead){if(s.TR[k]<=0&&(a===s.me||b===s.me))tzLog(s,`${tzFN(s,a===s.me?b:a)}과(와)의 정전이 끝났어요`,'令');delete s.TR[k]}}
+  for(const g in s.NE){const e=s.NE[g];if(e.t<s.t||!s.G[g]||!s.F[s.G[g].o]||s.G[g].o===e.f){if(e.f===s.me&&e.t<s.t&&s.G[g])tzLog(s,`${tzName(g)}과(와)의 내응 약속이 끝났어요`,'令');delete s.NE[g]}}
+  s.jo=(s.jo||[]).filter(j=>j.t>=s.t);
+  if(!s.end){tzAiDip(s);tzEvRoll(s)}save();return r}}
+
+// 도움말
+HELP.splice(Math.min(3,HELP.length),0,{t:'외교·계략',rows:[
+  ['관계','세력마다 우호 · 보통 · 험악으로 보여요(계략 탭 \'외교 현황\'). 싸우거나 이간·권유·파괴·내응을 하면 험악해지고, 동맹·정전을 맺거나 사신 요구를 들어주면 누그러져요. 매달 조금씩 보통으로 돌아가요. 험악한 상대일수록 먼저 쳐들어와요.'],
+  ['사신','3~4달에 한 번꼴로 이웃 세력의 사신이 와요. 금·군량 요구, 동맹 제안, (우리가 아주 약하면) 항복 권고가 있어요. 평정 맨 위 카드에서 답하고, 답하지 않고 턴을 넘기면 거절한 걸로 쳐요.'],
+  ['공동 작전','동맹에게 그 동맹과 맞닿은 적 성을 이번 달에 쳐 달라고 해요. 받아들이면 턴 종료 때 동맹이 공격해요.'],
+  ['정전','금(500 + 상대 성 수 × 100, 최대 3,000)을 주고 12달 동안 서로 공격하지 않아요. 험악한 상대일수록 어려워요.'],
+  ['내응','이웃 적 성의 장수와 약속해요. 3달 안에 그 장수가 있는 성을 치면 첫 국면이 끝난 뒤 그 부대가 우리 편으로 넘어오고 적 사기 −15. 전투 뒤 우리 장수가 돼요.'],
+  ['이간책 · 독립 유도','이간책은 두 적 세력 사이를 크게 험악하게 만들어 서로 싸우게 해요(동맹이면 절반 확률로 깨져요). 독립 유도는 충성 낮은 적 태수를 부추겨 그 성째 새 세력으로 독립시켜요.'],
+  ['AI끼리','AI 세력끼리도 사이가 좋으면 동맹을, 강한 상대가 험악하면 정전을 맺어요.']]});
+
+// ---- 제목 화면 다듬기: 아주 넓은/긴 창은 검은 여백 · 도움말·설정을 열어도 제목 화면 위에서, 닫으면 제목 화면으로 ----
+(()=>{const st=document.createElement('style');st.textContent=`
+#sheet.tzt-sheet,#sheet.tzt-sheet .sheet-body{background:#000}
+#sheet.tzt-sheet .tzt{width:100%;max-width:calc(100dvh*16/9);margin:0 auto;min-height:100%}
+@media (orientation:portrait){#sheet.tzt-sheet .tzt{max-width:none}#sheet.tzt-sheet .sheet-body{display:flex;align-items:center}#sheet.tzt-sheet .tzt{min-height:0;height:min(100%,calc(100vw*2.2));max-height:100%}}
+#sheet.tzt-bg{background:linear-gradient(rgba(4,7,7,.72),rgba(4,7,7,.72)),#000 url('../img/title-l.webp') center/cover no-repeat}
+@media (orientation:portrait){#sheet.tzt-bg{background:linear-gradient(rgba(4,7,7,.72),rgba(4,7,7,.72)),#000 url('../img/title-p.webp') center/cover no-repeat}}
+html.work #sheet.tzt-sheet,html.work #sheet.tzt-sheet .sheet-body{background:var(--bg)}html.work #sheet.tzt-bg{background:var(--bg)}
+`;document.head.appendChild(st)})();
+let tzFromTitle=0;
+document.addEventListener('click',e=>{const t=e.target.closest('#sheet.tzt-sheet [data-tzhelp],#sheet.tzt-sheet [data-tzt0="set"]');if(!t)return;e.stopImmediatePropagation();e.preventDefault();
+  tzFromTitle=1;if(t.dataset.tzhelp!=null)openHelp(0);else gwMenu();$('#sheet').classList.add('tzt-bg')},true);
+{const _cl=closeSheet;closeSheet=function(){const back=tzFromTitle&&$('#sheet').classList.contains('tzt-bg');$('#sheet').classList.remove('tzt-bg');_cl.apply(this,arguments);if(back){tzFromTitle=0;setTimeout(()=>tzTitle('main'),0)}}}
+{const _os=openSheet;openSheet=function(){const keep=tzFromTitle&&$('#sheet').classList.contains('tzt-bg');const r=_os.apply(this,arguments);if(keep)$('#sheet').classList.add('tzt-bg');return r}}
+(()=>{const st=document.createElement('style');st.textContent=`@media (min-aspect-ratio:16/9){#sheet.tzt-sheet .tzt{box-shadow:inset 90px 0 70px -40px #000,inset -90px 0 70px -40px #000}}`;document.head.appendChild(st)})();
+{const _t=tzTitle;tzTitle=function(){tzFromTitle=0;$('#sheet').classList.remove('tzt-bg');return _t.apply(this,arguments)}}
+// 평정: '모두 승인하고 마치기'는 바로 실행
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tzpja="all"]');if(!b)return;const s=tzState();if(!s.pj)return;e.stopImmediatePropagation();s.pj.L.forEach(p=>{p.on=1});const go=document.querySelector('#sheet [data-tzpjgo]');if(go)go.click()},true);
+
+// ---- 지도: 주 경계 · 평정까지 남은 성 ----
+let tzZOn=1;try{tzZOn=localStorage.getItem('gw-zone')==='0'?0:1}catch(e){}
+(()=>{const st=document.createElement('style');st.textContent=`
+.gw-map svg .zn{pointer-events:none}
+.gw-zl{position:absolute;transform:translate(-50%,-50%);z-index:2;pointer-events:none;font-size:11px;font-weight:700;padding:1px 6px;border-radius:8px;background:rgba(14,20,19,.72);color:#e8e2d0;white-space:nowrap;letter-spacing:.05em}
+.gw-zl.full{background:rgba(120,92,30,.9);color:#fff4d6}.gw-zl.part{background:rgba(30,90,80,.88);color:#e9fff8}
+.gw-n[data-need]{outline:2px dashed #e9c66c;outline-offset:2px;border-radius:50%}
+.gw-zb{position:absolute;left:8px;top:46px;z-index:3;padding:4px 9px;border-radius:8px;border:1px solid var(--line);background:rgba(14,20,19,.82);color:#e8e2d0;font-size:12px;cursor:pointer}
+.gw-zb[aria-pressed="true"]{border-color:var(--bronze)}
+`;document.head.appendChild(st)})();
+function tzZoneSvg(s){let g='';const w=7.5;
+  for(const z in TZ_ZH){const ks=TZ_ZH[z][1],n=ks.filter(k=>s.C[k].o===s.me).length,col=n===ks.length?'#e9c66c':n?'#3fb59a':'#9aa39b',op=n===ks.length?.34:n?.3:.16;
+    const ed=TZ_E.filter(([a,b])=>TZ_ZK[a]===z&&TZ_ZK[b]===z),seg=(sw,c)=>ed.map(([a,b])=>`<line x1="${TZ_C[a][0]}" y1="${TZ_C[a][1]}" x2="${TZ_C[b][0]}" y2="${TZ_C[b][1]}" stroke="${c}" stroke-width="${sw}" stroke-linecap="round"/>`).join('')+ks.map(k=>`<ellipse cx="${TZ_C[k][0]}" cy="${TZ_C[k][1]}" rx="${sw/2}" ry="${sw/2}" fill="${c}"/>`).join('');
+    g+=`<g class="zn" opacity="${op}">${seg(w+1.1,n?col:'#1d2422')}${seg(w,col)}</g>`}
+  return g}
+function tzZoneLbl(s){let h='';for(const z in TZ_ZH){const[zn,ks]=TZ_ZH[z],n=ks.filter(k=>s.C[k].o===s.me).length,x=ks.reduce((a,k)=>a+TZ_C[k][0],0)/ks.length,y=ks.reduce((a,k)=>a+TZ_C[k][1],0)/ks.length;
+    h+=`<span class="gw-zl ${n===ks.length?'full':n?'part':''}" style="left:${x}%;top:${Math.max(3,y-5)}%">${zn}${n===ks.length?' 평정':n?` ${n}/${ks.length}`:''}</span>`}return h}
+{const _mh=tzMapHtml;tzMapHtml=function(s){let h=_mh.apply(this,arguments);if(!tzZOn)return h;
+  h=h.replace('aria-hidden="true">','aria-hidden="true">'+tzZoneSvg(s));
+  for(const z in TZ_ZH){const ks=TZ_ZH[z][1],n=ks.filter(k=>s.C[k].o===s.me).length;if(n&&n<ks.length)ks.filter(k=>s.C[k].o!==s.me).forEach(k=>{h=h.replace(`data-tzk="${k}" aria-label`,`data-tzk="${k}" data-need="1" aria-label`)})}
+  const i=h.lastIndexOf('</div></div>');return h.slice(0,i)+tzZoneLbl(s)+h.slice(i)}}
+{const _vh=tzViewHtml;tzViewHtml=function(s){return _vh.apply(this,arguments).replace('<button type="button" class="gw-mine"',`<button type="button" class="gw-zb" data-tzzn="1" aria-pressed="${!!tzZOn}">주 경계</button><button type="button" class="gw-mine"`)}}
+document.addEventListener('click',e=>{if(!e.target.closest('[data-tzzn]'))return;tzZOn=tzZOn?0:1;try{localStorage.setItem('gw-zone',String(tzZOn))}catch(x){}renderView()});
+HELP.forEach(c=>{if(c.t==='평정·군사')c.rows.push(['주 경계','지도에 13주를 옅게 칠해 보여요. 다 가진 주는 금색 \'평정\', 일부만 가진 주는 초록 \'2/3\'처럼 나오고, 마저 차지해야 할 성에는 점선 고리가 둘려요. 지도 왼쪽 위 \'주 경계\'로 켜고 꺼요.'])});
+// 출진 대상에 주 · 점령하면 주 평정
+function tzZTag(s,n){const z=TZ_ZK[n],ks=TZ_ZH[z][1],left=ks.filter(k=>s.C[k].o!==s.me);return `${TZ_ZH[z][0]}${left.length===1&&left[0]===n&&ks.length>1||ks.length===1?' · 점령하면 평정!':` ${ks.length-left.length}/${ks.length}`}`}
 
 boot();
 </script>
