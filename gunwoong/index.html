@@ -8840,8 +8840,10 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.3.5';
-const GW_NOTICES=[{v:'1.3.5',date:'2026-11-01',title:'군웅할거 v1.3.5 · 폰 아래 명령줄 · 군사 한마디 · 쉬운 설치 안내',items:[
+const GW_VER='1.3.6';
+const GW_NOTICES=[{v:'1.3.6',date:'2026-11-01',title:'군웅할거 v1.3.6 · 시즌 초기화에서 군웅할거 기록 지키기',items:[
+  '11월 1일 낮 12시 본편 시즌 초기화 때 군웅할거 진행 판까지 함께 지워지던 문제를 고쳤어요. 앞으로 본편 초기화는 군웅할거 판과 쉬는 칸을 건드리지 않아요.',
+  '구글 저장 공유를 켜 둔 경우, 이 기기에 판이 없으면 빈 기록을 서버에 올리지 않고 서버에 남은 기록을 받아 와요. 이 기기에만 있는 판이 서버에서 비어 있으면 어느 쪽으로 할지 먼저 물어봐요.']},{v:'1.3.5',date:'2026-11-01',title:'군웅할거 v1.3.5 · 폰 아래 명령줄 · 군사 한마디 · 쉬운 설치 안내',items:[
   '폰 화면 아래에 명령줄이 붙었어요. 고른 성 이름과 내정 · 군사 · 인사 · 계략 버튼이 늘 보여서, 지도나 천하 표를 내리지 않고 바로 명령해요. 성 이름을 누르거나 지도에서 고른 성을 한 번 더 누르면 성 카드가 아래에서 올라와요.',
   '지금 할 수 없는 명령은 흐리게 보이고, 이유가 빨간 글씨로 나와요(예: 금 300 필요 · 군량 부족 · 이웃한 내 성 없음). 할 수 있는 명령이 하나도 없는 분류는 명령줄에서도 흐려져요.',
   '성 카드에 군사 한마디가 생겼어요. 민심이 60 이하라 의용군이 안 들어오는 것, 군량이 몇 달 치밖에 없는 것, 태수가 없어 자라지 않는 것처럼 지금 막혀 있는 일을 두 줄까지 알려 줘요.',
@@ -10497,6 +10499,15 @@ function pwaInappBar(){const env=pwaEnv();if((env!=='kakao'&&env!=='inapp')||pwa
   d.querySelector('.x').onclick=()=>{d.remove();try{sessionStorage.setItem('pwa-ib','1')}catch(e){}};document.body.appendChild(d)}
 const pwaHashGo=()=>{let h='';try{h=decodeURIComponent(location.hash.slice(1))}catch(e){}if(h==='설치'||h==='install'||/[?&]install=1/.test(location.search)){setTimeout(()=>{pwaGuide();try{history.replaceState(null,'',location.pathname)}catch(e){}},600)}};
 addEventListener('hashchange',pwaHashGo);setTimeout(()=>{pwaInappBar();pwaHashGo()},900);
+// v1.3.6 시즌 초기화 보호: 본편 시즌 초기화(doWipe)가 군웅할거 판(tz·쉬는 칸·지난 군웅)까지 지우지 않게 지켜요
+{const _w=doWipe;doWipe=function(){const k={tz:S&&S.tz,tzs:S&&S.tzs,tzi:S&&S.tzi,gw:S&&S.gw};const r=_w.apply(this,arguments);if(r)for(const x in k)if(k[x]!==undefined)S[x]=k[x];return r}}
+// v1.3.6 서버 기록 보호: 이 기기에 판이 없으면 빈 기록을 올리지 않고 서버 기록을 받아요. 이 기기에만 있는 판이 서버 쪽에 비어 있으면 묻고 고르게 해요
+{const _st=gwsStart;gwsStart=async function(){const uid=GWU&&GWU.uid;if(!uid)return _st.apply(this,arguments);
+  try{const d=await gwsRef().get({source:'server'});if(d.exists){const D=d.data(),lb=Array.isArray(D.lb)?D.lb:[],srv=lb.some(Boolean),loc=gwsSnap().slots;
+      if(!loc.some(Boolean)&&srv){if(gwsMeta().uid!==uid){gwsHash={};gwsMetaSet({uid,rev:0})}await gwsPull(D);return}
+      if(loc.some((x,i)=>x&&!lb[i])&&(D.rev|0)>(gwsMeta().rev|0)){if(gwsMeta().uid!==uid){gwsHash={};gwsMetaSet({uid,rev:0})}gwsAsk(D);return}}}catch(e){}
+  return _st.apply(this,arguments)}}
+{const _ps=gwsPush;gwsPush=async function(first){if(GWU&&!gwsSnap().slots.some(Boolean)){gwsMetaSet({dirty:0});return}return _ps.apply(this,arguments)}}
 boot();
 </script>
 </body>
