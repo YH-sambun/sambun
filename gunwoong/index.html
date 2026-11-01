@@ -929,7 +929,24 @@ body.pc .tz-grid{max-height:none;overflow-y:visible!important}
 .tzb-pick{display:flex;flex-direction:column;gap:4px}.tzb-pr{display:flex;align-items:center;gap:6px;flex-wrap:wrap}.tzb-pr .nm{width:96px;display:flex;flex-direction:column;font-size:13px}.tzb-pr .nm small{color:var(--mute);font-size:11px}
 .tzb-pr .tz-dl{flex:1;margin:0}
 .tz-help-b{margin-top:6px}
-.tz-top{padding-right:56px}
+/* v1.3.1 윗줄: 폰은 두 줄(1줄 ←·날짜·♪ … 평정·보고·턴 종료·☰ / 2줄 계절·금·군량·병사·성 … 군사), 배지는 버튼에 붙이고 ☰는 윗줄 안으로 */
+.tz-top .btn{position:relative}.tz-top .tz-bdg{z-index:1}
+.tz-mb{flex:none;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:transparent;color:inherit;font-size:16px;line-height:1;cursor:pointer;padding:0}
+body.tz-focus #gw-menu{display:none}
+.tz-res{flex-direction:row;flex-wrap:wrap;column-gap:10px;font-size:12px}.tz-res span{white-space:nowrap}
+@media (max-width:719px){
+ .tz-top{flex-wrap:wrap;row-gap:6px;column-gap:6px;padding:8px 10px 6px}
+ .tz-top>.tz-date{display:contents}
+ .tz-top::after{content:'';order:20;flex:0 0 100%;height:0}
+ .tz-back{order:1}.tz-date>b{order:2}.tz-top>.bgm-b{order:3;margin-right:auto;width:32px;padding:0!important}.tz-top>.btn{order:10}.tz-mb{order:11;width:32px;height:32px;font-size:15px}
+ .tz-date>small{order:30;white-space:nowrap}
+ .tz-res{order:31;margin-left:0;flex:1 1 auto;align-items:center;justify-content:flex-start;column-gap:9px}
+ .tz-advb{order:32;margin-top:0;line-height:22px}
+ .tz-top .btn.sm{padding-left:10px;padding-right:10px}
+}
+@media (max-width:389px){.tz-bk-t{display:none}.tz-top{column-gap:5px}.tz-res{column-gap:7px;font-size:11.5px}.tz-top .btn.sm{padding-left:8px;padding-right:8px}}
+@media (min-width:720px){.tz-res{font-size:13px;column-gap:14px}.tz-advb{font-size:12px}}
+body.pc .tz-top{margin:-8px -8px 10px;padding:10px 16px}body.pc .tz-date b{font-size:18px}body.pc .tz-res{font-size:14px}
 #sheet.tzt-sheet .sheet-body{padding:0;overflow:hidden;max-width:820px}
 .tzt{position:relative;background:#0e1716 url('../img/title-l.webp') center/cover no-repeat;aspect-ratio:4/3;max-height:88vh;display:grid;place-items:center}
 .tzt:before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at center,rgba(8,12,12,.55),rgba(8,12,12,.15) 70%)}
@@ -5488,8 +5505,8 @@ function tzRepSheet(){const s=tzState();const li=s.rep.map(l=>{const c=l[1]===' 
   openSheet(`<div class="sheet-h"><h2 style="margin:0">${s.y}년 ${s.m}월 보고</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div><ul class="tz-rep">${li||'<li><b>報</b><span>보고가 없어요</span></li>'}</ul>
    <p class="sub" style="margin:8px 0 0;font-size:12px">戰 전투 · 委 위임한 성이 한 일 · 民 내 성 소식 · 報 천하 소식</p>`);$('#sheet').classList.add('tz-top')}
 function tzTopBar(s){const mine=tzMine(s),sum=key=>mine.reduce((a,k)=>a+s.C[k][key],0);
-  return `<div class="tz-top"><button type="button" class="tz-back" data-tz="exit" aria-label="군웅할거 나가기">← 나가기</button><div class="tz-date"><b>${s.y}년 ${s.m}월</b><small>${TZ_SEAN[tzSea(s.m)]} · ${s.t+1}턴</small></div>
-   <div class="tz-res"><span>금 <b>${fmt(sum('g'))}</b> · 군량 <b>${fmt(sum('fd'))}</b></span><span>병사 <b>${fmt(sum('tr'))}</b> · 성 <b>${mine.length}/${TZ_K.length}</b></span></div>
+  return `<div class="tz-top"><button type="button" class="tz-back" data-tz="exit" aria-label="군웅할거 나가기">←<span class="tz-bk-t"> 나가기</span></button><div class="tz-date"><b>${s.y}년 ${s.m}월</b><small>${TZ_SEAN[tzSea(s.m)]} · ${s.t+1}턴</small></div>
+   <div class="tz-res"><span>금 <b>${fmt(sum('g'))}</b></span><span>군량 <b>${fmt(sum('fd'))}</b></span><span>병사 <b>${fmt(sum('tr'))}</b></span><span>성 <b>${mine.length}/${TZ_K.length}</b></span></div>
    <button type="button" class="btn sm ghost" data-tz="rep">보고</button>${s.end?'':(()=>{const n=tzIdleC(s).length;return `<button type="button" class="btn sm red${n?' tz-warnb':''}" data-tz="turn"${n?` aria-label="턴 종료 · 명령 안 한 성 ${n}곳"`:''}>턴 종료${n?`<i class="tz-bdg">${n}</i>`:''}</button>`})()}</div>`}
 function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.g;
   let h=`<div class="tz-city"><div class="tz-ch"><h3>${tzCN(k)}</h3><span class="sub" style="margin:0">${tzHZ(k)} · ${TZ_ZH[TZ_ZK[k]][0]}${tzZOwn(s,TZ_ZK[k])?` <b style="color:${tzCol(tzZOwn(s,TZ_ZK[k]))}">평정</b>`:''}</span>${TZ_PASS[k]?`<span class="tz-tag front" title="관문: 수비 체력 ×1.15">${TZ_PASS[k]}</span>`:''}<span class="chip" style="border-color:${tzCol(o)};color:${tzCol(o)}">${tzFN(s,o)}${tzRelTxt(s,o)}</span>${TZ_TRADE[k]?'<span class="tz-tag home">商</span>':''}
@@ -8724,8 +8741,14 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.3.0';
-const GW_NOTICES=[{v:'1.3.0',date:'2026-10-31',title:'군웅할거 v1.3.0 · 장수로 시작',items:[
+const GW_VER='1.3.1';
+const GW_NOTICES=[{v:'1.3.1',date:'2026-11-01',title:'군웅할거 v1.3.1 · PC·폰 저장 공유 · 윗줄 정리',items:[
+  'PC와 폰에서 같은 저장 칸으로 이어서 할 수 있어요. 메뉴(☰) → \'기기 간 저장 공유\'에서 구글로 로그인하면, 진행이 몇 초마다 서버에 올라가고 다른 기기에서 같은 구글 계정으로 로그인하면 그대로 받아와요.',
+  '두 기기에서 따로 진행한 기록이 있으면 어느 쪽을 쓸지 칸 목록을 보여 주고 물어봐요. 로그인하지 않으면 지금처럼 이 기기에만 저장돼요.',
+  '폰에서 윗줄이 두 줄로 바뀌었어요. 첫 줄은 날짜와 평정 · 보고 · 턴 종료, 둘째 줄은 계절 · 금 · 군량 · 병사 · 성 · 군사 · ♪ · ☰예요. 재화 숫자가 날짜와 겹치던 문제를 고쳤어요.',
+  '평정 버튼의 숫자가 화면 오른쪽 위 모서리로 빠져 잘리던 문제를 고쳤어요.',
+  '군웅할거 화면에서는 ☰ 버튼이 윗줄 끝으로 옮겨져서, 아래쪽 성 정보나 표를 더는 가리지 않아요.',
+  'PC에서도 윗줄이 화면 폭에 맞고 재화 글씨가 커졌어요.']},{v:'1.3.0',date:'2026-10-31',title:'군웅할거 v1.3.0 · 장수로 시작',items:[
   '새 게임에서 \'장수로\'를 고르면 군주가 아닌 장수 한 명으로 시작해요. 한 달에 행동 3번으로 이동·방문·수련·일·봉사를 하고, 공을 쌓아 장수 → 태수 → 군주로 올라가요.',
   '군주에게 받은 임무를 해내면 공적과 신뢰가 오르고, 놓치면 신뢰가 떨어져요. 신뢰가 너무 낮으면 해임될 수 있어요.',
   '장수는 하야해서 재야로 돌아갈 수 있어요. 군주도 하야(양위)할 수 있어요. 후계자를 고른 뒤 장수로 남거나 재야로 떠나고, 그때부터 장수 모드로 이어져요.',
@@ -9750,7 +9773,7 @@ function tzPcAct(s,a,x){const P=s.pc,g=P.g,G=s.G[g],k=G.c,C=s.C[k],rk=tzPcRank(s
     Object.assign(G,{o:o.f,c:c0,ly:70,fd:0});P.tr=55;save();tzPcSync(s);closeSheet();renderView();const t=`${nm}이(가) ${tzFN(s,o.f)}에 들어갔어요`;tzLog(s,t,'令');tzEvShow([{ty:'recruit',xs:[t]}]);return}}
 
 // ---------------- 장수제: 화면 ----------------
-function tzPcTop(s){const P=s.pc,G=s.G[P.g];return `<div class="tz-top"><button type="button" class="tz-back" data-tz="exit" aria-label="군웅할거 나가기">← 나가기</button><div class="tz-date"><b>${s.y}년 ${s.m}월</b><small>${TZ_SEAN[tzSea(s.m)]} · ${s.t+1}턴</small></div>
+function tzPcTop(s){const P=s.pc,G=s.G[P.g];return `<div class="tz-top"><button type="button" class="tz-back" data-tz="exit" aria-label="군웅할거 나가기">←<span class="tz-bk-t"> 나가기</span></button><div class="tz-date"><b>${s.y}년 ${s.m}월</b><small>${TZ_SEAN[tzSea(s.m)]} · ${s.t+1}턴</small></div>
    <div class="tz-res"><span>행동 <b>${P.ap}/3</b></span><span>금 <b>${fmt(P.gd)}</b></span></div>${bgmBtn()}<button type="button" class="btn sm ghost" data-tz="rep">보고</button>${s.end?'':`<button type="button" class="btn sm red${P.ap?'':' tz-warnb'}" data-pc="end">이번 달 끝내기</button>`}</div>`}
 function tzPcCard(s){const P=s.pc,g=P.g,G=s.G[g],rk=tzPcRank(s),f=s.F[G.o]?G.o:'',C=s.C[G.c],L=f?s.F[f].lord:'';
   const st=PC_ST.map(([c,n])=>{const b=tzPcBase(g,c),u=P.up[c]|0,x=P.xp[c]|0,cap=b+u>=Math.min(100,b+10);return `<span class="pc-st"><small>${n}</small><b>${b+u}</b>${u?`<i>+${u}</i>`:''}<em style="--x:${cap?100:x}%"></em></span>`}).join('');
@@ -9957,6 +9980,88 @@ HELP.splice(Math.min(2,HELP.length),0,{t:'사건 그림 · 음악',rows:[
   ['역병 · 홍수','여름에 드물게 어느 성에 역병(인구 −6% · 병사 −10% · 민심 −5)이나 홍수(농업 −15% · 군량 −15%)가 생겨요.'],
   ['배경음악','위쪽 ♪ 버튼으로 켜고 꺼요(기본 꺼짐). 제목 · 평시 · 난세 · 전투 · 재야 곡과 승리 · 패배 · 경사 · 흉사 효과음악이 있어요. 처음 켤 때 곡을 받고, 그다음부터는 저장본을 써요.'],
   ['저장 칸','저장 칸이 10개로 늘었어요. 쉬고 있는 칸은 압축해서 저장해요.']]});
+
+/* v1.3.1 윗줄 ☰: 군웅할거 화면에서는 떠 있는 ☰ 대신 윗줄 끝에 붙여요 */
+{const mb='<button type="button" class="tz-mb" data-gwm aria-label="메뉴">☰</button>',add=f=>function(){const h=f.apply(this,arguments);return typeof h==='string'?h.replace(/<\/div>\s*$/,mb+'</div>'):h};
+ tzTopBar=add(tzTopBar);tzPcTop=add(tzPcTop)}
+document.addEventListener('click',e=>{if(e.target.closest('[data-gwm]'))gwMenu()});
+
+/* v1.3.1 기기 간 저장 공유: 구글로 로그인하면 Firestore gw/{uid}(+ s/0~9 칸)에 군웅할거 저장 칸을 올리고 받아요.
+   기기 저장(localStorage)은 그대로 쓰고, 서버는 rev 번호로 다른 기기가 먼저 저장했는지 확인해요(본편 동기화와 같은 방식). */
+const GWS_K='gw-sync',GWS_N=10;
+let GWA=null,GWF=null,GWU=null,gwsT=null,gwsBusy=0,gwsGen=0,gwsConf=null,gwsSt='',gwsAt=0,gwsHash={},gwsApplying=0;
+function gwsMeta(){try{return JSON.parse(localStorage.getItem(GWS_K))||{}}catch(e){return {}}}
+function gwsMetaSet(o){try{localStorage.setItem(GWS_K,JSON.stringify(Object.assign(gwsMeta(),o)))}catch(e){}}
+function gwsSnap(){tzSlots();const slots=[];for(let i=0;i<GWS_N;i++){const x=i===S.tzi?tzPack(tzState()):S.tzs[i];slots.push(x&&x.z?{z:x.z,lb:String(x.lb||'')}:null)}return {tzi:S.tzi|0,slots}}
+const gwsH=x=>x?x.z.length+':'+lsHash(x.z):'';
+function gwsHas(){const s=gwsSnap();return s.slots.some(Boolean)}
+function gwsSetSt(st){gwsSt=st;if(st==='ok')gwsAt=Date.now();const n=$('#gws-st');if(n)n.textContent=gwsStTxt()}
+function gwsStTxt(){return gwsSt==='saving'?'올리는 중…':gwsSt==='err'?'연결이 안 돼 다시 시도 중이에요':gwsSt==='conf'?'다른 기기 기록을 골라 주세요':gwsAt?'서버에 저장됨 '+new Date(gwsAt).toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit',hour12:false}):'연결됨'}
+// 저장할 때마다 '서버에 안 올린 변경 있음' 표시 → 몇 초 뒤 올려요
+{const _sv=save;save=function(){const r=_sv.apply(this,arguments);if(!(typeof REC_SANDBOX!=='undefined'&&REC_SANDBOX)&&!gwsApplying){gwsGen++;gwsMetaSet({dirty:1});if(GWU){clearTimeout(gwsT);gwsT=setTimeout(gwsPush,4000)}}return r}}
+async function gwsLoad(){if(GWA)return true;
+  try{const v='10.12.2',b=`https://www.gstatic.com/firebasejs/${v}/`;await loadScript(b+'firebase-app-compat.js');await loadScript(b+'firebase-auth-compat.js');await loadScript(b+'firebase-firestore-compat.js');
+    const app=firebase.apps.length?firebase.app():firebase.initializeApp(FIREBASE_CONFIG);GWA=app.auth();GWF=app.firestore();
+    try{await GWA.getRedirectResult()}catch(e){toast(authMsg(e))}
+    GWA.onAuthStateChanged(u=>{GWU=u&&!u.isAnonymous?u:null;gwsMetaSet({pend:0});if(GWU)gwsStart();gwsPaint()});return true}
+  catch(e){toast('서버에 연결하지 못했어요. 인터넷 연결을 확인해 주세요');return false}}
+async function gwsLogin(){if(!await gwsLoad())return;const pr=new firebase.auth.GoogleAuthProvider();
+  try{await GWA.signInWithPopup(pr)}
+  catch(e){if(e.code==='auth/popup-blocked'||e.code==='auth/operation-not-supported-in-this-environment'){gwsMetaSet({pend:1});try{await GWA.signInWithRedirect(pr)}catch(e2){toast(authMsg(e2))}}
+    else if(e.code!=='auth/popup-closed-by-user'&&e.code!=='auth/cancelled-popup-request')toast(authMsg(e))}}
+async function gwsLogout(){if(!GWA)return;if(gwsMeta().dirty)await gwsPush();await GWA.signOut();GWU=null;gwsMetaSet({uid:'',rev:0});gwsHash={};toast('로그아웃했어요. 이 기기에는 계속 저장돼요');gwsPaint()}
+const gwsRef=()=>GWF.collection('gw').doc(GWU.uid);
+// 로그인 직후: 서버 기록과 이 기기 기록을 맞춰요
+async function gwsStart(){const m=gwsMeta(),uid=GWU.uid;if(m.uid!==uid){gwsHash={};gwsMetaSet({uid,rev:0});m.rev=0}
+  try{const d=await gwsRef().get({source:'server'});
+    if(!d.exists){await gwsPush(true);toast('이 기기의 군웅할거 기록을 서버에 올렸어요. 다른 기기에서 같은 구글 계정으로 로그인하면 이어서 해요',4000);return}
+    const D=d.data(),sr=D.rev|0;
+    if(m.uid===uid&&sr<=(m.rev|0)){if(m.dirty)gwsPush();else gwsSetSt('ok');return}
+    if(!gwsHas()||(m.uid===uid&&!m.dirty))await gwsPull(D);else gwsAsk(D)}
+  catch(e){gwsSetSt('err');if(e&&e.code==='permission-denied')toast('서버 저장 권한이 아직 없어요(관리자: Firestore 규칙에 gw 추가 필요)',4000)}}
+async function gwsPush(first){clearTimeout(gwsT);gwsT=null;if(!GWU||!GWF||gwsConf)return;if(gwsBusy){gwsT=setTimeout(gwsPush,1500);return}
+  gwsBusy=1;gwsSetSt('saving');const gen=gwsGen,snap=gwsSnap(),ref=gwsRef(),known=gwsMeta().rev|0;let nr=0;
+  try{await GWF.runTransaction(async tx=>{const d=await tx.get(ref),sr=d.exists?(d.data().rev|0):0;
+      if(sr>known){const e=new Error('conflict');e.code='gw-conflict';e.data=d.data();throw e}
+      nr=sr+1;snap.slots.forEach((x,i)=>{if(first||!sr||gwsH(x)!==gwsHash[i])tx.set(ref.collection('s').doc(String(i)),x?{z:x.z,lb:x.lb}:{z:'',lb:''})});
+      tx.set(ref,{rev:nr,sv:Date.now(),tzi:snap.tzi,lb:snap.slots.map(x=>x?x.lb:''),dev:gwsDev()})});
+    snap.slots.forEach((x,i)=>gwsHash[i]=gwsH(x));gwsMetaSet({rev:nr});if(gen===gwsGen)gwsMetaSet({dirty:0});else gwsT=setTimeout(gwsPush,3000);gwsSetSt('ok')}
+  catch(e){if(e&&e.code==='gw-conflict'){gwsBusy=0;gwsAsk(e.data);return}
+    gwsSetSt('err');if(e&&e.code==='permission-denied')toast('서버 저장 권한이 아직 없어요(관리자: Firestore 규칙에 gw 추가 필요)',4000);else gwsT=setTimeout(gwsPush,8000)}
+  gwsBusy=0}
+function gwsDev(){const u=navigator.userAgent;return /iPhone|iPad/.test(u)?'아이폰':/Android/.test(u)?'안드로이드':'PC'}
+// 서버 기록을 받아 지금 칸·쉬는 칸을 바꿔요
+async function gwsPull(D,quiet){const qs=await gwsRef().collection('s').get({source:'server'}),slots=Array(GWS_N).fill(null);
+  qs.forEach(d=>{const i=+d.id,v=d.data();if(i>=0&&i<GWS_N&&v&&v.z)slots[i]={on:1,z:v.z,lb:String(v.lb||'')}});
+  const ti=(D.tzi|0)>=0&&(D.tzi|0)<GWS_N?D.tzi|0:0,cur=slots[ti],old=tzState(),nx=cur?tzUnpack(cur):null;
+  gwsApplying=1;try{S.tzs=slots.map((x,i)=>i===ti?null:x);S.tzi=ti;S.tz=cleanTz(nx||{done:old.done||{}});tzSlots();
+    tzSel='';tzSx=null;tzMapOn=0;try{tzDraft=null}catch(e){}save()}finally{gwsApplying=0}
+  slots.forEach((x,i)=>gwsHash[i]=gwsH(x));gwsConf=null;gwsMetaSet({rev:D.rev|0,dirty:0});gwsSetSt('ok');
+  if(!$('#sheet').hidden)closeSheet();renderView();if(!quiet)toast(`${D.dev||'다른 기기'}에서 저장한 군웅할거 기록을 불러왔어요`)}
+function gwsLabels(lbs,tzi){const r=(lbs||[]).map((x,i)=>x?`<li${i===tzi?' style="font-weight:700"':''}>${i+1}칸 · ${esc(x)}</li>`:'').join('');return r?`<ul style="margin:4px 0;padding-left:18px;font-size:12px;line-height:1.5">${r}</ul>`:'<p class="sub" style="margin:4px 0">빈 칸뿐이에요</p>'}
+function gwsAsk(D){gwsConf=D;gwsSetSt('conf');const s=gwsSnap(),when=D.sv?new Date(+D.sv).toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'}):'';
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">어느 기록으로 할까요?</h2></div>
+   <p class="sub" style="margin:0 0 8px">${esc(D.dev||'다른 기기')}에서 ${when} 저장한 기록과 이 기기 기록이 달라요. 고르기 전까지 서버에는 올리지 않아요.</p>
+   <div class="banner-card" style="padding:10px;margin:0 0 8px"><b>서버(${esc(D.dev||'다른 기기')})</b>${gwsLabels(D.lb,D.tzi|0)}</div>
+   <div class="banner-card" style="padding:10px;margin:0 0 10px"><b>이 기기</b>${gwsLabels(s.slots.map(x=>x&&x.lb),s.tzi)}</div>
+   <button type="button" class="btn wide" id="gws-load">서버 기록 불러오기</button>
+   <button type="button" class="btn ghost wide" id="gws-keep" style="margin-top:8px">이 기기 기록으로 서버 덮어쓰기</button>
+   <p class="sub" style="margin:8px 0 0;font-size:12px">고르지 않은 쪽 기록은 사라져요.</p>`);
+  $('#gws-load').onclick=async()=>{try{await gwsPull(gwsConf)}catch(e){toast('불러오지 못했어요. 잠시 뒤 다시 해 주세요')}};
+  $('#gws-keep').onclick=()=>{gwsMetaSet({rev:gwsConf.rev|0});gwsConf=null;closeSheet();gwsPush(true)}}
+async function gwsCheck(){if(!GWU||gwsBusy||gwsConf)return;try{const d=await gwsRef().get({source:'server'});if(!d.exists)return;const D=d.data();if((D.rev|0)<=(gwsMeta().rev|0))return;
+  if(gwsMeta().dirty)gwsAsk(D);else if($('#sheet').hidden)await gwsPull(D);else{clearTimeout(gwsCk);gwsCk=setTimeout(gwsCheck,4000)}}catch(e){}}
+let gwsCk=null;
+document.addEventListener('visibilitychange',()=>{if(!GWU)return;if(document.visibilityState==='hidden'){if(gwsMeta().dirty)gwsPush()}else gwsCheck()});
+// 메뉴(☰)에 '기기 간 저장 공유' 줄
+function gwsRow(){return `<div class="banner-card" id="gws-row" style="padding:12px;margin:0 0 10px"><b>기기 간 저장 공유</b>${GWU
+  ?`<p class="sub" style="margin:4px 0 8px">${esc(GWU.email||GWU.displayName||'구글 계정')} · <span id="gws-st">${gwsStTxt()}</span></p><div class="row" style="gap:8px"><button type="button" class="btn ghost sm" id="gws-now" style="flex:1">지금 맞추기</button><button type="button" class="btn ghost sm" id="gws-out" style="flex:1">로그아웃</button></div>`
+  :`<p class="sub" style="margin:4px 0 8px">구글로 로그인하면 PC·폰에서 같은 저장 칸으로 이어서 해요. 로그인하지 않으면 이 기기에만 저장돼요.</p><button type="button" class="btn sm wide" id="gws-in">구글로 로그인</button>`}</div>`}
+function gwsPaint(){const r=$('#gws-row');if(!r)return;r.outerHTML=gwsRow();gwsBind()}
+function gwsBind(){const a=$('#gws-in'),b=$('#gws-now'),c=$('#gws-out');if(a)a.onclick=gwsLogin;if(b)b.onclick=async()=>{if(gwsMeta().dirty)await gwsPush();await gwsCheck();gwsSetSt(gwsSt==='err'?'err':'ok');toast('서버 기록과 맞췄어요')};if(c)c.onclick=gwsLogout}
+{const _m=gwMenu;gwMenu=function(){_m.apply(this,arguments);const h=$('#sheet .sheet-h');if(h){h.insertAdjacentHTML('afterend',gwsRow());gwsBind()}}}
+// 전에 로그인했던 기기는 열 때 바로 연결해요(처음 쓰는 기기는 메뉴에서 로그인할 때만 서버 파일을 받아요)
+setTimeout(()=>{const m=gwsMeta();if(m.uid||m.pend)gwsLoad()},1200);
 
 boot();
 </script>
