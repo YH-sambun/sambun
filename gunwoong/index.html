@@ -8848,9 +8848,10 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
 const GW_VER='1.3.12';
-const GW_NOTICES=[{v:'1.3.12',date:'2026-11-02',title:'군웅할거 v1.3.12 · 숙적 · 연의 중심 장수 설명',items:[
+const GW_NOTICES=[{v:'1.3.12',date:'2026-11-02',title:'군웅할거 v1.3.12 · 숙적 · 연의 중심 장수 설명 · 개인 금 쓰는 곳',items:[
   '장수 설명을 모두 새로 썼어요. 연의 이야기를 위에 두고 이름난 장면 · 별명 · 맞수 이야기를 2~3문장으로 늘렸고, 정사는 아래에 누구를 섬겼고 어떻게 생을 마쳤는지만 한 줄로 줄였어요.',
   '숙적이 생겼어요. 장수 카드 아래에 \'숙적: 이름(장소)\'이 나오고, 이름을 누르면 그 장수 카드로 넘어가요. 본편의 59쌍에 군웅할거 장수끼리의 숙적(관우·반장, 손책·우길, 등애·종회, 마속·장합 등 57쌍)을 더했어요.',
+  '장수제에 \'개인 금\' 행동이 생겼어요(모두 행동 1). 사재 바치기(500·1,000·2,000 → 내 성 금, 군량이면 2배 · 500마다 신뢰 +1, 최대 +4), 사병 모으기(1,000 → 병사 +300 + 매력×5 · 민심 −1), 군주에게 헌상(1,000마다 공적 +20 · 신뢰 +3 · 군주 친밀 +3), 보물 사기(교역 도시에서 주인 없는 보물 3개 중 · ★3 1,500 · ★4 4,000 · ★5 10,000).',
   '숙적끼리 한 전투에서 만나면 전투 시작에 \'숙적 대면\'이 뜨고, 두 부대 모두 주는 피해가 10% 올라요. 2국면 일기토가 일어날 확률이 35%에서 70%로 오르고 숙적끼리 먼저 붙어요. 숙적 일기토에서 이기면 사기 +5, 지면 사기 −5가 더 붙어요.']},{v:'1.3.11',date:'2026-11-02',title:'군웅할거 v1.3.11 · 수비 예비대 · 태수 제안 거절 · 출진 소집 거부 · 정찰 바로가기',items:[
   '성을 지킬 때 싸우는 장수는 지금처럼 5명이지만, 이제 성에 남은 나머지 장수도 \'예비대\'로 힘을 보태요. 1명당 수비 사기 +1 · 받는 피해 −1%이고 최대 5명분(사기 +5 · 피해 −5%)까지예요. 모의전(조건마다 2,000판)에서 2배 병력으로 장수 12명 성을 칠 때 점령률이 71%에서 55%로 내려갔어요. 성이 떨어지면 남은 장수도 붙잡힐 수 있으니 한 성에 너무 몰지는 마세요.',
   '장수로 시작한 판에서 군주가 태수를 바로 앉히지 않고 먼저 물어봐요. \'받기\'를 누르면 그 성으로 옮겨 태수가 되고, 성 방침부터 골라요(기본은 출진하지 않는 \'방어\'). \'거절\'하면 신뢰 −3이고 6달 동안 다시 묻지 않아요. 태수가 빈 성에 저절로 앉히는 것에서도 내 장수는 빠져요.',
@@ -10742,6 +10743,41 @@ HELP.forEach(c=>{if(c.t==='전쟁')c.rows.push(['숙적','관우와 여포, 제�
 .tz-bio .tz-zs{font-size:12.5px;color:var(--mute,#888)}
 .tz-rvb{all:unset;cursor:pointer;color:#e9d8b0;font-weight:700;text-decoration:underline dotted;text-underline-offset:3px}
 `;document.head.appendChild(st)})();
+// ---- v1.3.12 장수제 개인 금 쓰는 곳: 사재 바치기 · 사병 모으기 · 보물 사기 · 군주에게 헌상 (모두 행동 1) ----
+const TZ_PGD={don:[500,1000,2000],donTr:500,donCap:4,mil:1000,milB:300,milC:5,itP:{3:1500,4:4000,5:10000},hon:1000,honMr:20,honTr:3,honFr:3};
+const tzPgOwn=s=>{const P=s.pc,G=s.G[P.g],r=tzPcRank(s);return r>=1&&s.F[G.o]&&s.C[G.c].o===G.o};
+const tzPgLordC=s=>{const L=tzPcLord(s),G=L&&s.G[L];return G&&s.C[G.c]&&s.C[G.c].o===s.G[s.pc.g].o?G.c:''};
+const tzPgItP=id=>TZ_PGD.itP[IMAP[id].rar]||TZ_PGD.itP[3];
+function tzPgItems(s,k){if(!TZ_TRADE[k])return [];const own=tzItIn(s,'m:'+k),hid=Object.keys(s.I||{}).filter(id=>s.I[id][0]==='h'&&IMAP[id]).sort();
+  const r=mulberry((s.t*7919+[...k].reduce((a,c)=>a*31+c.charCodeAt(0)|0,7))>>>0),pool=hid.slice();for(let i=pool.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]]}
+  return own.concat(pool).slice(0,3)}
+{const _a=tzPcActs;tzPcActs=function(s){const h=_a.apply(this,arguments),P=s.pc,ap=P.ap>0&&!s.end;
+  const b=`<button type="button" class="pc-a" data-pc="pgd" ${ap?'':'disabled'}>개인 금<small>바치기 · 사병 · 보물 · 헌상</small></button>`;
+  const i=h.indexOf('<button type="button" class="pc-a" data-pc="life"');return i<0?h.replace(/<\/div>$/,b+'</div>'):h.slice(0,i)+b+h.slice(i)}}
+{const _sh=tzPcSheet;tzPcSheet=function(a){if(a!=='pgd')return _sh.apply(this,arguments);const s=tzState(),P=s.pc,g=P.g,G=s.G[g],k=G.c,C=s.C[k],gd=P.gd;
+  const head=`<div class="sheet-h"><h2 style="margin:0">개인 금 쓰기 · ${fmt(gd)}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>`;
+  const btn=(v,t,sub,ok)=>`<button type="button" class="pc-a" data-pcx="pgd|${v}" ${ok?'':'disabled'}>${t}<small>${esc(sub)}</small></button>`;
+  const own=tzPgOwn(s),lc=tzPgLordC(s),L=tzPcLord(s);let h=head+`<p class="sub">무엇을 하든 행동 1을 써요.</p>`;
+  h+=`<h3 style="margin:8px 0 4px">사재 바치기</h3><p class="sub" style="margin:0 0 6px">${own?`${tzCN(k)}에 개인 금을 내놓아요. 금으로 넣거나 군량(2배)으로 넣고, 500마다 신뢰 +1(최대 +${TZ_PGD.donCap})이에요.`:'우리 세력 성에 있을 때만 할 수 있어요.'}</p><div class="pc-acts">${TZ_PGD.don.map(v=>btn(`don|${v}|g`,`금 ${fmt(v)}`,`성 금 +${fmt(v)}`,own&&gd>=v)+btn(`don|${v}|f`,`군량으로 ${fmt(v)}`,`군량 +${fmt(v*2)}`,own&&gd>=v)).join('')}</div>`;
+  const mv=TZ_PGD.milB+tzCha(g)*TZ_PGD.milC;
+  h+=`<h3 style="margin:10px 0 4px">사병 모으기</h3><p class="sub" style="margin:0 0 6px">${own?`개인 금 ${fmt(TZ_PGD.mil)}으로 ${tzCN(k)} 병사 +${fmt(mv)}(300 + 매력×5) · 민심 −1.`:'우리 세력 성에 있을 때만 할 수 있어요.'}</p><div class="pc-acts">${btn('mil',`사병 +${fmt(mv)}`,`개인 금 ${fmt(TZ_PGD.mil)}`,own&&gd>=TZ_PGD.mil)}</div>`;
+  h+=`<h3 style="margin:10px 0 4px">군주에게 헌상</h3><p class="sub" style="margin:0 0 6px">${lc?`${esc(tzName(L))}의 거점 ${tzCN(lc)}에 금을 바쳐요. 1,000마다 공적 +${TZ_PGD.honMr} · 신뢰 +${TZ_PGD.honTr} · 군주 친밀 +${TZ_PGD.honFr}.`:'세력에 속한 장수·태수만 할 수 있어요.'}</p><div class="pc-acts">${[1,2,3].map(n=>btn(`hon|${n}`,`${fmt(n*TZ_PGD.hon)} 헌상`,`공적 +${n*TZ_PGD.honMr} · 신뢰 +${n*TZ_PGD.honTr}`,!!lc&&gd>=n*TZ_PGD.hon)).join('')}</div>`;
+  const its=tzPgItems(s,k),cur=tzItOf(s,g);
+  h+=`<h3 style="margin:10px 0 4px">보물 사기</h3><p class="sub" style="margin:0 0 6px">${TZ_TRADE[k]?`${tzCN(k)} 상인이 주인 없는 보물을 보여 줘요(달마다 바뀌어요). 산 보물은 내가 지녀요.${cur?` 지금 지닌 ${esc(IMAP[cur].name)}은(는) 상인에게 넘기고 값의 절반(${fmt(Math.round(tzPgItP(cur)/2))})을 돌려받아요.`:''}`:'교역 도시(商)에 있을 때만 살 수 있어요.'}</p>
+   ${its.length?`<div class="list">${its.map(id=>{const it=IMAP[id],p=tzPgItP(id),back=cur?Math.round(tzPgItP(cur)/2):0;return `<button type="button" class="li" data-pcx="pgd|it|${id}" ${gd+back>=p?'':'disabled'} style="text-align:left"><div class="info"><b>${esc(it.name)} ★${it.rar}</b><span>${TZ_STN[tzItCat(id)]} +${tzItV(id)}${tzIFd(id)?` · ${esc(tzIFd(id))}`:''}</span></div><div style="text-align:right;font-size:12px">금 <b>${fmt(p)}</b></div></button>`}).join('')}</div>`:TZ_TRADE[k]?'<p class="sub">지금은 살 수 있는 보물이 없어요.</p>':''}`;
+  openSheet(h)}}
+{const _ac=tzPcAct;tzPcAct=function(s,a,x){if(a!=='pgd')return _ac.apply(this,arguments);if(!tzPcAp(s))return;const P=s.pc,g=P.g,G=s.G[g],k=G.c,C=s.C[k],nm=tzName(g),[c,v1,v2]=String(x).split('|');
+  if(c==='don'){const v=+v1;if(!TZ_PGD.don.includes(v)||!tzPgOwn(s))return;if(P.gd<v)return toast('개인 금이 모자라요');P.gd-=v;const t=Math.min(TZ_PGD.donCap,Math.floor(v/TZ_PGD.donTr));P.tr=Math.min(100,P.tr+t);
+    if(v2==='f')C.fd=Math.min(99999,C.fd+v*2);else C.g=Math.min(99999,C.g+v);tzPcUse(s,`${nm}이(가) 사재를 털어 ${tzCN(k)}에 ${v2==='f'?`군량 ${fmt(v*2)}`:`금 ${fmt(v)}`}을(를) 내놓았어요 · 신뢰 +${t}`);return}
+  if(c==='mil'){if(!tzPgOwn(s))return;if(P.gd<TZ_PGD.mil)return toast('개인 금이 모자라요');P.gd-=TZ_PGD.mil;const n=TZ_PGD.milB+tzCha(g)*TZ_PGD.milC;C.tr=Math.min(99999,C.tr+n);C.ml=Math.max(0,C.ml-1);
+    tzPcUse(s,`${nm}이(가) 사병을 모았어요 · ${tzCN(k)} 병사 +${fmt(n)} · 민심 −1`);return}
+  if(c==='hon'){const n=Math.max(1,Math.min(3,+v1|0)),v=n*TZ_PGD.hon,lc=tzPgLordC(s),L=tzPcLord(s);if(!lc)return;if(P.gd<v)return toast('개인 금이 모자라요');P.gd-=v;
+    s.C[lc].g=Math.min(99999,s.C[lc].g+v);G.mr=Math.min(9999,G.mr+n*TZ_PGD.honMr);P.tr=Math.min(100,P.tr+n*TZ_PGD.honTr);P.fr[L]=Math.min(100,(P.fr[L]|0)+n*TZ_PGD.honFr);
+    tzPcUse(s,`${nm}이(가) ${tzName(L)}에게 금 ${fmt(v)}을(를) 헌상했어요 · 공적 +${n*TZ_PGD.honMr} · 신뢰 +${n*TZ_PGD.honTr} · 친밀 +${n*TZ_PGD.honFr}`);return}
+  if(c==='it'){const id=v1;if(!IMAP[id]||!tzPgItems(s,k).includes(id))return toast('이 상인에게 없는 보물이에요');const cur=tzItOf(s,g),back=cur?Math.round(tzPgItP(cur)/2):0,p=tzPgItP(id);
+    if(P.gd+back<p)return toast('개인 금이 모자라요');if(cur)s.I[cur]='m:'+k;P.gd=P.gd+back-p;s.I[id]='g:'+g;
+    tzPcUse(s,`${nm}이(가) ${tzCN(k)} 상인에게서 ${IMAP[id].name}(★${IMAP[id].rar})을(를) 샀어요 · 개인 금 −${fmt(p)}${cur?` · ${IMAP[cur].name}은(는) 넘기고 +${fmt(back)}`:''}`);return}}}
+HELP.forEach(c=>{if(c.t==='장수제')c.rows.push(['개인 금','장수·태수 화면의 \'개인 금\'에서 써요(모두 행동 1). 사재 바치기: 500·1,000·2,000을 내 성 금(군량이면 2배)으로, 500마다 신뢰 +1(최대 +4). 사병 모으기: 1,000으로 병사 +(300 + 매력×5), 민심 −1. 군주에게 헌상: 1,000마다 공적 +20 · 신뢰 +3 · 군주 친밀 +3. 보물 사기: 교역 도시(商)에서 주인 없는 보물 3개 중 골라요(★3 1,500 · ★4 4,000 · ★5 10,000). 사재·사병은 우리 세력 성에서만 돼요.'])});
 boot();
 </script>
 </body>
