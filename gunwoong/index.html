@@ -8840,8 +8840,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.3.7';
-const GW_NOTICES=[{v:'1.3.7',date:'2026-11-01',title:'군웅할거 v1.3.7 · 장수로 시작: 우리 세력 성 정보 · 성 정보 버튼 · 공략 제안',items:[
+const GW_VER='1.3.8';
+const GW_NOTICES=[{v:'1.3.8',date:'2026-11-01',title:'군웅할거 v1.3.8 · 장수 카드 모양 바로잡기',items:[
+  '장수로 시작한 판에서 v1.3.7의 "우리 세력 성" 줄이 생긴 뒤로 장수 카드 왼쪽 그림 칸이 넓어져, 이름과 소속이 오른쪽에 한 글자씩 세로로 찌그러져 보이던 문제를 고쳤어요. 이제 이름 · 신분 · 소속이 그림 옆에 가로로 나오고, "우리 세력 성" 줄은 카드 폭 전체를 써요.']},{v:'1.3.7',date:'2026-11-01',title:'군웅할거 v1.3.7 · 장수로 시작: 우리 세력 성 정보 · 성 정보 버튼 · 공략 제안',items:[
   '장수로 시작한 판에서 장수나 태수가 되면 우리 세력 성도 남의 성처럼 금·군량·인구·민심이 ?로 나오던 문제를 고쳤어요. 이제 우리 세력 성은 모든 수치와 장수 목록이 보여요. 명령은 그대로 군주와 그 성 태수가 내려요.',
   '천하 표에서도 우리 세력 성에 "우리" 표시가 붙고 금·군량·민심이 나와요. "내 성만" 범위는 우리 세력 성을 모아 보여 줘요.',
   '행동 버튼 줄에 "성 정보"가 생겼어요(행동을 쓰지 않아요). 우리 세력 성 목록과 지금 있는 성의 이웃 성이 나오고, 누르면 그 성 카드가 바로 떠요. 태수·장수 카드의 "우리 세력 성 n곳 · 병사 합계" 줄을 눌러도 열려요.',
@@ -10166,7 +10167,7 @@ const tzPcDuelSide=bt=>{const m=tzPcDuelU(bt);return m?m.i:tzBTop(bt,0)>=tzBTop(
 (()=>{const st=document.createElement('style');st.textContent=`
 .tz-slots{grid-template-columns:repeat(5,1fr)}
 .pc-mode{margin:6px 0}
-.pc-me{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;background:var(--panel)}
+.pc-me{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;background:var(--panel)}
 .pc-me h3{margin:0;font-size:17px}.pc-me .rk{font-size:12px;color:var(--mute);margin-top:2px}
 .pc-sts{grid-column:1/-1;display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
 .pc-st{position:relative;display:flex;flex-direction:column;align-items:center;border:1px solid var(--line);border-radius:6px;padding:3px 0 7px;font-variant-numeric:tabular-nums}
@@ -10174,7 +10175,7 @@ const tzPcDuelSide=bt=>{const m=tzPcDuelU(bt);return m?m.i:tzBTop(bt,0)>=tzBTop(
 .pc-st em{position:absolute;left:4px;right:4px;bottom:2px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--bronze) var(--x,0%),rgba(127,127,127,.25) var(--x,0%))}
 .pc-meta{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:3px 12px;font-size:12px;color:var(--mute)}.pc-meta b{color:var(--fg)}
 .pc-city{border-top:1px dashed var(--line);padding-top:6px}
-.pc-fac{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;width:100%;margin-top:6px;padding:6px 8px;border:1px dashed var(--line);border-radius:8px;background:transparent;color:inherit;font:inherit;font-size:13px;text-align:left;cursor:pointer}.pc-fac small{margin-left:auto;opacity:.75}
+.pc-fac{grid-column:1/-1;box-sizing:border-box;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;width:100%;margin-top:6px;padding:6px 8px;border:1px dashed var(--line);border-radius:8px;background:transparent;color:inherit;font:inherit;font-size:13px;text-align:left;cursor:pointer}.pc-fac small{margin-left:auto;opacity:.75}
 .pc-acts{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;margin:8px 0}
 .pc-a{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:inherit;font:inherit;font-weight:700;font-size:14px;cursor:pointer;text-align:left;min-width:0}
 .pc-a small{font-weight:400;font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
