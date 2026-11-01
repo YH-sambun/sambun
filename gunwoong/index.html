@@ -8850,7 +8850,8 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
 const GW_VER='1.4.1';
-const GW_NOTICES=[{v:'1.4.1',date:'2026-11-02',title:'군웅할거 v1.4.1 · 반(反) 연합 원군',items:[
+const GW_NOTICES=[{v:'1.4.1',date:'2026-11-02',title:'군웅할거 v1.4.1 · 반(反) 연합 원군 · 연합 공동 출병',items:[
+  '연합 공동 출병: 연합이 맺어진 동안 두 달에 한 번, 표적의 성 하나에 맞닿은 연합 성들이 병력을 모아 함께 쳐요. 한 세력이 장수와 함께 앞장서고, 다른 연합 세력이 병사의 절반(성마다 1,500은 남겨요)을 보태요. 장수가 이끌 수 있는 만큼만 모으고, 이길 만할 때(전력 1.15배 이상)만 나가요. 살아남은 연합 병사는 끝나면 제 성으로 돌아가요. 우리 성 병사는 보내지 않아요.',
   '원군: 표적이 연합 성을 치면, 그 성과 맞닿은 다른 연합 세력의 성이 병사를 보내 함께 지켜요. 성마다 병사의 30%(최대 3,000)씩 2곳까지 오고, 지켜 내면 살아남은 원군은 제 성으로 돌아가요. 우리가 연합에 들면 우리 성도 원군을 받아요(우리 병사는 보내지 않아요). 우리가 표적이면 연합 성을 칠 때 원군을 함께 상대해요.']},{v:'1.4.0',date:'2026-11-02',title:'군웅할거 v1.4.0 · 반(反)○○ 연합 · 판 끝 결과 · 연표 · 장수별 통일 기록',items:[
   '반(反) 연합이 생겼어요. 한 세력이 천하 성의 1/3 이상을 갖거나, 성 8곳 이상이면서 2위의 두 배가 되면 그 세력과 가까운(길 2칸 안) 세력들이 \'반○○ 연합\'을 맺어요. 연합끼리 2년 동맹을 맺고 표적과는 험악해져요. 연합 AI는 표적의 성을 먼저 노려요.',
   '우리가 표적이 되면 평정과 윗줄에 경고가 떠요. 연합에 들 자격이 있으면 사신이 와서 함께하자고 해요. 들어가면 연합 세력과 동맹을 맺고, 연합끼리는 공동 작전을 바로 받아 줘요. 거절해도 벌칙은 없어요.',
@@ -10997,6 +10998,28 @@ function tzCoBanner(s){if(!tzCoOn(s)||s.end)return '';const C=s.CO,me=s.me!=='_'
   let h='';if(tzCoOn(s)){const C=s.CO;h=`<p class="sub tz-cop"><b>${esc(C.nm)}</b> · 표적 ${esc(tzFN(s,C.f))} · ${C.m.map(x=>esc(tzFN(s,x))).join('·')} · ${Math.max(0,C.e-s.t)}달 남음</p>`}
   else h=`<p class="sub tz-cop">한 세력이 천하의 1/3을 갖거나 성 8곳 이상으로 2위의 두 배가 되면, 이웃 세력들이 반(反) 연합을 맺어요.</p>`;p.insertAdjacentHTML('afterend',h)}}
 
+// ---- 연합 공동 출병: 두 달에 한 번, 연합 AI들이 병력을 모아 표적의 성 하나를 함께 쳐요 ----
+const TZ_JOIN={every:2,p:.5,keep:1500,ratio:1.15};
+function tzCoJoinPick(s){const C=s.CO,f=C.f,ai=C.m.filter(x=>x!==s.me);let best=null;
+  for(const n of tzCities(s,f)){const T=s.C[n];if(s.t<12&&tzHome(s,n))continue;const nb=TZ_ADJ[n].filter(k=>ai.includes(s.C[k].o));if(nb.length<2)continue;
+    for(const k of nb){const A=s.C[k],mf=A.o;if(tzTruce(s,mf,f))continue;const food=Math.round(A.tr*.7*.3*(tzSea(s.m)==='winter'?1.5:1));if(A.tr<2500||A.fd<food)continue;
+      const gs=tzAtkGens(s,k,mf,true);if(!gs.length)continue;const own=Math.round(A.tr*.7),cap=gs.slice(0,NSLOT).reduce((a,g)=>a+tzUCap(g),0);let room=Math.max(0,cap-own);
+      const hp=[];for(const h of nb.filter(x=>x!==k&&s.C[x].o!==mf).sort((a,b)=>s.C[b].tr-s.C[a].tr)){if(room<500)break;const H=s.C[h],v=Math.min(room,Math.max(0,Math.round(Math.min(H.tr*TZ_JOIN.p,H.tr-TZ_JOIN.keep)/100)*100));if(v<500)continue;hp.push({k:h,f:H.o,n:v});room-=v}
+      if(!hp.length)continue;const c=hp.reduce((a,h)=>a+h.n,0),r=tzAtkRatio(s,k,n,gs)*(own+c)/Math.max(1,own);
+      if(r>=TZ_JOIN.ratio&&(!best||r>best.r))best={k,n,mf,gs,food,hp,c,own,r}}}
+  return best}
+function tzCoJoin(s){if(!tzCoOn(s)||s.end||s.m===1||(s.t-s.CO.t0)%TZ_JOIN.every)return;const b=tzCoJoinPick(s);if(!b)return;
+  const A=s.C[b.k],B=s.C[b.n],tgt=B.o,ch=tgt===s.me||b.mf===s.me?'戰':'報';
+  b.hp.forEach(h=>{s.C[h.k].tr-=h.n});const own=Math.round(A.tr*.7);A.tr-=own;A.fd=Math.max(0,A.fd-b.food);const a0=A.tr,tr=own+b.c;
+  tzLog(s,`${s.CO.nm} 공동 출병 · ${tzFN(s,b.mf)}이(가) ${b.hp.map(h=>`${tzFN(s,h.f)} 병사 ${fmt(h.n)}`).join(' · ')}과(와) 함께 ${tzCN(b.n)}을(를) 쳐요`,ch);
+  const o=tzBattle(s,b.k,b.n,b.gs,tr);o.txt.forEach(t=>tzLog(s,t,ch));
+  const won=B.o===b.mf,R=Math.max(0,A.tr-a0)+(won?B.tr:0),share=b.c/Math.max(1,tr);let back=0;
+  b.hp.forEach(h=>{let r=Math.round(R*share*h.n/b.c);const fa=Math.min(r,Math.max(0,A.tr-a0));A.tr-=fa;const fb=won?Math.min(r-fa,B.tr):0;B.tr-=fb;r=fa+fb;back+=r;if(s.C[h.k].o===h.f)s.C[h.k].tr=Math.min(99999,s.C[h.k].tr+r)});
+  if(back)tzLog(s,`공동 출병에서 살아남은 연합 병사 ${fmt(back)}명은 제 성으로 돌아갔어요`,ch);
+  s.coj=(s.coj|0)+1;tzYhAdd(s,'co',`${s.CO.nm} 공동 출병 · ${tzCN(b.n)} ${won?'함락':'공격 실패'}`)}
+
+// AI가 움직이기 전에(장수가 아직 명령을 안 했을 때) 공동 출병부터 해요
+{const _ai=tzAi;tzAi=function(s,f){if(s&&s.on&&!s.end&&s._cj!==s.t){s._cj=s.t;try{tzCoJoin(s)}catch(e){console.error(e)}}return _ai.apply(this,arguments)}}
 // ---- 원군: 표적이 연합 성을 치면 맞닿은 다른 연합 세력 성(AI)이 병사를 보내요 ----
 const TZ_HELP={p:.3,max:3000,min:2000,n:2};
 function tzHelpOf(s,to,af,bf){if(!tzCoOn(s)||af!==s.CO.f||!s.CO.m.includes(bf))return [];
@@ -11104,7 +11127,7 @@ function tzResAuto(){setTimeout(()=>{const s=tzState(),sh=$('#sheet');if(s&&s.on
   o.cr=x.cr?1:0;o.crb=x.crb?1:0;o.crm=n(x.crm,0,99999);o.crg=o.G[x.crg]?x.crg:'';o.rsv=x.rsv?1:0;
   if(x.ev&&typeof x.ev==='object'&&x.ev.ty==='coa'&&okF(x.ev.f)&&okF(x.ev.tg))o.ev={t:n(x.ev.t,0,99999),f:x.ev.f,ty:'coa',tg:x.ev.tg,g:0,fd:0,done:x.ev.done?1:0};
   return o}}
-HELP.forEach(c=>{if(c.t==='외교·계략')c.rows.push(['반(反) 연합','한 세력이 천하 성의 1/3 이상을 갖거나, 성 8곳 이상이면서 2위의 두 배가 되면 그 세력에서 길 2칸 안의 세력들이 \'반○○ 연합\'을 맺어요. 연합끼리 2년 동맹 · 표적과는 험악. 연합 AI는 표적의 성을 먼저 치고, 연합끼리 공동 작전은 바로 받아 줘요. 표적이 연합 성을 치면 그 성과 맞닿은 다른 연합 세력 성이 원군(병사의 30%, 성마다 최대 3,000 · 2곳까지)을 보내고, 지켜 내면 살아남은 원군은 돌아가요. 우리가 표적이면 평정에 경고가, 연합 자격이 있으면 사신이 와요(거절해도 벌칙 없음).'],
+HELP.forEach(c=>{if(c.t==='외교·계략')c.rows.push(['반(反) 연합','한 세력이 천하 성의 1/3 이상을 갖거나, 성 8곳 이상이면서 2위의 두 배가 되면 그 세력에서 길 2칸 안의 세력들이 \'반○○ 연합\'을 맺어요. 연합끼리 2년 동맹 · 표적과는 험악. 연합 AI는 표적의 성을 먼저 치고, 연합끼리 공동 작전은 바로 받아 줘요. 표적이 연합 성을 치면 그 성과 맞닿은 다른 연합 세력 성이 원군(병사의 30%, 성마다 최대 3,000 · 2곳까지)을 보내고, 지켜 내면 살아남은 원군은 돌아가요. 또 두 달에 한 번, 표적의 성에 맞닿은 연합 성들이 병력을 모아 공동 출병해요(한 세력이 앞장서고 다른 세력이 병사의 절반을 보태요. 이길 만할 때만). 우리가 표적이면 평정에 경고가, 연합 자격이 있으면 사신이 와요(거절해도 벌칙 없음).'],
   ['연합이 흩어지면','2년이 지나거나, 표적의 성이 크게 줄거나(천하의 1/4 또는 처음의 70% 아래), 표적이 멸망하면 흩어져요. 연합끼리 동맹이 풀리고 사이가 크게 험악해져요(반동탁 연합 뒤의 군웅할거처럼). 같은 세력을 겨냥한 연합은 흩어진 뒤 2년 동안 다시 생기지 않아요. 189년 시나리오는 반동탁 연합이 맺어진 채로 시작해요(18달).']);
   if(c.t==='보상')c.rows.push(['결과 · 연표 · 통일 기록','판이 끝나면(통일 · 패배 · 사망 · 은퇴) 결과 화면에 걸린 기간 · 점령/잃은 성 · 등용 · 포로 · 처형 · 일기토 전적 · 공적 상위 5명이 나와요. 메뉴 › 연표에서 판의 큰 일을 달마다 볼 수 있어요. 통일하면 그 군주(장수제는 내 장수)의 통일 횟수가 장수 일람 · 상세에 쌓이고, 시나리오별 최단 기간도 남아요. 구글 저장 공유를 켜면 계정에도 저장돼요.'])});
 (()=>{const st=document.createElement('style');st.textContent=`
