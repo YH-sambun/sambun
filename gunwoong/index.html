@@ -5119,6 +5119,8 @@ const TZ_NG=[["liubiao","유표","劉表","qun",4,"inf",40,72,62,80,82,60,190,"l
   N.forEach(r=>TZ_NG.push(r));for(const id in D)TZ_DIE[id]=D[id];
   P.forEach(([id,y,f,k])=>{const sc=TZ_SC[y];if(!sc||!sc.L[f])return;const cap=sc.L[f][0];if(k===cap||!(sc.X&&sc.X[f]&&sc.X[f][k])){if(!sc.L[f][1].includes(id))sc.L[f][1].push(id)}else sc.X[f][k].push(id)})})();
 
+// v1.3.13 전설의 일기토: 조루(관우의 도독) · 사정(손권군)
+TZ_NG.push(["zhaolei","조루","趙累","shu",3,"inf",55,62,60,55,50,90,208,"liubei","jiangling",""],["xiejing","사정","謝旌","wu",3,"arc",64,45,58,35,40,70,208,"sunquan","jianye",""]);
 TZ_NG.forEach(r=>{const[id,name,hz,fac,rar,cls,str,int,lead,pol,cha,giri]=r;if(GMAP[id])return;
   Object.defineProperty(GMAP,id,{value:{id,name,hz,fac,rar,cls,str,int,lead,spd:cls==='cav'?80:62,skill:DEF_SKILL[cls],ng:1},configurable:true,writable:true,enumerable:false});
   Object.defineProperty(TZ_PC,id,{value:[pol,cha,giri],configurable:true,writable:true,enumerable:false})});
@@ -8847,8 +8849,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.3.12';
-const GW_NOTICES=[{v:'1.3.12',date:'2026-11-02',title:'군웅할거 v1.3.12 · 숙적 · 연의 중심 장수 설명 · 개인 금 쓰는 곳',items:[
+const GW_VER='1.3.13';
+const GW_NOTICES=[{v:'1.3.13',date:'2026-11-02',title:'군웅할거 v1.3.13 · 초상화 대화창 · 명대사 도감 · 조루와 사정',items:[
+  '초상화 대화창이 생겼어요. 달이 시작될 때 군사가 형세를 조언하고(장수제에서는 군주가 이번 달 임무나 태수 제안을 직접 말해요), 사신 답변 · 등용 · 숙적 대면 · 이름난 장수의 죽음 때 초상화와 말풍선이 떠요. 눌러서 넘기고, 메뉴에서 끌 수 있어요.',
+  '이스터에그 명대사 13개를 숨겼어요. 조건이 맞으면 20% 확률로(성 이동 대사는 5%) 떠요. "유봉님아! 출진하시오." · "좌절감이 사나이를 키우는 것이다!" · "승리의 찬스다!" 같은 그 대사들이에요.',
+  '명대사 도감: 한 번 본 명대사는 계속 남아서 새 판이나 다른 칸에서도 메뉴 › 명대사 도감에서 다시 볼 수 있어요. 서버 저장에 로그인했다면 계정에도 남아 다른 기기에서도 보여요. 못 본 대사는 ???와 힌트로 보여요.',
+  '전설의 일기토: 관우의 도독 조루(무력 55)와 손권군 사정(무력 64)이 208년부터 나와요. 두 사람은 맥성 숙적이고, 둘이 일기토를 하면 그 대사가 반드시 떠요.']},{v:'1.3.12',date:'2026-11-02',title:'군웅할거 v1.3.12 · 숙적 · 연의 중심 장수 설명 · 개인 금 쓰는 곳',items:[
   '장수 설명을 모두 새로 썼어요. 연의 이야기를 위에 두고 이름난 장면 · 별명 · 맞수 이야기를 2~3문장으로 늘렸고, 정사는 아래에 누구를 섬겼고 어떻게 생을 마쳤는지만 한 줄로 줄였어요.',
   '숙적이 생겼어요. 장수 카드 아래에 \'숙적: 이름(장소)\'이 나오고, 이름을 누르면 그 장수 카드로 넘어가요. 본편의 59쌍에 군웅할거 장수끼리의 숙적(관우·반장, 손책·우길, 등애·종회, 마속·장합 등 57쌍)을 더했어요.',
   '장수제에 \'개인 금\' 행동이 생겼어요(모두 행동 1). 사재 바치기(500·1,000·2,000 → 내 성 금, 군량이면 2배 · 500마다 신뢰 +1, 최대 +4), 사병 모으기(1,000 → 병사 +300 + 매력×5 · 민심 −1), 군주에게 헌상(1,000마다 공적 +20 · 신뢰 +3 · 군주 친밀 +3), 보물 사기(교역 도시에서 주인 없는 보물 3개 중 · ★3 1,500 · ★4 4,000 · ★5 10,000).',
@@ -10778,6 +10784,163 @@ function tzPgItems(s,k){if(!TZ_TRADE[k])return [];const own=tzItIn(s,'m:'+k),hid
     if(P.gd+back<p)return toast('개인 금이 모자라요');if(cur)s.I[cur]='m:'+k;P.gd=P.gd+back-p;s.I[id]='g:'+g;
     tzPcUse(s,`${nm}이(가) ${tzCN(k)} 상인에게서 ${IMAP[id].name}(★${IMAP[id].rar})을(를) 샀어요 · 개인 금 −${fmt(p)}${cur?` · ${IMAP[cur].name}은(는) 넘기고 +${fmt(back)}`:''}`);return}}}
 HELP.forEach(c=>{if(c.t==='장수제')c.rows.push(['개인 금','장수·태수 화면의 \'개인 금\'에서 써요(모두 행동 1). 사재 바치기: 500·1,000·2,000을 내 성 금(군량이면 2배)으로, 500마다 신뢰 +1(최대 +4). 사병 모으기: 1,000으로 병사 +(300 + 매력×5), 민심 −1. 군주에게 헌상: 1,000마다 공적 +20 · 신뢰 +3 · 군주 친밀 +3. 보물 사기: 교역 도시(商)에서 주인 없는 보물 3개 중 골라요(★3 1,500 · ★4 4,000 · ★5 10,000). 사재·사병은 우리 세력 성에서만 돼요.'])});
+/* ==== 군웅할거 v1.3.13: 초상화 대화창 · 이스터에그 명대사 · 명대사 도감 · 조루와 사정 ==== */
+TRAIT.zhaolei=TR('helm','goatee',{});TRAIT.xiejing=TR('band','stubble',{fierce:1});
+TZ_BIO.zhaolei='관우의 도독(都督)으로 형주를 함께 지킨다. 여몽이 형주를 빼앗자 관우를 따라 맥성으로 물러나고, 끝내 임저에서 관우·관평과 함께 사로잡힌다. 오군 사정과의 일기토에서 외친 "나야말로 조루다! 자, 받아라!"로 더 유명하다.|관우의 도독이었고 219년 관우와 함께 오군에 사로잡혔다.';
+TZ_BIO.xiejing='손권군의 장수다. 형주를 칠 때 촉의 조루와 일기토를 벌이고, 이릉에서는 육손을 따라 촉군을 친다. 이름보다 조루와의 맞대결로 기억되는 장수다.|손권을 섬긴 오의 장수로 이릉 전투에 참전했다.';
+(TZ_RIV.zhaolei=TZ_RIV.zhaolei||[]).push({o:'xiejing',w:'맥성'});(TZ_RIV.xiejing=TZ_RIV.xiejing||[]).push({o:'zhaolei',w:'맥성'});
+// 이스터에그: [id, 말하는 사람, 이름표(비우면 그 사람), 대사, 힌트]
+const TZ_EGG=[
+ ['liufeng','liubei','','유봉님아! 출진하시오.','유비가 유봉을 내보낼 때'],
+ ['lubu','wangyun','젊은이','뭐라고!! 여포님 녀석, 드디어 본성을 드러냈구나!!','여포가 주인을 바꿀 때'],
+ ['caohong','caohong','','좌절감이 사나이를 키우는 것이다!','조홍이 질 때'],
+ ['menghuo','menghuo','','좋아, 끝에 있는 자부터 의견을 들어 주마! 뭐, 너희들에게 계책 따위가 있을 것 같지는 않다만…… 일단 들어','맹획이 군주인 판의 달 시작'],
+ ['luxun','luxun','','지금이야말로 승리의 찬스다! 유비를 놓쳐서는 안 된다! 오의 운명이 이 전투에 달려 있다!','육손과 유비가 맞붙을 때'],
+ ['chance','luxun','','승리의 찬스다!','육손의 계략이 먹힐 때'],
+ ['sunquan','sunquan','','폐하, 이렇게 직접 찾아 왔느냐. 그래, 오늘은 무슨 일로 왔느냐?','손권에게 사신을 보낼 때'],
+ ['move','','','이놈들아, {c}에 들어갑시다.','성을 옮길 때'],
+ ['wife','lubu','','여편네의 계책을 채용하겠다.','초선을 둔 여포의 달 시작'],
+ ['chengdu','zhugeliang','','즉시 성도로 진군하라.','성도를 앞둔 유비의 달 시작'],
+ ['mateng','machao','','마등!','마등 밑에 마초가 있는 달 시작'],
+ ['caocaosama','','','조조님! 승부를 겨루거라!','조조에게 일기토를 청할 때'],
+ ['zhaolei','zhaolei','','나야말로 조루다! 자, 받아라!','조루와 사정의 일기토']];
+const tzJ=(w,a,b)=>{w=String(w);const k=w.charCodeAt(w.length-1)-0xAC00,j=k>=0&&k<11172?k%28:0;return w+(a==='으로'?(j&&j!==8?'으로':'로'):(j?a:b))};
+const TZ_EGGM=Object.fromEntries(TZ_EGG.map(e=>[e[0],e])),TZ_EGGP=.2,TZ_EGGPM=.05;
+const tzEggGot=()=>{const o=S.tzEgg&&typeof S.tzEgg==='object'?S.tzEgg:{};for(const k in o)if(!TZ_EGGM[k])delete o[k];return S.tzEgg=o};
+const tzDlgOff=()=>{try{return localStorage.getItem('gw-dlgoff')==='1'}catch(e){return false}};
+let tzDlgQ=[],tzDlgOn=0,tzDlgT=0;const tzDlgCap={};
+// 같은 달 같은 장면은 n번까지만
+function tzDlgOk(s,sc,n){const k=`${s.sd|0}|${s.t}|${sc}`;tzDlgCap[k]=(tzDlgCap[k]||0)+1;return tzDlgCap[k]<=(n||1)}
+function tzDlgPush(sp,tx,o){o=o||{};if(tzDlgOff())return;if(tzDlgQ.length>=8){const i=o.egg?tzDlgQ.findIndex(q=>!q.egg):-1;if(i<0)return;tzDlgQ.splice(i,1)}tzDlgQ.push({sp,tx,nm:o.nm||'',egg:o.egg||''});clearTimeout(tzDlgT);tzDlgT=setTimeout(tzDlgRun,30)}
+function tzEgg(id,o){const e=TZ_EGGM[id];if(!e)return;o=o||{};const sp=o.sp||e[1],tx=e[3].replace('{c}',o.c||'');tzDlgPush(sp,tx,{nm:e[2],egg:id})}
+const tzEggRoll=(id,p)=>Math.random()<(p==null?(id==='move'?TZ_EGGPM:TZ_EGGP):p);
+function tzDlgRun(){if(tzDlgOn||!tzDlgQ.length)return;const d=tzDlgQ.shift();tzDlgOn=1;let el=document.getElementById('tz-dlg');
+  if(!el){el=document.createElement('div');el.id='tz-dlg';el.setAttribute('role','dialog');el.setAttribute('aria-live','polite');document.body.appendChild(el);
+    el.addEventListener('click',()=>{el.classList.remove('on');tzDlgOn=0;setTimeout(()=>{if(tzDlgQ.length)tzDlgRun();else el.innerHTML=''},120)})}
+  const b=GMAP[d.sp],nm=d.nm||(b?tzName(d.sp):'');let first=0;
+  if(d.egg){const got=tzEggGot();if(!got[d.egg]){got[d.egg]=1;first=1;save()}}
+  el.innerHTML=`<div class="tzd-box${d.egg?' egg':''}">${b?`<div class="tzd-face"><img class="px" src="${portrait(b)}" alt=""></div>`:''}<div class="tzd-main"><div class="tzd-nm">${esc(nm)}</div><p>${esc(d.tx)}</p>${first?'<small class="tzd-new">명대사 도감에 기록됐어요</small>':''}</div><i class="tzd-nx" aria-hidden="true">▼</i></div>`;
+  requestAnimationFrame(()=>el.classList.add('on'))}
+// 다시 보기(도감): 끈 상태와 상관없이
+function tzDlgReplay(id){const e=TZ_EGGM[id];if(!e||!tzEggGot()[id])return;tzDlgQ=[];tzDlgOn=0;const sp=e[1]||(id==='caocaosama'?'zhangfei':'');
+  tzDlgQ.push({sp:GMAP[sp]?sp:'',tx:e[3].replace('{c}','한중'),nm:e[2]||(id==='move'?'팽월':''),egg:''});tzDlgRun()}
+// 내 쪽(군주 세력 · 장수제의 내 세력)
+const tzDlgMe=s=>s.me==='_'?(s.pc&&s.G[s.pc.g]&&s.F[s.G[s.pc.g].o]?s.G[s.pc.g].o:''):s.me;
+const tzDlgBtRel=(s,bt)=>{if(!s||!bt)return false;const me=tzDlgMe(s),pg=s.me==='_'&&s.pc&&s.pc.g;return (!!me&&(bt.af===me||bt.bf===me))||(!!pg&&bt.U.some(U=>U.some(u=>u.g===pg)))};
+const tzAlive=(s,g)=>!!(s&&g&&s.G[g]&&!['dead','wait','cap'].includes(s.G[g].o));
+const tzSameF=(s,a,b)=>tzAlive(s,a)&&tzAlive(s,b)&&s.G[a].o===s.G[b].o&&!!s.F[s.G[a].o];
+
+// ---- 장면 1: 달 시작(보고를 열 때) · 군주 화면은 군사 조언, 장수제는 군주의 명 ----
+function tzDlgMonth(s){if(!s||!s.on||s.end)return;
+  if(s.me!=='_'){const F=s.F[s.me];if(!F||!tzDlgOk(s,'month'))return;const L=F.lord;
+    if(L==='menghuo'&&tzEggRoll('menghuo')){tzEgg('menghuo');return}
+    if(L==='lubu'&&tzSameF(s,'lubu','diaochan')&&tzEggRoll('wife')){tzEgg('wife');return}
+    if(L==='mateng'&&tzSameF(s,'mateng','machao')&&tzEggRoll('mateng')){tzEgg('mateng');return}
+    const a=tzAdv(s)||tzGL(s).map(b=>b.id).filter(g=>g!==L&&s.G[g].o===s.me).sort((x,y)=>tzInt(y)-tzInt(x))[0];if(!a)return;
+    if(L==='liubei'&&a==='zhugeliang'&&s.C.chengdu&&s.C.chengdu.o!==s.me&&tzMine(s).some(k=>TZ_ADJ[k].includes('chengdu'))&&tzEggRoll('chengdu')){tzEgg('chengdu');return}
+    let thr=null,weak=null;for(const k of tzMine(s))for(const n of TZ_ADJ[k]){const T=s.C[n];if(!s.F[T.o]||T.o===s.me||tzAlly(s,s.me,T.o))continue;const r=T.tr/Math.max(1,s.C[k].tr);
+      if(r>1.2&&(!thr||r>thr.r))thr={k,n,r};if(r<.6&&(!weak||r<weak.r))weak={k,n,r}}
+    const tx=thr?`주공, ${tzFN(s,s.C[thr.n].o)}의 ${tzCN(thr.n)} 병력 ${fmt(s.C[thr.n].tr)}명이 ${tzJ(tzCN(thr.k),'을','를')} 노리고 있사옵니다. 방비를 서두르소서.`
+      :weak?`주공, ${tzCN(weak.n)}의 수비가 허술하옵니다. ${tzCN(weak.k)}에서 치면 승산이 있사옵니다.`:'주공, 사방이 잠잠하옵니다. 이럴 때 내정에 힘쓰소서.';
+    tzDlgPush(a,tx);return}
+  const P=s.pc;if(!P||!s.G[P.g])return;const L=tzPcLord(s),rk=tzPcRank(s),nm=tzName(P.g);if(!L||rk<1)return;
+  if(P.go&&P.go.t===s.t&&tzDlgOk(s,'go')){tzDlgPush(L,`${nm}, 그대를 ${tzCN(P.go.k)} 태수로 삼고자 하네. 받아 주겠는가?`);return}
+  const t=P.tk;if(rk===1&&t&&t.t===s.t&&!t.done&&tzDlgOk(s,'month')){
+    if(L==='liubei'&&P.g==='liufeng'&&tzEggRoll('liufeng')){tzEgg('liufeng');return}
+    tzDlgPush(L,`${nm}, 이번 달에는 ${tzJ(tzPcTkTxt(t),'을','를')} 맡기겠네.${t.k!==s.G[P.g].c?` ${tzJ(tzCN(t.k),'으로')} 가 주게.`:''}`)}}
+{const _r=tzRepSheet;tzRepSheet=function(){const r=_r.apply(this,arguments);try{tzDlgMonth(tzState())}catch(e){}return r}}
+
+// ---- 장면 2: 사신 · 등용 · 이동(군주 화면) ----
+{const _d=tzDo;tzDo=function(s,k,cmd,g,tg,it){const f=s&&s.G[g]&&s.G[g].o,mine=!!s&&s.me!=='_'&&f===s.me,was=tg&&s.G[tg]?s.G[tg].o:'';const r=_d.apply(this,arguments);
+  if(!mine||!r||typeof r!=='object')return r;const m=String(r.msg||'');
+  try{if(['ali','aid','sur'].includes(cmd)&&s.F[tg]){const L=s.F[tg].lord;if(tzDlgOk(s,'env',2)){
+      if(L==='sunquan'&&tzEggRoll('sunquan'))tzEgg('sunquan');
+      const ok=cmd==='ali'?/동맹!/.test(m):cmd==='aid'?/원조 ·/.test(m):/항복했어요!/.test(m);
+      const T={ali:['좋소, 손을 잡읍시다. 등 뒤는 걱정 마시오.','어림없는 소리! 돌아가 그대 주인에게 그리 전하라.'],aid:['동맹의 의리로 보내 드리지요.','우리도 사정이 넉넉지 않소. 다음에 봅시다.'],sur:['……항복하겠소. 백성들만은 살펴 주시오.','항복이라니! 차라리 싸우다 죽겠다!']}[cmd];
+      tzDlgPush(L,ok?T[0]:T[1])}}
+    else if((cmd==='rec'&&/등용 성공/.test(m))||(cmd==='prs'&&/넘어왔어요/.test(m))){if(tzDlgOk(s,'rec',2)){
+      if(cmd==='prs'&&tg==='lubu'&&tzEggRoll('lubu'))tzEgg('lubu');else tzDlgPush(tg,cmd==='rec'?'이 몸, 견마지로를 다하겠습니다.':'이제부터 주공을 모시겠습니다. 옛 주인에게는 미안하지만……')}}
+    else if(cmd==='mov'&&s.C[tg]&&tzEggRoll('move')&&tzDlgOk(s,'move'))tzEgg('move',{sp:g,c:tzCN(tg)})}catch(e){}
+  return r}}
+{const _rb=tzRebel;tzRebel=function(s,k,g){const r=_rb.apply(this,arguments);try{if(g==='lubu'&&s.on&&tzEggRoll('lubu')&&tzDlgOk(s,'lubu'))tzEgg('lubu')}catch(e){}return r}}
+// 장수제: 사관 · 권유 · 이동
+{const _pa=tzPcAct;tzPcAct=function(s,a,x){const P=s&&s.pc,o0=P&&s.G[P.g]?s.G[P.g].o:'',t0=a==='inv'&&s.G[x]?s.G[x].o:'';const r=_pa.apply(this,arguments);
+  try{if(!P||!s.G[P.g])return r;const G=s.G[P.g];
+    if(a==='srv'&&G.o!==o0&&s.F[G.o])tzDlgPush(s.F[G.o].lord,`잘 와 주었소, ${tzName(P.g)}. 함께 천하를 도모합시다.`);
+    else if(a==='inv'&&s.G[x]&&s.G[x].o!==t0&&s.G[x].o===G.o)tzDlgPush(x,`${tzName(P.g)}의 뜻이 그렇다면, 이 몸도 함께하겠습니다.`);
+    else if(a==='mov'&&G.c===x&&tzEggRoll('move'))tzEgg('move',{sp:P.g,c:tzCN(x)})}catch(e){}return r}}
+
+// ---- 장면 3: 전투 · 숙적 대면 · 일기토 ----
+{const _bi=tzBInit;tzBInit=function(s){const bt=_bi.apply(this,arguments);try{if(!bt||!s||!s.on)return bt;const rel=tzDlgBtRel(s,bt);
+  const has=(i,g)=>bt.U[i].some(u=>u.g===g);
+  if((has(0,'luxun')&&has(1,'liubei'))||(has(1,'luxun')&&has(0,'liubei'))){if(tzEggRoll('luxun')&&tzDlgOk(s,'luxun'))tzEgg('luxun')}
+  if(rel&&has(0,'liufeng')&&s.F[bt.af]&&s.F[bt.af].lord==='liubei'&&tzEggRoll('liufeng')&&tzDlgOk(s,'liufeng'))tzEgg('liufeng');
+  if(rel&&bt.rvP&&bt.rvP.length&&tzDlgOk(s,'riv')){const me=tzDlgMe(s),[a,b,w]=bt.rvP[0],mineB=me&&bt.bf===me,[x,y]=mineB?[b,a]:[a,b];
+    tzDlgPush(x,`${tzName(y)}! 여기서 다시 만나는구나.`);tzDlgPush(y,`${tzName(x)}, ${w}의 일을 잊지 않았다. 오늘 결판을 내자!`)}}catch(e){}return bt}}
+{const _bp=tzBPhase;tzBPhase=function(bt){const n0=bt&&bt.log?bt.log.length:0,out0=bt&&bt.U?bt.U.map(U=>U.map(u=>u.out)):null;const r=_bp.apply(this,arguments);
+  try{const s=bt.s0||(S&&S.tz);if(!s||!s.on||!tzDlgBtRel(s,bt))return r;const nl=bt.log.slice(n0);
+    for(let i=0;i<2;i++)if(nl.some(l=>l.startsWith(`${i?'적':'아군'} 계략 성공`))&&bt.U[i].some(u=>u.g==='luxun'&&!u.out)&&tzEggRoll('chance')&&tzDlgOk(s,'chance'))tzEgg('chance');
+    if(out0)bt.U.forEach((U,i)=>U.forEach((u,j)=>{if(u.g==='caohong'&&u.out&&!out0[i][j]&&tzEggRoll('caohong')&&tzDlgOk(s,'caohong'))tzEgg('caohong')}))}catch(e){}return r}}
+{const _du=tzBDuel;tzBDuel=function(bt,d,resp){if(!d||!bt)return _du.apply(this,arguments);const o=1-d.ch,t=resp==='sub'?(tzBLive(bt,o).filter(u=>u.g).sort((a,b)=>tzStr(b.g)-tzStr(a.g))[0]||d.t):d.t,c=d.c,n0=c.n;
+  const s=bt.s0||(S&&S.tz),rel=s&&s.on&&tzDlgBtRel(s,bt);
+  try{if(resp!=='ref'&&t&&c){const pr=[c.g,t.g].sort().join('|');
+    if(pr==='xiejing|zhaolei'){if(s&&s.on){tzDlgPush('xiejing','촉의 장수여, 내 칼을 받아라!');tzEgg('zhaolei')}}
+    else if(rel&&t.g==='caocao'&&c.g!=='caocao'&&tzEggRoll('caocaosama')&&tzDlgOk(s,'cc'))tzEgg('caocaosama',{sp:c.g})}}catch(e){}
+  const r=_du.apply(this,arguments);
+  try{if(rel&&resp!=='ref'&&t&&c){const L=c.n<n0?c:t;if(L.g==='caohong'&&tzEggRoll('caohong')&&tzDlgOk(s,'caohong'))tzEgg('caohong')}}catch(e){}return r}}
+
+// ---- 장면 4: 이름난 장수의 죽음 ----
+const TZ_DEATHL={guanyu:['liubei','말도 안 된다……, 죽을 때는 함께 죽자고 하지 않았다……. 관우!'],zhangfei:['liubei','익덕……! 어찌 너마저 나를 두고 가느냐!'],
+ liubei:['zhugeliang','폐하……! 이 양, 반드시 대업을 이루겠나이다.'],caocao:['xiahoudun','맹덕……! 하늘도 무심하시구려.'],sunce:['zhouyu','백부……! 그대와의 약속은 이 주유가 지키겠소.'],
+ zhouyu:['sunquan','공근을 잃다니, 내 오른팔을 잃었구나.'],zhugeliang:['jiangwei','승상……! 북벌의 뜻은 이 강유가 잇겠습니다.'],dianwei:['caocao','전위……! 아들을 잃은 것보다 더 슬프구나.'],
+ pangtong:['liubei','사원……! 낙봉파라니, 이름부터 불길하더니……'],sunjian:['sunce','아버님……! 이 원수는 반드시 갚겠습니다.'],guojia:['caocao','봉효가 살아 있었다면……'],
+ lubu:['chengong','봉선…… 그러니 내 말을 들으라 하지 않았소.'],zhaoyun:['liubei','자룡……! 그대 같은 장수는 다시없을 것이오.'],machao:['madai','형님……! 서량의 깃발은 이 마대가 지키겠소.']};
+const tzDeadSeen=new WeakMap();
+function tzDeathScan(s){if(!s||!s.on||!s.G)return;let D=tzDeadSeen.get(s);const snap=()=>{const m=new Map();for(const g in s.G)m.set(g,s.G[g].o);return m};
+  if(!D){tzDeadSeen.set(s,snap());return}const me=tzDlgMe(s);let ch=0;
+  for(const g in s.G){const o=s.G[g].o,p=D.get(g);if(o===p)continue;ch=1;if(o!=='dead'||p==='dead'||p==='wait')continue;const sp=TZ_DEATHL[g];
+    if(sp&&tzAlive(s,sp[0])){if(tzDlgOk(s,'death',2))tzDlgPush(sp[0],sp[1]);continue}
+    const b=GMAP[g];if(!b||!me||p!==me||!s.F[me])continue;const L=s.F[me].lord;if(L===g||!tzAlive(s,L))continue;
+    if(b.rar>=4&&tzDlgOk(s,'death',2))tzDlgPush(L,`${tzJ(tzName(g),'을','를')} 잃다니…… 원통하구나.`)}
+  if(ch)tzDeadSeen.set(s,snap())}
+{const _l=tzLog;tzLog=function(s){const r=_l.apply(this,arguments);try{tzDeathScan(s)}catch(e){}return r}}
+
+// ---- 명대사 도감 ----
+function tzEggSheet(){const got=tzEggGot(),n=TZ_EGG.filter(e=>got[e[0]]).length;
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">명대사 도감 · ${n}/${TZ_EGG.length}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub">한 번 본 명대사는 계속 남아요. 새 판이나 다른 칸에서도, 서버 저장에 로그인했다면 다른 기기에서도 다시 볼 수 있어요.</p>
+   <div class="list">${TZ_EGG.map(e=>{const ok=got[e[0]],b=GMAP[e[1]],nm=e[2]||(b?tzName(e[1]):'');
+     return ok?`<button type="button" class="li" data-tzegg="${e[0]}" style="text-align:left">${b?seal(b,'sm'):''}<div class="info"><b>${esc(nm||'???')}</b><span>${esc(e[3].replace('{c}','한중'))}</span></div><small style="flex:0 0 auto">다시 보기 ›</small></button>`
+       :`<div class="li" style="opacity:.6"><div class="info"><b>???</b><span>${esc(e[4])}</span></div></div>`}).join('')}</div>
+   <button type="button" class="btn ghost wide" data-tzdlgtg style="margin-top:10px" aria-pressed="${!tzDlgOff()}">초상화 대화창 ${tzDlgOff()?'꺼짐':'켜짐'}</button>`)}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tzegg]');if(b){tzDlgReplay(b.dataset.tzegg);return}
+  if(e.target.closest('[data-tzeggs]')){tzEggSheet();return}
+  const t=e.target.closest('[data-tzdlgtg]');if(t){const on=tzDlgOff();try{localStorage.setItem('gw-dlgoff',on?'0':'1')}catch(x){}t.textContent=`초상화 대화창 ${on?'켜짐':'꺼짐'}`;t.setAttribute('aria-pressed',String(on))}});
+{const _gm=gwMenu;gwMenu=function(){_gm.apply(this,arguments);const b=$('#sheet .sheet-body');if(b)b.insertAdjacentHTML('beforeend',`<div class="row" style="gap:6px;margin-top:6px;flex-wrap:wrap"><button type="button" class="btn ghost" data-tzeggs>명대사 도감 ${TZ_EGG.filter(e=>tzEggGot()[e[0]]).length}/${TZ_EGG.length}</button><button type="button" class="btn ghost" data-tzdlgtg aria-pressed="${!tzDlgOff()}">초상화 대화창 ${tzDlgOff()?'꺼짐':'켜짐'}</button></div>`)}}
+// 도감은 로그인한 계정에도 남겨요(서버 문서의 egg 필드). 실패해도 판 저장에는 영향 없어요
+let tzEggUp='';
+function tzEggMerge(L){if(!Array.isArray(L))return;const g=tzEggGot();let n=0;L.forEach(k=>{if(TZ_EGGM[k]&&!g[k]){g[k]=1;n++}});if(n)save()}
+async function tzEggSync(){try{if(!GWU)return;const ref=gwsRef(),d=await ref.get();if(d.exists)tzEggMerge(d.data().egg);const L=Object.keys(tzEggGot()).sort(),k=L.join(',');
+  if(k&&k!==tzEggUp){await ref.set({egg:L},{merge:true});tzEggUp=k}}catch(e){}}
+{const _ps=gwsPush;gwsPush=async function(){const r=await _ps.apply(this,arguments);tzEggSync();return r}}
+{const _pl=gwsPull;gwsPull=async function(D){try{tzEggMerge(D&&D.egg)}catch(e){}return _pl.apply(this,arguments)}}
+{const _st=gwsStart;gwsStart=async function(){const r=await _st.apply(this,arguments);tzEggSync();return r}}
+HELP.forEach(c=>{if(c.t==='사건')c.rows.push(['초상화 대화창','달이 시작될 때 군사가 조언하고(장수제는 군주의 명), 사신 · 등용 · 숙적 대면 · 이름난 장수의 죽음 때 초상화와 함께 대사가 떠요. 눌러서 넘겨요. 메뉴에서 끌 수 있어요.'],
+  ['명대사 도감','조건이 맞으면 20% 확률로(성 이동은 5%) 이스터에그 명대사가 떠요. 조루와 사정이 일기토를 하면 반드시 떠요. 한 번 본 대사는 메뉴 › 명대사 도감에서 언제든 다시 볼 수 있어요.'])});
+(()=>{const st=document.createElement('style');st.textContent=`
+#tz-dlg{position:fixed;left:0;right:0;bottom:0;z-index:90;display:flex;justify-content:center;padding:0 10px max(12px,env(safe-area-inset-bottom,0px));pointer-events:none}
+#tz-dlg:empty{display:none}
+#tz-dlg .tzd-box{pointer-events:auto;cursor:pointer;position:relative;display:flex;gap:10px;align-items:stretch;width:min(640px,100%);padding:10px 12px;border:2px solid #c9a96a;border-radius:8px;
+ background:linear-gradient(180deg,rgba(22,30,44,.97),rgba(12,18,28,.97));box-shadow:0 0 0 2px #2a2018,0 8px 28px rgba(0,0,0,.6);color:#f3ead8;transform:translateY(16px);opacity:0;transition:transform .16s,opacity .16s}
+#tz-dlg.on .tzd-box{transform:none;opacity:1}
+#tz-dlg .tzd-box.egg{border-color:#e9c66c;box-shadow:0 0 0 2px #2a2018,0 0 18px rgba(233,198,108,.35),0 8px 28px rgba(0,0,0,.6)}
+.tzd-face{flex:0 0 76px;height:76px;border:2px solid #8a7046;border-radius:6px;background:#2c3b4a;overflow:hidden;align-self:center}
+.tzd-face img{width:100%;height:100%;image-rendering:pixelated;display:block}
+.tzd-main{flex:1;min-width:0}.tzd-nm{display:inline-block;padding:1px 10px;margin-bottom:4px;border:1px solid #8a7046;border-radius:4px;background:#3a2e20;color:#f3d9a0;font-weight:700;font-size:13px}
+.tzd-main p{margin:0;font-size:15px;line-height:1.55;word-break:keep-all}.tzd-new{display:block;margin-top:4px;color:#e9c66c;font-size:11.5px}
+.tzd-nx{position:absolute;right:10px;bottom:6px;font-style:normal;font-size:11px;color:#e9c66c;animation:tzdB 1s infinite}@keyframes tzdB{50%{opacity:.2}}
+@media (prefers-reduced-motion: reduce){#tz-dlg .tzd-box{transition:none}.tzd-nx{animation:none}}
+`;document.head.appendChild(st)})();
 boot();
 </script>
 </body>
