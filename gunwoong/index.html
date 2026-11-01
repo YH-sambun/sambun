@@ -832,6 +832,10 @@ body.tz-focus header.top,body.tz-focus #claim,body.tz-focus #mode-banner{display
 .tz-scs{margin:8px 0 4px}.tz-rs{display:grid;gap:6px;margin:0 0 8px}.tz-rs label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}.tz-rs select{flex:1;min-width:0;padding:6px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--fg);font-size:14px}.tz-gd{background:none;border:0;padding:0;cursor:pointer;flex:none;line-height:0}
 .tz-glf{display:flex;flex-wrap:wrap;gap:4px}.tz-glf button{border:1px solid var(--line);background:none;border-radius:8px;padding:4px 8px;font-size:12px;color:var(--mute)}.tz-glf button[aria-pressed="true"]{border-color:var(--bronze);color:var(--fg);background:var(--panel)}.tz-glf small{opacity:.7}
 .tz-glw{overflow-x:auto;margin-top:8px;border:1px solid var(--line);border-radius:10px;max-height:60vh;overflow-y:auto}.tz-gl{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}.tz-gl th{position:sticky;top:0;background:var(--panel);font-weight:600;color:var(--mute);padding:6px;text-align:left}.tz-gl td{padding:4px 6px;border-top:1px solid var(--line)}.tz-gl td.n{text-align:right;font-variant-numeric:tabular-nums}.tz-gl td.on{color:var(--bronze);font-weight:700}.tz-gl td.nm{display:flex;align-items:center;gap:6px}.tz-gl td.nm i{font-style:normal;font-size:10px;border:1px solid var(--line);border-radius:4px;padding:0 3px;color:var(--bronze)}.tz-gl tr[data-tzgo2]:not([data-tzgo2=""]){cursor:pointer}
+.tz-tbl tr.fh td b{font-weight:700}.tz-fg{display:inline-grid;place-items:center;min-width:18px;height:16px;padding:0 3px;margin:0 6px 0 2px;background:var(--fac);color:var(--fct);border:1px solid #e9c66c;font-size:11px;font-weight:800;line-height:1;vertical-align:-2px;border-radius:1px}
+.gw-ride{position:absolute;z-index:6;pointer-events:none;transform:translate(-50%,-78%)}.gw-ride i{display:block;filter:drop-shadow(0 1px 1.5px #000a);animation:gwGal .22s ease-in-out infinite alternate}.gw-ride.l i{transform:scaleX(-1)}.gw-map .gw-ride svg{position:static;inset:auto;width:48px;height:38px;display:block;overflow:visible}
+.gw-ride.l i{animation-name:gwGalL}@keyframes gwGal{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-3px) rotate(2deg)}}@keyframes gwGalL{from{transform:scaleX(-1) translateY(0) rotate(-2deg)}to{transform:scaleX(-1) translateY(-3px) rotate(2deg)}}
+.gw-dust{position:absolute;z-index:5;width:16px;height:16px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#d8c39acc 0,#b89d6c88 45%,transparent 72%);margin-top:4px}
 .tz-gsw{display:flex;justify-content:center;align-items:flex-end;height:158px;margin:2px 0 4px;background:radial-gradient(ellipse 60% 14% at 50% 94%,#0004,transparent 70%)}.tz-gsp{image-rendering:auto}
 .tz-bio p{margin:0 0 6px;line-height:1.55;font-size:13.5px}.tz-bio b{display:inline-block;margin-right:6px;padding:0 6px;border-radius:6px;background:var(--line);font-size:11.5px;font-weight:700}
 .tz-gl td.tz-ifx{white-space:normal;min-width:190px;max-width:280px;line-height:1.35;font-size:11.5px}
@@ -5624,7 +5628,7 @@ function tzGenSheet(g,back){const s=tzState(),b=GMAP[g],G=s.G&&s.G[g];if(!b||!G)
    ${body?`<div class="tz-gsw">${body}</div>`:''}
    <h3>군웅할거 능력치</h3><div class="stats">${st('무력',tzStr(g))}${st('지력',tzInt(g))}${st('통솔',tzLead(g))}</div><div class="stats" style="margin-top:4px">${st('정치',tzPol(g))}${st('매력',tzCha(g))}${st('의리',P[2])}</div>
    <p class="sub" style="margin:6px 0">${me?`충성 ${G.ly} · `:''}Lv ${tzLv(s,g)} · 공적 ${G.mr} · 있는 곳 ${where}</p>
-   ${it?`<p class="sub" style="margin:0 0 6px">보물 <b style="color:var(--ink)">${esc(IMAP[it].name)}</b> ★${IMAP[it].rar} · ${TZ_STN[tzItCat(it)]} +${tzItV(it)}${tzIFd(it)?` · ${esc(tzIFd(it))}`:''}</p>`:''}
+   ${it?`<p class="sub" style="margin:0 0 6px">보물 <b style="color:#e9c66c">${esc(IMAP[it].name)}</b> ★${IMAP[it].rar} · ${TZ_STN[tzItCat(it)]} +${tzItV(it)}${tzIFd(it)?` · ${esc(tzIFd(it))}`:''}</p>`:''}
    ${zs?`<h3>정사 · 연의</h3><div class="tz-bio"><p><b>정사</b> ${esc(zs)}</p>${yy?`<p><b>연의</b> ${esc(yy.replace(/^연의에서는\s*|^연의에서도\s*/,''))}</p>`:''}</div>`:b.kid?'<h3>정사 · 연의</h3><div class="tz-bio"><p>이번 판에서 태어난 가상의 자식 장수예요.</p></div>':''}
    ${back?'<button type="button" class="btn ghost wide" data-tz="gl" style="margin-top:10px">장수 일람으로</button>':''}`);tzGsPlay()}
 // ---- 장수 일람 · 보물 일람 ----
@@ -8776,8 +8780,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.3.3';
-const GW_NOTICES=[{v:'1.3.3',date:'2026-11-01',title:'군웅할거 v1.3.3 · 정찰 · 데려오기 · 지도 깃발',items:[
+const GW_VER='1.3.4';
+const GW_NOTICES=[{v:'1.3.4',date:'2026-11-01',title:'군웅할거 v1.3.4 · 보물 특수 능력 · 장수 전신 · 출진 연출',items:[
+  '보물 51종이 이제 판마다 모두 천하에 깔려요(전에는 24개). ★3은 탐색으로 잘 나오고 ★5는 잘 안 나와요. 예전 판을 이어 하면 빠져 있던 보물이 빈 성들에 새로 숨겨져요.',
+  '보물에 특수 능력이 붙었어요. 명마(적토마 · 한혈보마 · 절영)는 퇴각 때 절대 안 붙잡히고 적로는 한 판에 한 번 빠져나와요. 전국옥새는 매력을 100으로 맞추고 동맹 · 원조 · 항복 권고를 +30%p 올려요. 일기토 · 돌격 · 궁병 · 수비 · 사기 · 계략 효과도 있어요. 보물 일람의 특수 능력 칸과 하사 창에서 확인해요.',
+  '덧붙인 효과: 적토마는 데려오기 1달 단축, 손자병법은 계략 +10%p와 직접 지휘 때 적 작전 미리 보기, 전국옥새는 있는 성 민심 매달 +2, 팔진도는 성을 지킬 때 받는 피해 −15%예요. 학우선 · 백우선을 가지면 직접 지휘 때 군사가 작전을 추천하고, 칠성보도를 가지면 전투에서 \'암살\'을 한 번 쓸 수 있어요.',
+  '장수 상세 창에서 초상화 대신 전신 그림이 제자리에서 움직여요. 별 · 소속 · 병과 · 전투 능력치 · 스킬처럼 군웅할거에서 쓰지 않는 값은 뺐어요. 대신 장수 320명 모두 정사 기록과 연의 묘사를 2~3줄로 넣었어요.',
+  '출진하거나 적이 내 성을 치러 올 때, 지도 위 길로 세력 깃발을 단 기병이 흙먼지를 내며 달려가요(약 1.5초). 메뉴(☰)에서 끌 수 있고, 기기에서 움직임 줄이기를 켜 두면 나오지 않아요.',
+  '메뉴(☰)에 \'음악 미리 받기 · 약 4.5MB\'가 생겼어요. 9곡을 한 번에 받아 두면 다음부터는 받지 않고 바로 틀어요. 원래도 한 번 들은 곡은 저장돼서 매번 다시 받지는 않아요.',
+  '천하 표에 \'묶기: 주별 · 세력별\'이 생겼어요. 세력별은 성이 많은 세력부터 깃발 · 군주 · 성 수 · 병사 합계 · 관계를 보여 주고, 눌러서 접어요. 빈 성은 맨 끝에 모여요.',
+  '지도 깃발을 다듬었어요. 깃대를 술보다 조금 긴 정도로 줄이고 금테와 금빛 술을 달았어요. 내 성 목록 · 주 경계 버튼은 지도 밖 위쪽으로 옮겼고, 지역 이름표(양주(서량) 등)는 깃발을 피해 자리를 잡아요.']},{v:'1.3.3',date:'2026-11-01',title:'군웅할거 v1.3.3 · 정찰 · 데려오기 · 지도 깃발',items:[
   '계략에 \'정찰\'이 생겼어요. 금 200으로 천하 어느 성이든 살펴봐요. 성공하면 12개월 동안 그 성의 금 · 군량 · 인구 · 훈련 · 농업 · 상업 · 민심과 장수 충성 · 레벨이 보여요.',
   '성공률은 맡긴 장수의 지력이 높을수록, 그 성 태수의 지력이 낮을수록 올라가요. 실패하면 15% 확률로 들켜서 그 세력의 적대가 10 올라요.',
   '남의 성 카드에서도 바로 \'정찰\'을 누를 수 있어요. 지력이 가장 높은 장수가 있는 내 성에서 보내요.',
@@ -9338,22 +9350,33 @@ function tzAdvSheet(){const s=tzState(),a=tzAdv(s),gs=tzGL(s).map(b=>b.id).filte
    ${gs.length?`<div class="dl-pick">${gs.map(g=>tzPickBtn(s,g,`data-tzadvp="${g}"`,a===g)).join('')}</div>${a?'<button type="button" class="btn ghost wide" style="margin-top:8px" data-tzadvp="">군사 두지 않기</button>':''}`:'<p class="sub">지력 80 이상인 장수가 없어요. 탐색·등용으로 찾아 보세요.</p>'}`)}
 
 // ---- 천하 표 ----
-let tzVw='',tzTf='all';const tzZc=new Set();
+// v1.3.4 세력별 묶기: 성 많은 세력부터, 빈 성은 맨 끝
+function tzTblFac(s,vis,row){const by={};TZ_K.forEach(k=>{const o=s.C[k].o;(by[o]=by[o]||[]).push(k)});
+  const fs=Object.keys(by).filter(o=>o!=='neu').sort((a,b)=>by[b].length-by[a].length||(a===s.me?-1:b===s.me?1:0));if(by.neu)fs.push('neu');let h='';
+  for(const o of fs){const ks=by[o],vk=ks.filter(vis);if(!vk.length)continue;const op=!tzFc.has(o),neu=o==='neu'||!s.F[o],col=neu?'#8a8578':tzCol(o),L=!neu&&s.F[o].lord;
+    const tr=ks.reduce((a,k)=>a+s.C[k].tr,0),mk=neu?'':tzMk(s,o);
+    h+=`<tr class="zh fh" data-tzfc="${o}"><td colspan="10">${op?'▾':'▸'} ${mk?`<span class="tz-fg" style="--fac:${col};--fct:${tzFct(col)}">${esc(mk)}</span>`:''}<b>${neu?'빈 성':esc(tzFN(s,o))}</b>${o===s.me?' <span class="tg">우리</span>':''}${neu?'':tzRelTag(s,o)}
+     <small>${L?`군주 ${esc(tzName(L))} · `:''}성 ${ks.length} · 병사 ${fmt(tr)}${o===s.me?` · 금 ${fmt(ks.reduce((a,k)=>a+s.C[k].g,0))} · 군량 ${fmt(ks.reduce((a,k)=>a+s.C[k].fd,0))}`:''}</small></td></tr>`;
+    if(op)for(const k of vk)h+=row(k)}
+  return h}
+let tzVw='',tzTf='all',tzTg=(()=>{try{return localStorage.getItem('gw-tg')==='fac'?'fac':'zone'}catch(_){return 'zone'}})();const tzZc=new Set(),tzFc=new Set();
 function tzTblHtml(s){const mine=tzMine(s),near=new Set(mine.flatMap(k=>TZ_ADJ[k]).filter(n=>s.C[n].o!==s.me&&!tzAlly(s,s.me,s.C[n].o)));
   const vis=k=>tzTf==='all'||(s.C[k].o===s.me)||(tzTf==='near'&&near.has(k));
-  let h=`<div class="tz-tbf"><div class="tz-dl" role="group" aria-label="범위">${[['all','전체'],['mine','내 성만'],['near','내 성 + 이웃']].map(([v,n])=>`<button type="button" data-tztf="${v}" aria-pressed="${tzTf===v}">${n}</button>`).join('')}</div>
-   <div class="tz-dl" role="group" aria-label="주"><button type="button" data-tzzc="+">주 펼치기</button><button type="button" data-tzzc="-">주 접기</button></div><span class="sum">내 성 ${mine.length} · 공격 가능 ${near.size}</span></div>
-   <div class="tz-tbx"><table class="tz-tbl"><thead><tr><th>성</th><th>세력</th><th>태수</th><th class="n">병사</th><th class="n">금</th><th class="n">군량</th><th class="n">민심</th><th>구분</th><th>운영</th><th>경고</th></tr></thead><tbody>`;
-  for(const z in TZ_ZH){const[zn,ks]=TZ_ZH[z],vk=ks.filter(vis);if(!vk.length)continue;const cnt={};ks.forEach(k=>{const n=tzFN(s,s.C[k].o);cnt[n]=(cnt[n]||0)+1});
-    const zo=tzZOwn(s,z),op=!tzZc.has(z);
-    h+=`<tr class="zh" data-tzzc="${z}"><td colspan="10">${op?'▾':'▸'} ${zn}<small>${ks.length}성 · ${Object.entries(cnt).map(([n,c])=>`${esc(n)} ${c}`).join(' · ')}</small>${zo?`<span class="pz">${zo===s.me?'평정 · ':esc(tzFN(s,zo))+' 평정 · '}금·군량 +${Math.round(tzZB(z)*100)}%</span>`:''}</td></tr>`;
-    if(!op)continue;
-    for(const k of vk){const C=s.C[k],o=C.o,me=o===s.me,gv=tzGov(s,k),q='<span class="q">?</span>',dl=me?tzDlOf(s,k):'';
+  const row=k=>{let h='';const C=s.C[k],o=C.o,me=o===s.me,gv=tzGov(s,k),q='<span class="q">?</span>',dl=me?tzDlOf(s,k):'';
       const w=[];if(me){if(C.ml<40)w.push('民');if(C.fd<C.tr*.12)w.push('糧');if(gv&&!tzHome(s,k)&&s.G[gv].ly<50)w.push('叛')}if(s.lc&&s.lc.k===k)w.push('蝗');
       const tg=me?(tzHome(s,k)?'<span class="tg">거점</span>':tzFront(s,k)?'<span class="tg f">전선</span>':'<span class="tg">후방</span>'):near.has(k)?'<span class="tg a">공격 가능</span>':tzAlly(s,s.me,o)?'<span class="tg">동맹</span>':'';
       h+=`<tr class="ct${me?' me':''}${tzSel===k?' sel':''}" data-tzk="${k}"><td>${tzCN(k)}<small>${tzHZ(k)}</small></td><td><span class="dot" style="--fac:${tzCol(o)}"></span>${esc(tzFN(s,o))}${tzRelTag(s,o)}</td>
        <td>${gv?esc(tzName(gv)):me?'<span class="w">없음</span>':o==='neu'?'—':q}</td><td class="n">${fmt(C.tr)}</td><td class="n">${me?fmt(C.g):q}</td><td class="n">${me?fmt(C.fd):q}</td><td class="n">${me?(C.ml<40?`<span class="w">${C.ml}</span>`:C.ml):q}</td>
-       <td>${tg}</td><td>${me?TZ_DL[dl][0]+(tzDirect(dl)?` · 명령 ${tzIdle(s,k).length}`:''):''}</td><td>${w.length?`<span class="w">${w.join('')}</span>`:''}</td></tr>`}}
+       <td>${tg}</td><td>${me?TZ_DL[dl][0]+(tzDirect(dl)?` · 명령 ${tzIdle(s,k).length}`:''):''}</td><td>${w.length?`<span class="w">${w.join('')}</span>`:''}</td></tr>`;return h};
+  let h=`<div class="tz-tbf"><div class="tz-dl" role="group" aria-label="범위">${[['all','전체'],['mine','내 성만'],['near','내 성 + 이웃']].map(([v,n])=>`<button type="button" data-tztf="${v}" aria-pressed="${tzTf===v}">${n}</button>`).join('')}</div>
+   <div class="tz-dl" role="group" aria-label="묶기"><button type="button" data-tztg="zone" aria-pressed="${tzTg==='zone'}">주별</button><button type="button" data-tztg="fac" aria-pressed="${tzTg==='fac'}">세력별</button></div>
+   <div class="tz-dl" role="group" aria-label="접기"><button type="button" data-tzzc="+">모두 펼치기</button><button type="button" data-tzzc="-">모두 접기</button></div><span class="sum">내 성 ${mine.length} · 공격 가능 ${near.size}</span></div>
+   <div class="tz-tbx"><table class="tz-tbl"><thead><tr><th>성</th><th>세력</th><th>태수</th><th class="n">병사</th><th class="n">금</th><th class="n">군량</th><th class="n">민심</th><th>구분</th><th>운영</th><th>경고</th></tr></thead><tbody>`;
+  if(tzTg==='fac')h+=tzTblFac(s,vis,row);else for(const z in TZ_ZH){const[zn,ks]=TZ_ZH[z],vk=ks.filter(vis);if(!vk.length)continue;const cnt={};ks.forEach(k=>{const n=tzFN(s,s.C[k].o);cnt[n]=(cnt[n]||0)+1});
+    const zo=tzZOwn(s,z),op=!tzZc.has(z);
+    h+=`<tr class="zh" data-tzzc="${z}"><td colspan="10">${op?'▾':'▸'} ${zn}<small>${ks.length}성 · ${Object.entries(cnt).map(([n,c])=>`${esc(n)} ${c}`).join(' · ')}</small>${zo?`<span class="pz">${zo===s.me?'평정 · ':esc(tzFN(s,zo))+' 평정 · '}금·군량 +${Math.round(tzZB(z)*100)}%</span>`:''}</td></tr>`;
+    if(!op)continue;
+    for(const k of vk)h+=row(k)}
   return h+`</tbody></table></div>`}
 function tzViewHtml(s){const wk=isWork(),v=wk?'tbl':(tzVw||'map'),mine=tzMine(s);
   let h=`<div class="tz-vt" role="group" aria-label="보기">${wk?'':`<button type="button" data-tzvw="map" aria-pressed="${v==='map'}">지도 보기</button>`}<button type="button" data-tzvw="tbl" aria-pressed="${v==='tbl'}">천하 표</button><button type="button" data-tz="gl">장수 일람</button><button type="button" data-tz="il">보물 일람</button></div>`;
@@ -9386,7 +9409,9 @@ document.addEventListener('click',e=>{const s=tzState();
   const vw=e.target.closest('[data-tzvw]');if(vw){tzVw=vw.dataset.tzvw;renderView();return}
   if(e.target.closest('[data-tzml]')){tzMineSheet();return}
   const tf=e.target.closest('[data-tztf]');if(tf){tzTf=tf.dataset.tztf;renderView();return}
-  const zc=e.target.closest('[data-tzzc]');if(zc){const z=zc.dataset.tzzc;if(z==='+')tzZc.clear();else if(z==='-')Object.keys(TZ_ZH).forEach(x=>tzZc.add(x));else tzZc.has(z)?tzZc.delete(z):tzZc.add(z);renderView();return}
+  const tg=e.target.closest('[data-tztg]');if(tg){tzTg=tg.dataset.tztg;try{localStorage.setItem('gw-tg',tzTg)}catch(_){}renderView();return}
+  const fc=e.target.closest('[data-tzfc]');if(fc){const o=fc.dataset.tzfc;tzFc.has(o)?tzFc.delete(o):tzFc.add(o);renderView();return}
+  const zc=e.target.closest('[data-tzzc]');if(zc){const z=zc.dataset.tzzc;if(tzTg==='fac'){if(z==='+')tzFc.clear();else if(z==='-')Object.values(tzState().C).forEach(C=>tzFc.add(C.o));renderView();return}if(z==='+')tzZc.clear();else if(z==='-')Object.keys(TZ_ZH).forEach(x=>tzZc.add(x));else tzZc.has(z)?tzZc.delete(z):tzZc.add(z);renderView();return}
   if(e.target.closest('#sheet [data-tzk]')&&!$('#sheet').hidden){setTimeout(closeSheet,0);return}
   if(e.target.closest('[data-tzadv]')){tzAdvSheet();return}
   const ap=e.target.closest('[data-tzadvp]');if(ap){const g=ap.dataset.tzadvp;if(!g||tzAdvOk(s,g)){s.adv=g;if(s.pj&&!s.pj.done)s.pj=null;save();toast(g?`${tzName(g)}을(를) 군사로 두었어요`:'군사를 두지 않아요');renderView();if(tzPjPend(s).length)tzPjSheet();else closeSheet()}return}
@@ -10141,7 +10166,7 @@ function gwsRow(){return `<div class="banner-card" id="gws-row" style="padding:1
 function gwsPaint(){const r=$('#gws-row');if(!r)return;r.outerHTML=gwsRow();gwsBind()}
 function gwsBind(){const a=$('#gws-in'),b=$('#gws-now'),c=$('#gws-out');if(a)a.onclick=gwsLogin;if(b)b.onclick=async()=>{if(gwsMeta().dirty)await gwsPush();await gwsCheck();gwsSetSt(gwsSt==='err'?'err':'ok');toast('서버 기록과 맞췄어요')};if(c)c.onclick=gwsLogout}
 function gwVolRow(){const v=bgmVol(),r=(k,n,x)=>`<label style="display:flex;align-items:center;gap:10px;margin:6px 0"><span style="width:64px;font-size:13px;flex:none">${n}</span><input type="range" min="0" max="100" step="5" value="${x}" data-gwvol="${k}" aria-label="${n} 음량" style="flex:1;accent-color:var(--gold,#e9c66c)"><b class="num" style="width:40px;text-align:right;font-size:13px">${x}%</b></label>`;
-  return `<div class="banner-card" style="padding:12px;margin:0 0 10px"><div style="display:flex;justify-content:space-between;align-items:center"><b>음량</b>${bgmBtn('btn ghost sm',1)}</div>${r('b','배경음악',v.b)}${r('j','효과음악',v.j)}<p class="sub" style="margin:4px 0 0;font-size:12px">이 기기에만 저장돼요. 효과음악은 승리 · 패배 · 경사 · 흉사 때 나와요.</p></div>`}
+  return `<div class="banner-card" style="padding:12px;margin:0 0 10px"><div style="display:flex;justify-content:space-between;align-items:center"><b>음량</b>${bgmBtn('btn ghost sm',1)}</div>${r('b','배경음악',v.b)}${r('j','효과음악',v.j)}<p class="sub" style="margin:4px 0 0;font-size:12px">이 기기에만 저장돼요. 효과음악은 승리 · 패배 · 경사 · 흉사 때 나와요.</p>${gwMusRow()}${gwRideRow()}</div>`}
 document.addEventListener('input',e=>{const t=e.target.closest&&e.target.closest('[data-gwvol]');if(!t)return;const k=t.dataset.gwvol;bgmVolSet({[k]:+t.value});const o=t.parentElement.querySelector('b');if(o)o.textContent=t.value+'%'});
 document.addEventListener('change',e=>{const t=e.target.closest&&e.target.closest('[data-gwvol]');if(t&&t.dataset.gwvol==='j'&&+t.value>0)bgmJingle('harvest')});
 {const _m=gwMenu;gwMenu=function(){_m.apply(this,arguments);const h=$('#sheet .sheet-h');if(h){h.insertAdjacentHTML('afterend',gwsRow()+gwVolRow());gwsBind()}}}
@@ -10287,6 +10312,53 @@ addEventListener('resize',()=>{clearTimeout(window.__zlT);window.__zlT=setTimeou
 {const _cl=cleanTz;cleanTz=function(x){const o=_cl(x);if(!o.on||!o.I)return o;const miss=ITEMS.filter(it=>!o.I[it.id]);if(!miss.length)return o;
   const r=mulberry(((o.sd|0)^4421)>>>0),homes=new Set(Object.values(o.F).map(F=>o.G[F.lord]&&o.G[F.lord].c)),cs=TZ_K.filter(k=>!homes.has(k));
   miss.forEach(it=>{o.I[it.id]='h:'+cs[Math.floor(r()*cs.length)]});return o}}
+// v1.3.4 음악 미리 받기: 9곡을 그림과 같은 저장소(sambun-img)에 넣어 두면 다음부터 인터넷 없이 바로 나와요
+const GW_MUS_C='sambun-img',gwMusU=()=>[...new Set(Object.values(BGM_F))].map(u=>new URL(u,location.href).href);
+function gwMusRow(){return `<div class="gw-mus" style="display:flex;align-items:center;gap:8px;margin-top:10px"><button type="button" class="btn ghost sm" data-gwmus="1" style="flex:none">음악 미리 받기 · 약 4.5MB</button><small class="sub" style="margin:0;font-size:12px" data-gwmusl>한 번 받으면 다시 받지 않아요.</small></div>`}
+async function gwMusCnt(){if(!window.caches)return -1;try{const c=await caches.open(GW_MUS_C);let n=0;for(const u of gwMusU())if(await c.match(u))n++;return n}catch(e){return -1}}
+function gwMusShow(n,busy){const b=$('#sheet [data-gwmus]'),l=$('#sheet [data-gwmusl]');if(!b)return;const N=gwMusU().length;
+  if(n<0){b.disabled=true;if(l)l.textContent='이 브라우저는 미리 받기를 지원하지 않아요.';return}
+  if(n>=N){b.disabled=true;b.textContent=`음악 ${N}곡 저장됨`;if(l)l.textContent='다음부터는 받지 않고 바로 틀어요.';return}
+  b.disabled=!!busy;b.textContent=busy?`받는 중 ${n}/${N}`:`음악 미리 받기 · 약 4.5MB`;if(l)l.textContent=busy?'창을 닫아도 계속 받아요.':n?`${n}/${N}곡은 이미 저장돼 있어요.`:'한 번 받으면 다시 받지 않아요.'}
+let gwMusBusy=0;
+async function gwMusGet(){if(gwMusBusy||!window.caches)return;gwMusBusy=1;let fail=0;try{const c=await caches.open(GW_MUS_C),us=gwMusU();let n=await gwMusCnt();gwMusShow(n,1);
+  for(const u of us){if(await c.match(u))continue;try{const r=await fetch(u,{cache:'no-cache'});if(r.ok){if(!(await c.match(u)))await c.put(u,r.clone());n++}else fail++}catch(e){fail++}gwMusShow(n,1)}
+  gwMusBusy=0;gwMusShow(await gwMusCnt(),0);toast(fail?`음악 ${fail}곡을 받지 못했어요. 인터넷을 확인하고 다시 눌러 주세요.`:'음악을 모두 저장했어요')}catch(e){gwMusBusy=0;gwMusShow(await gwMusCnt(),0)}}
+document.addEventListener('click',e=>{if(e.target.closest('[data-gwmus]'))gwMusGet()});
+{const _m=gwMenu;gwMenu=function(){_m.apply(this,arguments);gwMusCnt().then(n=>gwMusShow(n,gwMusBusy))}}
+
+// v1.3.4 출진 연출: 성 사이 길로 기병이 흙먼지를 내며 달려가요(약 1.5초). 메뉴에서 끌 수 있고, 움직임 줄이기 설정이면 꺼져요
+const gwRideOn=()=>{try{return localStorage.getItem('gw-ride')!=='0'}catch(e){return true}};
+function gwRideRow(){return `<label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px"><input type="checkbox" data-gwride ${gwRideOn()?'checked':''}> 출진 연출(기병이 길을 달려가요)</label>`}
+document.addEventListener('change',e=>{const t=e.target.closest&&e.target.closest('[data-gwride]');if(!t)return;try{localStorage.setItem('gw-ride',t.checked?'1':'0')}catch(_){}});
+const gwRideOk=()=>gwRideOn()&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)&&!isWork()&&(tzVw||'map')==='map'&&!!document.querySelector('.gw-map')&&document.querySelector('.gw-map').offsetParent!==null;
+const GW_HORSE=c=>{const K='fill:#24180c;stroke:#f0e2b6;stroke-width:.6;stroke-linejoin:round',L='fill:none;stroke:#24180c;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1';
+  return `<svg viewBox="0 0 48 36" aria-hidden="true"><path d="M19.5 16 L16 0.5" style="fill:none;stroke:#4a3216;stroke-width:1.2;stroke-dasharray:none;stroke-opacity:1"/><path d="M16 .5 L5.5 3 L16.4 5.6 Z" style="fill:${c};stroke:#e9c66c;stroke-width:.6"/>
+   <path d="M30 22 L35 26.5 L38 24.5 M27.5 23 L30.5 30.5 M15.5 22 L10 27.5 L7.5 26.5 M18 23 L15.5 31" style="${L}"/>
+   <path d="M11.5 17.5 Q5 15.5 2.5 22.5 Q7 19.5 11.5 20.5 Z" style="${K}"/><ellipse cx="21.5" cy="19" rx="11" ry="5.2" style="${K}"/><path d="M28.5 17.5 L32.5 9 L36.5 8 L35 15.5 Z" style="${K}"/><path d="M33 8.2 L40 6.8 L42.2 9.8 L40.2 11.2 L35.6 11.4 Z" style="${K}"/><path d="M34.2 8 L35.2 4.6 L36.4 7.6 Z" style="${K}"/>
+   <path d="M20 15.5 L24.6 15.5 L25.4 8.4 L20.8 8.4 Z" style="${K}"/><circle cx="23" cy="5.6" r="2.3" style="${K}"/></svg>`};
+let gwRiding=0;
+function gwRide(list,cb){const m=document.querySelector('.gw-map');if(!m||!list.length){cb&&cb();return}gwRiding=1;const D=1500;let left=list.length;
+  const w=document.querySelector('.gw-wrap');if(w&&list[0]){const[a,b]=[TZ_C[list[0].k],TZ_C[list[0].n]];w.scrollLeft=Math.max(0,w.scrollWidth*(a[0]+b[0])/200-w.clientWidth/2)}
+  m.scrollIntoView&&m.getBoundingClientRect().top<0&&m.scrollIntoView({block:'start',behavior:'auto'});
+  list.forEach(({k,n,col})=>{const A=TZ_C[k],B=TZ_C[n];if(!A||!B){if(--left===0)fin();return}
+    const el=document.createElement('div');el.className='gw-ride'+(B[0]<A[0]?' l':'');el.innerHTML=`<i>${GW_HORSE(col||'#c33')}</i>`;el.style.left=A[0]+'%';el.style.top=A[1]+'%';m.appendChild(el);
+    const an=el.animate([{left:A[0]+'%',top:A[1]+'%'},{left:B[0]+'%',top:B[1]+'%'}],{duration:D,easing:'cubic-bezier(.35,.05,.6,1)',fill:'forwards'});const t0=performance.now();
+    const dust=setInterval(()=>{const t=Math.min(1,(performance.now()-t0)/D),p=t<.5?2*t*t*.9:t;const d=document.createElement('span');d.className='gw-dust';
+      d.style.left=(A[0]+(B[0]-A[0])*p)+'%';d.style.top=(A[1]+(B[1]-A[1])*p)+'%';m.appendChild(d);
+      const dx=(B[0]<A[0]?1:-1)*(6+Math.random()*10);d.animate([{transform:'translate(-50%,-50%) scale(.35)',opacity:.75},{transform:`translate(calc(-50% + ${dx}px),calc(-50% - ${4+Math.random()*6}px)) scale(1.7)`,opacity:0}],{duration:650+Math.random()*250,easing:'ease-out'}).onfinish=()=>d.remove()},70);
+    an.onfinish=()=>{clearInterval(dust);el.animate([{opacity:1},{opacity:0}],{duration:180}).onfinish=()=>el.remove();if(--left===0)fin()}});
+  function fin(){setTimeout(()=>{gwRiding=0;cb&&cb()},120)}}
+// 내가 공격할 때: 출진 버튼 → 시트를 닫고 달린 뒤 전투
+{const _g=tzGo;tzGo=function(mode){const D=tzDraft,s=tzState();if(gwRiding)return;
+  if(!D||D.c!=='war'||(mode!=='quick'&&mode!=='watch')||!D.tg||!D.gs||!D.gs.length||!gwRideOk())return _g.apply(this,arguments);
+  const C=s.C[D.k],tr=Math.round(C.tr*D.pct/100),food=Math.round(tr*.3*(tzSea(s.m)==='winter'?1.5:1));if(C.fd<food||tr<300)return _g.apply(this,arguments);
+  const self=this,args=arguments;closeSheet();tzDraft=D;gwRide([{k:D.k,n:D.tg,col:tzCol(s.me)}],()=>{tzDraft=D;_g.apply(self,args)})}}
+// 적이 내 성을 칠 때: 턴 안에서 모아 뒀다가 보고 전에 달려요
+let gwRideQ=[];
+{const _a=tzAtk;tzAtk=function(s,b,f){try{if(s&&b&&s.C[b.n]&&s.C[b.n].o===s.me&&f!==s.me&&gwRideQ.length<4)gwRideQ.push({k:b.k,n:b.n,col:tzCol(f)})}catch(e){}return _a.apply(this,arguments)}}
+{const _t=tzTurn;tzTurn=function(){gwRideQ=[];return _t.apply(this,arguments)}}
+{const _r=tzRepSheet;tzRepSheet=function(){const q=gwRideQ;gwRideQ=[];if(!q.length||!gwRideOk()||gwRiding)return _r.apply(this,arguments);const self=this,args=arguments;gwRide(q,()=>_r.apply(self,args))}}
 boot();
 </script>
 </body>
