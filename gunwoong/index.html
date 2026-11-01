@@ -8849,8 +8849,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.3.13';
-const GW_NOTICES=[{v:'1.3.13',date:'2026-11-02',title:'군웅할거 v1.3.13 · 초상화 대화창 · 명대사 도감 · 조루와 사정',items:[
+const GW_VER='1.4.0';
+const GW_NOTICES=[{v:'1.4.0',date:'2026-11-02',title:'군웅할거 v1.4.0 · 반(反)○○ 연합 · 판 끝 결과 · 연표 · 장수별 통일 기록',items:[
+  '반(反) 연합이 생겼어요. 한 세력이 천하 성의 1/3 이상을 갖거나, 성 8곳 이상이면서 2위의 두 배가 되면 그 세력과 가까운(길 2칸 안) 세력들이 \'반○○ 연합\'을 맺어요. 연합끼리 2년 동맹을 맺고 표적과는 험악해져요. 연합 AI는 표적의 성을 먼저 노려요.',
+  '우리가 표적이 되면 평정과 윗줄에 경고가 떠요. 연합에 들 자격이 있으면 사신이 와서 함께하자고 해요. 들어가면 연합 세력과 동맹을 맺고, 연합끼리는 공동 작전을 바로 받아 줘요. 거절해도 벌칙은 없어요.',
+  '연합은 2년이 지나거나, 표적의 성이 크게 줄거나(천하의 1/4 또는 처음의 70% 아래), 표적이 멸망하면 흩어져요. 흩어지면 연합끼리 동맹이 풀리고 사이가 크게 험악해져요. 반동탁 연합이 깨진 뒤 군웅끼리 서로 싸운 것처럼요. 같은 세력을 겨냥한 연합은 흩어진 뒤 2년 동안 다시 생기지 않아요.',
+  '189년 반동탁 연합 시나리오는 이제 연합이 맺어진 채로 시작해요. 원소 · 조조 · 원술 · 손견 · 공손찬 · 유비 · 한복 · 공융 · 도겸 · 장막 · 장양 · 마등이 18달 동안 동탁에 맞서요.',
+  '판이 끝나면(통일 · 패배 · 사망 · 은퇴) 결과 화면이 떠요. 걸린 기간, 점령한 성 · 잃은 성 · 가장 많을 때의 성 수, 등용 · 포로 · 처형 수, 일기토 전적, 공적 상위 5명이 나와요. 끝난 판 화면과 메뉴(☰)의 \'결과 보기\'로 다시 볼 수 있어요.',
+  '메뉴(☰)에 \'연표\'가 생겼어요. 우리 세력이 차지하고 잃은 성, 어느 세력이든 멸망 · 통일, 반 연합이 맺어지고 흩어진 일, 사건 그림에 나온 큰 일이 달마다 쌓여요(최근 200개). 이번 버전 전에 시작한 판은 지금부터 쌓여요.',
+  '통일하면 그 군주(장수제는 내 장수)의 통일 횟수가 남아요. 장수 상세에 \'통일 기록 · 군주로 n회 · 장수로 n회\'가, 장수 일람 이름 옆에 \'統n\'이 나와요. 시나리오마다 군주 · 장수제 최단 통일 기간도 남고, 결과 화면에서 새 기록이면 알려 줘요. 지금까지의 통일은 기록이 없어서 0부터 세요.',
+  '통일 기록은 이 기기에 저장되고, 구글 저장 공유를 켜면 계정에도 저장돼요. 다른 기기에서 로그인하면 더 큰 쪽으로 합쳐져요. 명대사 도감도 이제 서버에 저장할 때마다 함께 올라가서 계정에서 빠지지 않아요.']},{v:'1.3.13',date:'2026-11-02',title:'군웅할거 v1.3.13 · 초상화 대화창 · 명대사 도감 · 조루와 사정',items:[
   '초상화 대화창이 생겼어요. 달이 시작될 때 군사가 형세를 조언하고(장수제에서는 군주가 이번 달 임무나 태수 제안을 직접 말해요), 사신 답변 · 등용 · 숙적 대면 · 이름난 장수의 죽음 때 초상화와 말풍선이 떠요. 눌러서 넘기고, 메뉴에서 끌 수 있어요.',
   '이스터에그 명대사 13개를 숨겼어요. 조건이 맞으면 20% 확률로(성 이동 대사는 5%) 떠요. "유봉님아! 출진하시오." · "좌절감이 사나이를 키우는 것이다!" · "승리의 찬스다!" 같은 그 대사들이에요.',
   '명대사 도감: 한 번 본 명대사는 계속 남아서 새 판이나 다른 칸에서도 메뉴 › 명대사 도감에서 다시 볼 수 있어요. 서버 저장에 로그인했다면 계정에도 남아 다른 기기에서도 보여요. 못 본 대사는 ???와 힌트로 보여요.',
@@ -9586,7 +9594,7 @@ const tzTruCost=(s,t)=>Math.min(3000,500+tzCities(s,t).length*100);
 const tzNaeP=(s,g,x)=>tzP(.15+tzInt(g)/300+(70-s.G[x].ly)/120-tzGiri(x)/400,.03,.8);
 const tzIjgP=(s,g,a,b)=>tzP(.35+tzInt(g)/250-(tzAllyR(s,a,b)?.15:0),.05,.85);
 const tzIndP=(s,g,tk)=>{const gv=tzGov(s,tk);return gv?tzP(.1+tzInt(g)/250+(60-s.G[gv].ly)/100-tzGiri(gv)/400,.03,.7):0};
-const tzJntP=(s,g,a)=>tzP(.4+tzCha(g)/250+(tzH(s,s.me,a)<30?.2:0),.1,.95);
+const tzJntP=(s,g,a)=>tzCoM(s,s.me)&&tzCoM(s,a)?1:tzP(.4+tzCha(g)/250+(tzH(s,s.me,a)<30?.2:0),.1,.95);
 // 공동 작전 대상: 그 동맹의 성과 맞닿은 적 성(우리·그 동맹·그 동맹의 동맹 성 제외)
 const tzJntTg=(s,a)=>TZ_K.filter(n=>{const o=s.C[n].o;return o!=='neu'&&o!==s.me&&o!==a&&!tzAlly(s,a,o)&&TZ_ADJ[n].some(x=>s.C[x].o===a)});
 // 내응 대상: 이웃 적 성의 장수(군주 제외)
@@ -10313,7 +10321,7 @@ async function gwsPush(first){clearTimeout(gwsT);gwsT=null;if(!GWU||!GWF||gwsCon
   try{await GWF.runTransaction(async tx=>{const d=await tx.get(ref),sr=d.exists?(d.data().rev|0):0;
       if(sr>known){const e=new Error('conflict');e.code='gw-conflict';e.data=d.data();throw e}
       nr=sr+1;snap.slots.forEach((x,i)=>{if(first||!sr||gwsH(x)!==gwsHash[i])tx.set(ref.collection('s').doc(String(i)),x?{z:x.z,lb:x.lb}:{z:'',lb:''})});
-      tx.set(ref,{rev:nr,sv:Date.now(),tzi:snap.tzi,lb:snap.slots.map(x=>x?x.lb:''),dev:gwsDev()})});
+      tx.set(ref,Object.assign({rev:nr,sv:Date.now(),tzi:snap.tzi,lb:snap.slots.map(x=>x?x.lb:''),dev:gwsDev()},gwsExtra()))});
     snap.slots.forEach((x,i)=>gwsHash[i]=gwsH(x));gwsMetaSet({rev:nr});if(gen===gwsGen)gwsMetaSet({dirty:0});else gwsT=setTimeout(gwsPush,3000);gwsSetSt('ok')}
   catch(e){if(e&&e.code==='gw-conflict'){gwsBusy=0;gwsAsk(e.data);return}
     gwsSetSt('err');if(e&&e.code==='permission-denied')toast('서버 저장 권한이 아직 없어요(관리자: Firestore 규칙에 gw 추가 필요)',4000);else gwsT=setTimeout(gwsPush,8000)}
@@ -10940,6 +10948,155 @@ HELP.forEach(c=>{if(c.t==='사건')c.rows.push(['초상화 대화창','달이 �
 .tzd-main p{margin:0;font-size:15px;line-height:1.55;word-break:keep-all}.tzd-new{display:block;margin-top:4px;color:#e9c66c;font-size:11.5px}
 .tzd-nx{position:absolute;right:10px;bottom:6px;font-style:normal;font-size:11px;color:#e9c66c;animation:tzdB 1s infinite}@keyframes tzdB{50%{opacity:.2}}
 @media (prefers-reduced-motion: reduce){#tz-dlg .tzd-box{transition:none}.tzd-nx{animation:none}}
+`;document.head.appendChild(st)})();
+/* ==== 군웅할거 v1.4.0: 반(反)○○ 연합 · 판 끝 결과 · 연표 · 장수별 통일 기록 ==== */
+const TZ_CO_DUR=24,TZ_CO_GAP=24,TZ_CO189=['yuanshao','caocao','yuanshu','sunjian','gongsunzan','liubei','hanfu','kongrong','taoqian','zhangmiao','zhangyang','mateng'];
+const tzCoOn=s=>!!(s&&s.CO&&s.F&&s.F[s.CO.f]&&!s.F[s.CO.f].dead);
+const tzCoM=(s,f)=>tzCoOn(s)&&s.CO.m.includes(f);
+const tzCoNm=(s,f)=>'반'+tzName(s.F[f].lord)+' 연합';
+// 표적 세력의 성에서 길 2칸 안에 성을 가진 세력(표적과 동맹인 세력은 빠져요)
+function tzCoNear(s,f){const c=tzCities(s,f),h1=new Set(c.flatMap(k=>TZ_ADJ[k])),h2=new Set([...h1].flatMap(k=>TZ_ADJ[k])),o=new Set();
+  [...h1,...h2].forEach(k=>{const x=s.C[k].o;if(x!==f&&s.F[x]&&!s.F[x].dead&&tzCities(s,x).length&&!tzAllyR(s,x,f))o.add(x)});return [...o]}
+function tzCoLink(s,a,b,n){if(!s.F[a]||!s.F[b]||a===b)return;s.F[a].al[b]=Math.max(s.F[a].al[b]||0,n);s.F[b].al[a]=Math.max(s.F[b].al[a]||0,n);s.H=s.H||{};s.H[tzHK(a,b)]=Math.min(tzH(s,a,b),20)}
+function tzCoForm(s,f,m,dur){const n=dur||TZ_CO_DUR;s.H=s.H||{};s.CO={f,m:m.slice(),t0:s.t,e:s.t+n,c0:tzCities(s,f).length,nm:tzCoNm(s,f)};
+  for(let i=0;i<m.length;i++){for(let j=i+1;j<m.length;j++)tzCoLink(s,m[i],m[j],n);s.H[tzHK(m[i],f)]=Math.max(tzH(s,m[i],f),80)}
+  const me=s.me,inv=me===f||m.includes(me),t=`${s.CO.nm}이 맺어졌어요 · ${m.map(x=>tzFN(s,x)).join('·')}이(가) ${tzFN(s,f)}에 맞서 ${n}달 동안 손을 잡아요`;
+  tzLog(s,t,inv?'令':'報');tzEvPush(s,'ally',t);tzYhAdd(s,'co',t);
+  if(me===f)tzLog(s,`천하가 우리를 경계해요 · 이웃 세력들이 ${s.CO.nm}을(를) 맺고 우리를 먼저 노려요`,'令')}
+function tzCoEnd(s,why){const C=s.CO;if(!C)return;s.H=s.H||{};const m=C.m.filter(x=>s.F[x]&&!s.F[x].dead);
+  for(let i=0;i<m.length;i++)for(let j=i+1;j<m.length;j++){const a=m[i],b=m[j];delete s.F[a].al[b];delete s.F[b].al[a];s.H[tzHK(a,b)]=Math.max(tzH(s,a,b)+30,70)}
+  s.COH=s.COH||{};s.COH[C.f]=s.t+TZ_CO_GAP;s.CO=null;
+  const t=`${C.nm}이 흩어졌어요(${why}) · 연합했던 세력끼리 사이가 험악해졌어요`;tzLog(s,t,m.includes(s.me)||C.f===s.me?'令':'報');tzEvPush(s,'betray',t);tzYhAdd(s,'co',t)}
+function tzCoTick(s){if(!s||s.end)return;s.COH=s.COH||{};s.H=s.H||{};
+  if(s.CO){const C=s.CO;C.m=C.m.filter(x=>s.F[x]&&!s.F[x].dead&&tzCities(s,x).length);
+    if(!s.F[C.f]||s.F[C.f].dead||!tzCities(s,C.f).length)return tzCoEnd(s,`${tzFN(s,C.f)} 멸망`);
+    if(s.t>=C.e)return tzCoEnd(s,'약속한 때가 지남');
+    if(tzCities(s,C.f).length<Math.min(TZ_K.length/4,C.c0*.7))return tzCoEnd(s,`${tzFN(s,C.f)}의 기세가 꺾임`);
+    if(C.m.length<2)return tzCoEnd(s,'남은 세력이 너무 적음');
+    for(const x of C.m)s.H[tzHK(x,C.f)]=Math.max(tzH(s,x,C.f),75);return}
+  if(s.t<3)return;const L=tzLiveF(s).map(f=>[f,tzCities(s,f).length]).sort((a,b)=>b[1]-a[1]);if(L.length<3)return;
+  const[f,c1]=L[0],c2=L[1][1];if(!(c1>=TZ_K.length/3||(c1>=8&&c1>=c2*2)))return;if((s.COH[f]||0)>s.t)return;
+  const near=tzCoNear(s,f),ai=near.filter(x=>x!==s.me),inv=s.me!=='_'&&near.includes(s.me)&&s.F[s.me]&&!s.F[s.me].dead;if(ai.length<2)return;
+  tzCoForm(s,f,ai);if(inv){const by=ai.slice().sort((a,b)=>tzCities(s,b).length-tzCities(s,a).length)[0];s.ev={t:s.t,f:by,ty:'coa',tg:f,g:0,fd:0,done:0};tzLog(s,`${tzFN(s,by)}의 사신이 ${s.CO.nm}에 들어오라고 해요 · 평정에서 답해요`,'令')}}
+// AI 공격 순서: 연합 세력은 표적을 먼저 노려요
+{const _hb=tzHB;tzHB=function(s,f,o){let v=_hb.apply(this,arguments);if(tzCoOn(s)&&o===s.CO.f&&s.CO.m.includes(f))v+=.35;return v}}
+// 사신: 연합 초대
+{const _a=tzEvAnswer;tzEvAnswer=function(s,yes){const E=s&&s.ev;if(!E||E.ty!=='coa')return _a.apply(this,arguments);if(E.done)return '';E.done=1;let t='';
+  if(!tzCoOn(s)||s.CO.f!==E.tg)t='연합이 이미 흩어졌어요';
+  else if(yes){const C=s.CO,n=Math.max(1,C.e-s.t);C.m.forEach(x=>tzCoLink(s,s.me,x,n));if(!C.m.includes(s.me))C.m.push(s.me);s.H[tzHK(s.me,C.f)]=Math.max(tzH(s,s.me,C.f),80);t=`${C.nm}에 들어갔어요 · 연합 세력과 ${n}달 동맹`;tzYhAdd(s,'co',t)}
+  else t=`${s.CO.nm}에 들지 않았어요`;tzLog(s,'사신 · '+t,'令');return t}}
+{const _h=tzEvHtml;tzEvHtml=function(s){const E=s.ev;if(!E||E.ty!=='coa')return _h.apply(this,arguments);const C=tzCoOn(s)?s.CO:null,nm=esc(tzFN(s,E.f)),L=esc(tzName(s.F[E.f].lord));
+  const txt=C?`${L}이(가) ${esc(C.nm)}에 함께하자고 해요. 들어가면 연합 세력 ${C.m.length}곳과 ${Math.max(1,C.e-s.t)}달 동맹을 맺고 함께 ${esc(tzFN(s,C.f))}을(를) 쳐요. 공동 작전도 바로 받아 줘요. 거절해도 벌칙은 없어요.`:'연합이 이미 흩어졌어요.';
+  return `<div class="tz-ev"><b class="t">${nm}의 사신 · 연합 초대</b><p>${txt}</p><div class="row"><button type="button" class="btn sm red" data-tzev="1">함께하기</button><button type="button" class="btn sm ghost" data-tzev="0">거절</button></div></div>`}}
+function tzCoBanner(s){if(!tzCoOn(s)||s.end)return '';const C=s.CO,me=s.me!=='_'?s.me:tzSide(s),tg=me&&me===C.f,in_=me&&C.m.includes(me);
+  return `<div class="tz-co${tg?' tg':''}"><b>${esc(C.nm)}</b><span>${esc(tzFN(s,C.f))}에 맞서 ${C.m.length}세력 · ${Math.max(0,C.e-s.t)}달 남음${tg?' · 우리가 표적이에요':in_?' · 우리도 함께해요':''}</span></div>`}
+{const _tb=tzTopBar;tzTopBar=function(s){return _tb.apply(this,arguments)+tzCoBanner(s)}}
+{const _pt=tzPcTop;tzPcTop=function(s){return _pt.apply(this,arguments)+tzCoBanner(s)}}
+{const _ds=tzDipSheet;tzDipSheet=function(){_ds.apply(this,arguments);const s=tzState(),p=$('#sheet .sheet-body p.sub')||$('#sheet p.sub');if(!p)return;
+  let h='';if(tzCoOn(s)){const C=s.CO;h=`<p class="sub tz-cop"><b>${esc(C.nm)}</b> · 표적 ${esc(tzFN(s,C.f))} · ${C.m.map(x=>esc(tzFN(s,x))).join('·')} · ${Math.max(0,C.e-s.t)}달 남음</p>`}
+  else h=`<p class="sub tz-cop">한 세력이 천하의 1/3을 갖거나 성 8곳 이상으로 2위의 두 배가 되면, 이웃 세력들이 반(反) 연합을 맺어요.</p>`;p.insertAdjacentHTML('afterend',h)}}
+
+// ---- 판 기록: 연표 · 결과 수치 ----
+function tzSide(s){if(!s||!s.F)return '';if(s.me&&s.me!=='_'&&s.F[s.me])return s.me;const P=s.pc,G=P&&s.G&&s.G[P.g];return G&&s.F[G.o]?G.o:''}
+function tzYhAdd(s,ty,x){if(!s)return;s.yh=Array.isArray(s.yh)?s.yh:[];x=String(x).slice(0,160);if(s.yh.some(e=>e.t===s.t&&e.x===x))return;s.yh.push({t:s.t,y:s.y,m:s.m,ty,x});if(s.yh.length>200)s.yh.splice(0,s.yh.length-200)}
+function tzSt(s){if(!s.st||typeof s.st!=='object'){const f=tzSide(s);s.st={f,o:f?tzCities(s,f):[],cap:0,lost:0,rec:0,prs:0,exe:0,dw:0,dl:0,mx:f?tzCities(s,f).length:0,top:[],old:s.t>0?1:0}}return s.st}
+const tzYhL=(L,n)=>{const a=L.map(tzCN);return a.length>n?a.slice(0,n).join('·')+` 외 ${a.length-n}곳`:a.join('·')};
+function tzStTick(s){if(!s||!s.on)return;const st=tzSt(s),f=tzSide(s);if(!f){st.f='';st.o=[];return}const cur=tzCities(s,f);
+  if(st.f!==f){st.f=f;st.o=cur}
+  else{const was=new Set(st.o),now=new Set(cur),g=cur.filter(k=>!was.has(k)),l=st.o.filter(k=>!now.has(k));
+    if(g.length){st.cap+=g.length;tzYhAdd(s,'win',`${tzYhL(g,4)} 차지`)}if(l.length){st.lost+=l.length;tzYhAdd(s,'lose',`${tzYhL(l,4)}을(를) 잃음`)}st.o=cur}
+  st.mx=Math.max(st.mx|0,cur.length);
+  const top=tzGL(s).map(b=>b.id).filter(g=>s.G[g]&&s.G[g].o===f).sort((a,b)=>(s.G[b].mr|0)-(s.G[a].mr|0)).slice(0,5).map(g=>[g,s.G[g].mr|0]);if(top.length)st.top=top}
+const TZ_YHI={win:'取',lose:'失',co:'盟',fall:'亡',unify:'統',end:'終',start:'始',ally:'盟',betray:'叛',death:'死',exec:'斬',duel:'鬪',recruit:'登',retire:'退',revolt:'亂'};
+// 멸망 · 통일은 어느 세력이든 연표에 남겨요
+{const _l=tzLog;tzLog=function(s,t,ch){_l.apply(this,arguments);try{if(s&&s.on&&typeof t==='string'){if(/ 멸망$/.test(t))tzYhAdd(s,'fall',t);else if(/천하통일/.test(t))tzYhAdd(s,'unify',t)}}catch(e){}}}
+function tzYhEvq(s){(s.evq||[]).forEach(e=>{if(['death','betray','retire','exec','ally','duel','recruit','revolt'].includes(e.ty))e.xs.forEach(x=>tzYhAdd(s,e.ty,x))})}
+// 등용 · 포로 · 처형 · 일기토 세기
+{const _r=tzRecC;tzRecC=function(s,g,f){const r=_r.apply(this,arguments);try{if(s&&s.on&&f&&f===tzSide(s))tzSt(s).rec++}catch(e){}return r}}
+{const _c=tzCapture;tzCapture=function(s,g,by,at){const r=_c.apply(this,arguments);try{if(s&&s.on&&by&&by===tzSide(s))tzSt(s).prs++}catch(e){}return r}}
+{const _c=tzCapDo;tzCapDo=function(s,g,act){const r=_c.apply(this,arguments);try{if(act==='exe'&&s.G[g]&&s.G[g].o==='dead')tzSt(s).exe++}catch(e){}return r}}
+{const _d=tzBDuel;tzBDuel=function(bt,d,resp){const n0=bt&&bt.log?bt.log.length:0,r=_d.apply(this,arguments);
+  try{if(d&&resp!=='ref'){const cn=tzName(d.c.g);for(const l of bt.log.slice(n0)){const m=/^일기토 .* · (.+?) 승리/.exec(l);if(m){const ws=m[1]===cn?d.ch:1-d.ch;(bt.dz=bt.dz||[]).push(ws);break}}}}catch(e){}return r}}
+{const _ap=tzBApply;tzBApply=function(s,bt){const r=_ap.apply(this,arguments);try{const f=tzSide(s);if(f&&bt.dz)bt.dz.forEach(ws=>{const w=ws?bt.bf:bt.af,l=ws?bt.af:bt.bf;if(w===f)tzSt(s).dw++;else if(l===f)tzSt(s).dl++})}catch(e){}return r}}
+
+// ---- 장수별 통일 기록(구글 계정에도 저장) ----
+const tzClr=()=>{const o=S.tzClr&&typeof S.tzClr==='object'?S.tzClr:{};return S.tzClr=o};
+const tzBest=()=>{const o=S.tzBest&&typeof S.tzBest==='object'?S.tzBest:{};return S.tzBest=o};
+const tzClrOf=g=>{const a=tzClr()[g];return Array.isArray(a)?[a[0]|0,a[1]|0]:[0,0]};
+const tzBestK=s=>(s.me==='_'?'p:':'l:')+tzDK(s);
+function tzClrAdd(s){if(s.cr||s.end!==1)return;const pm=s.me==='_',g=pm?s.pc&&s.pc.g:s.F[s.me]&&s.F[s.me].lord;s.cr=1;if(!g||!GMAP[g])return;
+  const a=tzClrOf(g);a[pm?1:0]++;tzClr()[g]=a;const k=tzBestK(s),B=tzBest(),n=s.t|0;s.crm=n;s.crg=g;if(!B[k]||n<B[k]){if(B[k])s.crb=1;B[k]=n}save()}
+function tzClrMerge(D){if(!D)return;let n=0;const C=tzClr(),B=tzBest();
+  if(D.clr&&typeof D.clr==='object')for(const g in D.clr){if(!GMAP[g]||!Array.isArray(D.clr[g]))continue;const a=tzClrOf(g),b=[D.clr[g][0]|0,D.clr[g][1]|0];if(b[0]>a[0]||b[1]>a[1]){C[g]=[Math.max(a[0],b[0]),Math.max(a[1],b[1])];n++}}
+  if(D.best&&typeof D.best==='object')for(const k in D.best){const v=D.best[k]|0;if(v>0&&(!B[k]||v<B[k])){B[k]=v;n++}}if(n)save()}
+function gwsExtra(){const o={};try{o.egg=Object.keys(tzEggGot()).sort()}catch(e){}try{o.clr=tzClr();o.best=tzBest()}catch(e){}return o}
+{const _pl=gwsPull;gwsPull=async function(D){try{tzClrMerge(D)}catch(e){}return _pl.apply(this,arguments)}}
+{const _st=gwsStart;gwsStart=async function(){const r=await _st.apply(this,arguments);try{if(GWU){const d=await gwsRef().get();if(d.exists)tzClrMerge(d.data())}}catch(e){}return r}}
+// 장수 상세 · 일람에 표시
+{const _gs=tzGenSheet;tzGenSheet=function(g){const r=_gs.apply(this,arguments);try{const a=tzClrOf(g),h=[...document.querySelectorAll('#sheet h3')].find(x=>x.textContent==='군웅할거 능력치');
+  if(h)h.insertAdjacentHTML('beforebegin',`<p class="sub tz-clr" style="margin:4px 0 0">통일 기록 · 군주로 <b>${a[0]}</b>회 · 장수로 <b>${a[1]}</b>회</p>`)}catch(e){}return r}}
+{const _gl=tzGLSheet;tzGLSheet=function(){const r=_gl.apply(this,arguments);try{document.querySelectorAll('#sheet td.nm').forEach(td=>{const b=td.querySelector('[data-tzgd]');if(!b)return;const a=tzClrOf(b.dataset.tzgd),n=a[0]+a[1];
+  if(n)td.insertAdjacentHTML('beforeend',`<i class="tz-clri" title="통일 · 군주 ${a[0]}회 · 장수 ${a[1]}회">統${n}</i>`)})}catch(e){}return r}}
+
+// ---- 결과 화면 · 연표 ----
+const tzDur=n=>{n=Math.max(0,n|0);const y=Math.floor(n/12),m=n%12;return y?`${y}년${m?' '+m+'달':''}`:`${m}달`};
+const tzEndT=s=>s.end===1?'천하통일':s.end===-2?'세상을 떠나다':s.end===-3?'은퇴':'패배';
+function tzResHtml(s){const st=tzSt(s),D=TZ_SC[s.sc],P=s.pc,lm=s.me!=='_'&&s.F[s.me];
+  const who=lm?`${esc(tzFN(s,s.me))} · 군주 ${esc(tzName(s.F[s.me].lord))}`:P?`${esc(tzName(P.g))}`:'';
+  const B=tzBest()[tzBestK(s)],cg=s.crg||(lm?s.F[s.me].lord:P&&P.g),ca=cg?tzClrOf(cg):[0,0];
+  const box=(n,v)=>`<div class="stat"><small>${n}</small><b>${v}</b></div>`;
+  return `<div class="tz-rsl"><p class="sub" style="margin:0 0 8px">${esc(s.rs?'임의 시작':D?D.n:'')} · ${who}<br>${D&&!s.rs?`${D.y}년 ${D.m}월 → `:''}${s.y}년 ${s.m}월 · ${tzDur(s.t)}${st.old?' · (v1.4.0 전에 시작한 판이라 앞부분 수치는 빠져 있어요)':''}</p>
+   ${s.end===1&&B?`<p class="tz-resb${s.crb?' new':''}">이 시나리오 ${s.me==='_'?'장수제':'군주'} 최단 통일 ${tzDur(B)}${s.crb?' · 새 기록!':''}</p>`:''}
+   <div class="stats">${box('점령한 성',st.cap)}${box('잃은 성',st.lost)}${box('가장 많을 때',st.mx+'성')}</div>
+   <div class="stats" style="margin-top:4px">${box('등용',st.rec)}${box('포로로 잡음',st.prs)}${box('처형',st.exe)}</div>
+   <div class="stats" style="margin-top:4px">${box('일기토',`${st.dw}승 ${st.dl}패`)}${box('걸린 기간',tzDur(s.t))}${box('남은 세력',tzLiveF(s).length)}</div>
+   ${st.top&&st.top.length?`<h3 style="margin:10px 0 4px">공적 상위</h3><div class="list">${st.top.filter(x=>GMAP[x[0]]).map((x,i)=>`<div class="li">${seal(GMAP[x[0]],'sm')}<div class="info"><b>${i+1}. ${esc(tzName(x[0]))}</b><span>공적 ${fmt(x[1])}</span></div></div>`).join('')}</div>`:''}
+   ${s.cr&&cg&&GMAP[cg]?`<p class="sub" style="margin:8px 0 0">${esc(tzName(cg))} 통일 기록 · 군주로 ${ca[0]}회 · 장수로 ${ca[1]}회 (장수 일람·상세에 나와요)</p>`:''}</div>`}
+function tzResSheet(){const s=tzState();if(!s.on||!s.end)return;s.rsv=1;save();
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">${tzEndT(s)} · 결과</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${tzResHtml(s)}
+   <div class="row" style="gap:8px;margin-top:10px"><button type="button" class="btn ghost" data-tzyh style="flex:1">연표 보기</button><button type="button" class="btn red" data-close style="flex:1">닫기</button></div>`)}
+function tzYhSheet(){const s=tzState();if(!s.on)return;const L=(s.yh||[]).slice().reverse();
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">연표</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub" style="margin:0 0 8px">우리 세력이 차지하고 잃은 성, 세력의 멸망, 반(反) 연합, 큰 사건이 달마다 쌓여요(최근 200개).</p>
+   <ul class="tz-rep">${L.length?L.map(e=>`<li><b>${TZ_YHI[e.ty]||'記'}</b><span>${e.y}.${e.m} ${esc(e.x)}</span></li>`).join(''):'<li><b>記</b><span>아직 기록이 없어요</span></li>'}</ul>
+   ${s.end?'<button type="button" class="btn ghost wide" data-tzres style="margin-top:8px">결과 보기</button>':''}`)}
+document.addEventListener('click',e=>{if(e.target.closest('[data-tzyh]')){tzYhSheet();return}if(e.target.closest('[data-tzres]')){tzResSheet()}});
+{const _gm=gwMenu;gwMenu=function(){_gm.apply(this,arguments);const s=tzState(),b=$('#sheet .sheet-body');if(b&&s&&s.on)b.insertAdjacentHTML('beforeend',`<div class="row" style="gap:6px;margin-top:6px;flex-wrap:wrap"><button type="button" class="btn ghost" data-tzyh>연표</button>${s.end?'<button type="button" class="btn ghost" data-tzres>결과 보기</button>':''}</div>`)}}
+// 판이 끝나면 다른 창이 다 닫힌 뒤 결과 화면을 한 번 띄워요
+function tzResAuto(){setTimeout(()=>{const s=tzState(),sh=$('#sheet');if(s&&s.on&&s.end&&!s.rsv&&sh&&sh.hidden&&!tzEvL.length)tzResSheet()},60)}
+{const _cs=closeSheet;closeSheet=function(){const r=_cs.apply(this,arguments);tzResAuto();return r}}
+{const _v=vTz;vTz=function(){let h=_v.apply(this,arguments);const s=tzState();
+  if(s&&s.on&&s.end){h=h.replace(/(<h3 style="margin:0 0 6px">[^<]*(?:천하통일!|패배|은퇴|세상을 떠나다)<\/h3>)/,`$1<div class="row" style="gap:6px;margin:0 0 6px"><button type="button" class="btn sm" data-tzres>결과 보기</button><button type="button" class="btn sm ghost" data-tzyh>연표</button></div>`);tzResAuto()}
+  return h}}
+
+// ---- 턴 · 끝 · 새 판 · 저장 ----
+{const _t=tzTurn;tzTurn=function(s){if(!s||!s.on||s.end)return _t.apply(this,arguments);const r=_t.apply(this,arguments);
+  try{if(!s.end)tzCoTick(s);tzStTick(s);tzYhEvq(s)}catch(e){console.error(e)}save();return r}}
+{const _e=tzEnd;tzEnd=function(s){const was=s&&s.end,r=_e.apply(this,arguments);
+  try{if(s&&s.on&&s.end&&!was){tzStTick(s);tzYhAdd(s,'end',`${tzEndT(s)} · ${tzDur(s.t)}`);if(s.end===1)tzClrAdd(s)}}catch(e){console.error(e)}return r}}
+{const _n=tzNew;tzNew=function(sc,me,rs){const s=_n.apply(this,arguments);try{s.CO=null;s.COH={};s.yh=[];s.st=null;s.cr=0;s.rsv=0;
+  const D=TZ_SC[s.sc];tzYhAdd(s,'start',`${s.rs?'임의 시작':D?D.n:''}${s.F[s.me]?' · '+tzFN(s,s.me):''}`);
+  if(String(s.sc)==='189'&&!s.rs&&s.F.dongzhuo&&!s.F.dongzhuo.dead){const m=TZ_CO189.filter(f=>s.F[f]&&!s.F[f].dead&&tzCities(s,f).length);if(m.length>=2)tzCoForm(s,'dongzhuo',m,18)}
+  tzSt(s)}catch(e){console.error(e)}return s}}
+{const _ps=tzPcStart;tzPcStart=function(){const r=_ps.apply(this,arguments);try{const s=tzState();if(s.on&&s.pc&&s.me==='_'&&s.t===0){const D=TZ_SC[s.sc];s.yh=[];tzYhAdd(s,'start',`${D?D.n:''} · ${tzName(s.pc.g)} 장수로 시작`);if(s.CO)tzYhAdd(s,'co',`${s.CO.nm}이 맺어진 채로 시작해요`);s.st=null;tzSt(s);save()}}catch(e){console.error(e)}return r}}
+{const _cl=cleanTz;cleanTz=function(x){const o=_cl(x);if(!o.on)return o;x=x||{};const n=(v,a,b)=>Math.max(a,Math.min(b,Math.round(Number(v)||0))),okF=f=>!!o.F[f],okC=k=>!!TZ_C[k];
+  const C=x.CO;o.CO=C&&typeof C==='object'&&okF(C.f)&&Array.isArray(C.m)?{f:C.f,m:C.m.filter(okF).slice(0,30),t0:n(C.t0,0,99999),e:n(C.e,0,99999),c0:n(C.c0,0,99),nm:String(C.nm||'').slice(0,30)}:null;
+  o.COH={};if(x.COH&&typeof x.COH==='object')for(const f in x.COH)if(okF(f))o.COH[f]=n(x.COH[f],0,99999);
+  o.yh=(Array.isArray(x.yh)?x.yh:[]).filter(e=>e&&typeof e==='object').slice(-200).map(e=>({t:n(e.t,0,99999),y:n(e.y,0,9999),m:n(e.m,1,12),ty:String(e.ty||'').slice(0,10),x:String(e.x||'').slice(0,160)}));
+  const T=x.st;if(T&&typeof T==='object'){o.st={f:okF(T.f)?T.f:'',o:(Array.isArray(T.o)?T.o:[]).filter(okC),top:(Array.isArray(T.top)?T.top:[]).filter(a=>Array.isArray(a)&&o.G[a[0]]).slice(0,5).map(a=>[a[0],n(a[1],0,99999)]),old:T.old?1:0};
+    ['cap','lost','rec','prs','exe','dw','dl','mx'].forEach(k=>o.st[k]=n(T[k],0,99999))}else o.st=null;
+  o.cr=x.cr?1:0;o.crb=x.crb?1:0;o.crm=n(x.crm,0,99999);o.crg=o.G[x.crg]?x.crg:'';o.rsv=x.rsv?1:0;
+  if(x.ev&&typeof x.ev==='object'&&x.ev.ty==='coa'&&okF(x.ev.f)&&okF(x.ev.tg))o.ev={t:n(x.ev.t,0,99999),f:x.ev.f,ty:'coa',tg:x.ev.tg,g:0,fd:0,done:x.ev.done?1:0};
+  return o}}
+HELP.forEach(c=>{if(c.t==='외교·계략')c.rows.push(['반(反) 연합','한 세력이 천하 성의 1/3 이상을 갖거나, 성 8곳 이상이면서 2위의 두 배가 되면 그 세력에서 길 2칸 안의 세력들이 \'반○○ 연합\'을 맺어요. 연합끼리 2년 동맹 · 표적과는 험악. 연합 AI는 표적의 성을 먼저 치고, 연합끼리 공동 작전은 바로 받아 줘요. 우리가 표적이면 평정에 경고가, 연합 자격이 있으면 사신이 와요(거절해도 벌칙 없음).'],
+  ['연합이 흩어지면','2년이 지나거나, 표적의 성이 크게 줄거나(천하의 1/4 또는 처음의 70% 아래), 표적이 멸망하면 흩어져요. 연합끼리 동맹이 풀리고 사이가 크게 험악해져요(반동탁 연합 뒤의 군웅할거처럼). 같은 세력을 겨냥한 연합은 흩어진 뒤 2년 동안 다시 생기지 않아요. 189년 시나리오는 반동탁 연합이 맺어진 채로 시작해요(18달).']);
+  if(c.t==='보상')c.rows.push(['결과 · 연표 · 통일 기록','판이 끝나면(통일 · 패배 · 사망 · 은퇴) 결과 화면에 걸린 기간 · 점령/잃은 성 · 등용 · 포로 · 처형 · 일기토 전적 · 공적 상위 5명이 나와요. 메뉴 › 연표에서 판의 큰 일을 달마다 볼 수 있어요. 통일하면 그 군주(장수제는 내 장수)의 통일 횟수가 장수 일람 · 상세에 쌓이고, 시나리오별 최단 기간도 남아요. 구글 저장 공유를 켜면 계정에도 저장돼요.'])});
+(()=>{const st=document.createElement('style');st.textContent=`
+.tz-co{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap;margin:6px 0;padding:6px 10px;border:1px solid var(--bronze-d);border-left:4px solid var(--bronze);border-radius:6px;background:rgba(210,170,85,.08);font-size:13px}
+.tz-co b{color:var(--bronze)}.tz-co span{color:var(--mute)}.tz-co.tg{border-color:var(--cinnabar);border-left-color:var(--cinnabar);background:rgba(208,80,58,.1)}.tz-co.tg b{color:var(--cinnabar)}
+.tz-cop{margin:0 0 8px!important}.tz-cop b{color:var(--bronze)}
+.tz-resb{margin:0 0 8px;padding:6px 10px;border-radius:6px;background:rgba(210,170,85,.1);color:var(--bronze);font-weight:700}.tz-resb.new{background:rgba(233,198,108,.22);color:#e9c66c}
+.tz-clri{font-style:normal;margin-left:4px;padding:0 4px;border-radius:4px;background:rgba(233,198,108,.18);color:#e9c66c;font-size:11px}
 `;document.head.appendChild(st)})();
 boot();
 </script>
