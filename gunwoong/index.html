@@ -832,6 +832,13 @@ body.tz-focus header.top,body.tz-focus #claim,body.tz-focus #mode-banner{display
 .tz-scs{margin:8px 0 4px}.tz-rs{display:grid;gap:6px;margin:0 0 8px}.tz-rs label{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mute)}.tz-rs select{flex:1;min-width:0;padding:6px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--fg);font-size:14px}.tz-gd{background:none;border:0;padding:0;cursor:pointer;flex:none;line-height:0}
 .tz-glf{display:flex;flex-wrap:wrap;gap:4px}.tz-glf button{border:1px solid var(--line);background:none;border-radius:8px;padding:4px 8px;font-size:12px;color:var(--mute)}.tz-glf button[aria-pressed="true"]{border-color:var(--bronze);color:var(--fg);background:var(--panel)}.tz-glf small{opacity:.7}
 .tz-glw{overflow-x:auto;margin-top:8px;border:1px solid var(--line);border-radius:10px;max-height:60vh;overflow-y:auto}.tz-gl{border-collapse:collapse;width:100%;font-size:12px;white-space:nowrap}.tz-gl th{position:sticky;top:0;background:var(--panel);font-weight:600;color:var(--mute);padding:6px;text-align:left}.tz-gl td{padding:4px 6px;border-top:1px solid var(--line)}.tz-gl td.n{text-align:right;font-variant-numeric:tabular-nums}.tz-gl td.on{color:var(--bronze);font-weight:700}.tz-gl td.nm{display:flex;align-items:center;gap:6px}.tz-gl td.nm i{font-style:normal;font-size:10px;border:1px solid var(--line);border-radius:4px;padding:0 3px;color:var(--bronze)}.tz-gl tr[data-tzgo2]:not([data-tzgo2=""]){cursor:pointer}
+.tz-tbl tr.fh td b{font-weight:700}.tz-fg{display:inline-grid;place-items:center;min-width:18px;height:16px;padding:0 3px;margin:0 6px 0 2px;background:var(--fac);color:var(--fct);border:1px solid #e9c66c;font-size:11px;font-weight:800;line-height:1;vertical-align:-2px;border-radius:1px}
+.gw-ride{position:absolute;z-index:6;pointer-events:none;transform:translate(-50%,-78%)}.gw-ride i{display:block;filter:drop-shadow(0 1px 1.5px #000a);animation:gwGal .22s ease-in-out infinite alternate}.gw-ride.l i{transform:scaleX(-1)}.gw-map .gw-ride svg{position:static;inset:auto;width:48px;height:38px;display:block;overflow:visible}
+.gw-ride.l i{animation-name:gwGalL}@keyframes gwGal{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-3px) rotate(2deg)}}@keyframes gwGalL{from{transform:scaleX(-1) translateY(0) rotate(-2deg)}to{transform:scaleX(-1) translateY(-3px) rotate(2deg)}}
+.gw-dust{position:absolute;z-index:5;width:16px;height:16px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#d8c39acc 0,#b89d6c88 45%,transparent 72%);margin-top:4px}
+.tz-gsw{display:flex;justify-content:center;align-items:flex-end;height:158px;margin:2px 0 4px;background:radial-gradient(ellipse 60% 14% at 50% 94%,#0004,transparent 70%)}.tz-gsp{image-rendering:auto}
+.tz-bio p{margin:0 0 6px;line-height:1.55;font-size:13.5px}.tz-bio b{display:inline-block;margin-right:6px;padding:0 6px;border-radius:6px;background:var(--line);font-size:11.5px;font-weight:700}
+.tz-gl td.tz-ifx{white-space:normal;min-width:190px;max-width:280px;line-height:1.35;font-size:11.5px}
 .tz-warnb{position:relative}.tz-bdg{position:absolute;top:-6px;right:-6px;min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#f2c14e;color:#1a1a1a;font:700 10px/16px sans-serif;font-style:normal;text-align:center}
 .tz-top{position:sticky;top:-8px;z-index:5;display:flex;align-items:center;gap:6px;margin:-8px -16px 8px;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line)}.tz-back{background:none;border:0;color:var(--mute);font-size:13px;padding:4px 2px;white-space:nowrap}
 .tz-date{display:flex;flex-direction:column;line-height:1.15}.tz-date b{font-family:var(--display);font-weight:400;font-size:16px;white-space:nowrap}.tz-date small{color:var(--mute);font-size:11px}
@@ -5103,12 +5110,35 @@ const TZ_STN={str:'무력',int:'지력',lead:'통솔',cha:'매력'};
 const tzItCat=id=>{const it=IMAP[id],g=it.g0||it.g;return g==='武'?'str':g==='書'?'int':g==='寶'?'cha':'lead'};
 const tzItV=id=>({3:3,4:5,5:8})[IMAP[id].rar]||3, tzItP=id=>({3:400,4:1200,5:3000})[IMAP[id].rar]||400, tzItLy=id=>({3:20,4:25,5:30})[IMAP[id].rar]||20;
 const tzItOf=(s,g)=>{if(s&&s.I)for(const id in s.I)if(s.I[id]==='g:'+g)return id;return ''};
+// v1.3.4 보물 특수 능력: 구글 시트 「군웅할거 보물 특수 능력」 + 추가 4종(적토마 데려오기 · 손자병법 계략 · 옥새 민심 · 팔진도 수비)
+const TZ_IFX={qinglong:[{dS:10},'일기토 무력 +10'],fangtian:[{dCap:1},'일기토에서 이기면 상대를 반드시 붙잡아요'],
+ qixing:[{asn:1},"전투 작전 '암살'(한 판 한 번): 성공하면 적 장수 1명이 그 국면에 빠지고, 실패하면 30% 확률로 소유자가 붙잡혀요"],
+ cixiong:[{dTw:1},'일기토에서 지면 한 번 다시 겨뤄요'],kaishan:[{sg:.3},'적 성을 공격할 때 이 부대 피해 +30%'],
+ shoumian:[{dNC:1},'일기토에서 져도 붙잡히지 않아요'],tengjia:[{arT:.5,frT:2},'궁병에게 받는 피해 절반 · 화공(계략·불화살) 피해 2배'],
+ chitu:[{safe:1,chg:.2,cal:1},'퇴각 때 절대 안 붙잡혀요 · 돌격 피해 +20% · 데려오기 1달 단축'],hanxue:[{safe:1,fst:.1},'퇴각 때 절대 안 붙잡혀요 · 먼저 움직여 주는 피해 +10%'],
+ yuxi:[{c100:1,env:.3,ml:2},'매력이 100보다 낮으면 100(보너스 대신) · 동맹·원조·항복 권고 성공률 +30%p · 있는 성 민심 매달 +2'],
+ heyu:[{adv:1,sc:.15},'직접 지휘 때 군사가 작전을 추천해요 · 계략 성공률 +15%p'],taiping:[{schM:10},'전투 계략이 성공하면 적 사기 −15 대신 −25'],
+ sunzi:[{see:1,sc:.1},'직접 지휘 때 적의 이번 작전을 미리 봐요 · 계략 성공률 +10%p'],bagua:[{def2:1,dfT:.85},'수비 작전 효과 2배 · 성을 지킬 때 받는 피해 −15%'],
+ bawang:[{arM:5},'궁병이 적 장수를 노려 쏴서 국면마다 적 사기 −5'],baiyuruyi:[{mo:15},'전투 시작 사기 +15'],huojian:[{fire:.25},'궁병 불화살: 주는 피해 +25%'],
+ yitian:[{dS:5,ld:3},'일기토 무력 +5 · 통솔 +3'],zhangba:[{chg:.2},'돌격 피해 +20%'],liannu:[{arx:2},'궁병 공격 2배'],
+ mingguang:[{tk:.9},'이 부대가 받는 피해 −10%'],xuanjia:[{cvT:.8},'기병에게 받는 피해 −20%'],tengpai:[{arT:.8},'궁병에게 받는 피해 −20%'],
+ jueying:[{safe:1},'퇴각 때 절대 안 붙잡혀요'],dilu:[{safe1:1},'붙잡힐 상황에서 한 판에 한 번 빠져나가요'],baima:[{cvM:10},'기병일 때 전투 시작 사기 +10'],
+ hufu:[{cap:3000},'이끌 수 있는 병사 +3,000명'],jinyin:[{gold:100},'있는 성 금 매달 +100'],shuaiqi:[{mf:1},'총대장일 때 사기가 20 아래로 안 떨어져요'],
+ baiyu:[{adv:1},'직접 지휘 때 군사가 작전을 추천해요'],qingnang:[{rg:.05},'국면마다 아군 병사 5% 회복'],liutao:[{trn:2},'훈련 효과 2배'],
+ sanlue:[{amb:10},'전투 시작에 매복 · 적 사기 −10'],dajiang:[{mo:10},'전투 시작 사기 +10'],tieruyi:[{sc:.1},'계략 성공률 +10%p'],
+ pajin:[{brk:1},'적 수비 작전 효과 절반'],tuji:[{chT:.7},'돌격할 때 받는 피해 −30%'],langya:[{sg:.2},'적 성을 공격할 때 이 부대 피해 +20%'],
+ xuezhan:[{ls:.3},'병사가 30% 아래면 주는 피해 +30%'],xiliang:[{cvF:.1},'기병일 때 먼저 움직여 주는 피해 +10%']};
+const tzIF=(s,g)=>{const it=s&&g&&s.I?tzItOf(s,g):'';return it&&TZ_IFX[it]?TZ_IFX[it][0]:null};
+const tzIFv=(s,g,k)=>{const f=tzIF(s,g);return f&&f[k]||0};
+const tzIFd=id=>TZ_IFX[id]?TZ_IFX[id][1]:'';
+// 계략(이간·권유·파괴·정찰) 성공률 보너스 · 사신(동맹·원조·항복 권고) 보너스
+const tzSc=(s,g)=>tzIFv(s,g,'sc'), tzEnv=(s,g)=>tzIFv(s,g,'env');
 const tzItIn=(s,pre)=>Object.keys(s.I||{}).filter(id=>s.I[id]===pre);
 const tzIB=(g,cat)=>{const s=S&&S.tz,id=s&&s.I?tzItOf(s,g):'';return (id&&tzItCat(id)===cat?tzItV(id):0)+tzPcUp(s,g,cat)};
-const tzInt=g=>GMAP[g].int+tzIB(g,'int'), tzLead=g=>GMAP[g].lead+tzIB(g,'lead'), tzStr=g=>GMAP[g].str+tzIB(g,'str');
+const tzInt=g=>GMAP[g].int+tzIB(g,'int'), tzLead=g=>GMAP[g].lead+tzIB(g,'lead')+tzIFv(S&&S.tz,g,'ld'), tzStr=g=>GMAP[g].str+tzIB(g,'str');
 const tzRate=m=>m>=9&&m<=11?8:m>=6&&m<=8?4:6;  // 금 1로 살 수 있는 군량(가을엔 싸고 여름엔 비싸요). 팔 때는 1.25배 손해
 const TZ_RBC=['#5d6b3a','#8a4f7d','#4f7d8a','#8a6a4f','#6b6b6b','#3a5d6b'];
-const tzPol=g=>(TZ_PC[g]||[50])[0]+tzPcUp(S&&S.tz,g,'pol'), tzCha=g=>(TZ_PC[g]||[50,50])[1]+tzIB(g,'cha'), tzGiri=g=>(TZ_PC[g]||[50,50,50])[2];
+const tzPol=g=>(TZ_PC[g]||[50])[0]+tzPcUp(S&&S.tz,g,'pol'), tzCha=g=>{const b=(TZ_PC[g]||[50,50])[1];return b<100&&tzIFv(S&&S.tz,g,'c100')?100:b+tzIB(g,'cha')}, tzGiri=g=>(TZ_PC[g]||[50,50,50])[2];
 const tzSea=m=>m>=3&&m<=5?'spring':m>=6&&m<=8?'summer':m>=9&&m<=11?'autumn':'winter';
 const TZ_SEAN={spring:'봄',summer:'여름',autumn:'가을',winter:'겨울'};
 // 명령: [이름, 효과, 비용 · 쓰는 능력]. 분류 탭(내정·군사·인사·계략)으로 나눠 보여요
@@ -5158,8 +5188,7 @@ function tzReg(X){for(const v in X){const e=X[v],P=GMAP[e.p];if(!P)continue;cons
   Object.defineProperty(GMAP,v,{value:{...P,name:e.nm||`${P.name}의 ${e.sx==='女'?'딸':'아들'}`,str:st[0],int:st[1],lead:st[2],rar:e.rar,kid:e.sx,pid:e.p},configurable:true,writable:true,enumerable:false});
   Object.defineProperty(TZ_PC,v,{value:[st[3],st[4],st[5]],configurable:true,writable:true,enumerable:false})}}
 function tzCity0(k){const pop=TZ_BIG[k]?150000:TZ_SMALL[k]?60000:85000;return {o:'neu',g:300,fd:2000,tr:1500,tn:30,pop,fa:Math.round(pop/700),co:Math.round(pop/800),ml:50,df:TZ_PASS[k]?70:k==='luoyang'?60:40,gov:'',dl:'self',wp:300,hs:0}}
-function tzItemsInit(s,r){const pick=ITEMS.filter(it=>it.rar===5).map(it=>it.id),f4=ITEMS.filter(it=>it.rar===4).map(it=>it.id);
-  while(pick.length<24&&f4.length)pick.push(f4.splice(Math.floor(r()*f4.length),1)[0]);
+function tzItemsInit(s,r){const pick=ITEMS.map(it=>it.id);  // v1.3.4: 51종 전부
   const I={};for(const[g,id]of Object.entries(TZ_IT0))if(s.G[g]&&s.F[s.G[g].o]&&IMAP[id])I[id]='g:'+g;
   for(const[f,id]of Object.entries(TZ_ITT))if(s.F[f]&&!s.F[f].dead&&IMAP[id]&&!I[id])I[id]='t:'+f;
   const homes=new Set(Object.values(s.F).map(F=>s.G[F.lord]&&s.G[F.lord].c)),cs=TZ_K.filter(k=>!homes.has(k));
@@ -5239,19 +5268,19 @@ function tzNew(sc,me,rs){const D=TZ_SC[sc],r=mulberry((Date.now()^sjHash(me+sc))
 const tzR=()=>.8+tzRng()*.4, tzRR=v=>Math.floor(v+tzRng());
 const tzInvV=(key,g)=>key==='df'?4+tzLead(g)*.08:12+tzPol(g)*.35;
 const tzHate=(s,x,f)=>s.X&&s.X[x]&&s.X[x].hd===f?.2:1;  // 부모를 처형한 세력에는 원한
-const tzPrsP=(s,g,x,it)=>Math.max(.03,Math.min(.85,(.1+tzCha(g)/300+(70-s.G[x].ly)/150-tzGiri(x)/400+(it?.2:0))*tzHate(s,x,s.G[g].o)));
+const tzPrsP=(s,g,x,it)=>Math.max(.03,Math.min(.9,(.1+tzCha(g)/300+(70-s.G[x].ly)/150-tzGiri(x)/400+(it?.2:0)+tzSc(s,g))*tzHate(s,x,s.G[g].o)));
 const tzRecP=(s,g,x,it)=>Math.max(.03,Math.min(.95,(.3+tzCha(g)/250+tzCha(s.F[s.G[g].o].lord)/500-tzGiri(x)/600+(it?.2:0))*tzHate(s,x,s.G[g].o)));
-const tzSurP=(s,f,t,g)=>{const mc=tzCities(s,f).length,tc=Math.max(1,tzCities(s,t).length);return Math.max(0,Math.min(.6,(mc/tc-3)*.08+.05+tzCha(g)/600-tzGiri(s.F[t].lord)/400))};
-const tzSabP=(s,g,tk)=>{const gv=tzGov(s,tk);return Math.max(.1,Math.min(.9,.5+(tzInt(g)-(gv?tzInt(gv):50))/200))};
+const tzSurP=(s,f,t,g)=>{const mc=tzCities(s,f).length,tc=Math.max(1,tzCities(s,t).length);const e=tzEnv(s,g);return Math.max(0,Math.min(.6+e,(mc/tc-3)*.08+.05+tzCha(g)/600-tzGiri(s.F[t].lord)/400+(mc/tc>=4?e:0)))};
+const tzSabP=(s,g,tk)=>{const gv=tzGov(s,tk);return Math.max(.1,Math.min(.95,.5+(tzInt(g)-(gv?tzInt(gv):50))/200+tzSc(s,g)))};
 function tzDo(s,k,cmd,g,tg,it){const C=s.C[k],G=s.G[g],cha=tzCha(g),f=G.o,lc=tzCha(s.F[f].lord);let msg='',fx='';
   const pay=n=>{if(C.g<n)return false;C.g-=n;return true},myIt=x=>!x||s.I[x]==='t:'+f;
   if(cmd==='inv'){if(!TZ_INV[tg])return '투자할 곳을 골라요';const cp=tzCap(C,tg);if(C[tg]>=cp)return `${TZ_INV[tg]}이(가) 이미 상한이에요`;if(!pay(300))return '금이 모자라요';
     const v=Math.max(1,Math.round(tzInvV(tg,g)*tzR()));C[tg]=Math.min(cp,C[tg]+v);msg=`${TZ_INV[tg]} +${v}`}
   else if(cmd==='ben'){if(C.fd<500)return '군량이 모자라요';C.fd-=500;const v=Math.round((4+cha*.1)*tzR());C.ml=Math.min(100,C.ml+v);msg=`민심 +${v}`}
   else if(cmd==='drf'){if(C.tr>=tzCap(C,'tr'))return '이 성 인구로는 더 뽑을 수 없어요';if(!pay(300))return '금이 모자라요';const v=Math.min(tzCap(C,'tr')-C.tr,Math.round(1000*(.8+cha/500)*tzR()));C.tn=Math.round(C.tn*C.tr/(C.tr+v));C.tr+=v;C.ml=Math.max(0,C.ml-3);msg=`병사 +${fmt(v)}`}
-  else if(cmd==='trn'){if(C.tn>=100)return '훈련이 이미 최고예요';const v=Math.round((5+tzLead(g)*.1)*tzR());C.tn=Math.min(100,C.tn+v);msg=`훈련 +${v}`}
+  else if(cmd==='trn'){if(C.tn>=100)return '훈련이 이미 최고예요';const v=Math.round((5+tzLead(g)*.1)*tzR()*(tzIFv(s,g,'trn')||1));C.tn=Math.min(100,C.tn+v);msg=`훈련 +${v}`}
   else if(cmd==='sch'){const hi=tzItIn(s,'h:'+k),fr=tzGL(s).map(x=>x.id).filter(x=>s.G[x].o==='free'&&s.G[x].c===k&&!s.G[x].fd);
-    if(hi.length&&tzRng()<.25+tzInt(g)/300){const x=hi[Math.floor(tzRng()*hi.length)];s.I[x]='t:'+f;msg=`보물 ${IMAP[x].name}을(를) 찾았어요!`}
+    const hx=hi.length?hi[Math.floor(tzRng()*hi.length)]:'';if(hx&&tzRng()<.25+tzInt(g)/300+({3:.15,4:0,5:-.08})[IMAP[hx].rar]){const x=hx;s.I[x]='t:'+f;msg=`보물 ${IMAP[x].name}을(를) 찾았어요!`}
     else if(fr.length&&tzRng()<.35+tzInt(g)/200){const x=fr[Math.floor(tzRng()*fr.length)];if(f===s.me)s.G[x].fd=1;msg=`재야 장수 ${tzName(x)}을(를) 찾았어요`;fx=x}
     else{const v=Math.round(50+tzRng()*150);C.g=Math.min(99999,C.g+v);msg=`장수는 못 찾고 금 ${v}을(를) 얻었어요`}}
   else if(cmd==='rec'){const x=tg;if(!x||!s.G[x]||s.G[x].o!=='free'||s.G[x].c!==k)return '등용할 장수가 없어요';if(!myIt(it))return '금고에 없는 보물이에요';
@@ -5261,14 +5290,14 @@ function tzDo(s,k,cmd,g,tg,it){const C=s.C[k],G=s.G[g],cha=tzCha(g),f=G.o,lc=tzC
   else if(cmd==='snd'){if(!tg||!s.C[tg]||s.C[tg].o!==f||!TZ_ADJ[k].includes(tg))return '이웃한 내 성이 아니에요';const T=s.C[tg],a=Math.floor(C.g/2),d=Math.floor(C.fd/2),t=Math.floor(C.tr/2);
     if(t>0)T.tn=Math.round((T.tn*T.tr+C.tn*t)/(T.tr+t));C.g-=a;C.fd-=d;C.tr-=t;T.g=Math.min(99999,T.g+a);T.fd=Math.min(99999,T.fd+d);T.tr=Math.min(99999,T.tr+t);const w=Math.floor((C.wp||0)/2),h=Math.floor((C.hs||0)/2);C.wp=(C.wp||0)-w;C.hs=(C.hs||0)-h;T.wp=Math.min(99999,(T.wp||0)+w);T.hs=Math.min(99999,(T.hs||0)+h);msg=`${tzCN(tg)}(으)로 금 ${fmt(a)} · 군량 ${fmt(d)} · 병사 ${fmt(t)}${w||h?` · 무기 ${fmt(w)} · 군마 ${fmt(h)}`:''}`}
   else if(cmd==='ali'){const t=tg;if(!s.F[t]||s.F[t].dead||t===f)return '대상이 없어요';if(tzAllyR(s,f,t))return '이미 동맹이에요';if(!pay(500))return '금이 모자라요';
-    const r=tzCities(s,t).length/Math.max(1,tzCities(s,f).length);if(tzRng()<.25+cha/250-Math.max(0,r-1)*.1){s.F[f].al[t]=24;s.F[t].al[f]=24;msg=`${tzFN(s,t)}과(와) 2년 동맹!`}else msg=`${tzFN(s,t)}이(가) 동맹을 거절했어요`}
+    const r=tzCities(s,t).length/Math.max(1,tzCities(s,f).length);if(tzRng()<.25+cha/250-Math.max(0,r-1)*.1+tzEnv(s,g)){s.F[f].al[t]=24;s.F[t].al[f]=24;msg=`${tzFN(s,t)}과(와) 2년 동맹!`}else msg=`${tzFN(s,t)}이(가) 동맹을 거절했어요`}
   else if(cmd==='aid'){const t=tg;if(!s.F[t]||!tzAllyR(s,f,t))return '동맹 세력에게만 원조를 청할 수 있어요';const src=tzCities(s,t).sort((a,b)=>s.C[b].g-s.C[a].g)[0];if(!src)return '대상이 없어요';
-    if(tzRng()<Math.min(.9,.4+cha/250)){const R=s.C[src],a=Math.min(1000,Math.round(R.g*.3)),d=Math.min(3000,Math.round(R.fd*.2));R.g-=a;R.fd-=d;C.g=Math.min(99999,C.g+a);C.fd=Math.min(99999,C.fd+d);msg=`${tzFN(s,t)} 원조 · 금 +${fmt(a)} · 군량 +${fmt(d)}`}
+    if(tzRng()<Math.min(.95,.4+cha/250+tzEnv(s,g))){const R=s.C[src],a=Math.min(1000,Math.round(R.g*.3)),d=Math.min(3000,Math.round(R.fd*.2));R.g-=a;R.fd-=d;C.g=Math.min(99999,C.g+a);C.fd=Math.min(99999,C.fd+d);msg=`${tzFN(s,t)} 원조 · 금 +${fmt(a)} · 군량 +${fmt(d)}`}
     else msg=`${tzFN(s,t)}이(가) 원조를 거절했어요`}
   else if(cmd==='sur'){const t=tg;if(!s.F[t]||s.F[t].dead||t===f)return '대상이 없어요';if(!pay(1000))return '금이 모자라요';const nm=tzFN(s,t),n=tzCities(s,t).length;
     if(tzRng()<tzSurP(s,f,t,g)){tzAbsorb(s,t,f);msg=`${nm}이(가) 항복했어요! 성 ${n}곳을 얻었어요`;tzEnd(s)}else msg=`${nm}이(가) 항복을 거절했어요`}
   else if(cmd==='spy'){const x=tg;if(!x||!s.G[x]||!s.F[s.G[x].o]||s.G[x].o===f)return '대상이 없어요';if(x===s.F[s.G[x].o].lord)return '군주는 이간할 수 없어요';
-    if(tzRng()<.45+tzInt(g)/300-tzGiri(x)/400){const v=Math.round((8+tzInt(g)/10)*tzR());s.G[x].ly=Math.max(0,s.G[x].ly-v);msg=`${tzName(x)} 충성 −${v}`}else msg=`${tzName(x)} 이간 실패`}
+    if(tzRng()<.45+tzInt(g)/300-tzGiri(x)/400+tzSc(s,g)){const v=Math.round((8+tzInt(g)/10)*tzR());s.G[x].ly=Math.max(0,s.G[x].ly-v);msg=`${tzName(x)} 충성 −${v}`}else msg=`${tzName(x)} 이간 실패`}
   else if(cmd==='prs'){const x=tg,xo=x&&s.G[x]&&s.G[x].o;if(!x||!s.F[xo]||xo===f)return '대상이 없어요';if(x===s.F[xo].lord)return '군주는 권유할 수 없어요';
     if(!TZ_ADJ[k].includes(s.G[x].c))return '이웃 성의 장수만 권유할 수 있어요';if(!myIt(it))return '금고에 없는 보물이에요';if(!pay(300))return '금이 모자라요';
     if(tzRng()<tzPrsP(s,g,x,it)){Object.assign(s.G[x],{o:f,c:k,ly:Math.min(100,40+Math.round(tzGiri(x)/4)+(it?20:0)),ac:1,cb:''});if(it){const o=tzItOf(s,x);if(o)s.I[o]='t:'+f;s.I[it]='g:'+x}msg=`${tzName(x)}이(가) 넘어왔어요!${it?` (${IMAP[it].name})`:''}`;tzLordCheck(s)}else msg=`${tzName(x)}이(가) 권유를 거절했어요`}
@@ -5582,17 +5611,26 @@ function tzRsPick(){const ok=tzAdult;
   const gs=TZ_GA.map(x=>x.id).filter(g=>ok(g,b)),f=tzRs.f&&ok(tzRs.f,b)?tzRs.f:gs[Math.floor(Math.random()*gs.length)];
   const cs=tzFreeCities(b),k=tzRs.k&&cs.includes(tzRs.k)?tzRs.k:cs[Math.floor(Math.random()*cs.length)];return {b,f,k}}
 // ---- v9.8.0 장수 상세(둔영 무장 칸처럼): 모션 초상 · 군웅할거 능력치 · 전투 능력치 · 스킬 ----
+// v1.3.4 장수 상세: 전신 대기 모션 · 군웅할거 능력치 · 정사/연의 설명(삼분 전용 별·소속·병과·전투 능력치·스킬은 뺐어요)
+const TZ_GS={"lubu":[191,164,3,"48350b240577.webp"],"guanyu":[224,169,3,"202404b7e5d2.webp"],"zhangfei":[205,177,3,"d8f43f0d724d.webp"],"zhaoyun":[236,164,3,"2ec952dbe86e.webp"],"machao":[299,166,3,"e987d5839c02.webp"],"zhangliao":[210,175,3,"a7eda8665c2a.webp"],"sunce":[240,179,3,"fe6e50fe2382.webp"],"zhugeliang":[145,106,3,"a5a15b487b0b.webp"],"huangzhong":[144,115,3,"4d485bcc377d.webp"],"liubei":[156,106,3,"2f02bc2fb978.webp"],"sunjian":[178,107,3,"9f956a97d92e.webp"],"xiahoudun":[142,106,3,"17219996d947.webp"],"dianwei":[174,108,3,"2b533acfff0a.webp"],"xuchu":[164,121,3,"cf8260ec6d2a.webp"],"dengai":[146,105,3,"3f7035f05aee.webp"],"ganning":[129,106,3,"1d118604c026.webp"],"caocao":[234,189,3,"32b66e8088f8.webp"],"simayi":[151,106,3,"9e7195456fac.webp"],"zhouyu":[160,115,3,"31dd32334c99.webp"],"diaochan":[164,111,3,"f51fde1ea679.webp"],"pangtong":[155,116,3,"caa10c32bedd.webp"],"xiahouyuan":[143,108,3,"776bb24fb3fd.webp"],"guojia":[148,108,3,"e0930ba7c45e.webp"],"sunquan":[178,106,3,"8d76619e5a7e.webp"],"taishici":[132,107,3,"0519648fb157.webp"],"luxun":[118,107,3,"64708b2c20a5.webp"],"xusheng":[136,107,3,"10ac232386fc.webp"],"zhangjiao":[179,131,3,"687c5abdd37d.webp"],"dongzhuo":[147,115,3,"41a38c6b93f6.webp"],"yuanshao":[235,179,3,"56ba73fc583a.webp"],"zhurong":[158,118,3,"33e63fe84327.webp"],"weiyan":[137,107,3,"6efa91290883.webp"],"guanping":[144,121,3,"6f8c8a60d665.webp"],"madai":[178,166,3,"3127b483e1f0.webp"],"liaohua":[145,106,3,"cbc9dc43f832.webp"],"yujin":[135,107,3,"7b6ba90ad9fa.webp"],"gongsunzan":[195,181,3,"8c921380dede.webp"],"sunshangxiang":[141,109,3,"33347247cd17.webp"],"hansui":[140,117,3,"23a46563e01d.webp"],"mateng":[132,106,3,"6134550e9fd9.webp"],"quyi":[145,117,3,"2a4fdf15387f.webp"],"pangde":[203,178,3,"0307b6d65991.webp"],"menghuo":[128,109,3,"3997beb9697c.webp"],"zhangbao":[149,106,3,"1588d3254811.webp"],"zhangliang":[133,107,3,"17517646cbdf.webp"],"huatuo":[147,106,3,"bc1de1f3605b.webp"],"lejin":[193,166,3,"f9a043081023.webp"],"lidian":[147,106,3,"87bd9ad9d67c.webp"],"chengpu":[147,106,3,"56a5d364153a.webp"],"huanggai":[129,111,3,"6254f8501260.webp"],"zhoutai":[147,121,3,"c4cb4d55af27.webp"],"lingtong":[216,163,3,"2239b0cc4523.webp"],"gaoshun":[141,107,3,"059cc91fa2bb.webp"],"chengong":[124,107,3,"e4f3023f144f.webp"],"xunyu":[147,106,3,"86f2c9049a45.webp"],"jiaxu":[145,116,3,"f3289a5049f5.webp"],"jushou":[133,106,3,"c60d6ff18104.webp"],"xuhuang":[248,182,3,"408055a3b1f8.webp"],"caiyong":[121,108,3,"37ecd33b44de.webp"],"huaxiong":[235,186,3,"1180bc7e081f.webp"],"yanliang":[192,180,3,"d7d467ecdf02.webp"],"wenchou":[238,176,3,"9e5d3354151f.webp"],"jiling":[155,109,3,"49a70710e392.webp"],"yuanshu":[136,107,3,"49030501db0b.webp"],"wenpin":[152,109,3,"2effba399c40.webp"],"yanyan":[191,114,3,"9eababd1af1d.webp"],"handang":[193,173,3,"a0bd5df40230.webp"],"haozhao":[126,116,3,"178f0224b64b.webp"],"zhugejin":[159,122,3,"bfb88334b4b2.webp"],"liuxun":[119,106,3,"625ced9333ef.webp"],"caoren":[212,173,3,"3b34f25aca94.webp"],"zhoucang":[127,105,3,"72c9e908d63b.webp"],"fazheng":[152,106,3,"d073db68e8a2.webp"],"jianyong":[138,108,3,"d83cb343855e.webp"],"yufan":[150,128,3,"cb75b792e852.webp"],"lusu":[122,106,3,"d221168908f7.webp"],"zhangren":[137,107,3,"9e967f60c245.webp"],"liru":[131,108,3,"139d1a53ad98.webp"],"zhangxiu":[233,166,3,"5a67ef9b922d.webp"],"zhangji":[148,114,3,"e1b2bdb60318.webp"],"lijue":[232,164,3,"923f2004e0cc.webp"],"guosi":[128,107,3,"6604a6aa2755.webp"],"zhanghe":[246,174,3,"686844fda9f0.webp"],"tianfeng":[142,107,3,"df610c688854.webp"],"shenpei":[145,136,3,"423d38787705.webp"],"gaolan":[210,164,3,"d2a250c50c01.webp"],"guotu":[136,110,3,"1a741a75a796.webp"],"xuyou":[156,106,3,"c0c3d9763f88.webp"],"zhangyan":[182,164,3,"1590c078955f.webp"],"lvmeng":[128,106,3,"7645a8fc15a6.webp"],"jiangwei":[151,108,3,"5ffb8f89caa8.webp"],"xurong":[213,167,3,"4cc67024623e.webp"],"xunchen":[132,107,3,"8cda6db0d745.webp"],"zhangzhao":[129,111,3,"ab8958b94bec.webp"],"maliang":[132,106,3,"8b7a2496cc2a.webp"],"guanxing":[201,165,3,"dc9b43a5ab40.webp"],"wangyun":[119,107,3,"507afef280e3.webp"],"zhangwei":[154,107,3,"4643bb86d705.webp"],"guanhai":[203,172,3,"4ad09e4a1aa8.webp"],"huangquan":[143,109,3,"fed84620a234.webp"],"zhanglu":[125,114,3,"f4cb163e2da0.webp"],"wutugu":[130,109,3,"095cda5f743e.webp"],"yuanshang":[206,172,3,"2c8cff8e919d.webp"],"chunyuqiong":[138,106,3,"c711193030d9.webp"],"liubiao":[158,111,3,"198cd97a94e6.webp"],"liuyan":[165,106,3,"54b27a0afddd.webp"],"kongrong":[153,106,3,"7be65015f93f.webp"],"taoqian":[138,111,3,"46cb6ee789a1.webp"],"gongsundu":[151,106,3,"fc4daf0d5b35.webp"],"liuyu":[140,106,3,"0ee6302cd506.webp"],"hanfu":[164,108,3,"5e9720e62d39.webp"],"zhangmiao":[130,106,3,"e65ea3c19121.webp"],"zhangyang":[176,110,3,"f45aa3fd1ef4.webp"],"kongzhou":[168,107,3,"6d7811cf7a5d.webp"],"liuyao":[173,115,3,"204e04ea438d.webp"],"yanbaihu":[165,106,3,"16c500019303.webp"],"wanglang":[139,107,3,"0d309bc6bc02.webp"],"baoxin":[181,106,3,"9b45d9d40d2e.webp"],"caimao":[156,106,3,"1516a2fc7d2c.webp"],"kuaiyue":[149,107,3,"987c982989c8.webp"],"huangzu":[151,114,3,"3e0e5263075b.webp"],"huangshe":[143,106,3,"880727b7e8c5.webp"],"liuqi":[157,106,3,"42615a982cf7.webp"],"liucong":[140,106,3,"067fa726a603.webp"],"liuzhang":[127,107,3,"deea627dbae1.webp"],"gongsunkang":[156,108,3,"661d85ec3940.webp"],"gongsungong":[132,106,3,"0d11f280a2cb.webp"],"gongsunyuan":[166,108,3,"d79e078a8184.webp"],"liuhe":[164,108,3,"8fade6bd986d.webp"],"taoshang":[136,111,3,"ea8da29e14b2.webp"],"wangsu":[115,107,3,"7e99033430a4.webp"],"baoxun":[121,106,3,"3ffba8b9085e.webp"],"maxiu":[144,107,3,"b9c400cab3d3.webp"],"matie":[161,111,3,"f7652f0721ff.webp"],"panghui":[185,123,3,"158ed9ea9929.webp"],"yanxing":[201,166,3,"a16af73f9ad5.webp"],"zhangquan":[196,107,3,"6c856bfa4e91.webp"],"yuantan":[134,111,3,"cd1d8f864a37.webp"],"yuanxi":[156,114,3,"a52caa17fc36.webp"],"gaogan":[147,111,3,"945735b35bf4.webp"],"yuanyao":[146,114,3,"3decc9b9c2e1.webp"],"sunyi":[148,109,3,"159be483e2c6.webp"],"caoang":[188,106,3,"ba2cc4564e6f.webp"],"caopi":[132,108,3,"b2f14ede19b4.webp"],"caozhang":[219,181,3,"98a5086923cf.webp"],"caozhi":[157,109,3,"fe5b6e5f30be.webp"],"xiahouba":[210,171,3,"959091736a1a.webp"],"liushan":[153,106,3,"dbde52a45546.webp"],"zhangbao2":[205,164,3,"52e6cb31d64f.webp"],"zhugeke":[143,106,3,"a471f1bf4ef7.webp"],"niufu":[141,110,3,"c99673b5c5a3.webp"],"simashi":[141,106,3,"86850721bd71.webp"]};
+const TZ_BIO={"lubu":"오원 구원 사람. 정원과 동탁을 차례로 죽이고 연주를 노렸으나 조조에게 밀려 서주를 차지했다. 198년 하비에서 사로잡혀 처형됐다.|연의에서는 적토마와 방천화극을 든 천하무쌍으로, 호뢰관에서 유비·관우·장비 셋을 상대한다.","guanyu":"하동 해현 사람. 유비를 따라 각지를 전전했고 한때 조조에게 몸을 의탁해 백마에서 안량을 베었다. 형주를 지키다 219년 손권군에 붙잡혀 죽었다.|연의에서는 청룡언월도를 든 의리의 화신으로, 오관을 돌파하고 화용도에서 조조를 놓아준다.","zhaoyun":"상산 진정 사람. 공손찬을 거쳐 유비를 섬겼고 당양 장판에서 어린 유선과 감부인을 지켰다. 한중 싸움과 1차 북벌에도 나섰다.|연의에서는 장판파에서 홀로 조조 대군을 뚫는 장면으로 상승 장군의 이미지가 굳었다.","zhangfei":"탁군 사람. 관우와 함께 유비를 형처럼 섬겼고 장판교에서 조조군을 꾸짖어 물러서게 했다. 파서에서 장합을 깨뜨렸으나 221년 부하에게 살해됐다.|연의에서는 장팔사모를 쓰는 급한 성미의 맹장으로, 독우를 매질하는 일화도 그에게 옮겨졌다.","zhugeliang":"낭야 양도 사람. 유비의 삼고초려로 나와 천하삼분책을 내놓았고 촉한의 승상이 됐다. 남중을 평정하고 다섯 차례 북벌하다 234년 오장원에서 병으로 죽었다.|연의에서는 바람을 부르고 화살을 빌리는 신산귀모의 군사로 그려진다.","caocao":"패국 초현 사람. 헌제를 허도로 맞아들이고 관도에서 원소를 꺾어 화북을 통일했다. 적벽에서 패했으나 위왕에 올라 위나라의 기틀을 닦았다.|연의에서는 \"내가 천하를 버릴지언정\"이라 말하는 간웅으로 그려진다.","simayi":"하내 온현 사람. 조조 때 관직에 나와 제갈량의 북벌을 막아냈고 요동의 공손연을 평정했다. 249년 고평릉 정변으로 조상을 몰아내 진나라의 터를 닦았다.|연의에서는 제갈량의 맞수로, 죽은 제갈량에게 쫓겨 달아나는 장면이 유명하다.","zhouyu":"여강 서현 사람. 손책과 어릴 적부터 벗으로 강동 평정을 도왔다. 208년 적벽에서 화공으로 조조를 크게 깨뜨렸고 강릉을 빼앗은 뒤 36세에 병사했다.|연의에서는 제갈량을 시기하다 분을 못 이겨 죽는 인물로 다소 깎여 그려진다.","sunce":"손견의 맏아들. 원술 밑에서 군사를 빌려 강동을 휩쓸어 소패왕이라 불렸다. 200년 허공의 식객에게 습격당한 상처로 26세에 죽었다.|연의에서는 도사 우길을 죽인 뒤 그 환영에 시달리다 숨을 거둔다.","dengai":"의양 극양 사람. 둔전과 수리로 이름을 얻었고 강유의 북벌을 여러 번 막았다. 263년 음평 샛길로 넘어가 성도를 떨어뜨려 촉을 멸망시켰으나 모함으로 죽었다.|연의에서도 음평을 넘는 장면이 크게 다뤄진다.","sunjian":"오군 부춘 사람. 황건적과 서량 반란 토벌에서 이름을 떨쳤고 반동탁 연합 때 낙양에 먼저 들어갔다. 191년 유표를 치다 현산에서 황조 군에게 전사했다.|연의에서는 낙양 우물에서 전국옥새를 얻는다.","diaochan":"정사에는 이름이 없고, 여포가 동탁의 시녀와 몰래 정을 통했다는 기록만 있다.|연의에서는 왕윤의 양녀로 미인계를 써서 동탁과 여포를 갈라놓는 절세미인이다.","liubei":"탁군 탁현 사람으로 한 황실의 먼 후손. 오랫동안 여러 군웅에게 의탁하다 제갈량을 얻어 형주와 익주를 차지했다. 221년 촉한 황제에 올랐고 이릉에서 패한 뒤 백제성에서 죽었다.|연의에서는 인덕의 군주로, 도원결의로 관우·장비와 형제를 맺는다.","machao":"마등의 아들. 211년 한수와 함께 동관에서 조조와 싸웠으나 이간책에 걸려 패했다. 장로를 거쳐 유비에게 귀순해 표기장군에 올랐다.|연의에서는 금마초라 불리며, 위수에서 조조가 수염을 자르고 도망치게 만든다.","huangzhong":"남양 사람. 유표 밑에서 장사를 지키다 유비에게 귀순했다. 219년 정군산에서 하후연을 베어 한중 쟁탈의 큰 공을 세웠다.|연의에서는 활 솜씨가 뛰어난 노장으로, 관우와 겨룬 뒤 항복한다.","pangtong":"양양 사람으로 봉추라 불렸다. 유비의 군사로 익주 공략을 이끌었으나 214년 낙성을 공격하다 화살에 맞아 죽었다.|연의에서는 적벽에서 연환계를 바치고, 낙봉파에서 매복에 걸려 죽는다.","xiahoudun":"패국 사람으로 조조의 친척. 조조가 일어날 때부터 따랐고 여포와 싸우다 화살에 왼눈을 잃었다. 조비 때 대장군에 올랐다.|연의에서는 화살 박힌 눈알을 뽑아 삼키는 장면이 유명하다.","xiahouyuan":"하후돈의 족제. 빠른 기동으로 서량의 마초·한수를 평정했다. 219년 정군산에서 황충에게 습격당해 전사했다.|연의에서도 정군산에서 황충의 칼에 쓰러진다.","zhangliao":"안문 마읍 사람. 정원·동탁·여포를 거쳐 조조를 섬겼다. 215년 합비에서 800명으로 손권의 10만 대군을 깨뜨려 강동에 이름을 떨쳤다.|연의에서도 합비 소요진 싸움이 그의 대표 장면이다.","xuchu":"초국 사람. 마을 사람들을 모아 지키다 조조에게 귀순했고, 늘 곁을 지키는 호위대장이 되어 호치라 불렸다.|연의에서는 웃통을 벗고 마초와 겨루는 장면이 유명하다.","dianwei":"진류 사람. 큰 쌍극을 쓰는 장사로 조조의 호위를 맡았다. 197년 완성에서 장수가 배반하자 문을 막고 싸우다 죽어 조조를 살렸다.|연의에서도 완성에서 죽음으로 조조를 지킨다.","guojia":"영천 사람. 원소를 떠나 조조의 책사가 되어 여포·원소·오환 정벌을 도왔다. 207년 38세로 병사해 조조가 크게 슬퍼했다.|연의에서는 적벽에서 패한 조조가 \"봉효가 있었다면\" 하고 운다.","sunquan":"손견의 둘째 아들. 형 손책을 이어 강동을 지켰고 유비와 손잡고 적벽에서 조조를 막았다. 형주를 되찾고 229년 오나라 황제에 올랐다.|연의에서는 푸른 눈에 붉은 수염을 가진 군주로 묘사된다.","ganning":"파군 임강 사람. 젊어서 강도질을 하다 황조를 거쳐 손권에게 갔다. 유수구에서 100명으로 조조 진영을 야습했다.|연의에서도 방울을 단 금범적 출신 맹장으로 그려진다.","taishici":"동래 황현 사람. 유요 밑에 있을 때 손책과 맞붙어 싸웠고 뒤에 손책에게 귀순했다. 남방을 지키다 41세에 죽었다.|연의에서도 신정에서 손책과 벌인 일기토가 유명하다.","luxun":"오군 오현 사람. 여몽과 함께 형주를 빼앗았고 222년 이릉에서 화공으로 유비를 크게 깨뜨렸다. 뒤에 오나라 승상이 됐다.|연의에서는 이릉 뒤 제갈량이 만든 석진에 갇혔다 풀려난다.","xusheng":"낭야 사람. 손권 밑에서 조비의 남정을 막을 때 가짜 성벽을 세워 위군을 물러가게 했다.|연의에서도 장강에 거짓 성을 쌓는 계책이 나온다.","zhangjiao":"거록 사람. 태평도를 퍼뜨려 신도를 모았고 184년 황건의 난을 일으켜 천공장군이라 했다. 난이 한창일 때 병으로 죽었다.|연의에서는 남화노선에게 받은 천서로 요술을 부린다.","dongzhuo":"농서 임조 사람. 십상시의 난 때 낙양에 들어와 소제를 폐하고 헌제를 세웠다. 장안으로 천도하며 폭정을 일삼다 192년 여포에게 살해됐다.|연의에서도 폭군으로 그려지며, 초선을 둘러싼 갈등이 죽음의 계기가 된다.","yuanshao":"여남 여양 사람으로 4대에 걸쳐 삼공을 낸 집안 출신. 반동탁 연합의 맹주였고 공손찬을 꺾어 하북을 차지했다. 200년 관도에서 조조에게 대패한 뒤 병사했다.|연의에서는 결단력 없는 맹주로 그려진다.","zhurong":"정사에 기록이 없는 인물이다.|연의에서는 남만왕 맹획의 아내로 축융씨의 후예이며, 비도를 던져 촉장을 사로잡는 여장부다.","weiyan":"의양 사람. 유비를 따라 촉에 들어가 한중 태수가 되어 오래 한중을 지켰다. 제갈량이 죽은 뒤 양의와 다투다 살해됐다.|연의에서는 반골의 상을 가졌다고 하며, 마대의 칼에 죽는다.","guanping":"관우의 아들. 219년 아버지와 함께 맥성에서 빠져나오다 붙잡혀 처형됐다.|연의에서는 관우의 양자로 나오며, 번성 싸움에서 방덕과 겨룬다.","madai":"마초의 사촌 아우. 마초와 함께 촉에 귀순했고 제갈량 사후 위연을 베었다.|연의에서는 \"누가 감히 나를 죽이겠느냐\"고 외치는 위연을 뒤에서 벤다.","liaohua":"양양 사람. 관우의 주부였다가 형주가 함락되자 거짓으로 죽은 척하고 촉으로 돌아왔다. 촉 멸망 때까지 장수로 활약했다.|연의에서는 황건적 출신으로 나오며, 촉의 마지막 노장으로 남는다.","yujin":"태산 거평 사람. 조조군에서 군율이 엄하기로 이름났다. 219년 번성 구원 때 홍수로 군이 잠겨 관우에게 항복했고, 위로 돌아온 뒤 부끄러움 속에 죽었다.|연의에서도 칠군이 물에 잠기는 장면이 그의 몰락이다.","lejin":"양평 위국 사람. 몸집은 작았으나 늘 선봉에 서서 조조의 여러 싸움에서 공을 세웠다.|연의에서는 합비에서 장료와 함께 손권군을 막는다.","lidian":"산양 거야 사람. 학문을 좋아하고 겸손한 장수로, 합비에서 장료·악진과 함께 손권을 막았다.|연의에서도 신중한 장수로 그려진다.","chengpu":"우북평 사람. 손견·손책·손권 3대를 섬긴 노장으로, 적벽에서 주유와 함께 좌우 도독을 맡았다.|연의에서도 강동의 원로 장수로 나온다.","huanggai":"영릉 사람. 손견 때부터 섬긴 노장으로, 적벽에서 거짓 항복을 청하고 불붙은 배를 몰아 조조 함대를 태웠다.|연의에서는 고육계로 주유에게 매를 맞는 장면이 더해졌다.","zhoutai":"구강 사람. 손권을 지키다 온몸에 상처를 입었고, 손권이 술자리에서 그 흉터를 하나하나 짚으며 공을 칭찬했다.|연의에서도 손권을 지키는 충신 장수로 나온다.","lingtong":"오군 사람. 아버지 능조가 감녕에게 죽어 감녕과 원수였으나, 합비에서 손권을 지키며 화해했다.|연의에서도 감녕과의 원한과 화해가 그려진다.","gaoshun":"여포의 장수. 함진영을 이끌어 공격하면 반드시 깨뜨렸다고 한다. 하비에서 여포와 함께 붙잡혀 처형됐다.|연의에서도 충성스러운 여포군 장수로 나온다.","chengong":"동군 사람. 조조를 떠나 여포를 맞아들여 연주를 차지하게 했다. 하비에서 붙잡혀 항복을 거부하고 죽었다.|연의에서는 처음에 도망치는 조조를 구했다가 그의 잔인함에 등을 돌린다.","huaxiong":"동탁의 도독. 정사에서는 양인에서 손견에게 패해 목이 베였다.|연의에서는 연합군 장수들을 잇달아 베다가 관우에게 단칼에 목이 떨어진다(술이 식기 전에).","yanliang":"원소의 맹장. 200년 백마를 포위했다가 조조군에 있던 관우에게 단번에 목이 베였다.|연의에서도 백마에서 관우에게 베인다.","wenchou":"원소의 맹장. 200년 연진에서 조조의 미끼에 걸려 싸우다 전사했다.|연의에서는 관우에게 베여 안량과 함께 원소의 두 기둥을 잃게 된다.","jiling":"원술의 장수. 196년 유비를 치러 갔다가 여포가 원문의 극을 활로 맞히며 화해를 권해 물러났다.|연의에서는 삼첨도를 쓰는 대장으로 나오며 장비에게 죽는다.","yuanshu":"원소의 이복동생. 남양과 회남을 차지하고 197년 스스로 황제를 칭했다가 고립돼 199년 죽었다.|연의에서는 꿀물을 찾다 피를 토하고 죽는다.","wenpin":"남양 사람. 유표의 장수였다가 조조에게 항복해 강하 태수로 수십 년 동안 오나라를 막았다.|연의에서도 형주를 바치며 눈물을 흘리는 장면이 나온다.","yanyan":"파군 태수. 장비에게 붙잡혔으나 \"목이 잘리는 장군은 있어도 항복하는 장군은 없다\"고 하여 장비가 풀어 주었다.|연의에서는 그 뒤 촉의 노장으로 황충과 함께 활약한다.","handang":"요서 영지 사람. 손견·손책·손권을 섬긴 노장으로 적벽과 이릉에서 싸웠다.|연의에서도 강동의 노장으로 나온다.","haozhao":"태원 사람. 228년 진창성을 1,000여 명으로 지켜 제갈량의 수만 대군을 20여 일 동안 막아냈다.|연의에서도 진창성 수비가 그의 대표 장면이다.","gongsunzan":"요서 영지 사람. 백마의종이라는 기병으로 이민족에게 이름을 떨쳤다. 원소에게 밀려 199년 역경성에서 스스로 불타 죽었다.|연의에서는 유비의 동문으로 조운을 처음 거느린다.","zhugejin":"제갈량의 형. 손권을 섬겨 대장군에 올랐고, 촉과 오 사이를 오가며 외교를 맡았다.|연의에서는 아우 제갈량과 사사로이 만나지 않는 공정한 인물로 그려진다.","liuxun":"유장의 맏아들. 214년 낙성을 1년 가까이 지키며 유비군을 막았다. 촉이 평정된 뒤에도 벼슬을 받았다.|연의에서도 낙성 수비에 나온다.","caoren":"조조의 사촌 아우. 강릉과 번성을 지키며 주유·관우의 공격을 막아냈다. 조비 때 대사마에 올랐다.|연의에서는 팔문금쇄진을 펼쳤다가 서서에게 간파당한다.","zhoucang":"정사에 기록이 없는 인물이다.|연의에서는 관우의 청룡도를 드는 장수로, 관우가 죽자 맥성에서 스스로 목숨을 끊는다.","sunshangxiang":"손권의 누이로 유비와 정략결혼했다. 정사에서는 시녀들에게 칼을 차게 할 만큼 굳센 성품이었다고 한다.|연의에서는 궁요희라 불리는 무예 뛰어난 아가씨로, 유비가 죽었다는 소식에 강에 몸을 던진다.","xunyu":"영천 사람. 원소를 떠나 조조에게 가서 \"나의 장자방\"이라 불렸다. 헌제 영접과 관도 싸움을 이끌었으나 조조의 위공 즉위에 반대하다 212년 죽었다.|연의에서는 빈 그릇을 받고 자결한다.","fazheng":"부풍 사람. 유장 밑에서 뜻을 펴지 못하자 유비를 익주로 끌어들였다. 한중 싸움을 설계했으나 220년 45세로 죽었다.|연의에서도 정군산에서 황충의 공격 시점을 짚어 준다.","hansui":"금성 사람. 서량에서 30여 년 동안 반란을 이끌었고 211년 마초와 동관에서 싸웠으나 조조의 이간에 걸려 패했다.|연의에서는 조조와 말 위에서 옛이야기를 나누다 마초의 의심을 산다.","jianyong":"탁군 사람. 유비의 고향 친구로 사신 일을 맡았고, 유장에게 항복을 권해 성도를 열었다.|연의에서도 해학을 섞은 말솜씨의 사신으로 나온다.","yufan":"회계 사람. 손책·손권을 섬긴 학자로 역학에 밝았으나 직언이 지나쳐 교주로 쫓겨났다.|연의에서도 말이 거침없는 강동 학자로 나온다.","jiaxu":"무위 사람. 동탁·이각·장수를 거쳐 조조를 섬겼다. 완성에서 조조를 크게 깨뜨렸고, 뒤에 조비가 후계자가 되는 데 힘을 보탰다.|연의에서도 계책을 낼 때마다 들어맞는 노련한 책사다.","lvmeng":"여남 사람. 무예만 알다가 손권의 권유로 학문을 닦아 \"오하아몽이 아니다\"라는 말을 들었다. 219년 형주를 습격해 관우를 사로잡았다.|연의에서는 관우의 혼령에 씌어 죽는다.","lusu":"임회 사람. 손권에게 천하 셋 나눔을 먼저 말했고 적벽에서 유비와의 동맹을 이끌었다. 주유의 뒤를 이어 형주 문제를 맡았다.|연의에서는 제갈량에게 번번이 당하는 사람 좋은 인물로 그려진다.","xurong":"현도 사람. 동탁의 장수로 형양에서 조조와 손견을 차례로 깨뜨렸다.|연의에서는 형양에서 조조를 거의 잡을 뻔한다.","zhangren":"촉군 사람. 유장의 장수로 낙성에서 유비군을 막다 붙잡혔으나 항복을 거부하고 죽었다.|연의에서는 낙봉파 매복으로 방통을 죽인다.","mateng":"부풍 무릉 사람. 서량 군벌로 한수와 동맹과 싸움을 되풀이했다. 뒤에 조정에 들어갔다가 아들 마초의 반란으로 212년 처형됐다.|연의에서는 조조 암살 모의에 가담했다 붙잡힌다.","liru":"동탁의 책사. 정사에서는 동탁의 명으로 폐위된 소제에게 독약을 먹였다.|연의에서는 동탁의 사위로 온갖 계략을 짜내는 모사로 나온다.","zhangxiu":"무위 사람. 장제의 조카로 완성을 근거로 삼았다. 197년 조조에게 항복했다가 다시 습격해 조앙과 전위를 죽였고, 뒤에 다시 조조에게 귀순했다.|연의에서도 가후의 계책으로 조조를 크게 깨뜨린다.","zhangji":"무위 사람. 동탁의 장수로 장안을 차지한 뒤 이각·곽사와 함께 권력을 나눴다. 196년 남양에서 싸우다 화살에 맞아 죽었다.|연의에서도 이각·곽사와 함께 장안을 어지럽힌다.","lijue":"동탁의 장수. 동탁이 죽자 가후의 권유로 장안을 쳐서 왕윤을 죽이고 정권을 잡았다. 곽사와 싸우다 세력을 잃고 198년 죽었다.|연의에서도 장안을 짓밟는 무리의 우두머리다.","guosi":"동탁의 장수. 이각과 함께 장안을 차지했다가 서로 싸워 헌제를 놓쳤다. 197년 부하에게 죽었다.|연의에서도 이각과 다투는 탐욕스러운 장수다.","zhanghe":"하간 사람. 원소를 떠나 관도에서 조조에게 항복했다. 가정에서 마속을 깨뜨렸고 231년 목문도에서 화살에 맞아 죽었다.|연의에서는 제갈량의 매복에 걸려 쓰러진다.","jushou":"광평 사람. 원소의 감군으로 관도 싸움에서 신중론을 폈으나 받아들여지지 않았다. 붙잡힌 뒤 원소에게 돌아가려다 처형됐다.|연의에서도 충직한 원소의 책사로 그려진다.","tianfeng":"거록 사람. 원소에게 조조를 칠 시기를 여러 번 간했으나 미움을 사 옥에 갇혔고, 관도 패전 뒤 처형됐다.|연의에서도 원소의 의심으로 억울하게 죽는다.","shenpei":"위군 사람. 원소가 죽은 뒤 원상을 받들어 업성을 지켰고 붙잡혀서도 굴하지 않고 죽었다.|연의에서도 끝까지 충절을 지킨 인물로 그려진다.","quyi":"원소의 장수. 계교에서 강노병으로 공손찬의 백마의종을 크게 깨뜨렸다. 뒤에 교만해져 원소에게 죽었다.|연의에서는 조운에게 베이는 장수로 나온다.","gaolan":"원소의 장수. 관도에서 장합과 함께 조조에게 항복했다.|연의에서도 장합과 함께 투항한다.","guotu":"영천 사람. 원소의 책사로 관도에서 오소 대신 조조 본진을 치자고 했다가 실패했다. 뒤에 원담을 받들다 죽었다.|연의에서는 원가를 망친 모사로 그려진다.","xuyou":"남양 사람. 조조의 옛 친구로 원소 밑에 있다가 관도에서 조조에게 넘어가 오소의 군량고를 알려 주었다. 뒤에 공을 자랑하다 처형됐다.|연의에서는 허저에게 베인다.","chunyuqiong":"원소의 장수. 관도에서 오소의 군량을 지키다 조조의 기습을 받아 죽었다.|연의에서는 술에 취해 있다가 군량을 잃는다.","yuanshang":"원소의 셋째 아들. 원소의 뒤를 이었으나 형 원담과 다투다 조조에게 밀렸고, 요동으로 달아났다가 공손강에게 죽었다.|연의에서도 형제 다툼으로 원가를 무너뜨린다.","pangde":"남안 사람. 마초를 따르다 조조에게 귀순했다. 219년 번성에서 관우와 싸우다 붙잡혔으나 항복을 거부하고 죽었다.|연의에서는 관을 짊어지고 출진하는 장면이 유명하다.","menghuo":"남중 사람. 제갈량의 남정 때 남만을 이끌었다.|연의에서는 일곱 번 붙잡혀 일곱 번 풀려나는 칠종칠금 끝에 진심으로 복종한다.","zhangbao":"장각의 아우로 지공장군이라 했다. 184년 하곡양에서 황보숭에게 패해 죽었다.|연의에서는 요술로 바람과 비를 부른다.","zhangyan":"상산 사람. 흑산적을 이끈 수령으로 날래서 비연이라 불렸다. 205년 조조에게 항복했다.|연의에서도 흑산적 두목으로 나온다.","zhangliang":"장각의 아우로 인공장군이라 했다. 184년 광종에서 황보숭에게 패해 죽었다.|연의에서도 황건 삼형제 중 하나다.","wutugu":"정사에 기록이 없는 인물이다.|연의에서는 오과국의 왕으로 칼이 들지 않는 등갑군을 이끌다 반사곡에서 불에 타 죽는다.","zhanglu":"패국 사람. 오두미도의 교주로 한중을 30년 가까이 다스렸다. 215년 조조에게 항복해 후대받았다.|연의에서도 한중의 종교 군주로 나온다.","huangquan":"파서 사람. 유비를 섬겨 이릉 원정 때 강북을 맡았으나 퇴로가 끊기자 위에 항복했다. 유비는 그 가족을 벌하지 않았다.|연의에서도 어쩔 수 없이 위에 항복하는 충신으로 그려진다.","guanhai":"황건 잔당의 장수. 북해의 공융을 포위했다가 유비의 구원군에 물러났다.|연의에서는 관우에게 베인다.","zhangwei":"장로의 아우. 양평관에서 조조군을 막았으나 패했다.|연의에서도 양평관을 지키다 진다.","wangyun":"태원 사람. 사도로서 여포를 끌어들여 192년 동탁을 죽였으나, 이각·곽사가 장안을 치자 붙잡혀 죽었다.|연의에서는 초선을 이용한 연환계를 꾸민다.","xuhuang":"하동 사람. 양봉을 거쳐 조조를 섬겼다. 219년 번성에서 관우의 포위를 풀어 조조에게 \"주아부의 풍모가 있다\"는 칭찬을 들었다.|연의에서도 번성 구원이 대표 장면이다.","jiangwei":"천수 기현 사람. 228년 제갈량에게 귀순해 그의 뜻을 이어 여러 차례 북벌했다. 촉이 망한 뒤 종회와 부흥을 꾀하다 죽었다.|연의에서는 제갈량의 계승자로 중요하게 그려진다.","guanxing":"관우의 아들. 젊어서 재주를 인정받았으나 일찍 죽었다.|연의에서는 장포와 함께 이릉과 북벌에서 활약하는 젊은 맹장이다.","maliang":"양양 사람. 눈썹에 흰 털이 있어 백미라 불렸고 형제 중 가장 뛰어났다. 이릉에서 전사했다.|연의에서도 마속의 형으로 나온다.","zhangzhao":"팽성 사람. 손책이 죽을 때 손권을 맡긴 원로로 내정을 이끌었다. 적벽에서는 항복을 주장했다.|연의에서도 강동 문신의 우두머리로 나온다.","caiyong":"진류 사람. 당대 최고의 학자이자 서예가였다. 동탁에게 중용됐다가 동탁이 죽은 뒤 왕윤에게 처형됐다.|연의에서도 동탁의 죽음을 슬퍼하다 죽는다.","xunchen":"순욱의 형제. 원소를 섬겨 한복에게 기주를 넘기도록 설득했다.|연의에서도 원소의 모사로 나온다.","huatuo":"패국 사람. 마비산으로 수술을 했다는 명의로, 조조의 두통을 치료하다 미움을 사 죽었다.|연의에서는 관우의 팔을 째고 뼈를 긁어 독을 빼낸다.","liubiao":"산양 고평 사람. 형주를 평화롭게 다스려 많은 선비가 모였으나 천하를 다툴 뜻은 적었다. 208년 병사했다.|연의에서도 우유부단한 형주의 주인으로 그려진다.","liuyan":"강하 사람. 익주목을 청해 내려가 사실상 독립했다. 194년 병사하고 아들 유장이 뒤를 이었다.|연의에서는 유비가 처음 의용군을 이끌 때의 상관으로 나온다.","kongrong":"노국 사람으로 공자의 20대손. 북해상을 지냈고 뒤에 조조를 자주 비판하다 처형됐다.|연의에서도 배를 양보한 일화로 소개된다.","taoqian":"단양 사람. 서주목으로 조조의 침공을 받았고 죽으면서 서주를 유비에게 넘겼다.|연의에서는 세 번 서주를 양보하는 인자한 노인이다.","gongsundu":"요동 사람. 요동 태수로 스스로 요동후라 칭하며 독립 세력을 만들었다.|연의에서는 거의 다뤄지지 않는다.","liuyu":"동해 사람. 유주목으로 이민족을 덕으로 다스렸으나 공손찬과 다투다 193년 죽었다.|연의에서는 유비를 추천하는 인물로 나온다.","hanfu":"영천 사람. 기주목이었으나 원소에게 기주를 넘겨준 뒤 두려움 속에 스스로 목숨을 끊었다.|연의에서도 기주를 빼앗기는 나약한 군주다.","zhangmiao":"동평 사람. 조조의 친구였으나 진궁과 함께 여포를 맞아 조조를 배반했다. 뒤에 부하에게 죽었다.|연의에서도 연주 반란의 주모자로 나온다.","zhangyang":"운중 사람. 하내 태수로 여포와 친했고 헌제를 낙양으로 돌아오게 도왔다.|연의에서도 여포의 벗으로 나온다.","kongzhou":"진류 사람. 예주 자사로 반동탁 연합에 참가했다. 청담에 능했다.|연의에서도 연합 제후 중 하나로 나온다.","liuyao":"동래 사람. 양주 자사로 곡아에서 손책에게 패해 예장으로 달아났다.|연의에서는 태사자를 거느렸으나 알아보지 못한 군주다.","yanbaihu":"오군의 호족 세력. 손책에게 패해 달아났다.|연의에서는 동오덕왕이라 자칭하다 손책에게 쫓긴다.","wanglang":"동해 사람. 회계 태수였다가 손책에게 패해 조조에게 갔고, 위의 사도에 올랐다.|연의에서는 제갈량과 설전을 벌이다 분해서 말에서 떨어져 죽는다.","baoxin":"태산 사람. 일찍부터 조조의 뜻을 알아보고 도왔으나 192년 황건적과 싸우다 전사했다.|연의에서는 연합군 제후로 잠시 나온다.","caimao":"양양 사람. 유표의 처남으로 수군을 맡았고 조조에게 형주를 바쳤다.|연의에서는 주유의 이간계에 걸린 조조에게 처형된다.","kuaiyue":"양양 사람. 유표의 모사로 형주를 안정시켰고 유종에게 조조에게 항복하도록 권했다.|연의에서도 형주의 항복을 이끈다.","huangzu":"강하 태수. 손견을 죽인 원수로 손권에게 208년 패해 죽었다.|연의에서도 손가의 원수로 나온다.","huangshe":"황조의 아들. 예형과 친했으나 예형은 아버지 황조에게 죽었다.|연의에서도 짧게 나온다.","liuqi":"유표의 맏아들. 계모 채씨 일파의 견제를 피해 강하로 나갔고 유비와 손잡았다.|연의에서는 제갈량에게 사다리를 치우고 계책을 묻는다.","liucong":"유표의 둘째 아들. 유표가 죽자 뒤를 이었으나 곧 조조에게 항복했다.|연의에서는 항복 뒤 우금에게 살해당한다.","liuzhang":"유언의 아들. 익주를 이어받았으나 유비를 불러들였다가 214년 성도를 내주었다.|연의에서도 나약하지만 백성을 아낀 군주로 그려진다.","gongsunkang":"공손도의 아들. 요동으로 달아나 온 원상·원희의 목을 베어 조조에게 보냈다.|연의에서도 곽가의 예언대로 원씨 형제를 죽인다.","gongsungong":"공손강의 아우. 형이 죽은 뒤 요동을 이었으나 조카 공손연에게 자리를 빼앗겼다.|연의에서는 거의 나오지 않는다.","gongsunyuan":"공손강의 아들. 오와 위 사이를 오가다 237년 연왕을 칭했고 238년 사마의에게 멸망했다.|연의에서도 사마의의 요동 정벌로 끝난다.","liuhe":"유우의 아들. 헌제의 밀명을 받고 아버지에게 가다 원술에게 억류됐다.|연의에서는 거의 나오지 않는다.","taoshang":"도겸의 아들. 도겸은 아들들 대신 유비에게 서주를 넘겼다.|연의에서도 짧게 이름만 나온다.","wangsu":"왕랑의 아들. 위의 경학자로 사마소의 장인이다.|연의에서는 거의 나오지 않는다.","baoxun":"포신의 아들. 강직하여 조비의 미움을 사 처형됐다.|연의에서는 거의 나오지 않는다.","maxiu":"마등의 아들. 아버지와 함께 허도에 있다가 212년 처형됐다.|연의에서도 아버지와 함께 죽는다.","matie":"마등의 아들. 아버지와 함께 처형됐다.|연의에서도 마휴와 함께 죽는다.","panghui":"방덕의 아들. 263년 종회를 따라 촉에 들어가 관씨 일족을 몰살해 원수를 갚았다.|연의에서도 아버지의 원한을 갚는다.","yanxing":"금성 사람. 한수의 사위였으나 마초와 싸워 그를 거의 죽일 뻔했고 뒤에 조조에게 귀순했다.|연의에서는 거의 나오지 않는다.","zhangquan":"장수의 아들. 아버지의 뒤를 이었으나 위풍 사건에 연루돼 처형됐다.|연의에서는 거의 나오지 않는다.","yuantan":"원소의 맏아들. 아우 원상과 다투다 조조에게 의탁했고 다시 배반해 205년 죽었다.|연의에서도 형제 다툼으로 몰락한다.","yuanxi":"원소의 둘째 아들. 유주를 맡았으나 원상과 함께 요동으로 달아나 공손강에게 죽었다. 아내 견씨는 조비의 부인이 됐다.|연의에서도 같은 길을 걷는다.","gaogan":"원소의 조카. 병주를 맡았고 조조에게 항복했다가 반란을 일으켜 206년 죽었다.|연의에서도 병주 자사로 나온다.","yuanyao":"원술의 아들. 원술이 죽은 뒤 오나라로 가서 벼슬했다.|연의에서는 거의 나오지 않는다.","sunyi":"손견의 셋째 아들. 성품이 손책을 닮아 사나웠다. 단양 태수로 있다가 부하에게 살해됐다.|연의에서는 부인 서씨가 원수를 갚는 이야기가 나온다.","caoang":"조조의 맏아들. 197년 완성에서 장수가 반란을 일으키자 아버지에게 말을 내주고 전사했다.|연의에서도 완성에서 죽는다.","caopi":"조조의 아들. 220년 헌제에게 선양을 받아 위나라 첫 황제가 됐다. 문학에도 뛰어나 『전론』을 남겼다.|연의에서는 아우 조식을 칠보시로 시험한다.","caozhang":"조조의 아들. 수염이 노래 황수아라 불렸고 오환을 정벌한 용맹한 장수였다.|연의에서도 무예가 뛰어난 아들로 나온다.","caozhi":"조조의 아들. 건안 문학을 대표하는 시인으로 후계 다툼에서 조비에게 밀렸다.|연의에서는 일곱 걸음에 시를 지어 목숨을 구한다.","xiahouba":"하후연의 아들. 사마의의 정변 뒤 위험을 느껴 촉으로 망명해 강유와 함께 북벌했다.|연의에서도 강유의 부장으로 활약한다.","liushan":"유비의 아들. 17세에 촉한 황제가 되어 40년 넘게 다스렸고 263년 위에 항복했다.|연의에서는 \"이곳이 즐거워 촉이 생각나지 않는다\"는 말로 유명하다.","zhangbao2":"장비의 아들. 일찍 죽었다.|연의에서는 관흥과 의형제를 맺고 이릉과 북벌에서 싸운다.","zhugeke":"제갈근의 아들. 손권이 죽은 뒤 오의 실권을 잡고 동흥에서 위를 깨뜨렸으나 합비 공략에 실패해 253년 살해됐다.|연의에서도 교만으로 몰락한다.","niufu":"동탁의 사위. 동탁이 죽은 뒤 두려워 달아나다 부하에게 죽었다.|연의에서도 짧게 나온다.","simashi":"사마의의 맏아들. 아버지의 뒤를 이어 조방을 폐하고 관구검의 난을 진압했다.|연의에서도 위 조정을 장악한 권신으로 나온다.","chengyu":"동군 사람. 조조의 책사로 연주가 반란에 휩싸였을 때 세 성을 지켜냈다.|연의에서는 서서의 어머니 글씨를 흉내 내 서서를 불러들인다.","xunyou":"순욱의 조카. 조조의 군사로 여포·원소 정벌에서 기묘한 계책을 냈다.|연의에서도 조조의 핵심 모사다.","liuye":"회남 사람으로 한 황실의 후손. 조조·조비·조예를 섬긴 책사로 앞일을 잘 내다봤다.|연의에서는 벽력거를 만들어 원소군을 깨뜨린다.","manchong":"산양 사람. 법을 엄하게 집행했고 합비 신성을 쌓아 오나라를 막았다.|연의에서도 합비 방어에 나온다.","zhonghui":"종요의 아들. 263년 촉을 멸망시켰으나 강유와 손잡고 독립하려다 부하들에게 죽었다.|연의에서도 야망 끝에 몰락한다.","zhongyao":"영천 사람. 관중을 안정시킨 위의 원로이자 해서체를 완성한 명서예가다.|연의에서도 위의 중신으로 나온다.","chenqun":"영천 사람. 구품관인법을 만들었고 조비·조예를 섬긴 중신이다.|연의에서도 위의 문신으로 나온다.","huaxin":"평원 사람. 손책에게 예장을 바쳤다가 조조를 섬겼고 위의 사도가 됐다.|연의에서는 복황후를 끌어내는 악역으로 그려진다.","cuiyan":"청하 사람. 풍채가 당당하고 강직해 조조가 인사를 맡겼으나, 뒤에 모함을 받아 죽었다.|연의에서는 조조의 위왕 즉위에 반대하다 죽는다.","maojie":"진류 사람. 최염과 함께 인재 선발을 맡아 청렴한 기풍을 세웠다.|연의에서는 거의 나오지 않는다.","jiangji":"초국 평아 사람. 조조·조비·조예·조방 4대를 섬긴 책사로, 관우가 번성을 칠 때 손권과 손잡자고 건의했다.|연의에서도 손권을 끌어들이는 계책을 낸다.","dongzhao":"제음 사람. 헌제를 허도로 옮기자고 건의했고, 조조가 위공·위왕이 되는 일을 앞장서 추진했다.|연의에서도 천도를 권하는 인물로 나온다.","xinpi":"영천 사람. 원담의 사신으로 조조에게 갔다가 조조를 섬겼다. 오장원에서 사마의가 싸우러 나가지 못하게 막았다.|연의에서도 사마의의 출전을 말리는 사신으로 나온다.","yangxiu":"홍농 사람. 재주가 뛰어나 조조의 속마음을 자주 알아맞혔으나 조식 편에 섰다가 219년 처형됐다.|연의에서는 \"계륵\" 일화로 죽음을 맞는다.","xushu":"영천 사람. 유비에게 제갈량을 천거했고, 어머니가 조조군에 붙잡히자 조조에게 갔다.|연의에서는 조조 밑에서 끝내 계책을 하나도 내지 않는다.","caohong":"조조의 사촌 아우. 형양에서 패해 말을 잃은 조조에게 자기 말을 내주며 \"천하에 제가 없어도 되지만 공은 없어선 안 됩니다\"라고 했다.|연의에서도 같은 장면이 나온다.","caochun":"조인의 아우. 조조의 정예 기병 호표기를 이끌어 장판에서 유비를 추격했다.|연의에서는 거의 나오지 않는다.","caoxiu":"조조의 족자. 조조가 \"우리 집의 천리마\"라 불렀다. 228년 석정에서 육손에게 크게 패했다.|연의에서도 주방의 거짓 항복에 속아 패한다.","caozhen":"조조의 양자. 대장군으로 제갈량의 북벌을 막았다.|연의에서는 제갈량의 편지에 분을 못 이겨 죽는다.","xiahoushang":"하후연의 조카. 조비와 친했고 강릉을 공격했다.|연의에서는 제갈량의 계책에 걸려 패하는 장수로 나온다.","zangba":"태산 사람. 여포에게 붙었다가 조조에게 귀순해 청주·서주 일대를 맡았다.|연의에서도 조조군 장수로 나온다.","wangshuang":"위의 장수. 228년 진창 공방 뒤 퇴각하는 제갈량을 쫓다 전사했다.|연의에서는 큰 칼과 유성추를 쓰는 맹장으로, 위연에게 베인다.","guohuai":"태원 사람. 오랫동안 옹주·양주를 지키며 촉의 북벌을 막았다.|연의에서도 강유의 맞수로 나온다.","zhangji2":"풍익 사람. 옹주·양주를 다스리며 강족과 저족을 안정시켰다.|연의에서는 거의 나오지 않는다.","lvqian":"임성 사람. 태산 태수로 지역의 도적을 평정했다.|연의에서도 조조군 장수로 나온다.","zhuling":"청하 사람. 원소를 떠나 조조를 섬긴 장수다.|연의에서는 유비를 막는 조조군 장수로 나온다.","hanhao":"하내 사람. 둔전제를 건의해 조조군의 군량 문제를 풀었다.|연의에서는 하후돈의 부장으로 나온다.","shihuan":"패국 사람. 조조를 일찍부터 따랐고 군사 감독을 맡았다.|연의에서는 거의 나오지 않는다.","wangcan":"산양 사람. 건안칠자 가운데 으뜸으로 꼽히는 문인이다. 유종에게 조조에게 항복하도록 권했다.|연의에서도 형주 항복을 권한다.","chenlin":"광릉 사람. 원소를 위해 조조를 꾸짖는 격문을 썼다. 조조는 그 글을 읽고 두통이 나았다며 그를 받아들였다.|연의에서도 격문 일화가 나온다.","simazhao":"사마의의 둘째 아들. 263년 촉을 멸망시키고 진왕에 올랐다. 아들 사마염이 진나라를 세웠다.|연의에서는 \"사마소의 마음은 길 가는 사람도 안다\"는 말로 유명하다.","qianzhao":"안평 사람. 오랫동안 북방을 지키며 선비족을 다스렸다.|연의에서는 거의 나오지 않는다.","tianyu":"어양 사람. 유비를 따르다 공손찬과 조조를 섬겼고 북방 이민족을 막았다.|연의에서는 거의 나오지 않는다.","wangyi":"조앙의 아내. 마초가 기성을 포위했을 때 남편과 함께 성을 지켰고, 뒤에 마초에게 반격하는 계획을 도왔다.|연의에서는 마초에게 일족을 잃는 비극이 그려진다.","zhenji":"중산 사람. 원희의 아내였다가 업성이 함락되자 조비의 부인이 되어 조예를 낳았다. 뒤에 총애를 잃고 죽었다.|연의에서도 조비가 업성에서 그녀를 얻는다.","dongcheng":"헌제의 장인. 헌제의 밀조를 받아 조조 암살을 꾀하다 200년 처형됐다.|연의에서는 옥대 속 밀조로 유비·마등과 모의한다.","songxian":"여포의 장수. 하비에서 진궁을 묶어 조조에게 항복했다.|연의에서는 여포의 방천화극을 훔쳐 항복한다.","weixu":"여포의 장수이자 친척. 송헌·후성과 함께 조조에게 항복했다.|연의에서도 여포를 배반한다.","houcheng":"여포의 장수. 말을 되찾고 축하하려다 금주령으로 여포에게 꾸짖음을 듣고 배반했다.|연의에서는 적토마를 훔쳐 조조에게 바친다.","caoxing":"여포의 장수. 정사에서는 하후돈과 싸우다 다쳤다는 기록이 짧게 남아 있다.|연의에서는 하후돈의 눈을 맞힌 화살을 쏜 장본인이다.","chendeng":"하비 사람. 광릉 태수로 여포를 무너뜨리는 데 조조를 도왔고 손권의 침입을 막았다.|연의에서도 아버지 진규와 함께 여포를 속인다.","chengui":"진등의 아버지. 원술과 여포의 혼인 동맹을 깨뜨렸다.|연의에서도 아들과 함께 여포를 무너뜨린다.","caobao":"도겸의 장수. 유비가 서주를 맡았을 때 장비와 다투다 죽었다.|연의에서는 장비에게 매질당하고 여포를 끌어들인다.","mizhu":"동해 사람. 큰 부자로 재산을 들여 유비를 도왔고 누이를 유비에게 시집보냈다.|연의에서도 유비의 든든한 후원자다.","mifang":"미축의 아우. 강릉을 지키다 손권에게 항복해 관우가 몰락하는 원인이 됐다.|연의에서는 뒤에 촉으로 돌아오려다 죽는다.","sunqian":"북해 사람. 유비의 사신으로 원소·유표와의 외교를 맡았다.|연의에서도 유비의 사신으로 자주 나온다.","chendao":"여남 사람. 유비의 백이병을 이끈 장수로 조운 다음가는 신망을 얻었다.|연의에서는 거의 나오지 않는다.","huangyueying":"황승언의 딸로 제갈량의 아내. 정사에는 생김새는 수수했으나 재능이 있었다는 기록만 남아 있다.|민간 전승과 연의 계열에서는 목우유마 같은 기계를 만든 재녀로 그려진다.","masu":"마량의 아우. 남정 때 \"마음을 치라\"는 계책을 냈으나 228년 가정에서 산 위에 진을 쳤다가 대패해 처형됐다.|연의에서는 제갈량이 눈물을 흘리며 벤다(읍참마속).","wuyi":"진류 사람. 누이가 유비의 황후가 됐다. 촉의 거기장군으로 한중을 지켰다.|연의에서도 촉의 장수로 나온다.","wuban":"오의의 족제. 이릉 싸움과 북벌에 참가했다.|연의에서도 촉의 장수로 나온다.","liyan":"남양 사람. 유비가 죽을 때 제갈량과 함께 탁고를 받았으나, 군량 수송을 그르치고 거짓 보고를 해 쫓겨났다.|연의에서도 같은 일로 실각한다.","mengda":"부풍 사람. 촉에서 위로 갔다가 다시 촉으로 돌아오려 했으나 228년 사마의에게 빠르게 진압됐다.|연의에서도 사마의의 급습에 죽는다.","liufeng":"유비의 양자. 관우를 돕지 않고 맹달과 다투다 상용을 잃어 처형됐다.|연의에서도 같은 일로 죽는다.","huojun":"남군 사람. 가맹관을 수백 명으로 1년 동안 지켜 유장군 1만을 막았다.|연의에서는 짧게 나온다.","zhangyi":"건위 사람. 촉의 장수로 북벌에 참가했고 강유와 함께 마지막까지 싸웠다.|연의에서도 촉 말기의 장수로 나온다.","zhangni":"파군 사람. 남중을 안정시키고 강유와 북벌하다 전사했다.|연의에서도 촉의 장수로 나온다.","wangping":"파서 사람. 가정에서 마속에게 산 아래 진을 치자고 했고, 패전 뒤 군을 수습했다. 뒤에 한중을 지켰다.|연의에서도 마속을 말리는 부장으로 나온다.","jiangwan":"영릉 사람. 제갈량의 뒤를 이어 촉의 국정을 맡았다.|연의에서도 제갈량의 후계로 지명된다.","feiyi":"강하 사람. 장완의 뒤를 이어 국정을 맡았고 오와의 외교에 능했다. 253년 위 항장에게 살해됐다.|연의에서도 촉의 재상으로 나온다.","dongyun":"남군 사람. 유선의 시중으로 환관 황호를 견제했다.|연의에서는 거의 나오지 않는다.","yiji":"산양 사람. 유표 밑에 있을 때 유비에게 위험을 알렸고 뒤에 촉의 법령을 함께 만들었다.|연의에서는 적로마의 흉조를 알려 준다.","liaoli":"무릉 사람. 재주가 있었으나 다른 신하들을 비방하다 쫓겨났다.|연의에서는 거의 나오지 않는다.","dengzhi":"남양 사람. 유비가 죽은 뒤 오에 사신으로 가서 촉·오 동맹을 되살렸다.|연의에서도 끓는 솥 앞에서 손권을 설득한다.","qiaozhou":"파서 사람. 촉의 학자로 북벌에 반대했고 263년 유선에게 항복을 권했다.|연의에서도 항복을 권하는 인물이다.","leitong":"유장의 장수. 유비에게 항복했고 한중 싸움에서 장합에게 패해 죽었다.|연의에서도 장합에게 죽는다.","liuba":"영릉 사람. 화폐를 정비해 촉의 재정을 바로잡았다.|연의에서는 거의 나오지 않는다.","panjun":"무릉 사람. 유비 밑에서 형주를 맡다가 손권에게 귀순해 오의 중신이 됐다.|연의에서는 거의 나오지 않는다.","shamoke":"무릉 만족의 우두머리. 이릉 싸움에서 유비를 도왔다가 전사했다.|연의에서는 감녕을 활로 쏘아 죽인다.","yongkai":"익주의 호족. 유비가 죽자 남중에서 반란을 일으켰다가 고정의 부하에게 죽었다.|연의에서도 남중 반란의 주모자다.","gaoding":"월수의 이민족 우두머리. 남중 반란에 가담했다가 제갈량에게 죽었다.|연의에서는 제갈량에게 귀순한다.","mengyou":"정사에 기록이 없는 인물이다.|연의에서는 맹획의 아우로 거짓 항복을 했다가 들킨다.","jinhuan":"정사에 기록이 없는 인물이다.|연의에서는 맹획의 부하 동주로, 조운에게 베인다.","dongtuna":"정사에 기록이 없는 인물이다.|연의에서는 맹획의 동주로, 맹획을 묶어 제갈량에게 바친다.","ahuinan":"정사에 기록이 없는 인물이다.|연의에서는 맹획의 동주로, 동도나와 함께 맹획을 배반한다.","mulu":"정사에 기록이 없는 인물이다.|연의에서는 코끼리를 타고 맹수를 부리는 팔납동의 왕이다.","duosi":"정사에 기록이 없는 인물이다.|연의에서는 독천이 있는 독룡동의 왕으로 맹획을 숨겨 준다.","zhanghong":"광릉 사람. 손책·손권의 모사로 건업 천도를 권했다.|연의에서도 강동의 문신으로 나온다.","lvfan":"여남 사람. 손책 때부터 섬겼고 재정을 맡았다.|연의에서는 유비와 손상향의 혼인을 중매한다.","zhuhuan":"오군 사람. 222년 유수에서 조인의 대군을 적은 병력으로 막아냈다.|연의에서도 조인을 깨뜨린다.","zhuran":"주치의 양자. 관우를 사로잡는 데 참여했고 강릉을 지켜 위군을 막았다.|연의에서는 이릉 싸움에서 조운에게 죽는다(정사와 다르다).","panzhang":"동군 사람. 그의 부하 마충이 관우를 사로잡았다.|연의에서는 관흥에게 죽는다(정사에서는 그 뒤로도 살았다).","dingfeng":"여강 사람. 오나라 4대를 섬긴 장수로 동흥에서 눈 속에 단병으로 위군을 깨뜨렸다.|연의에서는 제갈량을 쫓다 놓치는 장면으로 먼저 나온다.","jiangqin":"구강 사람. 손책 때부터 섬겼고 손권의 권유로 학문을 닦았다.|연의에서도 강동 장수로 나온다.","chenwu":"여강 사람. 합비에서 전사했다.|연의에서는 유수구에서 방덕에게 죽는다.","dongxi":"회계 사람. 황조를 칠 때 쇠사슬을 끊어 길을 열었다. 배가 뒤집혀 죽었다.|연의에서도 짧게 나온다.","zhuzhi":"단양 사람. 손견·손책·손권을 섬긴 원로로 오군 태수를 오래 지냈다.|연의에서는 거의 나오지 않는다.","sunjing":"손견의 아우. 형을 도와 거병했다.|연의에서는 손책에게 계책을 내는 숙부로 나온다.","sunyu":"손정의 아들. 학문을 좋아한 장수였다.|연의에서는 거의 나오지 않는다.","sunhuan":"손하의 아들. 이릉 싸움에서 이릉성에 포위됐으나 끝까지 버텼다.|연의에서는 관흥·장포에게 쫓긴다.","sunshao":"손하의 아들. 광릉을 지키며 위를 막았다.|연의에서는 서성과 함께 조비를 막는다.","guyong":"오군 사람. 오의 승상으로 19년 동안 국정을 맡았다.|연의에서도 강동 문신으로 나온다.","bushi":"임회 사람. 교주를 평정하고 뒤에 승상이 됐다.|연의에서도 강동 문신으로 나온다.","kanze":"회계 사람. 가난한 집에서 학문을 닦은 학자다.|연의에서는 황개의 거짓 항복 편지를 조조에게 전한다.","luji":"육강의 아들. 어려서 원술의 귤을 품에 넣어 어머니에게 가져가려 한 효자로 유명하다.|연의에서도 회귤 일화로 나온다.","hesi":"회계 사람. 산월을 평정하는 데 큰 공을 세웠다.|연의에서는 거의 나오지 않는다.","quancong":"오군 사람. 손권의 사위로 위를 막는 싸움에 참가했다.|연의에서도 오의 장수로 나온다.","lvdai":"광릉 사람. 교주를 다스리고 남방 여러 나라와 교류했다.|연의에서는 거의 나오지 않는다.","daqiao":"교공의 딸로 손책의 부인. 동생 소교와 함께 절세미인으로 이름났다.|연의에서는 제갈량이 조조가 두 교씨를 노린다며 주유를 자극한다.","xiaoqiao":"교공의 딸로 주유의 부인. 언니 대교와 함께 이교라 불렸다.|연의에서는 동작대부 일화로 적벽 싸움의 불씨가 된다.","fengji":"남양 사람. 원소의 모사로 전풍을 모함했고 뒤에 원상을 받들었다.|연의에서도 원가를 분열시킨다.","hanmeng":"원소의 장수. 관도 무렵 군량 수송대를 지키다 조조군에게 습격당했다.|연의에서는 서황에게 패한다.","lvkuang":"원상의 장수. 아우 여상과 함께 조조에게 항복했다.|연의에서는 조운에게 죽는다.","lvxiang":"여광의 아우. 함께 조조에게 항복했다.|연의에서는 장비에게 죽는다.","tadun":"요서 오환의 우두머리. 원상을 받아들였다가 207년 백랑산에서 장료에게 죽었다.|연의에서도 조조의 북정 때 죽는다.","kebineng":"선비족의 우두머리. 북방을 통합해 위를 위협했고 촉과 손잡으려 했다.|연의에서는 사마의의 계책으로 등장한다.","qiaorui":"원술의 장수. 조조군에게 패해 죽었다.|연의에서는 원술군 장수로 짧게 나온다.","zhangxun":"원술의 대장. 여포와 싸워 패했다.|연의에서도 원술군 대장으로 나온다.","leibo":"원술의 장수. 원술을 버리고 진란과 함께 산으로 들어갔다.|연의에서도 원술을 버린다.","chenlan":"원술의 장수. 뇌박과 함께 원술을 떠났다가 장료에게 토벌됐다.|연의에서도 짧게 나온다.","yanxiang":"원술의 주부. 원술이 황제를 칭하려 하자 반대했다.|연의에서도 칭제를 말린다.","yangfeng":"백파적 출신. 헌제를 호위해 낙양으로 돌아왔으나 조조에게 밀려 유비에게 죽었다.|연의에서도 헌제의 동귀를 돕는다.","dongmin":"동탁의 아우. 동탁이 죽자 함께 죽었다.|연의에서도 동탁 일족과 함께 처형된다.","duanwei":"무위 사람. 동탁의 장수였으나 헌제의 동귀를 도왔고 뒤에 이각을 쳤다.|연의에서는 짧게 나온다.","fanchou":"동탁의 장수. 이각과 함께 장안을 차지했으나 이각에게 살해됐다.|연의에서도 이각에게 죽는다.","lisu":"오원 사람. 여포를 꾀어 정원을 죽이게 했고, 동탁 암살 때도 가담했다.|연의에서는 적토마를 가지고 여포를 설득한다.","huzhen":"동탁의 장수. 손견을 치다 여포와 다투어 패했다.|연의에서는 정보에게 죽는다.","chengyi":"서량 군벌. 마초·한수와 함께 동관에서 조조와 싸우다 죽었다.|연의에서도 동관 싸움에서 죽는다.","houxuan":"서량 군벌. 동관 싸움에 참가했다가 한중으로 달아났다.|연의에서도 서량 장수로 나온다.","liangxing":"서량 군벌. 동관 싸움 뒤 하후연에게 토벌됐다.|연의에서도 서량 장수로 나온다.","mawan":"서량 군벌. 동관 싸움에 참가했다.|연의에서도 서량 장수로 나온다.","yangqiu":"서량 군벌. 동관 싸움 뒤 조조에게 항복했다.|연의에서도 서량 장수로 나온다.","liupan":"유표의 조카. 장사에서 손권군과 자주 싸웠다.|연의에서는 황충과 함께 장사를 지킨다.","zhangyun":"유표의 조카. 채모와 함께 형주 수군을 맡았다.|연의에서는 채모와 함께 조조에게 처형된다.","kuailiang":"괴월의 형. 유표가 형주를 안정시키는 데 계책을 냈다.|연의에서도 유표의 모사로 나온다.","hanxuan":"장사 태수. 유비가 형주 남부를 차지할 때 항복했다.|연의에서는 황충을 의심하다 위연에게 죽는다.","jinxuan":"무릉 태수. 유비의 남정 때 패해 죽었다.|연의에서는 장비와 싸우다 부하에게 죽는다.","zhaofan":"계양 태수. 유비의 남정 때 조운에게 항복했다.|연의에서는 형수를 조운에게 시집보내려다 거절당한다.","liudu":"영릉 태수. 유비의 남정 때 항복했다.|연의에서도 아들 유현과 함께 항복한다.","xingdaorong":"정사에 기록이 없는 인물이다.|연의에서는 영릉의 상장으로 큰 도끼를 썼으나 조운에게 죽는다.","shixie":"창오 사람. 교지를 40년 동안 다스리며 학문을 장려했고 손권에게 복속했다.|연의에서는 거의 나오지 않는다.","pangxi":"하남 사람. 유장의 장수로 파서를 지켰고 뒤에 유비를 섬겼다.|연의에서도 유장의 신하로 나온다.","gaopei":"유장의 장수. 백수관을 지키다 유비에게 죽었다.|연의에서도 양회와 함께 죽는다.","yanghuai":"유장의 장수. 백수관을 지키다 유비에게 죽었다.|연의에서는 유비를 암살하려다 들킨다.","lengbao":"유장의 장수. 유비에게 맞서다 죽었다.|연의에서는 위연에게 붙잡혔다가 다시 맞서다 죽는다.","dengxian":"유장의 장수. 유비에게 맞섰다.|연의에서는 황충의 화살에 맞아 죽는다.","zhangsong":"촉군 사람. 유장의 사신으로 조조에게 갔다가 냉대받고 유비에게 익주를 바치려 했으나 들켜 처형됐다.|연의에서는 맹덕신서를 한 번 보고 외운다.","wanglei":"유장의 종사. 유비를 들이지 말라고 간했다.|연의에서는 성문에 거꾸로 매달려 간하다 줄을 끊고 떨어져 죽는다.","yangren":"장로의 장수. 양평관에서 조조군과 싸웠다.|연의에서는 하후연에게 죽는다.","yangang":"장로의 장수. 양평관에서 조조군과 싸웠다.|연의에서는 양평관을 지키다 죽는다.","yangsong":"장로의 모사. 정사에는 기록이 거의 없다.|연의에서는 뇌물을 받고 방덕을 모함해 조조에게 넘어가게 한다.","yanpu":"장로의 공조. 장로가 한중왕을 칭하려는 것을 말렸다.|연의에서도 장로에게 신중함을 권한다.","bocai":"영천의 황건 장수. 황보숭과 주준을 포위했으나 화공에 크게 패했다.|연의에서도 화공에 패한다.","zhangmancheng":"남양의 황건 장수. 남양 태수를 죽였으나 뒤에 토벌됐다.|연의에서는 짧게 나온다.","hanzhong2":"남양의 황건 장수. 완성을 지키다 주준에게 패했다.|연의에서는 손견·유비 등에게 쫓겨 죽는다.","peiyuanshao":"정사에 기록이 없는 인물이다.|연의에서는 황건 잔당 출신 산적으로, 관우를 따르려다 조운에게 죽는다.","gongdu":"여남의 황건 잔당. 유벽과 함께 유비를 맞아들였다.|연의에서는 장비에게 죽는다.","liupi":"여남의 황건 잔당. 원소와 손잡고 조조를 위협했다.|연의에서는 유비를 지키다 고람에게 죽는다.","heyi":"여남의 황건 잔당 우두머리. 조조에게 토벌됐다.|연의에서는 허저에게 사로잡힌다.","huangshao":"여남의 황건 잔당. 조조에게 토벌됐다.|연의에서도 조조군에게 죽는다.","yuji":"낭야의 도사. 강동에서 부적과 물로 병을 고쳐 따르는 사람이 많았다.|연의에서는 손책에게 처형된 뒤 그를 괴롭히는 혼령이 된다.","zuoci":"여강의 방사. 신선술로 이름났다.|연의에서는 조조 앞에서 술잔을 쪼개고 생선을 낚는 요술로 조조를 놀린다.","guanlu":"평원 사람. 점과 관상으로 이름난 술사다.|연의에서는 조조와 하후연의 앞날을 맞힌다.","simahui":"영천 사람. 사람을 알아보는 눈이 있어 수경 선생이라 불렸다. 제갈량과 방통을 와룡과 봉추라 일컬었다.|연의에서는 유비에게 두 사람을 처음 알려 준다.","cuizhouping":"박릉 사람. 제갈량의 친구다.|연의에서는 유비에게 천하의 흥망을 이야기하는 은자로 나온다.","shitao":"영천 사람. 제갈량·서서와 함께 공부한 친구로 뒤에 위의 관리가 됐다.|연의에서는 유비가 와룡을 찾을 때 만나는 은자다.","huangchengyan":"면남의 명사. 딸을 제갈량에게 시집보냈다.|연의에서는 육손을 석진에서 꺼내 준다.","pangdegong":"양양의 명사. 방통의 숙부로 와룡·봉추라는 이름을 지었다고 한다.|연의에서는 녹문산에 숨어 사는 은자다.","caiwenji":"채옹의 딸로 이름은 채염. 흉노에 끌려가 12년을 살았다가 조조가 몸값을 치러 돌아왔다. 「비분시」를 남겼다.|연의에서는 조조가 조아비의 비문을 묻는 장면에 나온다.","huangfusong":"안정 사람. 황건의 난 토벌에서 가장 큰 공을 세운 명장이다.|연의에서도 황건적을 화공으로 깨뜨린다.","zhujun":"회계 사람. 황보숭과 함께 황건의 난을 진압했다.|연의에서도 유비·관우·장비와 함께 황건적을 친다.","lushi":"탁군 사람. 대학자로 유비와 공손찬의 스승이다. 황건 토벌 중 모함을 받아 압송됐다.|연의에서도 유비의 스승으로 나온다.","hejin":"남양 사람. 누이가 황후가 되어 대장군에 올랐다. 환관을 없애려다 189년 십상시에게 먼저 살해됐다.|연의에서도 동탁을 불러들인 실책으로 난세를 연다.","dingyuan":"병주 자사. 여포를 거느렸으나 동탁의 꾐에 넘어간 여포에게 살해됐다.|연의에서는 여포의 양아버지다.","wangkuang":"태산 사람. 하내 태수로 반동탁 연합에 참가했다.|연의에서도 연합 제후로 나온다.","qiaomao":"동군 태수. 삼공의 이름을 빌린 격문을 돌려 반동탁 연합을 일으켰다. 유대에게 죽었다.|연의에서도 연합 제후로 나온다.","zhangchao":"장막의 아우. 광릉 태수로 연합에 참가했고 뒤에 조조에게 옹구에서 포위돼 죽었다.|연의에서도 연합 제후로 나온다.","liudai":"동래 사람. 연주 자사로 연합에 참가했으나 교모를 죽였고, 192년 황건적과 싸우다 죽었다.|연의에서도 연합 제후로 나온다."};
+function tzGsHtml(g,h){const b=GMAP[g],d=TZ_GS[g]||(b&&b.pid&&TZ_GS[b.pid]);if(!d)return '';const[cw,ch,n,f]=d,k=h/ch,w=Math.round(cw*k);
+  return `<div class="tz-gsp" data-n="${n}" data-w="${w}" style="width:${w}px;height:${h}px;background:url(../img/${f}) 0 0/${w*4}px ${h*4}px no-repeat" role="img" aria-label="${esc(b.name)} 대기 모션"></div>`}
+function tzGsPlay(){const el=document.querySelector('#sheet .tz-gsp');if(!el||!el.animate||matchMedia('(prefers-reduced-motion: reduce)').matches)return;const n=+el.dataset.n,w=+el.dataset.w;
+  el.animate([{backgroundPosition:'0px 0px'},{backgroundPosition:`-${n*w}px 0px`}],{duration:n*260,iterations:Infinity,easing:`steps(${n})`})}
 function tzGenSheet(g,back){const s=tzState(),b=GMAP[g],G=s.G&&s.G[g];if(!b||!G)return;const P=TZ_PC[g]||[50,50,50],it=tzItOf(s,g),me=G.o===s.me;
   const own=G.o==='free'?'재야':G.o==='cap'?`포로(${tzFN(s,G.cb)})`:G.o==='dead'?'사망':G.o==='wait'?'아직 안 나옴':tzFN(s,G.o);
   const isL=tzIsL(s,g),gov=!!s.F[G.o]&&!!s.C[G.c]&&tzGov(s,G.c)===g,where=G.o==='dead'||G.o==='wait'?'-':G.o==='free'&&!G.fd&&!(s.C[G.c]&&s.C[G.c].o===s.me)?'알 수 없음':tzCN(G.c);
-  let u=null;try{u=mkUnit({g,lv:tzLv(s,g),d:0,i:it?[it+':0']:[]},0,0)}catch(e){u=null}
-  const st=(n,v)=>`<div class="stat"><small>${n}</small><b>${v}</b></div>`;
-  openSheet(`<div class="sheet-h">${seal(b,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz||'')}</span></h2>
-   <div class="stars r${b.rar}" style="font-size:14px">${stars(b.rar)}</div><div class="sub" style="margin:0">${FAC[b.fac]||''} · ${CLS[b.cls].g} ${CLS[b.cls].n} · <span style="color:${tzCol(G.o)}">${esc(own)}</span>${isL?' · 군주':''}${gov?' · 태수':''}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+  const st=(n,v)=>`<div class="stat"><small>${n}</small><b>${v}</b></div>`,body=tzGsHtml(g,150);
+  const bio=TZ_BIO[g]||(b.pid&&b.kid?'':''),[zs,yy]=String(bio).split('|');
+  openSheet(`<div class="sheet-h">${body?'':seal(b,'lg')}<div style="min-width:0"><h2 style="margin:0">${esc(b.name)} <span style="font-size:15px;color:var(--mute)">${esc(b.hz||'')}</span></h2>
+   <div class="sub" style="margin:0"><span style="color:${tzCol(G.o)}">${esc(own)}</span>${isL?' · 군주':''}${gov?' · 태수':''}${b.kid&&b.pid?` · ${esc(tzName(b.pid))}의 ${b.kid==='女'?'딸':'아들'}`:''}</div></div><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   ${body?`<div class="tz-gsw">${body}</div>`:''}
    <h3>군웅할거 능력치</h3><div class="stats">${st('무력',tzStr(g))}${st('지력',tzInt(g))}${st('통솔',tzLead(g))}</div><div class="stats" style="margin-top:4px">${st('정치',tzPol(g))}${st('매력',tzCha(g))}${st('의리',P[2])}</div>
-   <p class="sub" style="margin:6px 0">${me?`충성 ${G.ly} · `:''}Lv ${tzLv(s,g)} · 공적 ${G.mr} · 있는 곳 ${where}${it?` · 보물 ${esc(IMAP[it].name)}`:''}</p>
-   ${u?`<h3>전투 능력치 <span style="font-weight:400">· Lv ${tzLv(s,g)}</span></h3><div class="stats">${st('체력',fmt(u.maxhp))}${st('공격',fmt(u.atk))}${st('방어',fmt(u.def))}${st('속도',u.spd)}</div>`:''}
-   ${skill3Html(b,u)}${back?'<button type="button" class="btn ghost wide" data-tz="gl" style="margin-top:10px">장수 일람으로</button>':''}`)}
+   <p class="sub" style="margin:6px 0">${me?`충성 ${G.ly} · `:''}Lv ${tzLv(s,g)} · 공적 ${G.mr} · 있는 곳 ${where}</p>
+   ${it?`<p class="sub" style="margin:0 0 6px">보물 <b style="color:#e9c66c">${esc(IMAP[it].name)}</b> ★${IMAP[it].rar} · ${TZ_STN[tzItCat(it)]} +${tzItV(it)}${tzIFd(it)?` · ${esc(tzIFd(it))}`:''}</p>`:''}
+   ${zs?`<h3>정사 · 연의</h3><div class="tz-bio"><p><b>정사</b> ${esc(zs)}</p>${yy?`<p><b>연의</b> ${esc(yy.replace(/^연의에서는\s*|^연의에서도\s*/,''))}</p>`:''}</div>`:b.kid?'<h3>정사 · 연의</h3><div class="tz-bio"><p>이번 판에서 태어난 가상의 자식 장수예요.</p></div>':''}
+   ${back?'<button type="button" class="btn ghost wide" data-tz="gl" style="margin-top:10px">장수 일람으로</button>':''}`);tzGsPlay()}
 // ---- 장수 일람 · 보물 일람 ----
 let tzGLf='all',tzGLs='lead';
 const TZ_GLS=[['lead','통솔',g=>tzLead(g)],['str','무력',g=>tzStr(g)],['int','지력',g=>tzInt(g)],['pol','정치',g=>tzPol(g)],['cha','매력',g=>tzCha(g)],['lv','공적',(g,s)=>s.G[g].mr]];
@@ -5620,8 +5658,8 @@ function tzILSheet(){const s=tzState(),me=s.me,ids=Object.keys(s.I).sort((a,b)=>
   const mine=ids.filter(id=>{const h=s.I[id];return h==='t:'+me||(h[0]==='g'&&s.G[h.slice(2)].o===me)}).length,hid=ids.filter(id=>s.I[id][0]==='h').length;
   openSheet(`<div class="sheet-h"><h2 style="margin:0">보물 일람</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <p class="sub" style="margin:0 0 6px">이번 판 보물 ${ids.length}개 · 우리 세력 ${mine}개 · 숨은 보물 ${hid}개 (탐색으로 찾아요)</p>
-   <div class="tz-glw"><table class="tz-gl"><thead><tr><th>보물</th><th>등급</th><th>효과</th><th>하사 충성</th><th>있는 곳</th></tr></thead><tbody>${ids.map(id=>{const it=IMAP[id];
-     return `<tr><td class="nm"><b>${esc(it.name)}</b></td><td>${'★'.repeat(it.rar)}</td><td>${nm[tzItCat(id)]} +${tzItV(id)}</td><td class="n">+${tzItLy(id)}</td><td>${loc(id)}</td></tr>`}).join('')}</tbody></table></div>`)}
+   <div class="tz-glw"><table class="tz-gl"><thead><tr><th>보물</th><th>등급</th><th>효과</th><th>특수 능력</th><th>하사 충성</th><th>있는 곳</th></tr></thead><tbody>${ids.map(id=>{const it=IMAP[id];
+     return `<tr><td class="nm"><b>${esc(it.name)}</b></td><td>${'★'.repeat(it.rar)}</td><td>${nm[tzItCat(id)]} +${tzItV(id)}</td><td class="tz-ifx">${esc(tzIFd(id))||'<span class="sub" style="margin:0">-</span>'}</td><td class="n">+${tzItLy(id)}</td><td>${loc(id)}</td></tr>`}).join('')}</tbody></table></div>`)}
 function tzCmdSheet(c){const s=tzState(),k=tzSel;if(c==='gov')return tzGovSheet();if(c==='dlg')return tzDlgSheet();if(c==='trd')return tzTrdSheet();if(c==='gift')return tzGiftSheet();if(c==='arm')return tzArmSheet();const idle=tzIdle(s,k),v=TZ_CMD[c];if(!idle.length)return;
   if(!tzDraft||tzDraft.c!==c||tzDraft.k!==k)tzDraft={c,k,g:'',tg:c==='inv'?(tzBestInv(s.C[k])||'fa'):'',gs:[],pct:70,st:'df',it:''};const D=tzDraft;
   const best={inv:x=>D.tg==='df'?tzLead(x):tzPol(x),ben:x=>tzCha(x),drf:x=>tzCha(x),trn:x=>tzLead(x),sch:x=>tzInt(x),rec:x=>tzCha(x),spy:x=>tzInt(x),ali:x=>tzCha(x),prs:x=>tzCha(x),aid:x=>tzCha(x),sur:x=>tzCha(x),sab:x=>tzInt(x)}[c]||(x=>tzPow(x));
@@ -5670,7 +5708,7 @@ function tzGiftSheet(){const s=tzState(),k=tzSel,its=tzItIn(s,'t:'+s.me),gs=tzGe
   if(!its.includes(D.tg))D.tg=its[0]||'';if(!gs.includes(D.g))D.g=gs.filter(g=>g!==s.F[s.me].lord).sort((a,b)=>s.G[a].ly-s.G[b].ly)[0]||gs[0]||'';
   openSheet(`<div class="sheet-h"><h2 style="margin:0">${tzCN(k)} · 하사</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <p class="sub" style="margin:0 0 8px">무기는 무력, 서책은 지력, 갑옷·말은 통솔, 보옥은 매력이 올라요(★3 +3 · ★4 +5 · ★5 +8). 받은 장수 충성 +20~30. 전투에서도 그 보물 효과가 붙어요. 장수마다 보물 1개, 전에 가진 보물은 금고로 돌아가요.</p>
-   ${its.length?`<h3 style="margin:0 0 6px">보물</h3><div class="chips">${its.map(id=>`<button type="button" data-tzt="${id}" aria-pressed="${D.tg===id}">${esc(IMAP[id].name)} ★${IMAP[id].rar} · ${TZ_STN[tzItCat(id)]} +${tzItV(id)}</button>`).join('')}</div>`:'<p class="sub">금고에 보물이 없어요. 탐색하거나 상인에게 사요.</p>'}
+   ${its.length?`<h3 style="margin:0 0 6px">보물</h3><div class="chips">${its.map(id=>`<button type="button" data-tzt="${id}" aria-pressed="${D.tg===id}">${esc(IMAP[id].name)} ★${IMAP[id].rar} · ${TZ_STN[tzItCat(id)]} +${tzItV(id)}</button>`).join('')}</div>${D.tg&&tzIFd(D.tg)?`<p class="sub" style="margin:6px 0 0;font-size:12px">${esc(IMAP[D.tg].name)} 특수 능력 · ${esc(tzIFd(D.tg))}</p>`:''}`:'<p class="sub">금고에 보물이 없어요. 탐색하거나 상인에게 사요.</p>'}
    <h3 style="margin:8px 0 6px">받을 장수</h3><div class="dl-pick">${gs.map(g=>tzPickBtn(s,g,`data-tzg="${g}"`,D.g===g)).join('')}</div>
    <button type="button" class="btn red wide" style="margin-top:8px" data-tzgo="do" ${D.g&&D.tg?'':'disabled'}>하사</button>`)}
 function tzGo(mode){const s=tzState(),D=tzDraft;if(!D)return;const k=D.k;
@@ -8742,8 +8780,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.3.3';
-const GW_NOTICES=[{v:'1.3.3',date:'2026-11-01',title:'군웅할거 v1.3.3 · 정찰 · 데려오기 · 지도 깃발',items:[
+const GW_VER='1.3.4';
+const GW_NOTICES=[{v:'1.3.4',date:'2026-11-01',title:'군웅할거 v1.3.4 · 보물 특수 능력 · 장수 전신 · 출진 연출',items:[
+  '보물 51종이 이제 판마다 모두 천하에 깔려요(전에는 24개). ★3은 탐색으로 잘 나오고 ★5는 잘 안 나와요. 예전 판을 이어 하면 빠져 있던 보물이 빈 성들에 새로 숨겨져요.',
+  '보물에 특수 능력이 붙었어요. 명마(적토마 · 한혈보마 · 절영)는 퇴각 때 절대 안 붙잡히고 적로는 한 판에 한 번 빠져나와요. 전국옥새는 매력을 100으로 맞추고 동맹 · 원조 · 항복 권고를 +30%p 올려요. 일기토 · 돌격 · 궁병 · 수비 · 사기 · 계략 효과도 있어요. 보물 일람의 특수 능력 칸과 하사 창에서 확인해요.',
+  '덧붙인 효과: 적토마는 데려오기 1달 단축, 손자병법은 계략 +10%p와 직접 지휘 때 적 작전 미리 보기, 전국옥새는 있는 성 민심 매달 +2, 팔진도는 성을 지킬 때 받는 피해 −15%예요. 학우선 · 백우선을 가지면 직접 지휘 때 군사가 작전을 추천하고, 칠성보도를 가지면 전투에서 \'암살\'을 한 번 쓸 수 있어요.',
+  '장수 상세 창에서 초상화 대신 전신 그림이 제자리에서 움직여요. 별 · 소속 · 병과 · 전투 능력치 · 스킬처럼 군웅할거에서 쓰지 않는 값은 뺐어요. 대신 장수 320명 모두 정사 기록과 연의 묘사를 2~3줄로 넣었어요.',
+  '출진하거나 적이 내 성을 치러 올 때, 지도 위 길로 세력 깃발을 단 기병이 흙먼지를 내며 달려가요(약 1.5초). 메뉴(☰)에서 끌 수 있고, 기기에서 움직임 줄이기를 켜 두면 나오지 않아요.',
+  '메뉴(☰)에 \'음악 미리 받기 · 약 4.5MB\'가 생겼어요. 9곡을 한 번에 받아 두면 다음부터는 받지 않고 바로 틀어요. 원래도 한 번 들은 곡은 저장돼서 매번 다시 받지는 않아요.',
+  '천하 표에 \'묶기: 주별 · 세력별\'이 생겼어요. 세력별은 성이 많은 세력부터 깃발 · 군주 · 성 수 · 병사 합계 · 관계를 보여 주고, 눌러서 접어요. 빈 성은 맨 끝에 모여요.',
+  '지도 깃발을 다듬었어요. 깃대를 술보다 조금 긴 정도로 줄이고 금테와 금빛 술을 달았어요. 내 성 목록 · 주 경계 버튼은 지도 밖 위쪽으로 옮겼고, 지역 이름표(양주(서량) 등)는 깃발을 피해 자리를 잡아요.']},{v:'1.3.3',date:'2026-11-01',title:'군웅할거 v1.3.3 · 정찰 · 데려오기 · 지도 깃발',items:[
   '계략에 \'정찰\'이 생겼어요. 금 200으로 천하 어느 성이든 살펴봐요. 성공하면 12개월 동안 그 성의 금 · 군량 · 인구 · 훈련 · 농업 · 상업 · 민심과 장수 충성 · 레벨이 보여요.',
   '성공률은 맡긴 장수의 지력이 높을수록, 그 성 태수의 지력이 낮을수록 올라가요. 실패하면 15% 확률로 들켜서 그 세력의 적대가 10 올라요.',
   '남의 성 카드에서도 바로 \'정찰\'을 누를 수 있어요. 지력이 가장 높은 장수가 있는 내 성에서 보내요.',
@@ -8893,10 +8939,33 @@ const TZB_PH=['초반','중반','후반'];
 const TZB_K={dmg:.12,m1:50,m2:25,dfd:180,brk:.3,mb:20};  // 밸런스 값: 피해율 · 사기(잃은 비율 ×m1, 차이 ×m2) · 방어 감쇠 · 무너짐(병사 비율 · 사기)
 const TZB_ACT={atk:['공격','보통으로 싸워요'],chg:['돌격·일제','기병 돌격 ×1.5 · 궁병 일제 ×1.4(통솔 70+) · 받는 피해 ×1.25'],sch:['계략','성공하면 적 사기 −15 · 실패하면 아군 사기 −5'],def:['수비','주는 피해 ×0.5 · 받는 피해 ×0.55']};
 const TZ_HORSE={xiliang:1,anding:1,tianshui:1,beiping:1,ji:1,xiangping:1,jinyang:1};  // 군마 산지: 군마 반값
-const TZB_SAFE=['chitu','hanxue','jueying','dilu'];  // 명마: 부대가 무너져도 붙잡히지 않아요
-const tzBSafe=(s,g)=>{const it=g&&tzItOf(s,g);return !!it&&TZB_SAFE.includes(it)};
+const TZB_SAFE=Object.keys(TZ_IFX).filter(id=>TZ_IFX[id][0].safe||TZ_IFX[id][0].safe1);  // 명마: 부대가 무너져도 붙잡히지 않아요
+const tzBSafe=(s,g)=>tzIFv(s,g,'safe')>0;
+const tzBU=(bt,u,k)=>u&&u.g?tzIFv(bt.s0||(S&&S.tz),u.g,k):0;
+const tzBSide=(bt,i,k)=>bt.U[i].filter(u=>!u.out&&!u.cap&&u.n>0).reduce((m,u)=>Math.max(m,tzBU(bt,u,k)),0);
+// 붙잡힐 상황에서 빠져나가나(명마 · 적로는 한 판에 한 번)
+const tzBEsc=(bt,g)=>{const s=bt.s0||(S&&S.tz);if(!g)return false;if(tzIFv(s,g,'safe'))return true;if(tzIFv(s,g,'safe1')&&!(bt.e1||(bt.e1={}))[g]){bt.e1[g]=1;return true}return false};
+const tzBItN=(bt,u)=>{const s=bt.s0||(S&&S.tz),id=u&&u.g&&s?tzItOf(s,u.g):'';return id?IMAP[id].name:''};
+// 전투 시작 효과: 사기 보너스 · 매복 · 수자기
+function tzBStart(bt){const who=i=>i?'적':'아군';bt.fl=[0,0];bt.asn=[0,0];
+  for(let i=0;i<2;i++){let mo=0,src='';bt.U[i].forEach(u=>{const v=tzBU(bt,u,'mo')+(u.ty==='cav'?tzBU(bt,u,'cvM'):0);if(v>mo){mo=v;src=tzBItN(bt,u)}});
+    if(mo){bt.M[i]=Math.min(100,bt.M[i]+mo);bt.log.push(`${who(i)} ${src} · 시작 사기 +${mo}`)}
+    if(bt.L[i]&&tzIFv(bt.s0||(S&&S.tz),bt.L[i],'mf'))bt.fl[i]=1}
+  for(let i=0;i<2;i++){const a=tzBSide(bt,i,'amb');if(a){bt.M[1-i]=Math.max(0,bt.M[1-i]-a);bt.log.push(`${who(i)} 삼략 매복 · ${who(1-i)} 사기 −${a}`)}}}
+// 암살(칠성보도): i 쪽이 한 판에 한 번
+const tzBAsnU=(bt,i)=>bt.asn&&!bt.asn[i]?tzBLive(bt,i).find(u=>tzBU(bt,u,'asn')):null;
+const tzBIsLord=(bt,i,g)=>{const s=bt.s0||(S&&S.tz),F=s&&s.F[i?bt.bf:bt.af];return !!F&&F.lord===g};
+function tzBAsn(bt,i){const u=tzBAsnU(bt,i);if(!u)return;bt.asn[i]=1;const who=x=>x?'적':'아군',T=tzBLive(bt,1-i).filter(v=>v.g).sort((a,b)=>tzStr(b.g)-tzStr(a.g))[0];if(!T)return;
+  if(bt.r()<tzBSchP(bt,i)){T.sk=bt.ph;bt.log.push(`${who(i)} ${tzName(u.g)} 암살 성공 · ${tzName(T.g)}이(가) ${TZB_PH[Math.min(2,bt.ph)]}에 빠져요`)}
+  else if(bt.r()<.3&&!tzBIsLord(bt,i,u.g)&&!tzBEsc(bt,u.g)){u.cap=1;u.out=1;bt.M[i]=Math.max(0,bt.M[i]-10);bt.log.push(`${who(i)} ${tzName(u.g)} 암살 실패 · ${tzName(u.g)} 포로 · ${who(i)} 사기 −10`)}
+  else bt.log.push(`${who(i)} ${tzName(u.g)} 암살 실패`);tzBCheck(bt)}
+// 적 작전 미리 보기(손자병법) · 군사 추천(학우선·백우선)
+const TZB_CTR={def:'sch',chg:'def',sch:'chg',atk:'chg'};
+function tzBTip(bt){if(!bt.fl)tzBStart(bt);const see=tzBSide(bt,0,'see'),adv=tzBSide(bt,0,'adv');if(!see&&!adv)return '';if(!bt.nx)bt.nx=tzBAi(bt,1);
+  const e=bt.nx,rc=TZB_CTR[e]==='chg'&&!tzBLive(bt,0).some(u=>u.ty==='cav'||u.ty==='arc')?'atk':TZB_CTR[e];
+  return `<p class="sub tzb-tip" style="margin:6px 0 0;font-size:12px">${see?`손자병법 · 적은 이번 국면에 <b>${TZB_ACT[e][0]}</b>을(를) 할 거예요`:''}${see&&adv?' · ':''}${adv?`군사 추천 · <b>${TZB_ACT[rc][0]}</b>`:''}</p>`}
 const tzBNeed=(ty,n)=>ty==='arc'||ty==='spr'?{wp:Math.ceil(n/10),hs:0}:ty==='cav'?{wp:0,hs:Math.ceil(n/10)}:{wp:0,hs:0};
-const tzUCap=g=>Math.max(500,tzLead(g)*100);
+const tzUCap=g=>Math.max(500,tzLead(g)*100)+tzIFv(S&&S.tz,g,'cap');
 // 병사 나누기: 장수마다 통솔×100명까지, 남는 병사는 성에 남아요
 function tzAlloc(gs,tr){const cap=gs.map(tzUCap),sum=cap.reduce((a,b)=>a+b,0)||1;let n=gs.map((g,i)=>Math.min(cap[i],Math.floor(tr*cap[i]/sum)));
   let left=tr-n.reduce((a,b)=>a+b,0);for(let i=0;i<gs.length&&left>0;i++){const d=Math.min(left,cap[i]-n[i]);n[i]+=d;left-=d}return {n,left}}
@@ -8918,11 +8987,11 @@ function tzBInit(s,from,to,gens,tr,ty0,rng){const A=s.C[from],B=s.C[to],af=A.o,b
   const L0=gens.slice().sort((a,b)=>tzLead(b)-tzLead(a))[0],L1=dg.slice().sort((a,b)=>tzLead(b)-tzLead(a))[0]||'';
   const mor=g=>Math.max(40,Math.min(90,Math.round(60+(g?tzLead(g):40)/10)));
   return {k:from,to,af,bf,tr,left:al.left,U:[U0,U1],M:[mor(L0),mor(L1)],L:[L0,L1],ph:0,log:[],duel:0,done:0,win:0,ask:null,use:[ua,ub],
-    I:[best(U0,tzInt),best(U1,tzInt)],r:rng||tzRng,cm:[[],[]],last:[null,null],pass:!!TZ_PASS[to],df:B.df}}
+    I:[best(U0,tzInt),best(U1,tzInt)],r:rng||tzRng,cm:[[],[]],last:[null,null],pass:!!TZ_PASS[to],df:B.df,s0:s}}
 const tzBLive=(bt,i)=>bt.U[i].filter(u=>!u.out&&u.n>0);
 const tzBSum=(bt,i)=>tzBLive(bt,i).reduce((a,u)=>a+u.n,0);
 const tzBSum0=(bt,i)=>bt.U[i].reduce((a,u)=>a+u.n0,0);
-const tzBSchP=(bt,i)=>Math.max(.1,Math.min(.85,.35+(bt.I[i]-bt.I[1-i])/150));
+const tzBSchP=(bt,i)=>Math.max(.1,Math.min(.95,.35+(bt.I[i]-bt.I[1-i])/150+tzBSide(bt,i,'sc')));
 const tzBGn=u=>u.g?tzName(u.g):'수비군';
 // AI 작전
 function tzBAi(bt,i){const me=tzBLive(bt,i),en=tzBLive(bt,1-i),r=bt.r();if(!me.length)return 'atk';
@@ -8934,29 +9003,35 @@ function tzBAi(bt,i){const me=tzBLive(bt,i),en=tzBLive(bt,1-i),r=bt.r();if(!me.l
   if(bt.I[i]-bt.I[1-i]>=5&&r<.25)return 'sch';
   return r<.12?'def':'atk'}
 // 한 국면: 두 쪽 작전으로 피해를 주고받아요
-function tzBPhase(bt,a0,a1){const act=[a0,a1],lg=[],start=[tzBSum(bt,0),tzBSum(bt,1)],mf=[.6+bt.M[0]/175,.6+bt.M[1]/175];
+function tzBPhase(bt,a0,a1){if(!bt.fl)tzBStart(bt);if(bt.ph===0)for(const i of [0,1])if((i===1||bt.ai0)&&tzBAsnU(bt,i)&&bt.r()<.6)tzBAsn(bt,i);if(bt.done)return;
+  const act=[a0,a1],lg=[],start=[tzBSum(bt,0),tzBSum(bt,1)],mf=[.6+bt.M[0]/175,.6+bt.M[1]/175];
   lg.push(`${TZB_PH[bt.ph]} · 아군 ${TZB_ACT[a0][0]} · 적군 ${TZB_ACT[a1][0]}`);
   const sch=[1,1];
-  for(let i=0;i<2;i++)if(act[i]==='sch'){if(bt.r()<tzBSchP(bt,i)){bt.M[1-i]=Math.max(0,bt.M[1-i]-15);const ex=Math.round(start[1-i]*.06);sch[i]=ex;lg.push(`${i?'적':'아군'} 계략 성공 · ${i?'아군':'적'} 사기 −15`)}
+  for(let i=0;i<2;i++)if(act[i]==='sch'){if(bt.r()<tzBSchP(bt,i)){const mm=15+tzBSide(bt,i,'schM');bt.M[1-i]=Math.max(0,bt.M[1-i]-mm);const ex=Math.round(start[1-i]*.06);sch[i]=ex;lg.push(`${i?'적':'아군'} 계략 성공 · ${i?'아군':'적'} 사기 −${mm}`)}
     else{bt.M[i]=Math.max(0,bt.M[i]-5);sch[i]=0;lg.push(`${i?'적':'아군'} 계략 실패 · ${i?'적':'아군'} 사기 −5`)}}
   const dmg=[bt.U[0].map(()=>0),bt.U[1].map(()=>0)];
   for(let i=0;i<2;i++){const j=1-i,me=tzBLive(bt,i),en=tzBLive(bt,j),tot=en.reduce((a,u)=>a+u.n,0);if(!me.length||!tot)continue;
-    const take=act[j]==='def'?.55:act[j]==='chg'?1.25:1,defC=j===1?(1-bt.df/TZB_K.dfd)*(bt.pass?.87:1)*(act[j]==='def'?1:1):1;
-    me.forEach(u=>{let m=act[i]==='chg'?(u.ty==='cav'?1.5:u.ty==='arc'?(u.g&&tzLead(u.g)>=70?1.4:1.15):1.15):act[i]==='sch'?.6:act[i]==='def'?(i===1?.5:.5):1;
+    let take=act[j]==='def'?(tzBSide(bt,j,'def2')?.3:.55):act[j]==='chg'?1.25:1;if(act[j]==='def'&&tzBSide(bt,i,'brk'))take=(take+1)/2;if(j===1&&tzBSide(bt,j,'dfT'))take*=tzBSide(bt,j,'dfT');const defC=j===1?(1-bt.df/TZB_K.dfd)*(bt.pass?.87:1)*(act[j]==='def'?1:1):1;
+    me.forEach(u=>{if(u.sk===bt.ph)return;let m=act[i]==='chg'?(u.ty==='cav'?1.5:u.ty==='arc'?(u.g&&tzLead(u.g)>=70?1.4:1.15):1.15):act[i]==='sch'?.6:act[i]==='def'?(i===1?.5:.5):1;
       if(i===0&&u.ty==='inf')m*=1.2;  // 공성: 보병이 성벽 싸움에 강해요
+      if(act[i]==='chg')m*=1+tzBU(bt,u,'chg');if(i===0)m*=1+tzBU(bt,u,'sg');m*=1+tzBU(bt,u,'fst')+(u.ty==='cav'?tzBU(bt,u,'cvF'):0);
+      const fire=u.ty==='arc'&&tzBU(bt,u,'fire');if(u.ty==='arc')m*=(tzBU(bt,u,'arx')||1)*(1+(fire||0));if(u.n<u.n0*.3)m*=1+tzBU(bt,u,'ls');
       const base=u.n*u.q*mf[i]*m*TZB_K.dmg*(.9+bt.r()*.2);
-      en.forEach(v=>{const c=TZB_ADV[u.ty]===v.ty?1.3:TZB_ADV[v.ty]===u.ty?.8:1;dmg[j][bt.U[j].indexOf(v)]+=base*(v.n/tot)*c*take*defC})});
-    if(sch[i]>1)en.forEach(v=>{dmg[j][bt.U[j].indexOf(v)]+=sch[i]*(v.n/tot)})}
+      en.forEach(v=>{const c=TZB_ADV[u.ty]===v.ty?1.3:TZB_ADV[v.ty]===u.ty?.8:1;let t=(tzBU(bt,v,'tk')||1)*(u.ty==='cav'&&tzBU(bt,v,'cvT')||1)*(u.ty==='arc'&&tzBU(bt,v,'arT')||1)*(fire&&tzBU(bt,v,'frT')||1)*(act[j]==='chg'&&tzBU(bt,v,'chT')||1);
+        dmg[j][bt.U[j].indexOf(v)]+=base*(v.n/tot)*c*take*defC*t})});
+    if(sch[i]>1)en.forEach(v=>{dmg[j][bt.U[j].indexOf(v)]+=sch[i]*(v.n/tot)*(tzBU(bt,v,'frT')||1)})}
   for(let j=0;j<2;j++)bt.U[j].forEach((u,x)=>{if(u.out||!u.n)return;const d=Math.min(u.n,Math.round(dmg[j][x]));u.n-=d;
     if(u.n<=Math.max(30,u.n0*.05)){u.n=0;u.out=1;bt.M[j]=Math.max(0,bt.M[j]-10);
       const p=u.g?Math.max(.05,Math.min(.6,.25+(60-tzStr(u.g))/200)):0,S0=bt.s0;
-      if(u.g&&!(S0&&tzBSafe(S0,u.g))&&bt.r()<p){u.cap=1;lg.push(`${j?'적':'아군'} ${tzBGn(u)} 부대 궤멸 · ${tzBGn(u)} 포로`)}else lg.push(`${j?'적':'아군'} ${tzBGn(u)} 부대 궤멸${u.g&&S0&&tzBSafe(S0,u.g)?' · 명마로 빠져나갔어요':''}`)}});
+      const rl=u.g&&bt.r()<p;if(rl&&!tzBEsc(bt,u.g)){u.cap=1;lg.push(`${j?'적':'아군'} ${tzBGn(u)} 부대 궤멸 · ${tzBGn(u)} 포로`)}else lg.push(`${j?'적':'아군'} ${tzBGn(u)} 부대 궤멸${rl?` · ${tzBItN(bt,u)}(으)로 빠져나갔어요`:''}`)}});
   const now=[tzBSum(bt,0),tzBSum(bt,1)],lf=[0,1].map(i=>start[i]?(start[i]-now[i])/start[i]:0);
   for(let i=0;i<2;i++)bt.M[i]=Math.max(0,Math.min(100,Math.round(bt.M[i]-lf[i]*TZB_K.m1+(lf[1-i]-lf[i])*TZB_K.m2)));
+  for(let i=0;i<2;i++){const who=i?'적':'아군',a=tzBLive(bt,i).filter(u=>u.ty==='arc'&&u.sk!==bt.ph).reduce((m,u)=>Math.max(m,tzBU(bt,u,'arM')),0);if(a&&tzBLive(bt,1-i).some(u=>u.g)){bt.M[1-i]=Math.max(0,bt.M[1-i]-a);lg.push(`${who} 패왕궁 저격 · ${i?'아군':'적'} 사기 −${a}`)}
+    const rg=tzBSide(bt,i,'rg');if(rg){let h=0;tzBLive(bt,i).forEach(u=>{const v=Math.min(u.n0-u.n,Math.round(u.n*rg));u.n+=v;h+=v});if(h)lg.push(`${who} 청낭서 · 병사 +${fmt(h)} 회복`)}}
   lg.push(`아군 −${fmt(start[0]-now[0])} (사기 ${bt.M[0]}) · 적군 −${fmt(start[1]-now[1])} (사기 ${bt.M[1]})`);
   bt.last=act;bt.ph++;bt.log.push(...lg);tzBCheck(bt)}
 const tzBBroke=(bt,i)=>!tzBLive(bt,i).length||tzBSum(bt,i)<tzBSum0(bt,i)*TZB_K.brk||bt.M[i]<=TZB_K.mb;
-function tzBCheck(bt){if(bt.done)return;const a=tzBBroke(bt,0),b=tzBBroke(bt,1);
+function tzBCheck(bt){if(bt.done)return;if(bt.fl)for(let i=0;i<2;i++)if(bt.fl[i]&&bt.M[i]<=TZB_K.mb)bt.M[i]=TZB_K.mb+1;const a=tzBBroke(bt,0),b=tzBBroke(bt,1);
   if(a){bt.done=1;bt.win=0;bt.log.push('아군이 무너졌어요 · 퇴각')}
   else if(b){bt.done=1;bt.win=1;bt.log.push('적군이 무너졌어요 · 성을 차지해요')}
   else if(bt.ph>=3){bt.done=1;bt.win=0;bt.log.push('세 국면 안에 성을 떨어뜨리지 못했어요 · 퇴각')}}
@@ -8967,12 +9042,14 @@ function tzBDuelAi(bt,d){const bar=tzStr(d.c.g)-8;if(tzStr(d.t.g)>=bar)return 'a
 function tzBDuel(bt,d,resp){bt.duel=1;const side=d.ch,o=1-side,nm=x=>tzName(x.g),who=i=>i?'적':'아군';
   if(resp==='ref'){bt.M[o]=Math.max(0,bt.M[o]-10);bt.log.push(`${who(side)} ${nm(d.c)}의 일기토 신청 · ${who(o)}이 거절 · ${who(o)} 사기 −10`);tzBCheck(bt);return}
   let t=d.t;if(resp==='sub'){t=tzBLive(bt,o).filter(u=>u.g).sort((a,b)=>tzStr(b.g)-tzStr(a.g))[0]||t;bt.log.push(`${who(o)} ${nm(t)}이(가) ${nm(d.t)} 대신 나섰어요`)}
-  const p=1/(1+Math.exp(-(tzStr(d.c.g)-tzStr(t.g))/5)),cw=bt.r()<p,W=cw?d.c:t,L=cw?t:d.c,ws=W.side,ls=L.side;
+  const ds=u=>tzStr(u.g)+tzBU(bt,u,'dS'),p=1/(1+Math.exp(-(ds(d.c)-ds(t))/5));let cw=bt.r()<p;
+  {const L0=cw?t:d.c;if(tzBU(bt,L0,'dTw')){const c2=bt.r()<p;bt.log.push(`${nm(L0)} 자웅일대검 · 한 번 더 겨뤄요`);cw=c2}}
+  const W=cw?d.c:t,L=cw?t:d.c,ws=W.side,ls=L.side;
   L.n=Math.round(L.n*.7);bt.M[ls]=Math.max(0,bt.M[ls]-20);bt.M[ws]=Math.min(100,bt.M[ws]+5);
-  let tx=`일기토 ${nm(d.c)}(무력 ${tzStr(d.c.g)}) 대 ${nm(t)}(무력 ${tzStr(t.g)}) · ${nm(W)} 승리 · ${who(ls)} 사기 −20`;
-  if(bt.r()<.6&&!(bt.s0&&tzBSafe(bt.s0,L.g))){L.cap=1;L.out=1;tx+=` · ${nm(L)} 포로`}bt.log.push(tx);tzBCheck(bt)}
+  let tx=`일기토 ${nm(d.c)}(무력 ${ds(d.c)}) 대 ${nm(t)}(무력 ${ds(t)}) · ${nm(W)} 승리 · ${who(ls)} 사기 −20`;
+  if((tzBU(bt,W,'dCap')||bt.r()<.6)&&!tzBU(bt,L,'dNC')&&!tzBEsc(bt,L.g)){L.cap=1;L.out=1;tx+=` · ${nm(L)} 포로`}else if(tzBU(bt,L,'dNC'))tx+=` · ${nm(L)} 수면탄두개로 붙잡히지 않았어요`;bt.log.push(tx);tzBCheck(bt)}
 // 남은 국면을 자동으로(플레이어 쪽도 AI 작전)
-function tzBAuto(bt){let guard=0;while(!bt.done&&guard++<10){if(bt.ask){const d=bt.ask;bt.ask=null;tzBDuel(bt,d,tzBDuelAi(bt,d));continue}
+function tzBAuto(bt){let guard=0;bt.ai0=1;while(!bt.done&&guard++<10){if(bt.ask){const d=bt.ask;bt.ask=null;tzBDuel(bt,d,tzBDuelAi(bt,d));continue}
   tzBPhase(bt,tzBAi(bt,0),tzBAi(bt,1));if(!bt.done&&bt.ph===1&&!bt.duel&&bt.r()<tzPcDuelP(bt)){const d=tzBDuelPick(bt,tzPcDuelSide(bt));if(d)tzBDuel(bt,d,tzBDuelAi(bt,d))}}}
 const tzBTop=(bt,i)=>tzBLive(bt,i).filter(u=>u.g).reduce((m,u)=>Math.max(m,tzStr(u.g)),0);
 // 결과 반영
@@ -9015,7 +9092,7 @@ function tzBSheet(){const bt=tzBT;if(!bt)return;const s=tzState(),side=i=>{const
      <p class="sub" style="margin:4px 0 8px">지면 그 부대 병사 −30% · 사기 −20, 60% 확률로 포로가 돼요. 거절하면 사기 −10이에요.</p>
      <div class="row" style="gap:6px"><button type="button" class="btn red" style="flex:1" data-tzbx="dacc">받기</button><button type="button" class="btn" style="flex:1" data-tzbx="dsub">대리(가장 센 장수)</button><button type="button" class="btn ghost" style="flex:1" data-tzbx="dref">거절</button></div></div>`}
   else ctl=`<div class="tzb-acts">${Object.entries(TZB_ACT).map(([k,v])=>`<button type="button" data-tzbx="${k}"><b>${v[0]}</b><small>${k==='sch'?`성공 ${Math.round(tzBSchP(bt,0)*100)}% · 지력 ${bt.I[0]} 대 ${bt.I[1]}`:v[1]}</small></button>`).join('')}</div>
-     <div class="row" style="gap:6px;margin-top:6px"><button type="button" class="btn ghost" style="flex:1" data-tzbx="duel" ${bt.duel||!tzBDuelPick(Object.assign({},bt,{r:()=>.5}),0)?'disabled':''}>일기토 신청</button><button type="button" class="btn ghost" style="flex:1" data-tzbx="auto">나머지 자동</button></div>`;
+     ${tzBTip(bt)}<div class="row" style="gap:6px;margin-top:6px">${tzBAsnU(bt,0)&&bt.ph<3?`<button type="button" class="btn ghost" style="flex:1" data-tzbx="asn">암살 · ${Math.round(tzBSchP(bt,0)*100)}%</button>`:''}<button type="button" class="btn ghost" style="flex:1" data-tzbx="duel" ${bt.duel||!tzBDuelPick(Object.assign({},bt,{r:()=>.5}),0)?'disabled':''}>일기토 신청</button><button type="button" class="btn ghost" style="flex:1" data-tzbx="auto">나머지 자동</button></div>`;
   const html=`<div class="sheet-h"><h2 style="margin:0">${tzCN(bt.to)} 전투</h2></div><div class="tzb-phs">${pills}</div><div class="tzb-sides">${side(0)}${side(1)}</div>
    <div class="tzb-log">${bt.log.slice(-8).map(l=>`<div>${esc(l)}</div>`).join('')||'<div class="sub" style="margin:0">작전을 골라요. 세 국면 안에 적을 무너뜨려야(병사 30% 아래 · 사기 20 이하) 성을 차지해요.</div>'}</div>${ctl}`;
   const sb=$('#sheet .sheet-body');if(!$('#sheet').hidden&&sb&&sb.querySelector('.tzb-phs'))sb.innerHTML=html;else openSheet(html);
@@ -9032,7 +9109,8 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-tzbx]');if
   if(v==='dacc'||v==='dsub'||v==='dref'){const d=bt.ask;bt.ask=null;tzBDuel(bt,d,v.slice(1));}
   else if(v==='duel'){if(bt.duel)return;const d=tzBDuelPick(bt,0);if(d)tzBDuel(bt,d,tzBDuelAi(bt,d))}
   else if(v==='auto'){tzBAuto(bt)}
-  else if(TZB_ACT[v]){tzBPhase(bt,v,tzBAi(bt,1));tzBAfter()}
+  else if(v==='asn'){if(!bt.fl)tzBStart(bt);tzBAsn(bt,0);bt.nx=null}
+  else if(TZB_ACT[v]){const e=bt.nx||tzBAi(bt,1);bt.nx=null;tzBPhase(bt,v,e);tzBAfter()}
   if(bt.done&&!bt.txt)tzBFin();tzBSheet()});
 // ---- 출진 시트: 장수마다 병종 고르기 ----
 function tzTyPick(s,k,D,tr){if(!D.gs.length)return '';const C=s.C[k];D.ty=D.ty||{};const al=tzAlloc(D.gs,tr);
@@ -9272,22 +9350,33 @@ function tzAdvSheet(){const s=tzState(),a=tzAdv(s),gs=tzGL(s).map(b=>b.id).filte
    ${gs.length?`<div class="dl-pick">${gs.map(g=>tzPickBtn(s,g,`data-tzadvp="${g}"`,a===g)).join('')}</div>${a?'<button type="button" class="btn ghost wide" style="margin-top:8px" data-tzadvp="">군사 두지 않기</button>':''}`:'<p class="sub">지력 80 이상인 장수가 없어요. 탐색·등용으로 찾아 보세요.</p>'}`)}
 
 // ---- 천하 표 ----
-let tzVw='',tzTf='all';const tzZc=new Set();
+// v1.3.4 세력별 묶기: 성 많은 세력부터, 빈 성은 맨 끝
+function tzTblFac(s,vis,row){const by={};TZ_K.forEach(k=>{const o=s.C[k].o;(by[o]=by[o]||[]).push(k)});
+  const fs=Object.keys(by).filter(o=>o!=='neu').sort((a,b)=>by[b].length-by[a].length||(a===s.me?-1:b===s.me?1:0));if(by.neu)fs.push('neu');let h='';
+  for(const o of fs){const ks=by[o],vk=ks.filter(vis);if(!vk.length)continue;const op=!tzFc.has(o),neu=o==='neu'||!s.F[o],col=neu?'#8a8578':tzCol(o),L=!neu&&s.F[o].lord;
+    const tr=ks.reduce((a,k)=>a+s.C[k].tr,0),mk=neu?'':tzMk(s,o);
+    h+=`<tr class="zh fh" data-tzfc="${o}"><td colspan="10">${op?'▾':'▸'} ${mk?`<span class="tz-fg" style="--fac:${col};--fct:${tzFct(col)}">${esc(mk)}</span>`:''}<b>${neu?'빈 성':esc(tzFN(s,o))}</b>${o===s.me?' <span class="tg">우리</span>':''}${neu?'':tzRelTag(s,o)}
+     <small>${L?`군주 ${esc(tzName(L))} · `:''}성 ${ks.length} · 병사 ${fmt(tr)}${o===s.me?` · 금 ${fmt(ks.reduce((a,k)=>a+s.C[k].g,0))} · 군량 ${fmt(ks.reduce((a,k)=>a+s.C[k].fd,0))}`:''}</small></td></tr>`;
+    if(op)for(const k of vk)h+=row(k)}
+  return h}
+let tzVw='',tzTf='all',tzTg=(()=>{try{return localStorage.getItem('gw-tg')==='fac'?'fac':'zone'}catch(_){return 'zone'}})();const tzZc=new Set(),tzFc=new Set();
 function tzTblHtml(s){const mine=tzMine(s),near=new Set(mine.flatMap(k=>TZ_ADJ[k]).filter(n=>s.C[n].o!==s.me&&!tzAlly(s,s.me,s.C[n].o)));
   const vis=k=>tzTf==='all'||(s.C[k].o===s.me)||(tzTf==='near'&&near.has(k));
-  let h=`<div class="tz-tbf"><div class="tz-dl" role="group" aria-label="범위">${[['all','전체'],['mine','내 성만'],['near','내 성 + 이웃']].map(([v,n])=>`<button type="button" data-tztf="${v}" aria-pressed="${tzTf===v}">${n}</button>`).join('')}</div>
-   <div class="tz-dl" role="group" aria-label="주"><button type="button" data-tzzc="+">주 펼치기</button><button type="button" data-tzzc="-">주 접기</button></div><span class="sum">내 성 ${mine.length} · 공격 가능 ${near.size}</span></div>
-   <div class="tz-tbx"><table class="tz-tbl"><thead><tr><th>성</th><th>세력</th><th>태수</th><th class="n">병사</th><th class="n">금</th><th class="n">군량</th><th class="n">민심</th><th>구분</th><th>운영</th><th>경고</th></tr></thead><tbody>`;
-  for(const z in TZ_ZH){const[zn,ks]=TZ_ZH[z],vk=ks.filter(vis);if(!vk.length)continue;const cnt={};ks.forEach(k=>{const n=tzFN(s,s.C[k].o);cnt[n]=(cnt[n]||0)+1});
-    const zo=tzZOwn(s,z),op=!tzZc.has(z);
-    h+=`<tr class="zh" data-tzzc="${z}"><td colspan="10">${op?'▾':'▸'} ${zn}<small>${ks.length}성 · ${Object.entries(cnt).map(([n,c])=>`${esc(n)} ${c}`).join(' · ')}</small>${zo?`<span class="pz">${zo===s.me?'평정 · ':esc(tzFN(s,zo))+' 평정 · '}금·군량 +${Math.round(tzZB(z)*100)}%</span>`:''}</td></tr>`;
-    if(!op)continue;
-    for(const k of vk){const C=s.C[k],o=C.o,me=o===s.me,gv=tzGov(s,k),q='<span class="q">?</span>',dl=me?tzDlOf(s,k):'';
+  const row=k=>{let h='';const C=s.C[k],o=C.o,me=o===s.me,gv=tzGov(s,k),q='<span class="q">?</span>',dl=me?tzDlOf(s,k):'';
       const w=[];if(me){if(C.ml<40)w.push('民');if(C.fd<C.tr*.12)w.push('糧');if(gv&&!tzHome(s,k)&&s.G[gv].ly<50)w.push('叛')}if(s.lc&&s.lc.k===k)w.push('蝗');
       const tg=me?(tzHome(s,k)?'<span class="tg">거점</span>':tzFront(s,k)?'<span class="tg f">전선</span>':'<span class="tg">후방</span>'):near.has(k)?'<span class="tg a">공격 가능</span>':tzAlly(s,s.me,o)?'<span class="tg">동맹</span>':'';
       h+=`<tr class="ct${me?' me':''}${tzSel===k?' sel':''}" data-tzk="${k}"><td>${tzCN(k)}<small>${tzHZ(k)}</small></td><td><span class="dot" style="--fac:${tzCol(o)}"></span>${esc(tzFN(s,o))}${tzRelTag(s,o)}</td>
        <td>${gv?esc(tzName(gv)):me?'<span class="w">없음</span>':o==='neu'?'—':q}</td><td class="n">${fmt(C.tr)}</td><td class="n">${me?fmt(C.g):q}</td><td class="n">${me?fmt(C.fd):q}</td><td class="n">${me?(C.ml<40?`<span class="w">${C.ml}</span>`:C.ml):q}</td>
-       <td>${tg}</td><td>${me?TZ_DL[dl][0]+(tzDirect(dl)?` · 명령 ${tzIdle(s,k).length}`:''):''}</td><td>${w.length?`<span class="w">${w.join('')}</span>`:''}</td></tr>`}}
+       <td>${tg}</td><td>${me?TZ_DL[dl][0]+(tzDirect(dl)?` · 명령 ${tzIdle(s,k).length}`:''):''}</td><td>${w.length?`<span class="w">${w.join('')}</span>`:''}</td></tr>`;return h};
+  let h=`<div class="tz-tbf"><div class="tz-dl" role="group" aria-label="범위">${[['all','전체'],['mine','내 성만'],['near','내 성 + 이웃']].map(([v,n])=>`<button type="button" data-tztf="${v}" aria-pressed="${tzTf===v}">${n}</button>`).join('')}</div>
+   <div class="tz-dl" role="group" aria-label="묶기"><button type="button" data-tztg="zone" aria-pressed="${tzTg==='zone'}">주별</button><button type="button" data-tztg="fac" aria-pressed="${tzTg==='fac'}">세력별</button></div>
+   <div class="tz-dl" role="group" aria-label="접기"><button type="button" data-tzzc="+">모두 펼치기</button><button type="button" data-tzzc="-">모두 접기</button></div><span class="sum">내 성 ${mine.length} · 공격 가능 ${near.size}</span></div>
+   <div class="tz-tbx"><table class="tz-tbl"><thead><tr><th>성</th><th>세력</th><th>태수</th><th class="n">병사</th><th class="n">금</th><th class="n">군량</th><th class="n">민심</th><th>구분</th><th>운영</th><th>경고</th></tr></thead><tbody>`;
+  if(tzTg==='fac')h+=tzTblFac(s,vis,row);else for(const z in TZ_ZH){const[zn,ks]=TZ_ZH[z],vk=ks.filter(vis);if(!vk.length)continue;const cnt={};ks.forEach(k=>{const n=tzFN(s,s.C[k].o);cnt[n]=(cnt[n]||0)+1});
+    const zo=tzZOwn(s,z),op=!tzZc.has(z);
+    h+=`<tr class="zh" data-tzzc="${z}"><td colspan="10">${op?'▾':'▸'} ${zn}<small>${ks.length}성 · ${Object.entries(cnt).map(([n,c])=>`${esc(n)} ${c}`).join(' · ')}</small>${zo?`<span class="pz">${zo===s.me?'평정 · ':esc(tzFN(s,zo))+' 평정 · '}금·군량 +${Math.round(tzZB(z)*100)}%</span>`:''}</td></tr>`;
+    if(!op)continue;
+    for(const k of vk)h+=row(k)}
   return h+`</tbody></table></div>`}
 function tzViewHtml(s){const wk=isWork(),v=wk?'tbl':(tzVw||'map'),mine=tzMine(s);
   let h=`<div class="tz-vt" role="group" aria-label="보기">${wk?'':`<button type="button" data-tzvw="map" aria-pressed="${v==='map'}">지도 보기</button>`}<button type="button" data-tzvw="tbl" aria-pressed="${v==='tbl'}">천하 표</button><button type="button" data-tz="gl">장수 일람</button><button type="button" data-tz="il">보물 일람</button></div>`;
@@ -9320,7 +9409,9 @@ document.addEventListener('click',e=>{const s=tzState();
   const vw=e.target.closest('[data-tzvw]');if(vw){tzVw=vw.dataset.tzvw;renderView();return}
   if(e.target.closest('[data-tzml]')){tzMineSheet();return}
   const tf=e.target.closest('[data-tztf]');if(tf){tzTf=tf.dataset.tztf;renderView();return}
-  const zc=e.target.closest('[data-tzzc]');if(zc){const z=zc.dataset.tzzc;if(z==='+')tzZc.clear();else if(z==='-')Object.keys(TZ_ZH).forEach(x=>tzZc.add(x));else tzZc.has(z)?tzZc.delete(z):tzZc.add(z);renderView();return}
+  const tg=e.target.closest('[data-tztg]');if(tg){tzTg=tg.dataset.tztg;try{localStorage.setItem('gw-tg',tzTg)}catch(_){}renderView();return}
+  const fc=e.target.closest('[data-tzfc]');if(fc){const o=fc.dataset.tzfc;tzFc.has(o)?tzFc.delete(o):tzFc.add(o);renderView();return}
+  const zc=e.target.closest('[data-tzzc]');if(zc){const z=zc.dataset.tzzc;if(tzTg==='fac'){if(z==='+')tzFc.clear();else if(z==='-')Object.values(tzState().C).forEach(C=>tzFc.add(C.o));renderView();return}if(z==='+')tzZc.clear();else if(z==='-')Object.keys(TZ_ZH).forEach(x=>tzZc.add(x));else tzZc.has(z)?tzZc.delete(z):tzZc.add(z);renderView();return}
   if(e.target.closest('#sheet [data-tzk]')&&!$('#sheet').hidden){setTimeout(closeSheet,0);return}
   if(e.target.closest('[data-tzadv]')){tzAdvSheet();return}
   const ap=e.target.closest('[data-tzadvp]');if(ap){const g=ap.dataset.tzadvp;if(!g||tzAdvOk(s,g)){s.adv=g;if(s.pj&&!s.pj.done)s.pj=null;save();toast(g?`${tzName(g)}을(를) 군사로 두었어요`:'군사를 두지 않아요');renderView();if(tzPjPend(s).length)tzPjSheet();else closeSheet()}return}
@@ -10075,7 +10166,7 @@ function gwsRow(){return `<div class="banner-card" id="gws-row" style="padding:1
 function gwsPaint(){const r=$('#gws-row');if(!r)return;r.outerHTML=gwsRow();gwsBind()}
 function gwsBind(){const a=$('#gws-in'),b=$('#gws-now'),c=$('#gws-out');if(a)a.onclick=gwsLogin;if(b)b.onclick=async()=>{if(gwsMeta().dirty)await gwsPush();await gwsCheck();gwsSetSt(gwsSt==='err'?'err':'ok');toast('서버 기록과 맞췄어요')};if(c)c.onclick=gwsLogout}
 function gwVolRow(){const v=bgmVol(),r=(k,n,x)=>`<label style="display:flex;align-items:center;gap:10px;margin:6px 0"><span style="width:64px;font-size:13px;flex:none">${n}</span><input type="range" min="0" max="100" step="5" value="${x}" data-gwvol="${k}" aria-label="${n} 음량" style="flex:1;accent-color:var(--gold,#e9c66c)"><b class="num" style="width:40px;text-align:right;font-size:13px">${x}%</b></label>`;
-  return `<div class="banner-card" style="padding:12px;margin:0 0 10px"><div style="display:flex;justify-content:space-between;align-items:center"><b>음량</b>${bgmBtn('btn ghost sm',1)}</div>${r('b','배경음악',v.b)}${r('j','효과음악',v.j)}<p class="sub" style="margin:4px 0 0;font-size:12px">이 기기에만 저장돼요. 효과음악은 승리 · 패배 · 경사 · 흉사 때 나와요.</p></div>`}
+  return `<div class="banner-card" style="padding:12px;margin:0 0 10px"><div style="display:flex;justify-content:space-between;align-items:center"><b>음량</b>${bgmBtn('btn ghost sm',1)}</div>${r('b','배경음악',v.b)}${r('j','효과음악',v.j)}<p class="sub" style="margin:4px 0 0;font-size:12px">이 기기에만 저장돼요. 효과음악은 승리 · 패배 · 경사 · 흉사 때 나와요.</p>${gwMusRow()}${gwRideRow()}</div>`}
 document.addEventListener('input',e=>{const t=e.target.closest&&e.target.closest('[data-gwvol]');if(!t)return;const k=t.dataset.gwvol;bgmVolSet({[k]:+t.value});const o=t.parentElement.querySelector('b');if(o)o.textContent=t.value+'%'});
 document.addEventListener('change',e=>{const t=e.target.closest&&e.target.closest('[data-gwvol]');if(t&&t.dataset.gwvol==='j'&&+t.value>0)bgmJingle('harvest')});
 {const _m=gwMenu;gwMenu=function(){_m.apply(this,arguments);const h=$('#sheet .sheet-h');if(h){h.insertAdjacentHTML('afterend',gwsRow()+gwVolRow());gwsBind()}}}
@@ -10094,17 +10185,22 @@ function tzMk(s,o){const F=s.F[o];if(!F||F.dead||!GMAP[F.lord])return '';const h
 function tzMkC(s,o){const F=s.F[o];if(!F||F.dead)return 'neu';return tzMk(s,o).length>1?'two':''}
 function tzFct(c){const m=/^#?([0-9a-f]{6})$/i.exec(c||'');if(!m)return '#fff';const n=parseInt(m[1],16),r=n>>16,g=n>>8&255,b=n&255;return (r*299+g*587+b*114)/1000>170?'#1a1a1a':'#fff'}
 (()=>{const st=document.createElement('style');st.textContent=`
-.gw-n{width:26px;height:32px;border:0;border-radius:0;background:none;box-shadow:none;transform:translate(-2px,-100%);display:block;z-index:3}
+.gw-n{width:30px;height:26px;border:0;border-radius:0;background:none;box-shadow:none;transform:translate(-2px,-100%);display:block;z-index:3}
 .gw-zl{opacity:.82}
-.gw-n::before{content:'';position:absolute;left:1px;bottom:0;width:2px;height:32px;background:#2a1d0e;border-radius:1px;box-shadow:0 0 1px #fff8}
-.gw-n i{position:absolute;left:3px;top:0;width:22px;height:20px;display:flex;align-items:center;justify-content:center;background:var(--fac,#8a8a8a);color:var(--fct,#fff);border:1.5px solid #2a1d0e;border-left:0;border-radius:0 2px 2px 0;font-size:13px;line-height:1;text-shadow:none;box-shadow:1px 1px 3px #0008}
+.gw-box{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.gw-box>.gw-wrap{flex:1 0 100%;order:2;min-width:0}
+.gw-box>.gw-mine,.gw-box>.gw-zb{position:static;order:1;box-shadow:none}.gw-box>.gw-mine{padding:5px 10px;order:0}  /* v1.3.4 지도 위 버튼을 지도 바깥 윗줄로(깃발 가림 방지) */
+.gw-n::before{content:'';position:absolute;left:1px;bottom:0;width:2px;height:29px;background:linear-gradient(#5a3b17,#2a1d0e);border-radius:1px;box-shadow:0 0 1px #fff8}
+.gw-n::after{content:'';position:absolute;left:0;top:-5px;width:4px;height:4px;border-radius:50%;background:#e9c66c;box-shadow:0 0 1px #000}
+.gw-n i{position:absolute;left:3px;top:0;width:22px;height:19px;display:flex;align-items:center;justify-content:center;background:var(--fac,#8a8a8a);color:var(--fct,#fff);border:1.5px solid #e9c66c;border-left:0;border-radius:0;font-size:13px;line-height:1;text-shadow:none;box-shadow:1px 2px 3px #0008}
+.gw-n i::after{content:'';position:absolute;left:-1px;right:-5px;top:100%;height:5px;background:repeating-linear-gradient(90deg,#e9c66c 0 1.5px,transparent 1.5px 3px);-webkit-mask:linear-gradient(#000 60%,#0006);mask:linear-gradient(#000 60%,#0006)}
+.gw-n i::before{content:'';position:absolute;top:-1.5px;bottom:-1.5px;left:100%;width:5px;background:repeating-linear-gradient(180deg,#e9c66c 0 1.5px,transparent 1.5px 3px);-webkit-mask:linear-gradient(90deg,#000 60%,#0006);mask:linear-gradient(90deg,#000 60%,#0006)}
 .gw-n.two i{font-size:9.5px;letter-spacing:-1px}
 .gw-n small{left:2px;top:100%}
-.gw-n em{top:-8px;right:-6px}.gw-n u{top:-8px;left:-8px}
-.gw-n.me{border:0;box-shadow:none}.gw-n.me i{border-color:#ffd75e;box-shadow:0 0 0 1.5px #0007,0 0 8px #ffd75e}
+.gw-n em{top:-9px;right:-2px}.gw-n u{top:-8px;left:-8px}
+.gw-n.me{border:0;box-shadow:none}.gw-n.me i{border-color:#fff3c4;box-shadow:0 0 0 1.5px #0007,0 0 9px #ffd75e}
 .gw-n.sel{outline:0}.gw-n.sel i{outline:2px solid #fff;outline-offset:1px}
 .gw-n.hit{animation:none}.gw-n.hit i{animation:gwp 1.4s ease-in-out infinite}
-.gw-n.neu{height:12px;transform:translate(-50%,-50%);width:12px}.gw-n.neu::before{display:none}.gw-n.neu i{left:0;width:10px;height:10px;border:1.5px solid #2a1d0e;border-radius:50%;background:#8d8a80}.gw-n.neu small{left:50%}
+.gw-n.neu{height:12px;transform:translate(-50%,-50%);width:12px}.gw-n.neu::before{display:none}.gw-n.neu::after{display:none}.gw-n.neu i::before,.gw-n.neu i::after{display:none}.gw-n.neu i{left:0;width:10px;height:10px;border:1.5px solid #2a1d0e;border-radius:50%;background:#8d8a80}.gw-n.neu small{left:50%}
 `;document.head.appendChild(st)})();
 
 /* v1.3.3 정찰: 금 200 · 지력 성공률 · 천하 어느 성이든 · 성공하면 12개월 동안 그 성 정보와 장수 충성이 보여요 · 실패하면 15% 확률로 들켜 적대 +10
@@ -10116,7 +10212,7 @@ const TZ_SCT_N=12,TZ_SCT_G=200;
 const tzSeen=(s,k)=>!!(s&&s.SC&&(s.SC[k]|0)>s.t);
 const tzSeenLeft=(s,k)=>tzSeen(s,k)?(s.SC[k]|0)-s.t:0;
 const tzSctIdle=(s,k)=>s.C[k]&&s.C[k].o===s.me?tzGensIn(s,k,s.me).filter(g=>!s.G[g].ac):[];
-function tzSctP(s,g,tk){const T=s.C[tk],gv=T&&T.o!=='neu'?tzGov(s,tk):'';return Math.max(.2,Math.min(.95,.55+tzInt(g)/250-(gv?tzInt(gv)/400:0)))}
+function tzSctP(s,g,tk){const T=s.C[tk],gv=T&&T.o!=='neu'?tzGov(s,tk):'';return Math.max(.2,Math.min(.95,.55+tzInt(g)/250-(gv?tzInt(gv)/400:0)+tzSc(s,g)))}
 {const _cl=cleanTz;cleanTz=function(x){const o=_cl(x);if(!o.on)return o;x=x||{};o.SC={};if(x.SC&&typeof x.SC==='object')for(const k in x.SC){const v=Math.round(Number(x.SC[k])||0);if(TZ_C[k]&&v>o.t)o.SC[k]=v}return o}}
 {const _do=tzDo;tzDo=function(s,k,cmd,g,tg,it){if(cmd!=='sct')return _do.apply(this,arguments);
   const C=s.C[k],G=s.G[g],T=s.C[tg];if(!C||!G||G.o!==C.o)return '이 성의 장수가 아니에요';if(G.ac)return '이번 달 명령을 이미 했어요';
@@ -10162,13 +10258,13 @@ let tzSctPre='';
 TZ_CMD.cal=['데려오기','위임 성 장수 부르기','행동 안 씀 · 2칸에 1개월'];TZ_FREE.cal=1;
 {const g=TZ_CAT.find(c=>c[0]==='ins');if(g&&!g[3].includes('cal'))g[3].push('cal')}
 function tzHops(s,a,b){if(a===b)return 0;const f=s.C[a].o,seen={[a]:0},q=[a];while(q.length){const x=q.shift();for(const n of TZ_ADJ[x]){if(n in seen||s.C[n].o!==f)continue;seen[n]=seen[x]+1;if(n===b)return seen[n];q.push(n)}}return -1}
-const tzCalM=h=>Math.max(1,Math.ceil(h/2));
+const tzCalM=(h,g)=>Math.max(1,Math.ceil(h/2)-(g?tzIFv(S&&S.tz,g,'cal'):0));
 function tzCalList(s,k){const out=[];for(const c of tzMine(s)){if(c===k||tzDirect(tzDlOf(s,c)))continue;const h=tzHops(s,c,k);if(h<0)continue;
-  tzGensIn(s,c,s.me).filter(g=>g!==s.F[s.me].lord).forEach(g=>out.push({g,c,h,m:tzCalM(h)}))}return out.sort((a,b)=>a.m-b.m||tzPow(b.g)-tzPow(a.g))}
+  tzGensIn(s,c,s.me).filter(g=>g!==s.F[s.me].lord).forEach(g=>out.push({g,c,h,m:tzCalM(h,g)}))}return out.sort((a,b)=>a.m-b.m||tzPow(b.g)-tzPow(a.g))}
 const tzComing=(s,k)=>tzGL(s).map(b=>b.id).filter(g=>s.G[g]&&s.G[g].o===s.me&&s.G[g].c===k&&s.G[g].tv>0);
 function tzCall(s,k,g){const G=s.G[g];if(!G||G.o!==s.me||G.tv>0)return '데려올 수 없는 장수예요';const from=G.c;if(tzDirect(tzDlOf(s,from)))return '위임 중인 성의 장수만 데려와요';
   const h=tzHops(s,from,k);if(h<0)return '내 성으로 이어진 길이 없어요';if(s.C[from].gov===g)s.C[from].gov='';
-  G.c=k;G.tv=tzCalM(h);G.ac=1;tzLog(s,`${tzCN(from)} ${tzName(g)} → ${tzCN(k)} 출발 · ${G.tv}개월 뒤 도착`,'令');return {ok:1,msg:`${tzName(g)}이(가) ${tzCN(from)}에서 출발했어요 · ${G.tv}개월 뒤 도착`}}
+  G.c=k;G.tv=tzCalM(h,g);G.ac=1;tzLog(s,`${tzCN(from)} ${tzName(g)} → ${tzCN(k)} 출발 · ${G.tv}개월 뒤 도착`,'令');return {ok:1,msg:`${tzName(g)}이(가) ${tzCN(from)}에서 출발했어요 · ${G.tv}개월 뒤 도착`}}
 {const _cs=tzCmdSheet;tzCmdSheet=function(c){if(c!=='cal')return _cs.apply(this,arguments);const s=tzState(),k=tzSel;if(!s.C[k]||s.C[k].o!==s.me)return;
   const L=tzCalList(s,k),cm=tzComing(s,k);
   openSheet(`<div class="sheet-h"><h2 style="margin:0">${tzCN(k)} · 데려오기</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
@@ -10190,6 +10286,79 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-tzcall]');
   if(arr.length)tzLog(s,`도착 · ${arr.join(' · ')}`,'民');return r}}
 {const _cl=cleanTz;cleanTz=function(x){const o=_cl(x);if(!o.on||!x||!x.G)return o;for(const id in x.G){const v=x.G[id],t=Math.round(Number(v&&v.tv)||0);if(o.G[id]&&t>0)o.G[id].tv=Math.min(12,t)}return o}}
 
+/* v1.3.4 주 이름표 자리 잡기: 깃발 · 성 이름과 겹치면 겹침이 가장 적은 근처 자리로 비켜요(지도 크기가 바뀌면 다시) */
+function gwZlFix(){const map=document.querySelector('.gw-map');if(!map)return;const zs=[...map.querySelectorAll('.gw-zl')];if(!zs.length)return;
+  const pad=(r,p)=>({l:r.left-p,t:r.top-p,r:r.right+p,b:r.bottom+p});
+  const obs=[];map.querySelectorAll('.gw-n').forEach(n=>{const i=n.querySelector('i'),sm=n.querySelector('small');if(i){const r=i.getBoundingClientRect();obs.push({l:r.left-2,t:r.top-2,r:r.right+6,b:r.bottom+6})}if(sm)obs.push(pad(sm.getBoundingClientRect(),1))});
+  const M=map.getBoundingClientRect(),ov=(a,b)=>Math.max(0,Math.min(a.r,b.r)-Math.max(a.l,b.l))*Math.max(0,Math.min(a.b,b.b)-Math.max(a.t,b.t));
+  const C=[[0,0],[0,-16],[0,16],[-26,0],[26,0],[-22,-14],[22,-14],[-22,14],[22,14],[0,-28],[0,28],[-40,0],[40,0]];
+  zs.forEach(z=>{z.style.marginLeft='0px';z.style.marginTop='0px'});
+  zs.forEach(z=>{const r0=z.getBoundingClientRect();let best=null;
+    for(const [dx,dy] of C){const r={l:r0.left+dx,t:r0.top+dy,r:r0.right+dx,b:r0.bottom+dy};let sc=0;for(const o of obs)sc+=ov(r,o);
+      if(r.l<M.left)sc+=(M.left-r.l)*40;if(r.r>M.right)sc+=(r.r-M.right)*40;if(r.t<M.top)sc+=(M.top-r.t)*40;if(r.b>M.bottom)sc+=(r.b-M.bottom)*40;
+      sc+=(Math.abs(dx)+Math.abs(dy))*.5;if(!best||sc<best.sc)best={sc,dx,dy,r};if(sc===0)break}
+    z.style.marginLeft=best.dx+'px';z.style.marginTop=best.dy+'px';{const q=best.r;obs.push({l:q.l-2,t:q.t-2,r:q.r+2,b:q.b+2})}})}
+let gwZlRO=null;
+function gwZlWatch(){const m=document.querySelector('.gw-map');if(!m)return;requestAnimationFrame(gwZlFix);if(m.__zl)return;m.__zl=1;
+  if(window.ResizeObserver){if(!gwZlRO)gwZlRO=new ResizeObserver(()=>{clearTimeout(window.__zlT);window.__zlT=setTimeout(gwZlFix,60)});gwZlRO.observe(m)}
+  const img=m.querySelector('img');if(img&&!img.complete)img.addEventListener('load',()=>setTimeout(gwZlFix,30),{once:true})}
+{const _rv=renderView;renderView=function(){const r=_rv.apply(this,arguments);gwZlWatch();return r}}
+addEventListener('resize',()=>{clearTimeout(window.__zlT);window.__zlT=setTimeout(gwZlFix,150)});
+
+// v1.3.4 보물 매달 효과(금인 금 +100 · 옥새 민심 +2) · 예전 판에 빠진 보물 숨기기
+{const _tt=tzTurn;tzTurn=function(s){const r=_tt.apply(this,arguments);if(!s||!s.on||!s.I)return r;
+  for(const id in s.I){const h=s.I[id],f=TZ_IFX[id]&&TZ_IFX[id][0];if(!f||(!f.gold&&!f.ml)||h[0]!=='g')continue;const G=s.G[h.slice(2)],C=G&&s.C[G.c];if(!C||C.o!==G.o||G.tv>0)continue;
+    if(f.gold)C.g=Math.min(99999,C.g+f.gold);if(f.ml)C.ml=Math.min(100,C.ml+f.ml)}return r}}
+{const _cl=cleanTz;cleanTz=function(x){const o=_cl(x);if(!o.on||!o.I)return o;const miss=ITEMS.filter(it=>!o.I[it.id]);if(!miss.length)return o;
+  const r=mulberry(((o.sd|0)^4421)>>>0),homes=new Set(Object.values(o.F).map(F=>o.G[F.lord]&&o.G[F.lord].c)),cs=TZ_K.filter(k=>!homes.has(k));
+  miss.forEach(it=>{o.I[it.id]='h:'+cs[Math.floor(r()*cs.length)]});return o}}
+// v1.3.4 음악 미리 받기: 9곡을 그림과 같은 저장소(sambun-img)에 넣어 두면 다음부터 인터넷 없이 바로 나와요
+const GW_MUS_C='sambun-img',gwMusU=()=>[...new Set(Object.values(BGM_F))].map(u=>new URL(u,location.href).href);
+function gwMusRow(){return `<div class="gw-mus" style="display:flex;align-items:center;gap:8px;margin-top:10px"><button type="button" class="btn ghost sm" data-gwmus="1" style="flex:none">음악 미리 받기 · 약 4.5MB</button><small class="sub" style="margin:0;font-size:12px" data-gwmusl>한 번 받으면 다시 받지 않아요.</small></div>`}
+async function gwMusCnt(){if(!window.caches)return -1;try{const c=await caches.open(GW_MUS_C);let n=0;for(const u of gwMusU())if(await c.match(u))n++;return n}catch(e){return -1}}
+function gwMusShow(n,busy){const b=$('#sheet [data-gwmus]'),l=$('#sheet [data-gwmusl]');if(!b)return;const N=gwMusU().length;
+  if(n<0){b.disabled=true;if(l)l.textContent='이 브라우저는 미리 받기를 지원하지 않아요.';return}
+  if(n>=N){b.disabled=true;b.textContent=`음악 ${N}곡 저장됨`;if(l)l.textContent='다음부터는 받지 않고 바로 틀어요.';return}
+  b.disabled=!!busy;b.textContent=busy?`받는 중 ${n}/${N}`:`음악 미리 받기 · 약 4.5MB`;if(l)l.textContent=busy?'창을 닫아도 계속 받아요.':n?`${n}/${N}곡은 이미 저장돼 있어요.`:'한 번 받으면 다시 받지 않아요.'}
+let gwMusBusy=0;
+async function gwMusGet(){if(gwMusBusy||!window.caches)return;gwMusBusy=1;let fail=0;try{const c=await caches.open(GW_MUS_C),us=gwMusU();let n=await gwMusCnt();gwMusShow(n,1);
+  for(const u of us){if(await c.match(u))continue;try{const r=await fetch(u,{cache:'no-cache'});if(r.ok){if(!(await c.match(u)))await c.put(u,r.clone());n++}else fail++}catch(e){fail++}gwMusShow(n,1)}
+  gwMusBusy=0;gwMusShow(await gwMusCnt(),0);toast(fail?`음악 ${fail}곡을 받지 못했어요. 인터넷을 확인하고 다시 눌러 주세요.`:'음악을 모두 저장했어요')}catch(e){gwMusBusy=0;gwMusShow(await gwMusCnt(),0)}}
+document.addEventListener('click',e=>{if(e.target.closest('[data-gwmus]'))gwMusGet()});
+{const _m=gwMenu;gwMenu=function(){_m.apply(this,arguments);gwMusCnt().then(n=>gwMusShow(n,gwMusBusy))}}
+
+// v1.3.4 출진 연출: 성 사이 길로 기병이 흙먼지를 내며 달려가요(약 1.5초). 메뉴에서 끌 수 있고, 움직임 줄이기 설정이면 꺼져요
+const gwRideOn=()=>{try{return localStorage.getItem('gw-ride')!=='0'}catch(e){return true}};
+function gwRideRow(){return `<label style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px"><input type="checkbox" data-gwride ${gwRideOn()?'checked':''}> 출진 연출(기병이 길을 달려가요)</label>`}
+document.addEventListener('change',e=>{const t=e.target.closest&&e.target.closest('[data-gwride]');if(!t)return;try{localStorage.setItem('gw-ride',t.checked?'1':'0')}catch(_){}});
+const gwRideOk=()=>gwRideOn()&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)&&!isWork()&&(tzVw||'map')==='map'&&!!document.querySelector('.gw-map')&&document.querySelector('.gw-map').offsetParent!==null;
+const GW_HORSE=c=>{const K='fill:#24180c;stroke:#f0e2b6;stroke-width:.6;stroke-linejoin:round',L='fill:none;stroke:#24180c;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1';
+  return `<svg viewBox="0 0 48 36" aria-hidden="true"><path d="M19.5 16 L16 0.5" style="fill:none;stroke:#4a3216;stroke-width:1.2;stroke-dasharray:none;stroke-opacity:1"/><path d="M16 .5 L5.5 3 L16.4 5.6 Z" style="fill:${c};stroke:#e9c66c;stroke-width:.6"/>
+   <path d="M30 22 L35 26.5 L38 24.5 M27.5 23 L30.5 30.5 M15.5 22 L10 27.5 L7.5 26.5 M18 23 L15.5 31" style="${L}"/>
+   <path d="M11.5 17.5 Q5 15.5 2.5 22.5 Q7 19.5 11.5 20.5 Z" style="${K}"/><ellipse cx="21.5" cy="19" rx="11" ry="5.2" style="${K}"/><path d="M28.5 17.5 L32.5 9 L36.5 8 L35 15.5 Z" style="${K}"/><path d="M33 8.2 L40 6.8 L42.2 9.8 L40.2 11.2 L35.6 11.4 Z" style="${K}"/><path d="M34.2 8 L35.2 4.6 L36.4 7.6 Z" style="${K}"/>
+   <path d="M20 15.5 L24.6 15.5 L25.4 8.4 L20.8 8.4 Z" style="${K}"/><circle cx="23" cy="5.6" r="2.3" style="${K}"/></svg>`};
+let gwRiding=0;
+function gwRide(list,cb){const m=document.querySelector('.gw-map');if(!m||!list.length){cb&&cb();return}gwRiding=1;const D=1500;let left=list.length;
+  const w=document.querySelector('.gw-wrap');if(w&&list[0]){const[a,b]=[TZ_C[list[0].k],TZ_C[list[0].n]];w.scrollLeft=Math.max(0,w.scrollWidth*(a[0]+b[0])/200-w.clientWidth/2)}
+  m.scrollIntoView&&m.getBoundingClientRect().top<0&&m.scrollIntoView({block:'start',behavior:'auto'});
+  list.forEach(({k,n,col})=>{const A=TZ_C[k],B=TZ_C[n];if(!A||!B){if(--left===0)fin();return}
+    const el=document.createElement('div');el.className='gw-ride'+(B[0]<A[0]?' l':'');el.innerHTML=`<i>${GW_HORSE(col||'#c33')}</i>`;el.style.left=A[0]+'%';el.style.top=A[1]+'%';m.appendChild(el);
+    const an=el.animate([{left:A[0]+'%',top:A[1]+'%'},{left:B[0]+'%',top:B[1]+'%'}],{duration:D,easing:'cubic-bezier(.35,.05,.6,1)',fill:'forwards'});const t0=performance.now();
+    const dust=setInterval(()=>{const t=Math.min(1,(performance.now()-t0)/D),p=t<.5?2*t*t*.9:t;const d=document.createElement('span');d.className='gw-dust';
+      d.style.left=(A[0]+(B[0]-A[0])*p)+'%';d.style.top=(A[1]+(B[1]-A[1])*p)+'%';m.appendChild(d);
+      const dx=(B[0]<A[0]?1:-1)*(6+Math.random()*10);d.animate([{transform:'translate(-50%,-50%) scale(.35)',opacity:.75},{transform:`translate(calc(-50% + ${dx}px),calc(-50% - ${4+Math.random()*6}px)) scale(1.7)`,opacity:0}],{duration:650+Math.random()*250,easing:'ease-out'}).onfinish=()=>d.remove()},70);
+    an.onfinish=()=>{clearInterval(dust);el.animate([{opacity:1},{opacity:0}],{duration:180}).onfinish=()=>el.remove();if(--left===0)fin()}});
+  function fin(){setTimeout(()=>{gwRiding=0;cb&&cb()},120)}}
+// 내가 공격할 때: 출진 버튼 → 시트를 닫고 달린 뒤 전투
+{const _g=tzGo;tzGo=function(mode){const D=tzDraft,s=tzState();if(gwRiding)return;
+  if(!D||D.c!=='war'||(mode!=='quick'&&mode!=='watch')||!D.tg||!D.gs||!D.gs.length||!gwRideOk())return _g.apply(this,arguments);
+  const C=s.C[D.k],tr=Math.round(C.tr*D.pct/100),food=Math.round(tr*.3*(tzSea(s.m)==='winter'?1.5:1));if(C.fd<food||tr<300)return _g.apply(this,arguments);
+  const self=this,args=arguments;closeSheet();tzDraft=D;gwRide([{k:D.k,n:D.tg,col:tzCol(s.me)}],()=>{tzDraft=D;_g.apply(self,args)})}}
+// 적이 내 성을 칠 때: 턴 안에서 모아 뒀다가 보고 전에 달려요
+let gwRideQ=[];
+{const _a=tzAtk;tzAtk=function(s,b,f){try{if(s&&b&&s.C[b.n]&&s.C[b.n].o===s.me&&f!==s.me&&gwRideQ.length<4)gwRideQ.push({k:b.k,n:b.n,col:tzCol(f)})}catch(e){}return _a.apply(this,arguments)}}
+{const _t=tzTurn;tzTurn=function(){gwRideQ=[];return _t.apply(this,arguments)}}
+{const _r=tzRepSheet;tzRepSheet=function(){const q=gwRideQ;gwRideQ=[];if(!q.length||!gwRideOk()||gwRiding)return _r.apply(this,arguments);const self=this,args=arguments;gwRide(q,()=>_r.apply(self,args))}}
 boot();
 </script>
 </body>
