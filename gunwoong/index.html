@@ -5181,7 +5181,7 @@ const tzGL=s=>{const X=(s&&s.X)||{},ks=Object.keys(X).filter(v=>GMAP[v]&&(!s.G||
 const tzIsL=(s,g)=>Object.values(s.F).some(F=>F.lord===g&&!F.dead);
 const tzCities=(s,f)=>TZ_K.filter(k=>s.C[k].o===f);
 // v9.8.3: 처형된 장수의 자식(k_)도 성 장수로 셈해요(전엔 빠져서 목록·출진·포로에서 안 보였어요)
-const tzGensIn=(s,k,o)=>tzGL(s).map(b=>b.id).filter(g=>s.G[g]&&s.G[g].c===k&&s.G[g].o===o);
+const tzGensIn=(s,k,o)=>tzGL(s).map(b=>b.id).filter(g=>s.G[g]&&s.G[g].c===k&&s.G[g].o===o&&!(s.G[g].tv>0));  // tv: 데려오는 중(v1.3.3)
 const tzIdle=(s,k)=>!tzDirect(tzDlOf(s,k))?[]:tzGensIn(s,k,s.me).filter(g=>!s.G[g].ac);  // 위임한 성의 장수는 직접 명령 불가
 const tzIdleC=s=>tzMine(s).filter(k=>tzIdle(s,k).length);  // 행동 안 한 장수가 남은 직할 성
 const tzMine=s=>tzCities(s,s.me);
@@ -8742,11 +8742,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
 const GW_VER='1.3.3';
-const GW_NOTICES=[{v:'1.3.3',date:'2026-11-01',title:'군웅할거 v1.3.3 · 정찰 · 지도 깃발',items:[
+const GW_NOTICES=[{v:'1.3.3',date:'2026-11-01',title:'군웅할거 v1.3.3 · 정찰 · 데려오기 · 지도 깃발',items:[
   '계략에 \'정찰\'이 생겼어요. 금 200으로 천하 어느 성이든 살펴봐요. 성공하면 12개월 동안 그 성의 금 · 군량 · 인구 · 훈련 · 농업 · 상업 · 민심과 장수 충성 · 레벨이 보여요.',
   '성공률은 맡긴 장수의 지력이 높을수록, 그 성 태수의 지력이 낮을수록 올라가요. 실패하면 15% 확률로 들켜서 그 세력의 적대가 10 올라요.',
   '남의 성 카드에서도 바로 \'정찰\'을 누를 수 있어요. 지력이 가장 높은 장수가 있는 내 성에서 보내요.',
   '위임한 성의 장수도 정찰만큼은 직접 시킬 수 있어요. 공략 · 방어로 맡긴 성은 금이 1,000 이상이면 맞닿은 적 성 중 정보가 없는 곳을 알아서 정찰하고, 결과를 보고(委)에 적어요.',
+  '인사에 \'데려오기\'가 생겼어요. 직접 다스리는 성에서 위임 중인 내 성의 장수를 불러와요. 행동은 쓰지 않고, 내 땅으로 이어진 길 2칸마다 1개월이 걸려요(최소 1개월). 오는 동안은 명령 · 전투 · 위임 일에서 빠지고, 성 카드에 \'오는 중인 장수\'로 보여요.',
   '지도의 성 표시가 네모 깃발로 바뀌었어요. 깃발 색은 세력 고유색이고(조조 청 · 유비 녹 · 손씨 적 · 원소 황금 · 동탁 자주 등), 깃발 글자는 군주의 성씨예요. 같은 성씨 군주가 둘 이상이면 이름 글자(備 · 表 · 紹 · 術 등)를 써요. 빈 성은 회색 점이에요.']},{v:'1.3.2',date:'2026-11-01',title:'군웅할거 v1.3.2 · 음량 조절',items:[
   '메뉴(☰)에 음량 칸이 생겼어요. 배경음악과 효과음악(승리 · 패배 · 경사 · 흉사)을 슬라이더로 따로 조절해요. 움직이면 바로 바뀌고, 효과음악은 손을 떼면 한 번 들려줘요.',
   '음량은 기기마다 저장돼요. 폰은 작게, PC는 크게 따로 맞출 수 있어요. 기본값은 배경음악 50% · 효과음악 75%로, 지금까지 들리던 크기와 같아요.',
@@ -10153,6 +10154,39 @@ let tzSctPre='';
     const gs=tzSctIdle(s,k).sort((a,b)=>tzInt(b)-tzInt(a));if(!gs.length)continue;const tg=ts.sort((a,b)=>s.C[b].tr-s.C[a].tr)[0];busy[tg]=1;
     const r=tzDo(s,k,'sct',gs[0],tg);if(r&&r.msg)tzLog(s,`${tzCN(k)} ${tzName(gs[0])} · ${r.msg}`,'委')}
   return _dg.apply(this,arguments)}}
+
+/* v1.3.3 데려오기: 직접 다스리는 성에서 위임 중인 내 성의 장수를 불러와요. 내 성으로 이어진 길 칸 수 2칸마다 1개월(최소 1개월).
+   이동 중인 장수는 G.c = 도착할 성, G.tv = 남은 달. tzGensIn에서 빠져서 명령·전투·위임 일을 하지 않아요 */
+TZ_CMD.cal=['데려오기','위임 성 장수 부르기','행동 안 씀 · 2칸에 1개월'];TZ_FREE.cal=1;
+{const g=TZ_CAT.find(c=>c[0]==='ins');if(g&&!g[3].includes('cal'))g[3].push('cal')}
+function tzHops(s,a,b){if(a===b)return 0;const f=s.C[a].o,seen={[a]:0},q=[a];while(q.length){const x=q.shift();for(const n of TZ_ADJ[x]){if(n in seen||s.C[n].o!==f)continue;seen[n]=seen[x]+1;if(n===b)return seen[n];q.push(n)}}return -1}
+const tzCalM=h=>Math.max(1,Math.ceil(h/2));
+function tzCalList(s,k){const out=[];for(const c of tzMine(s)){if(c===k||tzDirect(tzDlOf(s,c)))continue;const h=tzHops(s,c,k);if(h<0)continue;
+  tzGensIn(s,c,s.me).filter(g=>g!==s.F[s.me].lord).forEach(g=>out.push({g,c,h,m:tzCalM(h)}))}return out.sort((a,b)=>a.m-b.m||tzPow(b.g)-tzPow(a.g))}
+const tzComing=(s,k)=>tzGL(s).map(b=>b.id).filter(g=>s.G[g]&&s.G[g].o===s.me&&s.G[g].c===k&&s.G[g].tv>0);
+function tzCall(s,k,g){const G=s.G[g];if(!G||G.o!==s.me||G.tv>0)return '데려올 수 없는 장수예요';const from=G.c;if(tzDirect(tzDlOf(s,from)))return '위임 중인 성의 장수만 데려와요';
+  const h=tzHops(s,from,k);if(h<0)return '내 성으로 이어진 길이 없어요';if(s.C[from].gov===g)s.C[from].gov='';
+  G.c=k;G.tv=tzCalM(h);G.ac=1;tzLog(s,`${tzCN(from)} ${tzName(g)} → ${tzCN(k)} 출발 · ${G.tv}개월 뒤 도착`,'令');return {ok:1,msg:`${tzName(g)}이(가) ${tzCN(from)}에서 출발했어요 · ${G.tv}개월 뒤 도착`}}
+{const _cs=tzCmdSheet;tzCmdSheet=function(c){if(c!=='cal')return _cs.apply(this,arguments);const s=tzState(),k=tzSel;if(!s.C[k]||s.C[k].o!==s.me)return;
+  const L=tzCalList(s,k),cm=tzComing(s,k);
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">${tzCN(k)} · 데려오기</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub" style="margin:0 0 8px">위임 중인 내 성의 장수를 이 성으로 불러요. 행동은 쓰지 않아요. 내 성으로 이어진 길 2칸마다 1개월이 걸리고, 오는 동안은 명령 · 전투 · 위임 일에서 빠져요.</p>
+   ${cm.length?`<p class="tz-note" style="margin:0 0 8px">오는 중: ${cm.map(g=>`${esc(tzName(g))} ${s.G[g].tv}달`).join(' · ')}</p>`:''}
+   ${L.length?`<div class="list">${L.map(x=>`<div class="li"><span data-tzgd="${x.g}" style="cursor:pointer">${seal(GMAP[x.g],'sm')}</span><div class="info"><b>${esc(tzName(x.g))}${s.C[x.c].gov===x.g?' <span class="chip">태수</span>':''}</b><span>${tzCN(x.c)} · ${x.h}칸 · ${x.m}개월 · 무${tzStr(x.g)} 지${tzInt(x.g)} 통${tzLead(x.g)}</span></div><button type="button" class="btn sm" data-tzcall="${x.g}">데려오기</button></div>`).join('')}</div>`
+     :'<p class="sub">데려올 장수가 없어요. 위임 중인 내 성이 이 성과 내 땅으로 이어져 있어야 해요.</p>'}`)}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tzcall]');if(!b)return;const s=tzState(),r=tzCall(s,tzSel,b.dataset.tzcall);if(typeof r==='string'){toast(r);return}toast(r.msg);save();renderView();tzCmdSheet('cal')});
+// 성 카드: 위임 성에서는 데려오기 끄기 · 오는 중인 장수 표시
+{const _cc=tzCityCard;tzCityCard=function(s,k){let h=_cc.apply(this,arguments);const C=s.C[k];if(!C||C.o!==s.me)return h;
+  const ok=tzDirect(tzDlOf(s,k))&&tzCalList(s,k).length;h=h.replace(/<button type="button" data-tzc="cal"( disabled)?>/,`<button type="button" data-tzc="cal"${ok?'':' disabled'}>`);
+  const cm=tzComing(s,k);if(cm.length){const i=h.indexOf('<details class="tz-gens"');const t=`<p class="tz-note" style="margin:6px 0 0">오는 중인 장수: ${cm.map(g=>`${esc(tzName(g))} ${s.G[g].tv}달`).join(' · ')}</p>`;if(i>=0)h=h.slice(0,i)+t+h.slice(i)}return h}}
+// 턴: 이동 중인 장수는 한 달씩 줄고, 도착할 성을 잃었으면 남은 내 성으로
+{const _tt=tzTurn;tzTurn=function(s){const arr=[];
+  const r=_tt.apply(this,arguments);
+  tzGL(s).forEach(b=>{const G=s.G[b.id];if(!G||!(G.tv>0))return;G.tv--;if(G.tv>0)return;delete G.tv;
+    if(!s.C[G.c]||s.C[G.c].o!==G.o){const ks=tzCities(s,G.o);if(!ks.length)return;G.c=ks[0]}
+    if(G.o===s.me)arr.push(`${tzName(b.id)} → ${tzCN(G.c)}`)});
+  if(arr.length)tzLog(s,`도착 · ${arr.join(' · ')}`,'民');return r}}
+{const _cl=cleanTz;cleanTz=function(x){const o=_cl(x);if(!o.on||!x||!x.G)return o;for(const id in x.G){const v=x.G[id],t=Math.round(Number(v&&v.tv)||0);if(o.G[id]&&t>0)o.G[id].tv=Math.min(12,t)}return o}}
 
 boot();
 </script>
