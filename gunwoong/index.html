@@ -8849,8 +8849,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.4.2';
-const GW_NOTICES=[{v:'1.4.2',date:'2026-11-02',title:'군웅할거 v1.4.2 · 208년 · 219년 조조 시작 힘 줄이기 · 이민족 침입',items:[
+const GW_VER='1.5.0';
+const GW_NOTICES=[{v:'1.5.0',date:'2026-11-02',title:'군웅할거 v1.5.0 · 연의 사건 · 의형제',items:[
+  '연의 사건 11가지가 생겼어요. 조건이 맞으면 판마다 한 번씩 일어나고, 연표에 演으로 남아요.',
+  '연환계 · 손책의 강동 평정 · 하비성의 최후 · 관도의 허유 · 관우의 귀환 · 삼고초려 · 적벽대전 · 마초의 복수 · 칠종칠금 · 백의도강 · 백제성 탁고예요.',
+  '유비가 군주로 살아 있으면, 삼고초려 전에는 다른 세력이 재야 제갈량을 등용할 수 없어요.',
+  '우리 세력이 정할 일이면 평정에 선택지가 떠요. 받아들일 때와 거절할 때 어떻게 되는지 함께 보여 줘요. 답하지 않고 달을 넘기면 거절이에요.',
+  '의형제: 유비·관우·장비(도원결의)와 손책·주유는 처음부터 의형제예요. 같은 세력 두 장수가 함께 나가 다섯 번 넘게 이기면 의형제를 맺을 수 있어요(한 무리 최대 3명).',
+  '의형제가 같은 전투에 나가면 힘 +10%, 같은 세력이면 충성이 65 아래로 내려가지 않아요(형제가 군주면 100). 한 명이 붙잡히면 형제가 달마다 20% 확률로 구해 내요. 장수 상세에 의형제가 나와요.',
+  '사건이 더해진 만큼 219년 조조 성의 시작 민심을 55로 낮췄어요. AI끼리 120턴을 돌리면 조조 통일이 208년 54% · 219년 58%예요.']},
+ {v:'1.4.2',date:'2026-11-02',title:'군웅할거 v1.4.2 · 208년 · 219년 조조 시작 힘 줄이기 · 이민족 침입',items:[
   '이민족 침입이 생겼어요. 변경 성(북평 · 계 오환, 양평 선비, 진양 흉노, 서량 · 안정 · 천수 강족, 무릉 무릉만, 운남 · 건녕 남만, 회계 · 오 산월)은 민심이 60보다 낮으면 달마다 (60 − 민심)/200 확률로 이민족이 쳐들어와요. 민심 40이면 10%예요.',
   '침입을 받으면 병사 10~20% · 군량 15% · 민심 5를 잃어요. 태수가 있으면 통솔/200 확률로 막아 내고 민심이 1 올라요. 우리 성도 AI 성도 똑같아요. 변경 성은 민심을 60 넘게 지켜 두세요.',
   '208년 적벽대전 · 219년 삼국정립에서 조조가 너무 쉽게 천하를 통일하던 것을 줄였어요. AI끼리 둘 때 10년 안에 조조가 통일하는 판이 열에 아홉 넘게였는데, 이제 두 시나리오 모두 열에 여섯 정도예요.',
@@ -11132,7 +11140,7 @@ function tzScGive(s){const G0=!s.rs&&TZ_SCGIVE[s.sc];if(!G0)return;for(const k i
   const lc=s.G[s.F[f0].lord].c;tzGensIn(s,k,f0).forEach(g=>{s.G[g].c=lc});C.gov='';
   if(to==='neu')Object.assign(C,{o:'neu',g:300,fd:2000,tr:1500,tn:30,ml:50,dl:'self',wp:300,hs:0});else Object.assign(C,{o:to,dl:'self'})}}
 // 시나리오 밸런스: 처음부터 너무 큰 세력은 시작 병력을 줄여요(성마다 병사 × 비율)
-const TZ_SCTR={208:{caocao:{tr:.4,ml:45}},219:{caocao:{tr:.6}}};  // tr: 병사 비율 · ml: 민심(있으면 그 값으로) · eco: 농업·상업 비율
+const TZ_SCTR={208:{caocao:{tr:.4,ml:45}},219:{caocao:{tr:.6,ml:55}}};  // tr: 병사 비율 · ml: 민심(있으면 그 값으로) · eco: 농업·상업 비율
 {const _n=tzNew;tzNew=function(sc,me,rs){const s=_n.apply(this,arguments);try{tzScGive(s);const tb=!s.rs&&TZ_SCTR[s.sc];if(tb)for(const f in tb)if(s.F[f])tzCities(s,f).forEach(k=>{const v=tb[f],C=s.C[k];if(v.tr!=null)C.tr=Math.round(C.tr*v.tr/100)*100;if(v.ml!=null)C.ml=v.ml;if(v.eco!=null){C.fa=Math.round(C.fa*v.eco);C.co=Math.round(C.co*v.eco)}});s.CO=null;s.COH={};s.yh=[];s.st=null;s.cr=0;s.rsv=0;
   const D=TZ_SC[s.sc];tzYhAdd(s,'start',`${s.rs?'임의 시작':D?D.n:''}${s.F[s.me]?' · '+tzFN(s,s.me):''}`);
   if(String(s.sc)==='189'&&!s.rs&&s.F.dongzhuo&&!s.F.dongzhuo.dead){const m=TZ_CO189.filter(f=>s.F[f]&&!s.F[f].dead&&tzCities(s,f).length);if(m.length>=2)tzCoForm(s,'dongzhuo',m,18)}
@@ -11157,6 +11165,172 @@ HELP.forEach(c=>{if(c.t==='외교·계략')c.rows.push(['반(反) 연합','한 �
 .tz-cop{margin:0 0 8px!important}.tz-cop b{color:var(--bronze)}
 .tz-resb{margin:0 0 8px;padding:6px 10px;border-radius:6px;background:rgba(210,170,85,.1);color:var(--bronze);font-weight:700}.tz-resb.new{background:rgba(233,198,108,.22);color:#e9c66c}
 .tz-clri{font-style:normal;margin-left:4px;padding:0 4px;border-radius:4px;background:rgba(233,198,108,.18);color:#e9c66c;font-size:11px}
+`;document.head.appendChild(st)})();
+/* ==== 군웅할거 v1.5.0: 연의 사건 · 의형제 ==== */
+// 연의 사건: 조건이 맞으면 판마다 한 번. 우리 세력이 정할 일이면 평정에 선택지를 띄우고, AI끼리면 바로 일어나요
+const tzYLord=(s,g)=>Object.keys(s.F).find(f=>s.F[f].lord===g&&!s.F[f].dead&&tzCities(s,f).length)||'';
+const tzYIn=(s,g,f)=>!!(f&&s.G[g]&&s.G[g].o===f);
+const tzYAdjF=(s,a,b)=>tzCities(s,a).some(k=>TZ_ADJ[k].some(n=>s.C[n].o===b));
+const tzYPc=(s,...gs)=>gs.some(g=>tzIsPc(s,g));
+const tzYAsk=(s,f)=>!!f&&s.me!=='_'&&s.me===f;
+function tzYMove(s,g,f,ly){const G=s.G[g];if(!G||!s.F[f])return;if(s.cap)s.cap=s.cap.filter(x=>x!==g);Object.assign(G,{o:f,cb:'',of:'',fd:0,ly:Math.max(G.ly||0,ly||70)});tzRecC(s,g,f)}
+function tzYLog(s,nm,t,fs){const me=tzSide(s),mine=(fs||[]).some(f=>f&&f===me);tzLog(s,`[연의] ${nm} · ${t}`,mine?'民':'報');tzYhAdd(s,'yy',`${nm} · ${t}`)}
+function tzYCut(s,a,b){if(s.F[a])delete s.F[a].al[b];if(s.F[b])delete s.F[b].al[a];s.TR=s.TR||{};delete s.TR[tzHK(a,b)];s.H=s.H||{};s.H[tzHK(a,b)]=100}
+const TZ_JING=['xinye','xiangyang','wancheng','shangyong','jiangling','jiangxia','changsha','wuling','lingling','guiyang'];
+const TZ_YY=[
+ {id:'lhg',n:'연환계',p:.25,
+  ok:s=>{if(s.y>194)return null;const f=tzYLord(s,'dongzhuo');if(!f||!tzYIn(s,'lubu',f)||!s.G.wangyun||s.G.wangyun.o==='dead'||tzYPc(s,'lubu','dongzhuo'))return null;return {f}},
+  ch:(s,x)=>x.f,ai:()=>false,
+  q:()=>({t:'왕윤이 초선을 앞세워 여포와 동탁 사이를 벌리려 한다는 소문이 들려요.',y:'왕윤을 내친다',no:'내버려 둔다',yd:'왕윤이 재야로 떠나고 사건은 끝나요. 우리 장수 충성 −3.',nd:'여포가 동탁을 베고 세력을 이어받아요.'}),
+  go:(s,x,yes)=>{const f=x.f;
+   if(yes){if(s.G.wangyun.o===f)Object.assign(s.G.wangyun,{o:'free',fd:0});tzGL(s).forEach(b=>{const G=s.G[b.id];if(G.o===f&&b.id!==s.F[f].lord)G.ly=Math.max(0,G.ly-3)});tzYLog(s,'연환계','동탁이 왕윤을 내쳐 연환계를 막았어요',[f]);return true}
+   s.G.dongzhuo.o='dead';s.F[f].lord='lubu';s.G.lubu.ly=100;const D=s.G.diaochan;if(D&&(D.o==='free'||D.o==='wait'))tzYMove(s,'diaochan',f,90);
+   tzYLog(s,'연환계',`초선을 두고 다툰 여포가 동탁을 베었어요. 이제 여포가 세력을 이끌어요`,[f]);tzLordCheck(s);return true}},
+ {id:'sc',n:'손책의 강동 평정',p:.2,
+  ok:s=>{if(s.y<194||s.F.sunce&&!s.F.sunce.dead)return null;const f=tzYLord(s,'yuanshu');if(!f||!tzYIn(s,'sunce',f)||tzYPc(s,'sunce')||tzCities(s,f).length<3)return null;
+   const ks=tzCities(s,f).filter(k=>!tzHome(s,k)),pref=['lujiang','jianye','wu','kuaiji','chaisang','shouchun'],k=pref.find(x=>ks.includes(x))||ks[0];return k?{f,k}:null},
+  ch:(s,x)=>x.f,ai:()=>true,
+  q:(s,x)=>({t:`손책이 옥새를 맡기고 병사를 빌려 강동으로 가겠다고 해요.`,y:'옥새를 받고 보내 준다',no:'붙잡아 둔다',yd:`${tzCN(x.k)}와 손씨 장수들이 떠나 손책의 새 세력이 돼요. 금 3,000을 받고 2년 동맹을 맺어요.`,nd:'손책 충성이 30으로 떨어져요.'}),
+  go:(s,x,yes)=>{const f=x.f,k=x.k;if(!yes){s.G.sunce.ly=Math.min(s.G.sunce.ly,30);tzYLog(s,'손책의 강동 평정','원술이 손책을 붙잡아 두었어요',[f]);return true}
+   const C=s.C[k];s.F.sunce={lord:'sunce',dead:0,al:{},zn:[],tt:0};C.o='sunce';C.dl='sunce'===s.me?'pj':'self';C.gov='sunce';Object.assign(s.G.sunce,{o:'sunce',c:k,ly:100});
+   ['zhouyu','chengpu','huanggai','handang','zhoutai','jiangqin','taishici','sunquan','sunshangxiang','sunyi','lvfan','zhutai'].forEach(g=>{if(tzYIn(s,g,f)&&!tzYPc(s,g))Object.assign(s.G[g],{o:'sunce',c:k,ly:85})});
+   const lc=s.G[s.F[f].lord].c;if(s.C[lc]&&s.C[lc].o===f)s.C[lc].g=Math.min(99999,s.C[lc].g+3000);tzCoLink(s,f,'sunce',24);
+   tzYLog(s,'손책의 강동 평정',`손책이 원술에게 옥새를 맡기고 ${tzCN(k)}에서 일어났어요`,[f]);return true}},
+ {id:'xp',n:'하비성의 최후',p:.2,
+  ok:s=>{if(s.y<196)return null;const f=tzYLord(s,'lubu'),c=tzYLord(s,'caocao');if(!f||!c||tzCities(s,f).length>2||tzCities(s,c).length<6||!tzYAdjF(s,f,c))return null;
+   const gs=['houcheng','songxian','weixu','zhangliao'].filter(g=>tzYIn(s,g,f)&&!tzYPc(s,g));return gs.length?{f,c,gs}:null},
+  ch:(s,x)=>x.f,ai:()=>false,
+  q:(s,x)=>({t:`${x.gs.map(tzName).join('·')}이(가) 등을 돌리려 한다는 낌새가 있어요.`,y:'진궁의 말대로 달랜다(금 1,500)',no:'내버려 둔다',yd:'배신을 막아요(그 장수들 충성 +15).',nd:`${x.gs.map(tzName).join('·')}이(가) 조조에게 넘어가요.`}),
+  go:(s,x,yes)=>{if(yes&&tzEvPay(s,'g',1500)){x.gs.forEach(g=>s.G[g].ly=Math.min(100,s.G[g].ly+15));tzYLog(s,'하비성의 최후','여포가 진궁의 말을 들어 장수들을 달랬어요',[x.f]);return true}
+   x.gs.forEach(g=>tzYMove(s,g,x.c,70));tzYCut(s,x.f,x.c);tzYLog(s,'하비성의 최후',`${x.gs.map(tzName).join('·')}이(가) 여포를 버리고 조조에게 갔어요`,[x.f,x.c]);return true}},
+ {id:'xuyou',n:'관도의 허유',p:.25,
+  ok:s=>{if(s.y<199)return null;const c=tzYLord(s,'caocao'),y=tzYLord(s,'yuanshao');if(!c||!y||c===y||!tzYIn(s,'xuyou',y)||tzYPc(s,'xuyou')||!tzYAdjF(s,c,y))return null;return {c,y}},
+  ch:(s,x)=>s.me===x.c?x.c:x.y,ai:()=>true,
+  q:(s,x)=>s.me===x.c?{t:'원소 밑의 허유가 몰래 찾아와 오소 군량 창고를 알려 주겠대요.',y:'받아들인다',no:'돌려보낸다',yd:'허유가 우리 편이 되고, 원소군 군량이 가장 많은 성의 군량 60%가 불타요. 장합·고람도 넘어올 수 있어요.',nd:'아무 일도 없어요.'}
+   :{t:'허유가 공을 다투다 쫓겨날 처지예요. 조조와 옛 벗이라 걱정이에요.',y:'허유를 달랜다(금 1,000)',no:'내버려 둔다',yd:'허유가 남아요.',nd:'허유가 조조에게 달아나 오소 군량이 불타요.'},
+  go:(s,x,yes)=>{const hap=s.me===x.y?!(yes&&tzEvPay(s,'g',1000)):yes;
+   if(!hap){tzYLog(s,'관도의 허유',s.me===x.c?'허유를 돌려보냈어요':'원소가 허유를 달래 붙잡아 두었어요',[x.c,x.y]);return true}
+   tzYMove(s,'xuyou',x.c,70);const k=tzCities(s,x.y).sort((a,b)=>s.C[b].fd-s.C[a].fd)[0];if(k)s.C[k].fd=Math.round(s.C[k].fd*.4);
+   const dv=['zhanghe','gaolan'].filter(g=>tzYIn(s,g,x.y)&&!tzYPc(s,g)&&tzRng()<.5);dv.forEach(g=>tzYMove(s,g,x.c,65));tzHAdd(s,x.c,x.y,20);
+   tzYLog(s,'관도의 허유',`허유가 조조에게 가서 ${k?tzCN(k)+' ':''}오소 군량을 불태웠어요${dv.length?` · ${dv.map(tzName).join('·')}도 넘어갔어요`:''}`,[x.c,x.y]);return true}},
+ {id:'gy',n:'관우의 귀환',p:.3,
+  ok:s=>{const L=tzYLord(s,'liubei'),G=s.G.guanyu;if(!L||!G||tzYPc(s,'guanyu')||tzIsL(s,'guanyu'))return null;const h=G.o==='cap'?G.cb:G.o;
+   if(!s.F[h]||s.F[h].dead||h===L)return null;if(G.o!=='cap'&&G.of!==L&&!(s.YL&&s.YL.gy===L))return null;return {L,h}},
+  ch:(s,x)=>x.h,ai:()=>true,
+  q:()=>({t:'관우가 유비가 살아 있다는 소식을 듣고 떠나겠다고 해요.',y:'보내 준다',no:'막는다',yd:'관우가 유비에게 돌아가요. 유비군과 사이가 누그러져요.',nd:'관우가 다섯 관문을 뚫고 떠나요. 관우가 있던 성 병사 −10%, 유비군과 사이가 험악해져요.'}),
+  go:(s,x,yes)=>{const k=s.G.guanyu.c;if(!yes&&s.C[k]&&s.C[k].o===x.h)s.C[k].tr=Math.round(s.C[k].tr*.9);tzYMove(s,'guanyu',x.L,100);tzHAdd(s,x.h,x.L,yes?-20:20);
+   tzYLog(s,'관우의 귀환',yes?'관우가 인사를 남기고 유비에게 돌아갔어요':'관우가 다섯 관문을 뚫고 여섯 장수를 베며 유비에게 돌아갔어요',[x.h,x.L]);return true}},
+ {id:'sgcl',n:'삼고초려',p:.3,
+  ok:s=>{if(s.y<200)return null;const L=tzYLord(s,'liubei'),Z=s.G.zhugeliang;if(!L||!Z||Z.o!=='free'||tzYPc(s,'zhugeliang','liubei')||!(s.y>=207||TZ_JING.some(k=>s.C[k].o===L)))return null;return {L}},
+  ch:(s,x)=>x.L,ai:()=>true,
+  q:()=>({t:'융중에 와룡 선생이 숨어 산다는 이야기를 들었어요. 세 번은 찾아가야 만날 수 있대요.',y:'세 번 찾아간다',no:'나중에',yd:'제갈량이 충성 100으로 들어와요. 유비는 이번 달 일을 못 해요.',nd:'1년 뒤에 다시 기회가 와요.'}),
+  go:(s,x,yes)=>{if(!yes){s.YC.sgcl=s.t+12;return false}tzYMove(s,'zhugeliang',x.L,100);s.G.liubei.ac=1;tzYLog(s,'삼고초려','유비가 세 번 찾아가 제갈량을 맞았어요',[x.L]);return true}},
+ {id:'cb',n:'적벽대전',p:.35,
+  ok:s=>{if(s.y<205||s.y>212)return null;const c=tzYLord(s,'caocao'),q=tzYLord(s,'sunquan'),L=tzYLord(s,'liubei');if(!c||!q||!L||new Set([c,q,L]).size<3)return null;
+   if(tzCities(s,c).length<TZ_K.length/3||!(s.C.jiangling.o===c||s.C.xiangyang.o===c)||!tzYAdjF(s,c,q))return null;return {c,q,L}},
+  ch:(s,x)=>s.me===x.q||s.me===x.L?s.me:'',ai:()=>true,
+  q:(s,x)=>({t:`조조가 대군으로 장강을 내려와요. ${tzFN(s,s.me===x.q?x.L:x.q)}이(가) 손을 잡자고 해요.`,y:'손잡는다',no:'거절',yd:'2년 동맹을 맺어요. 장강가 조조 성 한 곳이 화공으로 병사 −30%, 1년 동안 조조군이 우리 둘의 성을 치면 힘이 0.8배예요.',nd:'아무 일도 없어요.'}),
+  go:(s,x,yes)=>{if(!yes){tzYLog(s,'적벽대전',`${tzFN(s,s.me)}이(가) 손을 잡지 않았어요`,[x.q,x.L]);return true}
+   tzCoLink(s,x.q,x.L,24);s.CB={f:x.c,a:[x.q,x.L],e:s.t+12};const k=tzCities(s,x.c).filter(k=>TZ_ADJ[k].some(n=>s.C[n].o===x.q||s.C[n].o===x.L)).sort((a,b)=>s.C[b].tr-s.C[a].tr)[0];
+   if(k)s.C[k].tr=Math.round(s.C[k].tr*.7);tzYLog(s,'적벽대전',`손권과 유비가 손잡고 화공을 펼쳤어요${k?` · ${tzCN(k)} 조조군 병사 −30%`:''}`,[x.c,x.q,x.L]);return true}},
+ {id:'mc',n:'마초의 복수',p:.4,
+  ok:s=>{const M=s.G.mateng,c=tzYLord(s,'caocao');if(!M||!c)return null;if(!(M.o==='dead'||(M.o==='cap'&&M.cb===c)))return null;const f=s.G.machao&&s.G.machao.o;if(!s.F[f]||s.F[f].dead||f===c)return null;return {f,c}},
+  ch:()=>'',ai:()=>true,q:()=>null,
+  go:(s,x)=>{tzYCut(s,x.f,x.c);if(!tzIsL(s,'machao'))s.G.machao.ly=100;s.MC={f:x.c,e:s.t+24};tzYLog(s,'마초의 복수','아버지 마등의 일로 마초가 조조에게 복수를 맹세했어요 · 2년 동안 조조군과 싸울 때 마초 부대 힘 +15%',[x.f,x.c]);return true}},
+ {id:'qz',n:'칠종칠금',p:1,
+  ok:s=>{const G=s.G.menghuo;if(!G||G.o!=='cap'||tzYPc(s,'menghuo'))return null;const f=G.cb;if(!s.F[f]||s.F[f].dead||!tzYIn(s,'zhugeliang',f))return null;return {f,o:G.of||''}},
+  ch:(s,x)=>x.f,ai:()=>true,
+  q:()=>({t:'맹획을 붙잡았어요. 제갈량이 일곱 번 놓아주고 일곱 번 잡아 마음을 얻자고 해요.',y:'마음을 얻는다(금 1,000)',no:'여느 포로처럼 다룬다',yd:'맹획이 충성 100으로 들어오고, 남만 세력(성 3곳 이하)이 통째로 우리 편이 돼요.',nd:'보통 포로로 다뤄요.'}),
+  go:(s,x,yes)=>{if(!yes||(s.me===x.f&&!tzEvPay(s,'g',1000)))return true;const o=x.o;
+   if(s.F[o]&&!s.F[o].dead&&o!==x.f&&tzCities(s,o).length&&tzCities(s,o).length<=3)tzAbsorb(s,o,x.f);tzYMove(s,'menghuo',x.f,100);
+   tzYLog(s,'칠종칠금','제갈량이 맹획을 일곱 번 놓아주고 일곱 번 잡아 마음을 얻었어요',[x.f,o]);tzEnd(s);return true}},
+ {id:'bydg',n:'백의도강',p:.15,
+  ok:s=>{if(s.y<212)return null;const G=s.G.guanyu,f=G&&G.o,q=tzYLord(s,'sunquan');if(!q||!s.F[f]||s.F[f].dead||f===q||tzIsL(s,'guanyu')||!tzYIn(s,'lvmeng',q))return null;
+   if(!s.C[G.c]||s.C[G.c].o!==f||!TZ_JING.includes(G.c))return null;
+   const k=TZ_JING.filter(k=>s.C[k].o===f&&k!==G.c&&!tzHome(s,k)&&TZ_ADJ[k].some(n=>s.C[n].o===q)).sort((a,b)=>s.C[a].tr-s.C[b].tr)[0];return k?{f,q,k}:null},
+  ch:(s,x)=>s.me===x.q?x.q:x.f,ai:()=>true,
+  q:(s,x)=>s.me===x.q?{t:`여몽이 흰 옷 입은 장사꾼으로 꾸며 강을 건너 ${tzCN(x.k)}을(를) 몰래 차지하자고 해요.`,y:'강을 건넌다',no:'그만둔다',yd:`${tzCN(x.k)}을(를) 싸움 없이 차지하지만, 관우 쪽과 원수가 되고 동맹도 깨져요.`,nd:'아무 일도 없어요.'}
+   :{t:`관우가 형주를 비운 사이 손권군이 ${tzCN(x.k)}을(를) 노린다는 소문이 있어요.`,y:'봉화대를 늘린다(금 1,500)',no:'내버려 둔다',yd:'여몽이 틈을 찾지 못해요.',nd:`${tzCN(x.k)}을(를) 손권군에게 빼앗겨요.`},
+  go:(s,x,yes)=>{const hap=s.me===x.f?!(yes&&tzEvPay(s,'g',1500)):yes;if(!hap){tzYLog(s,'백의도강',s.me===x.q?'여몽의 계책을 거두었어요':'봉화대를 늘려 여몽이 틈을 찾지 못했어요',[x.f,x.q]);return true}
+   const C=s.C[x.k],k=x.k;C.o=x.q;C.dl=x.q===s.me?'pj':'self';C.gov='';C.tr=Math.round(C.tr*.6);
+   tzGensIn(s,k,x.f).forEach(g=>{const nb=TZ_ADJ[k].find(n=>s.C[n].o===x.f);if(nb)s.G[g].c=nb;else Object.assign(s.G[g],{o:'free',fd:0})});
+   const lm=s.G.lvmeng;if(lm&&lm.o===x.q)lm.c=k;tzYCut(s,x.f,x.q);s.H[tzHK(x.f,x.q)]=75;tzYLog(s,'백의도강',`여몽이 장사꾼으로 꾸며 강을 건너 ${tzCN(k)}을(를) 빼앗았어요`,[x.f,x.q]);tzLordCheck(s);return true}},
+ {id:'tg',n:'백제성 탁고',p:1,
+  ok:s=>{const f=s.YL&&s.YL.lb;if(!f||!s.F[f]||s.F[f].dead||!s.G.liubei||s.G.liubei.o!=='dead')return null;return {f}},
+  ch:()=>'',ai:()=>true,q:()=>null,
+  go:(s,x)=>{const F=s.F[x.f],t=[];if(tzYIn(s,'liushan',x.f)&&!tzYPc(s,'liushan')&&F.lord!=='liushan'){F.lord='liushan';s.G.liushan.ly=100;t.push('유선이 뒤를 이었어요')}
+   if(tzYIn(s,'zhugeliang',x.f)&&F.lord!=='zhugeliang'){s.LY=s.LY||{};s.LY.zhugeliang=x.f;s.G.zhugeliang.ly=100;t.push('제갈량이 끝까지 충성을 맹세했어요')}
+   tzYLog(s,'백제성 탁고',`유비가 세상을 떠나며 뒷일을 맡겼어요${t.length?' · '+t.join(' · '):''}`,[x.f]);return true}}];
+const TZ_YYM={};TZ_YY.forEach(e=>TZ_YYM[e.id]=e);
+// 와룡: 삼고초려 전에는 유비 말고는 제갈량을 등용할 수 없어요(유비가 군주로 살아 있을 때)
+const tzYWolong=(s,f)=>!!(s&&s.on&&!(s.YE&&s.YE.sgcl)&&s.G.zhugeliang&&s.G.zhugeliang.o==='free'&&tzYLord(s,'liubei')&&tzYLord(s,'liubei')!==f);
+{const _d=tzDo;tzDo=function(s,k,cmd,g,tg){if(cmd==='rec'&&tg==='zhugeliang'&&s.G[g]&&tzYWolong(s,s.G[g].o))return '제갈량은 아직 융중에서 때를 기다려요';return _d.apply(this,arguments)}}
+function tzYTick(s){if(!s||!s.on||s.end)return;s.YE=s.YE||{};s.YC=s.YC||{};s.YL=s.YL||{};
+  const lb=tzYLord(s,'liubei');if(lb)s.YL.lb=lb;const gu=s.G.guanyu;if(gu&&s.F[gu.o]&&!s.F[gu.o].dead)s.YL.gy=gu.o===lb?lb:(s.YL.gy||'');
+  for(const g in s.LY||{}){const G=s.G[g];if(G&&G.o===s.LY[g])G.ly=100;else delete s.LY[g]}
+  for(const E of TZ_YY){if(s.YE[E.id]||(s.YC[E.id]||0)>s.t)continue;const x=E.ok(s);if(!x||tzRng()>E.p)continue;const ch=E.ch(s,x);
+    if(tzYAsk(s,ch)){if(tzEvLive(s))continue;s.ev={t:s.t,f:s.me,ty:'yy',id:E.id,g:0,fd:0,done:0};tzLog(s,`[연의] ${E.n} · 평정에서 답해요`,'令');break}
+    if(E.go(s,x,E.ai(s,x))!==false)s.YE[E.id]=1;break}}
+// AI가 맹획을 잡으면(제갈량이 있으면) 바로 칠종칠금
+{const _ac=tzAiCap;tzAiCap=function(s,f,g){if(g==='menghuo'&&s.YE&&!s.YE.qz){const x=TZ_YYM.qz.ok(s);if(x&&x.f===f){TZ_YYM.qz.go(s,x,true);s.YE.qz=1;if(s.G.menghuo.o===f)return}}return _ac.apply(this,arguments)}}
+// 평정 선택지
+{const _a=tzEvAnswer;tzEvAnswer=function(s,yes){const E=s&&s.ev;if(!E||E.ty!=='yy')return _a.apply(this,arguments);if(E.done)return '';E.done=1;const D=TZ_YYM[E.id];s.YE=s.YE||{};s.YC=s.YC||{};
+  const x=D&&!s.YE[E.id]?D.ok(s):null;if(!x){tzLog(s,`[연의] ${D?D.n:''} · 사정이 바뀌어 일이 흐지부지됐어요`,'令');return '사정이 바뀌었어요'}
+  if(D.go(s,x,yes)!==false)s.YE[E.id]=1;return `${D.n} · ${yes?'받아들였어요':'거절했어요'}`}}
+{const _h=tzEvHtml;tzEvHtml=function(s){const E=s.ev;if(!E||E.ty!=='yy')return _h.apply(this,arguments);const D=TZ_YYM[E.id],x=D&&D.ok(s),Q=x&&D.q(s,x);
+  if(!Q)return `<div class="tz-ev"><b class="t">연의 · ${esc(D?D.n:'')}</b><p>사정이 바뀌었어요.</p><div class="row"><button type="button" class="btn sm ghost" data-tzev="0">닫기</button></div></div>`;
+  return `<div class="tz-ev tz-yy"><b class="t">연의 · ${esc(D.n)}</b><p>${esc(Q.t)}</p><div class="tz-yyd"><div><b>${esc(Q.y)}</b> ${esc(Q.yd)}</div><div><b>${esc(Q.no)}</b> ${esc(Q.nd)}</div></div><div class="row"><button type="button" class="btn sm red" data-tzev="1">${esc(Q.y)}</button><button type="button" class="btn sm ghost" data-tzev="0">${esc(Q.no)}</button></div></div>`}}
+{const _es=tzEvSheet;tzEvSheet=function(){const s=tzState();if(!tzEvLive(s)||s.ev.ty!=='yy')return _es.apply(this,arguments);
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">${s.y}년 ${s.m}월 연의</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${tzEvHtml(s)}`)}}
+// 적벽 화공 · 마초의 복수: 싸움 힘
+{const _bi=tzBInit;tzBInit=function(s){const bt=_bi.apply(this,arguments);try{
+  if(s.CB&&s.t<s.CB.e&&bt.af===s.CB.f&&s.CB.a.includes(bt.bf)){bt.U[0].forEach(u=>u.q*=.8);bt.log.push('적벽의 화공이 아직 남아 조조군 힘 ×0.8')}
+  if(s.MC&&s.t<s.MC.e)for(const i of [0,1]){const foe=i?bt.af:bt.bf;if(foe!==s.MC.f)continue;bt.U[i].forEach(u=>{if(u.g==='machao'){u.q*=1.15;bt.log.push('마초가 원수를 만나 힘 +15%')}})}
+  tzBroBt(s,bt)}catch(e){}return bt}}
+
+// ---- 의형제 ----
+// 도원결의(유비·관우·장비)와 단금지교(손책·주유)는 처음부터 맺어 있어요. 같은 세력 두 장수가 함께 다섯 번 넘게 이기면 결의할 수 있어요(한 무리 최대 3명)
+const TZ_BRO0=[['liubei','guanyu','zhangfei'],['sunce','zhouyu']];
+const tzBroG=(s,g)=>(s.BR||[]).find(a=>a.includes(g))||null;
+const tzBroOf=(s,g)=>{const a=tzBroG(s,g);return a?a.filter(x=>x!==g):[]};
+function tzBroInit(s){s.BR=TZ_BRO0.filter(a=>a.every(g=>s.G[g]&&s.G[g].o!=='dead')).map(a=>a.slice());s.BW={}}
+function tzBroBt(s,bt){if(!s.BR||!s.BR.length)return;for(const i of [0,1]){const us=bt.U[i].filter(u=>u.g),hit=[];
+  us.forEach(u=>{const b=tzBroOf(s,u.g);if(b.length&&us.some(v=>v!==u&&b.includes(v.g))){u.q*=1.1;hit.push(u.g)}});
+  if(hit.length)bt.log.push(`${i?'적':'아군'} 의형제 ${hit.map(tzName).join('·')} · 힘 +10%`)}}
+{const _ba=tzBApply;tzBApply=function(s,bt){const r=_ba.apply(this,arguments);try{if(bt.win&&s.F[bt.af]){s.BR=s.BR||[];s.BW=s.BW||{};
+  const gs=bt.U[0].map(u=>u.g).filter(g=>g&&s.G[g]&&s.G[g].o===bt.af);
+  for(let i=0;i<gs.length;i++)for(let j=i+1;j<gs.length;j++){const a=gs[i],b=gs[j],ga=tzBroG(s,a),gb=tzBroG(s,b);if(ga&&ga===gb)continue;const key=[a,b].sort().join('|');s.BW[key]=(s.BW[key]||0)+1;
+    if(s.BW[key]<5||(!ga&&!gb&&s.BR.length>=6)||tzRng()>.2||(ga&&gb)||(ga&&ga.length>=3)||(gb&&gb.length>=3))continue;
+    const grp=ga||gb;if(grp)grp.push(ga?b:a);else s.BR.push([a,b]);delete s.BW[key];const all=grp||[a,b];
+    tzYLog(s,'의형제',`${all.map(tzName).join('·')}이(가) 의형제를 맺었어요`,[bt.af]);break}
+  const ks=Object.keys(s.BW);if(ks.length>300)ks.slice(0,ks.length-300).forEach(k=>delete s.BW[k])}}catch(e){}return r}}
+function tzBroTick(s){if(!s||!s.on||s.end)return;if(!s.BR)tzBroInit(s);
+  for(const a of s.BR)for(const g of a){const G=s.G[g];if(!G||tzIsPc(s,g))continue;
+    if(s.F[G.o]&&!s.F[G.o].dead&&s.F[G.o].lord!==g){const mates=a.filter(x=>x!==g&&s.G[x]&&s.G[x].o===G.o);if(mates.length)G.ly=mates.includes(s.F[G.o].lord)?100:Math.max(G.ly,65)}
+    else if(G.o==='cap'){const b=a.find(x=>x!==g&&s.G[x]&&s.F[s.G[x].o]&&!s.F[s.G[x].o].dead&&s.G[x].o!==G.cb&&tzCities(s,s.G[x].o).length);
+      if(b&&tzRng()<.2){const by=G.cb,f=s.G[b].o;tzYMove(s,g,f,80);tzLog(s,`의형제 ${tzName(b)}이(가) ${tzFN(s,by)}에 붙잡힌 ${tzName(g)}을(를) 구해 냈어요`,f===tzSide(s)||by===tzSide(s)?'民':'報')}}}}
+{const _gs=tzGenSheet;tzGenSheet=function(g){const r=_gs.apply(this,arguments);try{const s=tzState(),b=s&&s.on?tzBroOf(s,g):[];if(b.length){const p=[...document.querySelectorAll('#sheet p.sub')].find(x=>/공적/.test(x.textContent));
+  if(p)p.insertAdjacentHTML('afterend',`<div class="tz-bro" style="margin:0 0 6px;font-size:13px">의형제 · ${b.map(x=>esc(tzName(x))).join(' · ')} <span>같은 전투 힘 +10% · 떠나지 않음 · 붙잡히면 구출</span></div>`)}}catch(e){}return r}}
+// 턴 · 새 판 · 저장
+{const _t=tzTurn;tzTurn=function(s){const r=_t.apply(this,arguments);try{if(s&&s.on&&!s.end){tzYTick(s);tzBroTick(s)}}catch(e){console.error(e)}return r}}
+{const _n=tzNew;tzNew=function(){const s=_n.apply(this,arguments);try{s.YE={};s.YC={};s.YL={};s.LY={};s.CB=null;s.MC=null;tzBroInit(s);
+  const a=s.BR[0];if(a&&a[0]==='liubei'&&a.every(g=>s.G[g].o===s.G.liubei.o))tzYhAdd(s,'yy','도원결의 · 유비·관우·장비가 의형제로 시작해요')}catch(e){}return s}}
+{const _cl=cleanTz;cleanTz=function(x){const o=_cl(x);if(!o.on)return o;x=x||{};const n=(v,a,b)=>Math.max(a,Math.min(b,Math.round(Number(v)||0))),okF=f=>!!o.F[f],okG=g=>!!o.G[g];
+  const ob=(v,f)=>{const r={};if(v&&typeof v==='object')for(const k in v)if(f(k,v[k]))r[k]=v[k];return r};
+  o.YE=ob(x.YE,k=>!!TZ_YYM[k]);for(const k in o.YE)o.YE[k]=1;o.YC={};if(x.YC&&typeof x.YC==='object')for(const k in x.YC)if(TZ_YYM[k])o.YC[k]=n(x.YC[k],0,99999);
+  o.YL=ob(x.YL,(k,v)=>(k==='lb'||k==='gy')&&typeof v==='string'&&(v===''||okF(v)));o.LY=ob(x.LY,(k,v)=>okG(k)&&okF(v));
+  o.BR=Array.isArray(x.BR)?x.BR.filter(Array.isArray).map(a=>[...new Set(a.filter(okG))].slice(0,3)).filter(a=>a.length>=2).slice(0,12):undefined;
+  o.BW={};if(x.BW&&typeof x.BW==='object')Object.keys(x.BW).slice(-300).forEach(k=>{const[a,b]=k.split('|');if(okG(a)&&okG(b))o.BW[k]=n(x.BW[k],0,99)});
+  const B=x.CB;o.CB=B&&typeof B==='object'&&okF(B.f)&&Array.isArray(B.a)?{f:B.f,a:B.a.filter(okF).slice(0,2),e:n(B.e,0,99999)}:null;
+  const M=x.MC;o.MC=M&&typeof M==='object'&&okF(M.f)?{f:M.f,e:n(M.e,0,99999)}:null;
+  if(x.ev&&typeof x.ev==='object'&&x.ev.ty==='yy'&&TZ_YYM[x.ev.id]&&okF(x.ev.f))o.ev={t:n(x.ev.t,0,99999),f:x.ev.f,ty:'yy',id:x.ev.id,g:0,fd:0,done:x.ev.done?1:0};
+  return o}}
+TZ_YHI.yy='演';
+HELP.forEach(c=>{if(c.t==='사건')c.rows.push(['연의 사건','조건이 맞으면 판마다 한 번씩 연의의 큰 사건이 일어나요. 우리 세력이 정할 일이면 평정에 선택지가 뜨고(답하지 않으면 거절), AI끼리면 바로 일어나요. 연환계(동탁·여포·왕윤) · 손책의 강동 평정(원술 밑 손책 독립) · 하비성의 최후(여포 장수 배신) · 관도의 허유(오소 군량 불태움) · 관우의 귀환 · 삼고초려(그 전에는 유비 말고 아무도 제갈량을 등용할 수 없어요) · 적벽대전(손권·유비 동맹과 화공) · 마초의 복수 · 칠종칠금(제갈량이 맹획을 잡으면) · 백의도강(여몽이 형주 성을 몰래 차지) · 백제성 탁고(유비가 죽으면 유선 즉위 · 제갈량 충성 고정). 연표에 演으로 남아요.']);
+  if(c.t==='전쟁')c.rows.push(['의형제','유비·관우·장비(도원결의)와 손책·주유는 처음부터 의형제예요. 같은 세력 두 장수가 함께 나가 다섯 번 넘게 이기면 결의할 수 있어요(한 무리 최대 3명). 의형제가 같은 전투에 나가면 둘 다 힘 +10%, 의형제와 같은 세력이면 충성이 65 아래로 내려가지 않아요(형제가 군주면 100). 한 명이 붙잡히면 다른 세력에 있는 형제가 달마다 20% 확률로 구해 내요.'])});
+(()=>{const st=document.createElement('style');st.textContent=`
+.tz-yy .t{color:var(--bronze)}.tz-yyd{margin:0 0 8px;font-size:13px;line-height:1.5;color:var(--mute)}.tz-yyd>div{margin:2px 0}.tz-yyd b{color:var(--bronze);margin-right:4px}
+.tz-bro{color:var(--bronze)!important}.tz-bro span{color:var(--mute);font-size:12px;margin-left:4px}
 `;document.head.appendChild(st)})();
 boot();
 </script>
