@@ -8741,8 +8741,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.3.1';
-const GW_NOTICES=[{v:'1.3.1',date:'2026-11-01',title:'군웅할거 v1.3.1 · PC·폰 저장 공유 · 윗줄 정리',items:[
+const GW_VER='1.3.2';
+const GW_NOTICES=[{v:'1.3.2',date:'2026-11-01',title:'군웅할거 v1.3.2 · 음량 조절',items:[
+  '메뉴(☰)에 음량 칸이 생겼어요. 배경음악과 효과음악(승리 · 패배 · 경사 · 흉사)을 슬라이더로 따로 조절해요. 움직이면 바로 바뀌고, 효과음악은 손을 떼면 한 번 들려줘요.',
+  '음량은 기기마다 저장돼요. 폰은 작게, PC는 크게 따로 맞출 수 있어요. 기본값은 배경음악 50% · 효과음악 75%로, 지금까지 들리던 크기와 같아요.',
+  '음량 칸에서도 배경음악을 켜고 끌 수 있어요. 윗줄 ♪ 버튼도 그대로예요.']},{v:'1.3.1',date:'2026-11-01',title:'군웅할거 v1.3.1 · PC·폰 저장 공유 · 윗줄 정리',items:[
   'PC와 폰에서 같은 저장 칸으로 이어서 할 수 있어요. 메뉴(☰) → \'기기 간 저장 공유\'에서 구글로 로그인하면, 진행이 몇 초마다 서버에 올라가고 다른 기기에서 같은 구글 계정으로 로그인하면 그대로 받아와요.',
   '두 기기에서 따로 진행한 기록이 있으면 어느 쪽을 쓸지 칸 목록을 보여 주고 물어봐요. 로그인하지 않으면 지금처럼 이 기기에만 저장돼요.',
   '폰에서 윗줄이 두 줄로 바뀌었어요. 첫 줄은 날짜와 평정 · 보고 · 턴 종료, 둘째 줄은 계절 · 금 · 군량 · 병사 · 성 · 군사 · ♪ · ☰예요. 재화 숫자가 날짜와 겹치던 문제를 고쳤어요.',
@@ -9695,9 +9698,13 @@ document.addEventListener('click',e=>{if(e.target.closest('[data-evnx]')){if(tzE
 const BGM_LEN={title:96,peace:85.333,tense:80.842,battle:54.857,ronin:109.714};
 const BGM_F={title:TZ_AS.bgm_title,peace:TZ_AS.bgm_map_peace,tense:TZ_AS.bgm_map_tense,battle:TZ_AS.bgm_battle,ronin:TZ_AS.bgm_ronin,victory:TZ_AS.jg_victory,defeat:TZ_AS.jg_defeat,good:TZ_AS.jg_good,bad:TZ_AS.jg_bad};
 const BGM_JG={win:'victory',unify:'victory',lose:'defeat',death:'defeat',harvest:'good',recruit:'good',ally:'good',retire:'good',war:'',duel:'',locust:'bad',plague:'bad',flood:'bad',revolt:'bad',exec:'bad',betray:'bad'};
-let bgmCtx=null,bgmG=null,bgmCur='',bgmSrc=null;const bgmBuf={},bgmLd={};
+let bgmCtx=null,bgmG=null,bgmJG=null,bgmCur='',bgmSrc=null;
+/* v1.3.2 음량: 기기마다 저장 {b:배경음악,j:효과음악} 0~100 */
+function bgmVol(){let v={};try{v=JSON.parse(localStorage.getItem('gw-vol'))||{}}catch(e){}const c=(x,d)=>Number.isFinite(+x)&&x!==null&&x!==''?Math.max(0,Math.min(100,Math.round(+x))):d;return {b:c(v.b,50),j:c(v.j,75)}}
+function bgmVolSet(o){const v=Object.assign(bgmVol(),o);try{localStorage.setItem('gw-vol',JSON.stringify(v))}catch(e){}bgmVolApply()}
+function bgmVolApply(){if(!bgmCtx)return;const v=bgmVol(),t=bgmCtx.currentTime;try{bgmG.gain.setTargetAtTime(v.b/100,t,.05);bgmJG.gain.setTargetAtTime(v.j/100*1.2,t,.05)}catch(e){}}const bgmBuf={},bgmLd={};
 const bgmOn=()=>{try{return localStorage.getItem('gw-bgm')==='1'}catch(e){return false}};
-function bgmInit(){if(bgmCtx)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;try{bgmCtx=new AC();bgmG=bgmCtx.createGain();bgmG.gain.value=.5;bgmG.connect(bgmCtx.destination)}catch(e){bgmCtx=null}}
+function bgmInit(){if(bgmCtx)return;const AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;try{bgmCtx=new AC();const v=bgmVol();bgmG=bgmCtx.createGain();bgmG.gain.value=v.b/100;bgmG.connect(bgmCtx.destination);bgmJG=bgmCtx.createGain();bgmJG.gain.value=v.j/100*1.2;bgmJG.connect(bgmCtx.destination)}catch(e){bgmCtx=null}}
 function bgmLoad(k){if(bgmBuf[k])return Promise.resolve(bgmBuf[k]);if(bgmLd[k])return bgmLd[k];
   return bgmLd[k]=fetch(BGM_F[k]).then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(a=>new Promise((ok,no)=>bgmCtx.decodeAudioData(a,ok,no))).then(b=>{bgmBuf[k]=b;return b}).catch(()=>{delete bgmLd[k];return null})}
 function bgmPts(b,sec){const d=b.getChannelData(0);let i=0;const lim=Math.min(d.length,b.sampleRate*.3);while(i<lim&&Math.abs(d[i])<2e-4)i++;const a=i/b.sampleRate;return [a,Math.min(b.duration,a+sec)]}
@@ -9706,7 +9713,7 @@ function bgmPlay(k){if(k===bgmCur||!bgmCtx)return;bgmCur=k;const old=bgmSrc;bgmS
   if(!k)return;bgmLoad(k).then(b=>{if(!b||bgmCur!==k||bgmSrc)return;const src=bgmCtx.createBufferSource(),g=bgmCtx.createGain(),[a,e]=bgmPts(b,BGM_LEN[k]);
     src.buffer=b;src.loop=true;src.loopStart=a;src.loopEnd=e;g.gain.value=0;src.connect(g);g.connect(bgmG);src.start(0,a);g.gain.setTargetAtTime(1,bgmCtx.currentTime,.4);src._g=g;bgmSrc=src})}
 function bgmJingle(ty){const k=BGM_JG[ty];if(!k||!bgmOn())return;bgmInit();if(!bgmCtx)return;bgmLoad(k).then(b=>{if(!b)return;const src=bgmCtx.createBufferSource(),g=bgmCtx.createGain(),t=bgmCtx.currentTime;
-  src.buffer=b;g.gain.value=.9;src.connect(g);g.connect(bgmCtx.destination);src.start();if(bgmSrc){const G=bgmSrc._g.gain;G.setTargetAtTime(.25,t,.1);G.setTargetAtTime(1,t+b.duration,.5)}})}
+  src.buffer=b;g.gain.value=1;src.connect(g);g.connect(bgmJG);src.start();if(bgmSrc){const G=bgmSrc._g.gain;G.setTargetAtTime(.25,t,.1);G.setTargetAtTime(1,t+b.duration,.5)}})}
 function bgmWant(){if(!bgmOn()||document.hidden)return '';const sh=$('#sheet'),open=sh&&!sh.hidden;
   if(open&&sh.classList.contains('tzt-sheet'))return 'title';if((typeof tzBT!=='undefined'&&tzBT)||(open&&sh.querySelector('#tzs-res')))return 'battle';
   const s=S&&S.tz;if(!s||!s.on)return 'title';if(s.me==='_'&&s.pc&&s.G[s.pc.g]&&s.G[s.pc.g].o==='free')return 'ronin';
@@ -10059,7 +10066,11 @@ function gwsRow(){return `<div class="banner-card" id="gws-row" style="padding:1
   :`<p class="sub" style="margin:4px 0 8px">구글로 로그인하면 PC·폰에서 같은 저장 칸으로 이어서 해요. 로그인하지 않으면 이 기기에만 저장돼요.</p><button type="button" class="btn sm wide" id="gws-in">구글로 로그인</button>`}</div>`}
 function gwsPaint(){const r=$('#gws-row');if(!r)return;r.outerHTML=gwsRow();gwsBind()}
 function gwsBind(){const a=$('#gws-in'),b=$('#gws-now'),c=$('#gws-out');if(a)a.onclick=gwsLogin;if(b)b.onclick=async()=>{if(gwsMeta().dirty)await gwsPush();await gwsCheck();gwsSetSt(gwsSt==='err'?'err':'ok');toast('서버 기록과 맞췄어요')};if(c)c.onclick=gwsLogout}
-{const _m=gwMenu;gwMenu=function(){_m.apply(this,arguments);const h=$('#sheet .sheet-h');if(h){h.insertAdjacentHTML('afterend',gwsRow());gwsBind()}}}
+function gwVolRow(){const v=bgmVol(),r=(k,n,x)=>`<label style="display:flex;align-items:center;gap:10px;margin:6px 0"><span style="width:64px;font-size:13px;flex:none">${n}</span><input type="range" min="0" max="100" step="5" value="${x}" data-gwvol="${k}" aria-label="${n} 음량" style="flex:1;accent-color:var(--gold,#e9c66c)"><b class="num" style="width:40px;text-align:right;font-size:13px">${x}%</b></label>`;
+  return `<div class="banner-card" style="padding:12px;margin:0 0 10px"><div style="display:flex;justify-content:space-between;align-items:center"><b>음량</b>${bgmBtn('btn ghost sm',1)}</div>${r('b','배경음악',v.b)}${r('j','효과음악',v.j)}<p class="sub" style="margin:4px 0 0;font-size:12px">이 기기에만 저장돼요. 효과음악은 승리 · 패배 · 경사 · 흉사 때 나와요.</p></div>`}
+document.addEventListener('input',e=>{const t=e.target.closest&&e.target.closest('[data-gwvol]');if(!t)return;const k=t.dataset.gwvol;bgmVolSet({[k]:+t.value});const o=t.parentElement.querySelector('b');if(o)o.textContent=t.value+'%'});
+document.addEventListener('change',e=>{const t=e.target.closest&&e.target.closest('[data-gwvol]');if(t&&t.dataset.gwvol==='j'&&+t.value>0)bgmJingle('harvest')});
+{const _m=gwMenu;gwMenu=function(){_m.apply(this,arguments);const h=$('#sheet .sheet-h');if(h){h.insertAdjacentHTML('afterend',gwsRow()+gwVolRow());gwsBind()}}}
 // 전에 로그인했던 기기는 열 때 바로 연결해요(처음 쓰는 기기는 메뉴에서 로그인할 때만 서버 파일을 받아요)
 setTimeout(()=>{const m=gwsMeta();if(m.uid||m.pend)gwsLoad()},1200);
 
