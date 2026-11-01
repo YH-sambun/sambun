@@ -8849,8 +8849,14 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.4.1';
-const GW_NOTICES=[{v:'1.4.1',date:'2026-11-02',title:'군웅할거 v1.4.1 · 반(反) 연합 원군 · 연합 공동 출병',items:[
+const GW_VER='1.4.2';
+const GW_NOTICES=[{v:'1.4.2',date:'2026-11-02',title:'군웅할거 v1.4.2 · 208년 · 219년 조조 시작 힘 줄이기 · 이민족 침입',items:[
+  '이민족 침입이 생겼어요. 변경 성(북평 · 계 오환, 양평 선비, 진양 흉노, 서량 · 안정 · 천수 강족, 무릉 무릉만, 운남 · 건녕 남만, 회계 · 오 산월)은 민심이 60보다 낮으면 달마다 (60 − 민심)/200 확률로 이민족이 쳐들어와요. 민심 40이면 10%예요.',
+  '침입을 받으면 병사 10~20% · 군량 15% · 민심 5를 잃어요. 태수가 있으면 통솔/200 확률로 막아 내고 민심이 1 올라요. 우리 성도 AI 성도 똑같아요. 변경 성은 민심을 60 넘게 지켜 두세요.',
+  '208년 적벽대전 · 219년 삼국정립에서 조조가 너무 쉽게 천하를 통일하던 것을 줄였어요. AI끼리 둘 때 10년 안에 조조가 통일하는 판이 열에 아홉 넘게였는데, 이제 두 시나리오 모두 열에 여섯 정도예요.',
+  '219년: 조조 성의 시작 병사가 60%로 줄어요(성마다 3,500 → 2,100).',
+  '208년: 조조 성의 시작 병사가 40%(성마다 1,400)이고 민심 45로 시작해요. 장안은 한수, 북평은 공손강의 성으로 시작해요(그곳 조조 장수는 허창으로 옮겨요). 형주를 막 삼킨 조조는 넓은 땅을 다스리느라 의용군이 잘 모이지 않고, 계 · 진양에서는 이민족이 드나들어요.',
+  '조조를 골라 시작해도 똑같이 적용돼요. 새로 시작하는 판부터 바뀌고, 진행 중인 판은 그대로예요(이민족 침입은 진행 중인 판에도 적용돼요).']},{v:'1.4.1',date:'2026-11-02',title:'군웅할거 v1.4.1 · 반(反) 연합 원군 · 연합 공동 출병',items:[
   '연합 공동 출병: 연합이 맺어진 동안 두 달에 한 번, 표적의 성 하나에 맞닿은 연합 성들이 병력을 모아 함께 쳐요. 한 세력이 장수와 함께 앞장서고, 다른 연합 세력이 병사의 절반(성마다 1,500은 남겨요)을 보태요. 장수가 이끌 수 있는 만큼만 모으고, 이길 만할 때(전력 1.15배 이상)만 나가요. 살아남은 연합 병사는 끝나면 제 성으로 돌아가요. 우리 성 병사는 보내지 않아요.',
   '원군: 표적이 연합 성을 치면, 그 성과 맞닿은 다른 연합 세력의 성이 병사를 보내 함께 지켜요. 성마다 병사의 30%(최대 3,000)씩 2곳까지 오고, 지켜 내면 살아남은 원군은 제 성으로 돌아가요. 우리가 연합에 들면 우리 성도 원군을 받아요(우리 병사는 보내지 않아요). 우리가 표적이면 연합 성을 칠 때 원군을 함께 상대해요.']},{v:'1.4.0',date:'2026-11-02',title:'군웅할거 v1.4.0 · 반(反)○○ 연합 · 판 끝 결과 · 연표 · 장수별 통일 기록',items:[
   '반(反) 연합이 생겼어요. 한 세력이 천하 성의 1/3 이상을 갖거나, 성 8곳 이상이면서 2위의 두 배가 되면 그 세력과 가까운(길 2칸 안) 세력들이 \'반○○ 연합\'을 맺어요. 연합끼리 2년 동맹을 맺고 표적과는 험악해져요. 연합 AI는 표적의 성을 먼저 노려요.',
@@ -11110,10 +11116,24 @@ function tzResAuto(){setTimeout(()=>{const s=tzState(),sh=$('#sheet');if(s&&s.on
 
 // ---- 턴 · 끝 · 새 판 · 저장 ----
 {const _t=tzTurn;tzTurn=function(s){if(!s||!s.on||s.end)return _t.apply(this,arguments);const r=_t.apply(this,arguments);
-  try{if(!s.end)tzCoTick(s);tzStTick(s);tzYhEvq(s)}catch(e){console.error(e)}save();return r}}
+  try{if(!s.end)tzBarTick(s);if(!s.end)tzCoTick(s);tzStTick(s);tzYhEvq(s)}catch(e){console.error(e)}save();return r}}
 {const _e=tzEnd;tzEnd=function(s){const was=s&&s.end,r=_e.apply(this,arguments);
   try{if(s&&s.on&&s.end&&!was){tzStTick(s);tzYhAdd(s,'end',`${tzEndT(s)} · ${tzDur(s.t)}`);if(s.end===1)tzClrAdd(s)}}catch(e){console.error(e)}return r}}
-{const _n=tzNew;tzNew=function(sc,me,rs){const s=_n.apply(this,arguments);try{s.CO=null;s.COH={};s.yh=[];s.st=null;s.cr=0;s.rsv=0;
+// ---- 이민족 침입: 변경 성은 민심이 60보다 낮으면 달마다 (60−민심)/200 확률로 침입을 받아요 ----
+const TZ_BAR={beiping:'오환',ji:'오환',xiangping:'선비',jinyang:'흉노',xiliang:'강족',anding:'강족',tianshui:'강족',wuling:'무릉만',yunnan:'남만',jianning:'남만',kuaiji:'산월',wu:'산월'};
+function tzBarTick(s){if(!s||s.end)return;for(const k in TZ_BAR){const C=s.C[k];if(!C||!s.F[C.o]||C.ml>=60)continue;if(tzRng()>=(60-C.ml)/200)continue;
+  const nm=TZ_BAR[k],gv=tzGov(s,k),me=C.o===tzSide(s),ch=me?'民':'報';
+  if(gv&&tzRng()<tzLead(gv)/200){C.ml=Math.min(100,C.ml+1);tzLog(s,`${tzCN(k)}에 ${nm}이 쳐들어왔지만 태수 ${tzName(gv)}이(가) 막아 냈어요 · 민심 +1`,ch);if(me)tzYhAdd(s,'revolt',`${tzCN(k)} ${nm} 침입을 막아 냄`);continue}
+  const q=.1+tzRng()*.1,lt=Math.round(C.tr*q),lf=Math.round(C.fd*.15);C.tr-=lt;C.fd-=lf;C.ml=Math.max(0,C.ml-5);
+  tzLog(s,`${tzCN(k)}에 ${nm}이 쳐들어왔어요 · 병사 −${fmt(lt)} · 군량 −${fmt(lf)} · 민심 −5`,ch);if(me)tzYhAdd(s,'revolt',`${tzCN(k)} ${nm} 침입`)}}
+// 시나리오 시작 성 넘기기: {시나리오:{성:새 주인('neu'는 빈 성)}}. 그 성에 있던 원래 주인의 장수는 군주 곁으로 옮겨요
+const TZ_SCGIVE={208:{changan:'hansui',beiping:'gongsunkang'}};
+function tzScGive(s){const G0=!s.rs&&TZ_SCGIVE[s.sc];if(!G0)return;for(const k in G0){const C=s.C[k],to=G0[k],f0=C.o;if(!C||!s.F[f0]||(to!=='neu'&&!s.F[to]))continue;if(tzCities(s,f0).length<2||tzHome(s,k))continue;
+  const lc=s.G[s.F[f0].lord].c;tzGensIn(s,k,f0).forEach(g=>{s.G[g].c=lc});C.gov='';
+  if(to==='neu')Object.assign(C,{o:'neu',g:300,fd:2000,tr:1500,tn:30,ml:50,dl:'self',wp:300,hs:0});else Object.assign(C,{o:to,dl:'self'})}}
+// 시나리오 밸런스: 처음부터 너무 큰 세력은 시작 병력을 줄여요(성마다 병사 × 비율)
+const TZ_SCTR={208:{caocao:{tr:.4,ml:45}},219:{caocao:{tr:.6}}};  // tr: 병사 비율 · ml: 민심(있으면 그 값으로) · eco: 농업·상업 비율
+{const _n=tzNew;tzNew=function(sc,me,rs){const s=_n.apply(this,arguments);try{tzScGive(s);const tb=!s.rs&&TZ_SCTR[s.sc];if(tb)for(const f in tb)if(s.F[f])tzCities(s,f).forEach(k=>{const v=tb[f],C=s.C[k];if(v.tr!=null)C.tr=Math.round(C.tr*v.tr/100)*100;if(v.ml!=null)C.ml=v.ml;if(v.eco!=null){C.fa=Math.round(C.fa*v.eco);C.co=Math.round(C.co*v.eco)}});s.CO=null;s.COH={};s.yh=[];s.st=null;s.cr=0;s.rsv=0;
   const D=TZ_SC[s.sc];tzYhAdd(s,'start',`${s.rs?'임의 시작':D?D.n:''}${s.F[s.me]?' · '+tzFN(s,s.me):''}`);
   if(String(s.sc)==='189'&&!s.rs&&s.F.dongzhuo&&!s.F.dongzhuo.dead){const m=TZ_CO189.filter(f=>s.F[f]&&!s.F[f].dead&&tzCities(s,f).length);if(m.length>=2)tzCoForm(s,'dongzhuo',m,18)}
   tzSt(s)}catch(e){console.error(e)}return s}}
@@ -11127,6 +11147,7 @@ function tzResAuto(){setTimeout(()=>{const s=tzState(),sh=$('#sheet');if(s&&s.on
   o.cr=x.cr?1:0;o.crb=x.crb?1:0;o.crm=n(x.crm,0,99999);o.crg=o.G[x.crg]?x.crg:'';o.rsv=x.rsv?1:0;
   if(x.ev&&typeof x.ev==='object'&&x.ev.ty==='coa'&&okF(x.ev.f)&&okF(x.ev.tg))o.ev={t:n(x.ev.t,0,99999),f:x.ev.f,ty:'coa',tg:x.ev.tg,g:0,fd:0,done:x.ev.done?1:0};
   return o}}
+HELP.forEach(c=>{if(c.t==='사건')c.rows.push(['이민족 침입','변경 성(북평·계·양평·진양·서량·안정·천수·무릉·운남·건녕·회계·오)은 민심이 60보다 낮으면 달마다 (60−민심)/200 확률로 이민족이 쳐들어와요. 병사 10~20%·군량 15%·민심 5를 잃고, 태수가 통솔/200 확률로 막아 내면 민심 +1이에요.'])});
 HELP.forEach(c=>{if(c.t==='외교·계략')c.rows.push(['반(反) 연합','한 세력이 천하 성의 1/3 이상을 갖거나, 성 8곳 이상이면서 2위의 두 배가 되면 그 세력에서 길 2칸 안의 세력들이 \'반○○ 연합\'을 맺어요. 연합끼리 2년 동맹 · 표적과는 험악. 연합 AI는 표적의 성을 먼저 치고, 연합끼리 공동 작전은 바로 받아 줘요. 표적이 연합 성을 치면 그 성과 맞닿은 다른 연합 세력 성이 원군(병사의 30%, 성마다 최대 3,000 · 2곳까지)을 보내고, 지켜 내면 살아남은 원군은 돌아가요. 또 두 달에 한 번, 표적의 성에 맞닿은 연합 성들이 병력을 모아 공동 출병해요(한 세력이 앞장서고 다른 세력이 병사의 절반을 보태요. 이길 만할 때만). 우리가 표적이면 평정에 경고가, 연합 자격이 있으면 사신이 와요(거절해도 벌칙 없음).'],
   ['연합이 흩어지면','2년이 지나거나, 표적의 성이 크게 줄거나(천하의 1/4 또는 처음의 70% 아래), 표적이 멸망하면 흩어져요. 연합끼리 동맹이 풀리고 사이가 크게 험악해져요(반동탁 연합 뒤의 군웅할거처럼). 같은 세력을 겨냥한 연합은 흩어진 뒤 2년 동안 다시 생기지 않아요. 189년 시나리오는 반동탁 연합이 맺어진 채로 시작해요(18달).']);
   if(c.t==='보상')c.rows.push(['결과 · 연표 · 통일 기록','판이 끝나면(통일 · 패배 · 사망 · 은퇴) 결과 화면에 걸린 기간 · 점령/잃은 성 · 등용 · 포로 · 처형 · 일기토 전적 · 공적 상위 5명이 나와요. 메뉴 › 연표에서 판의 큰 일을 달마다 볼 수 있어요. 통일하면 그 군주(장수제는 내 장수)의 통일 횟수가 장수 일람 · 상세에 쌓이고, 시나리오별 최단 기간도 남아요. 구글 저장 공유를 켜면 계정에도 저장돼요.'])});
