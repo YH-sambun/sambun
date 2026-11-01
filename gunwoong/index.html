@@ -4252,7 +4252,7 @@ const HELP=[
   ['일기토','국면 사이에 가끔, 또는 \'일기토 신청\'으로 한 판에 한 번 벌어져요. 무력 차이로 승패가 나고, 지면 그 부대 병사 −30% · 사기 −20, 60% 확률로 포로예요. 신청을 받으면 받기·대리·거절(사기 −10) 중에 골라요.'],
   ['포로','부대가 무너지면 무력이 낮은 장수일수록 잘 붙잡혀요. 적토마·한혈마·절영·적로 같은 명마가 있으면 안전하게 빠져나와요.'],
   ['군비','군사 탭의 \'군비\'로 무기·군마를 사요(행동 안 씀). 궁병·창병은 병사 10명에 무기 1, 기병은 군마 1이 들어요. 살아남은 만큼 돌아오고, 이기면 적이 잃은 것의 30%를 주워요. 군마 산지(서량·안정·천수·북평·계·양평·진양)는 군마가 반값이에요.'],
-  ['지키기','방어가 높을수록, 관문(사수관·동관·양평관·검각·합비·백제성)이 있을수록 수비군이 받는 피해가 줄어요.']]},
+  ['지키기','방어가 높을수록, 관문(사수관·동관·양평관·검각·합비·백제성)이 있을수록 수비군이 받는 피해가 줄어요.'],['예비대','성을 지킬 때 싸우는 장수는 5명이에요. 성에 남은 나머지 장수 1명당 수비 사기 +1 · 받는 피해 −1%(최대 5명분, 사기 +5 · 피해 −5%)가 붙어요. 성이 떨어지면 남은 장수도 붙잡힐 수 있으니 한 성에 너무 몰지 마세요.']]},
  {t:'포로',rows:[
   ['등용','붙잡혀도 의리·충성은 그대로예요. 우리 군주 매력이 높고 포로 의리가 낮을수록 잘 넘어와요. 한 달에 한 번 설득해요.'],
   ['해방','풀어 주면 원래 세력이 몸값을 내요(군주였던 장수 2,000, 그 밖 300 + 등급×100).'],
@@ -8846,8 +8846,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.3.10';
-const GW_NOTICES=[{v:'1.3.10',date:'2026-11-01',title:'군웅할거 v1.3.10 · PC 시작 화면 바로잡기',items:[
+const GW_VER='1.3.11';
+const GW_NOTICES=[{v:'1.3.11',date:'2026-11-02',title:'군웅할거 v1.3.11 · 수비 예비대 · 태수 제안 거절 · 출진 소집 거부 · 정찰 바로가기',items:[
+  '성을 지킬 때 싸우는 장수는 지금처럼 5명이지만, 이제 성에 남은 나머지 장수도 \'예비대\'로 힘을 보태요. 1명당 수비 사기 +1 · 받는 피해 −1%이고 최대 5명분(사기 +5 · 피해 −5%)까지예요. 모의전(조건마다 2,000판)에서 2배 병력으로 장수 12명 성을 칠 때 점령률이 71%에서 55%로 내려갔어요. 성이 떨어지면 남은 장수도 붙잡힐 수 있으니 한 성에 너무 몰지는 마세요.',
+  '장수로 시작한 판에서 군주가 태수를 바로 앉히지 않고 먼저 물어봐요. \'받기\'를 누르면 그 성으로 옮겨 태수가 되고, 성 방침부터 골라요(기본은 출진하지 않는 \'방어\'). \'거절\'하면 신뢰 −3이고 6달 동안 다시 묻지 않아요. 태수가 빈 성에 저절로 앉히는 것에서도 내 장수는 빠져요.',
+  '장수·태수 화면에 \'출진 소집\'이 생겼어요. 거절로 두면 군주가 내 장수를 데리고 출진하려 할 때 빠져요(그때마다 신뢰 −2). 내가 청한 공략은 그대로 나가요. 무리한 출진에 끌려가 붙잡히는 일을 막을 수 있어요.',
+  '정찰을 찾기 쉽게 바꿨어요. 남의 성을 누르면 성 카드 맨 위에 \'偵 정찰\' 버튼이 있고, 어느 성에서 보내는지 · 비용 · 성공률이 함께 나와요. 지금 할 수 없을 때는 버튼을 숨기지 않고 이유(남은 장수 없음 · 금 부족 · 정찰 정보가 아직 남음)를 보여 줘요.',
+  '정찰 결과에 쓴 금이 함께 나와요(실패해도 금 200은 써요). 정찰 성공률의 바닥을 20%에서 35%로 올렸어요.',
+  '재야 · 장수도 맞닿은 성을 정찰할 수 있어요. 개인 금 80과 행동 1을 쓰고, 성공률은 군주 화면 정찰과 같아요. 장수 화면의 \'정찰\' 버튼이나 맞닿은 성의 카드에서 해요.',
+  '장수로 시작한 판에서도 천하의 큰 사건은 그림으로 보여요. 이름난 장수(★4 이상)나 군주가 처형되면 \'죽음\' 그림이, 어느 세력이든 멸망하거나 천하가 통일되면 그 그림이 떠요. 예전에는 내 장수 · 내 세력 · 내가 있는 성 이야기만 그림이 나왔어요.',
+  '지도 깃발 색을 조금 차분하게 낮췄어요. 바랜 비단처럼 보이도록 채도를 줄였고, 세력끼리 구분은 그대로예요.']},{v:'1.3.10',date:'2026-11-01',title:'군웅할거 v1.3.10 · PC 시작 화면 바로잡기',items:[
   '넓은 PC 창에서 시작 화면을 열면 맨 위 "군웅할거" 제목 카드가 눌려 글자 아래쪽과 소개 문구 · 도움말 버튼이 잘려 보이던 문제를 고쳤어요.',
   'PC 시작 화면에서 세이브 칸과 군주 목록이 화면 끝까지 늘어나던 것을 가운데 폭으로 모았어요. 폰 화면과 게임을 시작한 뒤의 지도 화면은 그대로예요.']},{v:'1.3.9',date:'2026-11-01',title:'군웅할거 v1.3.9 · 탐색하면 금이 늘 들어와요 · 등용 확률 보기',items:[
   '탐색이 보물 → 재야 장수 → 금 중 하나만 나와서, 지력이 높을수록 장수만 나오고 금은 거의 안 들어오던 문제를 고쳤어요. 이제 내가 하는 탐색은 금이 늘 들어오고(100 + 지력×3 + 상업/5, 지력 90 · 상업 500이면 약 470), 보물과 재야 장수는 그와 따로 찾아요.',
@@ -9102,7 +9110,7 @@ function tzBPhase(bt,a0,a1){if(!bt.fl)tzBStart(bt);if(bt.ph===0)for(const i of [
     else{bt.M[i]=Math.max(0,bt.M[i]-5);sch[i]=0;lg.push(`${i?'적':'아군'} 계략 실패 · ${i?'적':'아군'} 사기 −5`)}}
   const dmg=[bt.U[0].map(()=>0),bt.U[1].map(()=>0)];
   for(let i=0;i<2;i++){const j=1-i,me=tzBLive(bt,i),en=tzBLive(bt,j),tot=en.reduce((a,u)=>a+u.n,0);if(!me.length||!tot)continue;
-    let take=act[j]==='def'?(tzBSide(bt,j,'def2')?.3:.55):act[j]==='chg'?1.25:1;if(act[j]==='def'&&tzBSide(bt,i,'brk'))take=(take+1)/2;if(j===1&&tzBSide(bt,j,'dfT'))take*=tzBSide(bt,j,'dfT');const defC=j===1?(1-bt.df/TZB_K.dfd)*(bt.pass?.87:1)*(act[j]==='def'?1:1):1;
+    let take=act[j]==='def'?(tzBSide(bt,j,'def2')?.3:.55):act[j]==='chg'?1.25:1;if(act[j]==='def'&&tzBSide(bt,i,'brk'))take=(take+1)/2;if(j===1&&tzBSide(bt,j,'dfT'))take*=tzBSide(bt,j,'dfT');const defC=j===1?(1-bt.df/TZB_K.dfd)*(bt.pass?.87:1)*(1-(bt.rv||0)*TZB_RV.d):1;
     me.forEach(u=>{if(u.sk===bt.ph)return;let m=act[i]==='chg'?(u.ty==='cav'?1.5:u.ty==='arc'?(u.g&&tzLead(u.g)>=70?1.4:1.15):1.15):act[i]==='sch'?.6:act[i]==='def'?(i===1?.5:.5):1;
       if(i===0&&u.ty==='inf')m*=1.2;  // 공성: 보병이 성벽 싸움에 강해요
       if(act[i]==='chg')m*=1+tzBU(bt,u,'chg');if(i===0)m*=1+tzBU(bt,u,'sg');m*=1+tzBU(bt,u,'fst')+(u.ty==='cav'?tzBU(bt,u,'cvF'):0);
@@ -10178,8 +10186,9 @@ function tzDis(s){if(s.end)return;const r=tzRng;
     if(miss)tzLog(s,`임무를 하지 않아 신뢰 −6 (${pc.tr})`,'令');
     pc.ap=3;if(rk===1)pc.gd+=60;if(rk===2)pc.gd+=150;if(pc.of&&pc.of.t<s.t-1)pc.of=null;
     if((rk===1||rk===2)&&pc.tr<15){const f=G.o;if(rk===2)s.C[G.c].gov='';Object.assign(G,{o:'free',fd:0});pc.ban[f]=s.t+6;tzLog(s,`신뢰를 잃어 ${tzFN(s,f)}에서 쫓겨났어요`,'令');tzEvPush(s,'retire',`${tzName(pc.g)}이(가) ${tzFN(s,f)}에서 쫓겨났어요`);rk=0}
-    if(rk===1&&pc.tr>=60&&G.mr>=150&&Math.random()<.35){const f=G.o,cs=tzCities(s,f).filter(x=>!tzHome(s,x)&&(!tzGov(s,x)||s.G[tzGov(s,x)].mr<G.mr)).sort((a,b)=>(b===G.c)-(a===G.c));
-      if(cs[0]){G.c=cs[0];s.C[cs[0]].gov=pc.g;tzLog(s,`${tzName(tzPcLord(s))}이(가) ${tzName(pc.g)}을(를) ${tzCN(cs[0])} 태수로 임명했어요`,'令');rk=2}}
+    if(pc.go&&(rk!==1||pc.go.t<s.t-1)){if(rk===1){pc.gb=s.t+3;tzLog(s,`${tzCN(pc.go.k)} 태수 제안에 답하지 않아 없던 일이 됐어요`,'令')}pc.go=null}
+    if(rk===1&&!pc.go&&(pc.gb|0)<=s.t&&pc.tr>=60&&G.mr>=150&&Math.random()<.35){const cs=tzPcGoCs(s);  // v1.3.11 바로 임명하지 않고 받기·거절로 물어봐요
+      if(cs[0]){pc.go={k:cs[0],t:s.t};tzLog(s,`${tzName(tzPcLord(s))}이(가) ${tzName(pc.g)}에게 ${tzCN(cs[0])} 태수 자리를 제안했어요`,'令')}}
     pc.tk=rk===1?tzPcTask(s):null;tzPcSync(s)}
   else if(pc)tzPcSync(s);
   save();return r}}
@@ -10370,19 +10379,19 @@ function tzFct(c){const m=/^#?([0-9a-f]{6})$/i.exec(c||'');if(!m)return '#fff';c
    위임한 성의 장수도 정찰만은 직접 시킬 수 있고, 공략·방어로 맡긴 성은 맞닿은 적 성을 알아서 정찰해요. s.SC[성] = 보이는 마지막 턴 다음 값 */
 TZ_CMD.sct=['정찰','다른 성 정보 1년 보기','금 200 · 지력'];
 {const g=TZ_CAT.find(c=>c[0]==='gye');if(g&&!g[3].includes('sct'))g[3].push('sct')}
-TZ_QA.push(['sct','정찰']);
+// v1.3.11 정찰은 성 카드 맨 위 전용 버튼으로 옮겼어요(아래 tzSctPanel)
 const TZ_SCT_N=12,TZ_SCT_G=200;
 const tzSeen=(s,k)=>!!(s&&s.SC&&(s.SC[k]|0)>s.t);
 const tzSeenLeft=(s,k)=>tzSeen(s,k)?(s.SC[k]|0)-s.t:0;
 const tzSctIdle=(s,k)=>s.C[k]&&s.C[k].o===s.me?tzGensIn(s,k,s.me).filter(g=>!s.G[g].ac):[];
-function tzSctP(s,g,tk){const T=s.C[tk],gv=T&&T.o!=='neu'?tzGov(s,tk):'';return Math.max(.2,Math.min(.95,.55+tzInt(g)/250-(gv?tzInt(gv)/400:0)+tzSc(s,g)))}
+function tzSctP(s,g,tk){const T=s.C[tk],gv=T&&T.o!=='neu'?tzGov(s,tk):'';return Math.max(.35,Math.min(.95,.55+tzInt(g)/250-(gv?tzInt(gv)/400:0)+tzSc(s,g)))}
 {const _cl=cleanTz;cleanTz=function(x){const o=_cl(x);if(!o.on)return o;x=x||{};o.SC={};if(x.SC&&typeof x.SC==='object')for(const k in x.SC){const v=Math.round(Number(x.SC[k])||0);if(TZ_C[k]&&v>o.t)o.SC[k]=v}return o}}
 {const _do=tzDo;tzDo=function(s,k,cmd,g,tg,it){if(cmd!=='sct')return _do.apply(this,arguments);
   const C=s.C[k],G=s.G[g],T=s.C[tg];if(!C||!G||G.o!==C.o)return '이 성의 장수가 아니에요';if(G.ac)return '이번 달 명령을 이미 했어요';
   if(!T||T.o===C.o)return '정찰할 성을 골라요';if(C.g<TZ_SCT_G)return '금이 모자라요';C.g-=TZ_SCT_G;
-  let msg;if(tzRng()<tzSctP(s,g,tg)){s.SC=s.SC||{};s.SC[tg]=s.t+TZ_SCT_N;msg=`${tzCN(tg)} 정찰 성공 · ${TZ_SCT_N}개월 동안 정보가 보여요`}
-  else if(s.F[T.o]&&tzRng()<.15){tzHAdd(s,C.o,T.o,10);msg=`${tzCN(tg)} 정찰 실패 · ${tzFN(s,T.o)}에 들켰어요(적대 +10)`}
-  else msg=`${tzCN(tg)} 정찰 실패`;
+  let msg;if(tzRng()<tzSctP(s,g,tg)){s.SC=s.SC||{};s.SC[tg]=s.t+TZ_SCT_N;msg=`${tzCN(tg)} 정찰 성공 · ${TZ_SCT_N}개월 동안 정보가 보여요 · 금 ${TZ_SCT_G} 사용`}
+  else if(s.F[T.o]&&tzRng()<.15){tzHAdd(s,C.o,T.o,10);msg=`${tzCN(tg)} 정찰 실패 · ${tzFN(s,T.o)}에 들켰어요(적대 +10) · 금 ${TZ_SCT_G} 사용`}
+  else msg=`${tzCN(tg)} 정찰 실패 · 금 ${TZ_SCT_G} 사용`;
   G.ac=1;G.mr=Math.min(9999,G.mr+5);return {ok:1,msg,fx:''}}}
 let tzSctPre='';
 {const _q=tzQaSrc;tzQaSrc=function(s,k,c){if(c!=='sct')return _q.apply(this,arguments);if(tzSeenLeft(s,k)>3)return '';
@@ -10607,6 +10616,86 @@ addEventListener('hashchange',pwaHashGo);setTimeout(()=>{pwaInappBar();pwaHashGo
       if(loc.some((x,i)=>x&&!lb[i])&&(D.rev|0)>(gwsMeta().rev|0)){if(gwsMeta().uid!==uid){gwsHash={};gwsMetaSet({uid,rev:0})}gwsAsk(D);return}}}catch(e){}
   return _st.apply(this,arguments)}}
 {const _ps=gwsPush;gwsPush=async function(first){if(GWU&&!gwsSnap().slots.some(Boolean)){gwsMetaSet({dirty:0});return}return _ps.apply(this,arguments)}}
+/* ==== 군웅할거 v1.3.11: 수비 예비대 · 태수 제안 받기·거절 · 출진 소집 거부 · 정찰 바로가기 · 장수 정찰 · 깃발 색 ==== */
+// 예비대: 성에 있지만 싸우지 않는 수비 장수 1명당 사기 +1 · 받는 피해 −1% (최대 5명분). 받는 피해는 tzBPhase의 defC에서 bt.rv로 계산해요
+const TZB_RV={m:1,d:.01,cap:5};
+{const _bi=tzBInit;tzBInit=function(s,from,to){const bt=_bi.apply(this,arguments);if(!bt||!s||!s.C[to])return bt;
+  const inU=new Set(bt.U[1].map(u=>u.g).filter(Boolean)),rs=tzGensIn(s,to,bt.bf).filter(g=>!inU.has(g)),n=Math.min(TZB_RV.cap,rs.length);bt.rv=n;
+  if(n){bt.M[1]=Math.min(100,bt.M[1]+n*TZB_RV.m);bt.log.push(`수비 예비대 ${rs.length}명 · 수비 사기 +${n*TZB_RV.m} · 받는 피해 −${Math.round(n*TZB_RV.d*100)}%`)}return bt}}
+
+// 장수제 태수 제안: 군주가 바로 임명하지 않고 물어봐요. 거절하면 신뢰 −3 · 6달 동안 다시 묻지 않아요
+const TZ_GO_NO=3,TZ_GO_BAN=6;
+function tzPcGoCs(s){const P=s.pc,G=s.G[P.g],f=G.o;return tzCities(s,f).filter(x=>!tzHome(s,x)&&(!tzGov(s,x)||s.G[tzGov(s,x)].mr<G.mr)).sort((a,b)=>(b===G.c)-(a===G.c))}
+function tzPcGoAns(s,yes){const P=s.pc,G=s.G[P.g],o=P.go,nm=tzName(P.g);P.go=null;if(!o||tzPcRank(s)!==1){save();renderView();return}
+  if(!yes){P.tr=Math.max(0,P.tr-TZ_GO_NO);P.gb=s.t+TZ_GO_BAN;const t=`${tzCN(o.k)} 태수 제안을 거절했어요 · 신뢰 −${TZ_GO_NO} (${P.tr}) · ${TZ_GO_BAN}달 동안 다시 묻지 않아요`;tzLog(s,t,'令');save();renderView();toast(t);return}
+  const C=s.C[o.k];if(!C||C.o!==G.o||tzHome(s,o.k)||(tzGov(s,o.k)&&s.G[tzGov(s,o.k)].mr>=G.mr)){tzLog(s,`사정이 바뀌어 ${tzCN(o.k)} 태수 제안이 없던 일이 됐어요`,'令');save();renderView();toast('사정이 바뀌어 제안이 없던 일이 됐어요');return}
+  G.c=o.k;C.gov=P.g;P.pol='def';P.tk=null;const t=`${nm}이(가) ${tzCN(o.k)} 태수 자리를 받았어요`;tzLog(s,t,'令');tzPcSync(s);save();closeSheet();renderView();
+  tzPcSheet('pol');toast('먼저 성 방침을 골라요 · 지금은 방어(출진 안 함)예요')}
+// 빈 태수 자리 자동 임명에서 내 장수는 빼요(받기·거절로만 태수가 돼요)
+{const _ag=tzAutoGov;tzAutoGov=function(s,k){const had=tzGov(s,k);_ag.apply(this,arguments);const P=s&&s.pc,C=s&&s.C[k];
+  if(had||!C||!tzPcOn(s)||C.gov!==P.g)return;C.gov=tzGensIn(s,k,C.o).filter(g=>g!==P.g).sort((a,b)=>tzPol(b)-tzPol(a))[0]||''}}
+// 출진 소집 거부: 켜 두면 군주가 내 장수를 출진에 데려가려 할 때 빠져요(그때마다 신뢰 −2). 내가 청한 공략은 그대로 나가요
+const TZ_NC_NO=2;let tzPcOwnRaid=0;
+{const _r=tzPcRaid;tzPcRaid=function(){tzPcOwnRaid=1;try{return _r.apply(this,arguments)}finally{tzPcOwnRaid=0}}}
+{const _a=tzAtk;tzAtk=function(s,b,f,ch){const P=s&&s.pc;
+  if(!tzPcOwnRaid&&tzPcOn(s)&&P.nc&&b&&Array.isArray(b.gs)&&b.gs.includes(P.g)&&s.G[P.g].o===f){const gs=b.gs.filter(g=>g!==P.g);P.tr=Math.max(0,P.tr-TZ_NC_NO);
+    tzLog(s,`${tzName(P.g)}이(가) ${tzCN(b.n)} 출진 소집을 거절했어요 · 신뢰 −${TZ_NC_NO} (${P.tr})`,'令');if(!gs.length)return {win:0,txt:[]};b=Object.assign({},b,{gs})}
+  return _a.apply(this,[s,b,f,ch])}}
+// 장수 정찰(재야 · 장수): 맞닿은 다른 성 · 개인 금 80 · 행동 1. 성공률은 군주 화면 정찰과 같아요
+const TZ_PSC_G=80;
+function tzPcScTs(s){const P=s.pc,G=s.G[P.g],f=G.o;return TZ_ADJ[G.c].filter(n=>{const o=s.C[n].o;return o!==f&&!(s.F[f]&&s.F[o]&&tzAlly(s,f,o))})}
+function tzPcScWhy(s){const r=tzPcRank(s);if(r===2)return '태수는 계략에서 해요';if(r!==0&&r!==1)return '지금은 할 수 없어요';if(!tzPcScTs(s).length)return '맞닿은 다른 성이 없어요';if(s.pc.gd<TZ_PSC_G)return `개인 금 ${TZ_PSC_G} 필요`;return ''}
+function tzPcScout(s,n){const P=s.pc,g=P.g,G=s.G[g],rk=tzPcRank(s),T=s.C[n];if(!tzPcAp(s))return;const why=tzPcScWhy(s);if(why)return toast(why);if(!T||!tzPcScTs(s).includes(n))return toast('맞닿은 다른 성이 아니에요');
+  P.gd-=TZ_PSC_G;let msg;if(Math.random()<tzSctP(s,g,n)){s.SC=s.SC||{};s.SC[n]=s.t+TZ_SCT_N;P.fm=Math.min(999,P.fm+1);if(rk===1)P.tr=Math.min(100,P.tr+1);msg=`${tzCN(n)} 정찰 성공 · ${TZ_SCT_N}개월 동안 정보가 보여요 · 개인 금 ${TZ_PSC_G} 사용${rk===1?' · 신뢰 +1':''}`}
+  else if(rk===1&&s.F[G.o]&&s.F[T.o]&&Math.random()<.15){tzHAdd(s,G.o,T.o,10);msg=`${tzCN(n)} 정찰 실패 · ${tzFN(s,T.o)}에 들켰어요(적대 +10) · 개인 금 ${TZ_PSC_G} 사용`}
+  else msg=`${tzCN(n)} 정찰 실패 · 개인 금 ${TZ_PSC_G} 사용`;
+  G.mr=Math.min(9999,G.mr+3);tzPcUse(s,msg)}
+function tzPcScSheet(s){const P=s.pc,g=P.g,ts=tzPcScTs(s),ok=P.ap>0&&P.gd>=TZ_PSC_G&&!s.end;
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">정찰</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub" style="margin:0 0 8px">맞닿은 성을 몰래 살펴요 · 개인 금 ${TZ_PSC_G} (남은 금 ${fmt(P.gd)}) · 행동 1. 성공하면 ${TZ_SCT_N}개월 동안 그 성의 '?'가 풀려요. 실패해도 금은 써요.</p>
+   <div class="list">${ts.map(n=>{const T=s.C[n],lf=tzSeenLeft(s,n);return `<button type="button" class="li" data-pcn="psc|${n}" ${ok?'':'disabled'} style="text-align:left;border-left:4px solid ${tzCol(T.o)}"><div class="info"><b>${tzCN(n)}</b><span>${s.F[T.o]?esc(tzFN(s,T.o)):'빈 성'} · 성공 ${Math.round(tzSctP(s,g,n)*100)}%${lf?` · 정보 ${lf}달 남음`:''}</span></div></button>`}).join('')||'<p class="sub">맞닿은 다른 성이 없어요.</p>'}</div>
+   <p class="sub" style="margin:6px 0 0;font-size:12px">성공률은 내 지력이 높을수록, 그 성 태수의 지력이 낮을수록 올라가요(최소 35%).</p>`)}
+// 저장: 태수 제안 · 다시 묻기까지 · 소집 거부
+{const _c=tzPcClean;tzPcClean=function(x,o){const P=_c.apply(this,arguments);x=x||{};const n=(v,a,b)=>Math.max(a,Math.min(b,Math.round(Number(v)||0)));
+  if(x.go&&TZ_C[x.go.k])P.go={k:x.go.k,t:n(x.go.t,0,99999)};P.gb=n(x.gb,0,99999);P.nc=x.nc?1:0;return P}}
+// 장수 화면: 태수 제안 상자 · 소집 거부 · 정찰 버튼
+{const _v=tzPcView;tzPcView=function(s){let h=_v.apply(this,arguments);if(!tzPcOn(s)||s.end)return h;const P=s.pc,o=P.go;
+  if(o&&tzPcRank(s)===1&&s.C[o.k]){const box=`<div class="pc-box"><p><b>${esc(tzName(tzPcLord(s)))}</b>이(가) ${esc(tzName(P.g))}에게 <b>${tzCN(o.k)}</b> 태수 자리를 맡기려 해요. 받으면 그 성으로 옮겨 태수가 되고, 성 방침을 먼저 골라요(기본은 출진하지 않는 '방어').<br><small class="sub">거절하면 신뢰 −${TZ_GO_NO} · ${TZ_GO_BAN}달 동안 다시 묻지 않아요. 답하지 않고 두 달이 지나면 없던 일이 돼요.</small></p><button type="button" class="btn sm red" data-pcn="goy">받기</button><button type="button" class="btn sm ghost" data-pcn="gon">거절</button></div>`;
+    const i=h.indexOf('<div class="pc-me">');h=i<0?box+h:h.slice(0,i)+box+h.slice(i)}
+  return h}}
+{const _a=tzPcActs;tzPcActs=function(s){let h=_a.apply(this,arguments);const P=s.pc,rk=tzPcRank(s),ap=P.ap>0&&!s.end;let add='';
+  if(rk===0||rk===1){const why=tzPcScWhy(s);add+=`<button type="button" class="pc-a" data-pcn="pscs" ${ap&&!why?'':'disabled'}>정찰<small>${esc(why||`맞닿은 성 · 개인 금 ${TZ_PSC_G}`)}</small></button>`}
+  if(rk===1||rk===2)add+=`<button type="button" class="pc-a" data-pcn="nc" aria-pressed="${!!P.nc}" ${s.end?'disabled':''}>출진 소집<small>${P.nc?`거절해요 · 그때마다 신뢰 −${TZ_NC_NO}`:'군주가 부르면 따라가요'}</small></button>`;
+  const i=h.lastIndexOf('</div>');return add&&i>=0?h.slice(0,i)+add+h.slice(i):h}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-pcn]');if(!b||b.disabled)return;const s=tzState();if(!tzPcOn(s)||s.end)return;const v=b.dataset.pcn,i=v.indexOf('|'),a=i<0?v:v.slice(0,i),x=i<0?'':v.slice(i+1),P=s.pc;
+  if(a==='goy'||a==='gon'){tzPcGoAns(s,a==='goy');return}
+  if(a==='nc'){P.nc=P.nc?0:1;save();renderView();toast(P.nc?`출진 소집을 거절해요 · 군주가 부를 때마다 신뢰 −${TZ_NC_NO}`:'군주가 부르면 출진에 따라가요');return}
+  if(a==='pscs'){if(!P.ap)return toast('이번 달 행동을 다 했어요 · 이번 달 끝내기를 눌러요');tzPcScSheet(s);return}
+  if(a==='psc'){tzPcScout(s,x);return}});
+
+// 장수제 사건 그림 넓히기: 이름난 장수(★4 이상)나 군주가 처형되면 '죽음' 그림, 어느 세력이든 멸망 · 천하통일은 그림으로 보여요
+{const _sc=tzEvScan;tzEvScan=function(s,t,ch){try{if(tzEvRec&&s&&t&&s.me==='_'&&s.pc){
+    if(/처형/.test(t)){const g=tzGL(s).map(b=>b.id).find(x=>s.G[x]&&s.G[x].o==='dead'&&(s.F[x]||(GMAP[x]&&GMAP[x].rar>=4))&&t.includes(tzName(x)));if(g){tzEvPush(s,'death',t);return}}
+    if(/천하통일/.test(t)){tzEvPush(s,'unify',t);return}
+    if(/멸망/.test(t)&&!tzEvRel(s,t,ch)){tzEvPush(s,'lose',t);return}}}catch(e){}
+  return _sc.apply(this,arguments)}}
+// 정찰 바로가기: 남의 성을 누르면 성 카드 맨 위에 정찰 버튼 · 못 할 때는 이유를 보여요
+function tzSctPanel(s,k){const C=s.C[k];if(!C||s.end)return '';
+  if(tzPcOn(s)){const rk=tzPcRank(s);if((rk!==0&&rk!==1)||!tzPcScTs(s).includes(k))return '';const P=s.pc,why=!P.ap?'이번 달 행동을 다 했어요':P.gd<TZ_PSC_G?`개인 금 ${TZ_PSC_G} 필요`:'',lf=tzSeenLeft(s,k);
+    return `<div class="tz-sct"><button type="button" class="btn red sm" data-pcn="psc|${k}" ${why?'disabled':''}>偵 정찰</button><span>${why?esc(why):`개인 금 ${TZ_PSC_G} · 행동 1 · 성공 ${Math.round(tzSctP(s,P.g,k)*100)}%${lf?` · 정보 ${lf}달 남음`:''}`}</span></div>`}
+  if(C.o===s.me||!s.F[s.me])return '';const lf=tzSeenLeft(s,k),ks=tzMine(s).filter(n=>tzSctIdle(s,n).length),kg=ks.filter(n=>s.C[n].g>=TZ_SCT_G);
+  let why='';if(lf>3)why=`정찰 정보가 ${lf}달 더 보여요 · 3달 이하로 남으면 다시 할 수 있어요`;else if(!ks.length)why='이번 달 명령을 안 한 장수가 없어요';else if(!kg.length)why=`금 ${TZ_SCT_G} 이상 있는 내 성에 남은 장수가 없어요`;
+  let src='',p=0;if(!why){src=tzQaSrc(s,k,'sct');const g=src&&tzSctIdle(s,src).sort((a,b)=>tzInt(b)-tzInt(a))[0];p=g?tzSctP(s,g,k):0;if(!src)why='지금은 보낼 장수가 없어요'}
+  return `<div class="tz-sct"><button type="button" class="btn red sm" data-tzqa="sct|${k}" ${why?'disabled':''}>偵 정찰</button><span>${why?esc(why):`${tzCN(src)}에서 보내요 · 금 ${TZ_SCT_G} · 성공 ${Math.round(p*100)}%${lf?` · 정보 ${lf}달 남음`:''}`}</span></div>`}
+{const _cc=tzCityCard;tzCityCard=function(s,k){const h=_cc.apply(this,arguments),p=tzSctPanel(s,k);if(!p)return h;const i=h.indexOf('</div>');return i<0?h+p:h.slice(0,i+6)+p+h.slice(i+6)}}
+HELP.forEach(c=>{if(c.t==='장수제')c.rows.push(['태수 제안','신뢰 60 · 공적 150을 넘으면 군주가 태수 자리를 제안해요. 받으면 그 성으로 옮겨 태수가 되고 성 방침부터 골라요(기본 방어). 거절하면 신뢰 −3이고 6달 동안 다시 묻지 않아요.'],
+  ['출진 소집','장수·태수 화면의 \'출진 소집\'을 거절로 두면 군주가 내 장수를 출진에 데려가려 할 때 빠져요. 그때마다 신뢰 −2예요. 내가 청한 공략은 그대로 나가요.'],
+  ['정찰','재야·장수도 맞닿은 성을 정찰할 수 있어요(개인 금 80 · 행동 1). 성을 누르면 카드 맨 위에 정찰 버튼이 있어요. 성공하면 12개월 동안 그 성 정보가 보여요.'])});
+(()=>{const st=document.createElement('style');st.textContent=`
+.tz-sct{display:flex;align-items:center;gap:8px;margin:6px 0 4px;padding:6px 8px;border:1px solid var(--bronze,#b08d57);border-radius:8px;background:#b08d5714}
+.tz-sct .btn{flex:0 0 auto}.tz-sct span{font-size:12px;color:var(--mute,#888);line-height:1.4}
+.gw-n i{background:color-mix(in srgb,var(--fac,#8a8a8a) 68%,#6e604c)}  /* v1.3.11 깃발 색을 바랜 비단처럼 조금 차분하게 */
+`;document.head.appendChild(st)})();
 boot();
 </script>
 </body>
