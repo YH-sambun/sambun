@@ -8840,8 +8840,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.3.7';
-const GW_NOTICES=[{v:'1.3.7',date:'2026-11-01',title:'군웅할거 v1.3.7 · 장수로 시작: 우리 세력 성 정보 · 성 정보 버튼 · 공략 제안',items:[
+const GW_VER='1.3.8';
+const GW_NOTICES=[{v:'1.3.8',date:'2026-11-01',title:'군웅할거 v1.3.8 · 태수 계략(파괴 · 정찰) · 장수 카드 모양 바로잡기',items:[
+  '장수로 시작한 판의 태수에게 "계략" 행동이 생겼어요. 내 성과 맞닿은 적 성·빈 성을 골라 파괴(방어·농업·상업 중 하나 깎기)나 정찰을 해요. 성 금 200과 행동 1을 쓰고, 성공률은 군주 화면과 같은 규칙이에요(파괴는 내 지력과 그 성 태수의 지력 차이). 성공하면 신뢰 +1, 할 때마다 명성 +1 · 공적 +5예요. 파괴에 실패하면 10% 확률로 붙잡히니 조심하세요.',
+  '정찰에 성공하면 12개월 동안 그 성의 금·군량·인구·훈련·농업·상업·민심이 보여요.',
+  '이웃한 적 성의 성 카드를 열면 "파괴 · 정찰"과 "공략 제안" 바로가기 버튼이 나와요. 그 성을 보다가 바로 할 수 있어요.',
+  '장수로 시작한 판에서 v1.3.7의 "우리 세력 성" 줄이 생긴 뒤로 장수 카드 왼쪽 그림 칸이 넓어져, 이름과 소속이 오른쪽에 한 글자씩 세로로 찌그러져 보이던 문제를 고쳤어요. 이제 이름 · 신분 · 소속이 그림 옆에 가로로 나오고, "우리 세력 성" 줄은 카드 폭 전체를 써요.']},{v:'1.3.7',date:'2026-11-01',title:'군웅할거 v1.3.7 · 장수로 시작: 우리 세력 성 정보 · 성 정보 버튼 · 공략 제안',items:[
   '장수로 시작한 판에서 장수나 태수가 되면 우리 세력 성도 남의 성처럼 금·군량·인구·민심이 ?로 나오던 문제를 고쳤어요. 이제 우리 세력 성은 모든 수치와 장수 목록이 보여요. 명령은 그대로 군주와 그 성 태수가 내려요.',
   '천하 표에서도 우리 세력 성에 "우리" 표시가 붙고 금·군량·민심이 나와요. "내 성만" 범위는 우리 세력 성을 모아 보여 줘요.',
   '행동 버튼 줄에 "성 정보"가 생겼어요(행동을 쓰지 않아요). 우리 세력 성 목록과 지금 있는 성의 이웃 성이 나오고, 누르면 그 성 카드가 바로 떠요. 태수·장수 카드의 "우리 세력 성 n곳 · 병사 합계" 줄을 눌러도 열려요.',
@@ -9925,6 +9929,9 @@ function tzPcAtkWhy(s){const P=s.pc,G=s.G[P.g],C=s.C[G.c];if(tzPcRank(s)!==2)ret
   if(C.tr<2500)return '병사 2,500 필요';if(C.fd<tzPcFood(s,C))return '군량이 모자라요';if(!tzPcAtkTs(s).length)return '이웃한 적 성이 없어요';return ''}
 function tzPcAtkP(s,n){const P=s.pc,g=P.g,G=s.G[g],k=G.c,f=G.o,L=s.F[f].lord,r=tzAtkRatio(s,k,n,tzPcAtkGs(s,k,f));
   return {r,p:Math.max(.05,Math.min(.9,.15+(P.tr-50)/100+(P.fr[L]|0)/250+(30-tzAisD(g,L))/150+Math.max(-.4,Math.min(.4,(r-1)*.5))+(s.C[n].o==='neu'?.1:0)))}}
+// v1.3.8 계략(태수): 이웃 적 성 파괴 · 정찰. 성 금 200 · 행동 1
+function tzPcGyeTs(s){const P=s.pc,G=s.G[P.g],f=G.o;return TZ_ADJ[G.c].filter(n=>{const o=s.C[n].o;return o!==f&&!tzAlly(s,f,o)})}
+function tzPcGyeWhy(s){const P=s.pc,G=s.G[P.g],C=s.C[G.c];if(tzPcRank(s)!==2)return '태수만 할 수 있어요';if(!tzPcGyeTs(s).length)return '이웃한 적 성이 없어요';if(C.g<200)return '성 금 200 필요';return ''}
 function tzPcRaid(s){const P=s.pc,a=P&&P.pa;if(!a||a.t!==s.t||a.no||a.go)return;a.go=1;const G=s.G[P.g];if(!G)return;const k=G.c,f=G.o,C=s.C[k],T=s.C[a.n];
   if(tzPcRank(s)!==2||!T||!TZ_ADJ[k].includes(a.n)||T.o===f||tzAlly(s,f,T.o)||s.m===1){tzLog(s,`사정이 바뀌어 ${tzCN(a.n)} 공략을 그만뒀어요`,'令');return}
   const food=tzPcFood(s,C);if(C.tr<2500||C.fd<food){tzLog(s,`병사나 군량이 모자라 ${tzCN(a.n)} 공략에 나가지 못했어요`,'令');return}
@@ -9957,6 +9964,10 @@ function tzPcAct(s,a,x){const P=s.pc,g=P.g,G=s.G[g],k=G.c,C=s.C[k],rk=tzPcRank(s
   if(a==='tk'){if(!tzPcAp(s))return;const t=P.tk;if(rk!==1||!t||t.t!==s.t||t.done)return toast('이번 달 임무가 없어요');if(t.k!==k)return toast(`임무는 ${tzCN(t.k)}에서 해요`);
     tzRng=Math.random;const r=tzDo(s,k,t.c,g,t.tg);if(typeof r==='string')return toast(r);t.done=1;P.tr=Math.min(100,P.tr+6);P.fm=Math.min(999,P.fm+1);G.mr=Math.min(9999,G.mr+7);
     tzPcUse(s,`임무 완수 · ${tzPcTkTxt(t)} · ${r.msg} · 신뢰 +6`,r.fx?'recruit':'');return}
+  if(a==='gye'){if(!tzPcAp(s))return;const why=tzPcGyeWhy(s);if(why)return toast(why);const[c,n,st]=x.split('|');if(!tzPcGyeTs(s).includes(n))return toast('이웃한 적 성이 아니에요');
+    tzRng=Math.random;let r;if(c==='sct'){const ac=G.ac;G.ac=0;r=tzDo(s,k,'sct',g,n);if(typeof r==='string')G.ac=ac}else if(c==='sab'&&TZ_INV[st])r=tzDo(s,k,'sab',g,n+'|'+st);else return;
+    if(typeof r==='string')return toast(r);const ok=c==='sct'?/성공/.test(r.msg):/−/.test(r.msg);if(c==='sab')G.mr=Math.min(9999,G.mr+5);P.fm=Math.min(999,P.fm+1);if(ok)P.tr=Math.min(100,P.tr+1);
+    tzPcUse(s,`${tzCN(k)} ${c==='sct'?'정찰':'파괴'} · ${r.msg}${ok?' · 신뢰 +1':''}`);return}
   if(a==='atk'){if(!tzPcAp(s))return;const why=tzPcAtkWhy(s);if(why)return toast(why);if(!tzPcAtkTs(s).includes(x))return toast('이웃한 적 성이 아니에요');if(tzPcAtkNo(s,x))return toast('첫 1년은 군주가 있는 성을 칠 수 없어요');
     const{r,p}=tzPcAtkP(s,x),L=tzPcLord(s);if(Math.random()<p){P.pa={t:s.t,n:x,no:0,go:0};P.fr[L]=Math.min(100,(P.fr[L]|0)+2);
       tzPcUse(s,`${tzName(L)}이(가) ${tzCN(x)} 공략을 허락했어요 · 이번 달을 끝내면 ${tzCN(k)}에서 출진해요`)}
@@ -10000,7 +10011,7 @@ function tzPcActs(s){const P=s.pc,g=P.g,G=s.G[g],k=G.c,C=s.C[k],rk=tzPcRank(s),a
   if(rk===0){h+=B('srv','사관',F&&!F.dead?(bn?`${P.ban[C.o]-s.t}달 뒤 가능`:`${tzName(F.lord)}을(를) 섬기기`):'섬길 군주가 없어요',ap&&F&&!F.dead&&!bn,'hot');
     h+=B('rise','거병',C.o==='neu'?`명성 40 · 금 1,000`:'주인 없는 성에서만',ap&&C.o==='neu'&&P.fm>=40&&P.gd>=1000)}
   {const mf=tzPcFac(s),n=mf?tzCities(s,mf).length:0;h+=B('cty','성 정보',mf?`우리 성 ${n}곳 · 이웃 성`:'이웃 성 보기',1)}
-  if(rk===2){h+=B('gov','내정',`${tzCN(k)} 직접 다스리기`,ap,'hot');{const why=tzPcAtkWhy(s);h+=B('atk','공략 제안',why||'군주에게 출진을 청해요',ap&&!why,why?'':'hot')}h+=B('pol','성 방침',PC_POL[P.pol][0],!s.end);
+  if(rk===2){h+=B('gov','내정',`${tzCN(k)} 직접 다스리기`,ap,'hot');{const why=tzPcAtkWhy(s);h+=B('atk','공략 제안',why||'군주에게 출진을 청해요',ap&&!why,why?'':'hot')}{const why=tzPcGyeWhy(s);h+=B('gye','계략',why||'이웃 적 성 파괴 · 정찰',ap&&!why)}h+=B('pol','성 방침',PC_POL[P.pol][0],!s.end);
     h+=B('ind','독립',tzHome(s,k)?'군주가 있는 성은 안 돼요':'이 성을 들고 독립',ap&&!tzHome(s,k))}
   if(rk>=1&&rk<=2){h+=`<button type="button" class="pc-a" data-pc="dl" aria-pressed="${!!P.dl}" ${s.end?'disabled':''}>일기토<small>${P.dl?'적극적으로 청해요':'상황 봐서'}</small></button>`;h+=B('quit','하야','세력을 떠나 재야로',ap)}
   h+=B('life','열전','지금까지의 일생',1);if(!s.end)h+=B('ret','은퇴','이 판 마치기',1);
@@ -10035,12 +10046,13 @@ function tzPcCity(){const s=tzState(),P=s.pc;if(!P||!s.G[P.g])return;const G=s.G
    ${mine.length?`<h3 style="margin:4px 0 6px">우리 세력 성 ${mine.length}곳</h3><div class="list">${mine.slice().sort((a,b)=>(b===G.c)-(a===G.c)).map(it).join('')}</div>`:''}
    ${nb.length?`<h3 style="margin:10px 0 6px">${tzCN(G.c)}과 이웃한 성</h3><div class="list">${nb.map(it).join('')}</div>`:''}
    <p class="sub" style="margin-top:8px">남의 성은 병사만 보여요. 지도에서 성을 눌러도, 천하 표를 열어도 볼 수 있어요.</p>`)}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-pcgy]');if(!b||b.disabled)return;const s=tzState();if(!tzPcOn(s))return;if(!s.pc.ap)return toast('이번 달 행동을 다 했어요 · 이번 달 끝내기를 눌러요');tzPcSheet('gye',b.dataset.pcgy)});
 document.addEventListener('click',e=>{const b=e.target.closest('[data-pccty]');if(!b)return;const s=tzState();tzSel=b.dataset.pccty;closeSheet();renderView();tzPcCardShow(s)});
 function tzPcCardShow(s){if(tzDockOn())tzDockCard();else{const c=document.querySelector('#view .tz-city');if(c)c.scrollIntoView({behavior:'smooth',block:'start'})}}
 // 장수제에서는 지도에서 성을 한 번만 눌러도 성 카드가 떠요
 document.addEventListener('click',e=>{const s=S&&S.tz;if(!tzPcOn(s))return;const t=e.target.closest('[data-tzk]');if(!t||t.closest('#sheet')||!s.C[t.dataset.tzk])return;
   if(!t.closest('.gw-map,.gw-wrap,.gw-mine,.tz-tbl'))return;e.stopImmediatePropagation();e.preventDefault();tzSel=t.dataset.tzk;renderView();tzPcCardShow(s)},true);
-function tzPcSheet(a){const s=tzState(),P=s.pc,g=P.g,G=s.G[g],k=G.c,C=s.C[k],rk=tzPcRank(s);
+function tzPcSheet(a,pick){const s=tzState(),P=s.pc,g=P.g,G=s.G[g],k=G.c,C=s.C[k],rk=tzPcRank(s);
   const head=t=>`<div class="sheet-h"><h2 style="margin:0">${t}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>`;
   if(a==='mov'){openSheet(head('이동')+`<p class="sub">${rk===2?'태수가 성을 떠나면 태수 자리를 내려놓아요. ':''}행동 1을 써요.</p><div class="list">${TZ_ADJ[k].map(x=>{const o=s.C[x].o,ok=rk<1||o===G.o;
     return `<button type="button" class="li" data-pcx="mov|${x}" ${ok?'':'disabled'} style="text-align:left;border-left:4px solid ${tzCol(o)}"><div class="info"><b>${tzCN(x)}</b><span>${esc(tzFN(s,o))} · 장수 ${tzGL(s).filter(b=>s.G[b.id].c===x&&!['dead','wait','cap'].includes(s.G[b.id].o)).length}명</span></div></button>`}).join('')}</div>`);return}
@@ -10050,6 +10062,13 @@ function tzPcSheet(a){const s=tzState(),P=s.pc,g=P.g,G=s.G[g],k=G.c,C=s.C[k],rk=
   if(a==='trn'){openSheet(head('단련')+`<p class="sub">경험이 100이 되면 능력치가 1 올라요. 원래 값보다 10까지 올릴 수 있어요(최대 100). 행동 1을 써요.</p><div class="pc-acts">${PC_ST.map(([c,n])=>{const b=tzPcBase(g,c),u=P.up[c]|0,cap=b+u>=Math.min(100,b+10);
     return `<button type="button" class="pc-a" data-pcx="trn|${c}" ${cap?'disabled':''}>${n} ${b+u}<small>${cap?'더 오를 수 없어요':`경험 ${P.xp[c]|0}/100 · +${u}/10`}</small></button>`}).join('')}</div>`);return}
   if(a==='srv'){const f=C.o,p=tzPcSrvP(s,f),L=s.F[f].lord;openSheet(head('사관')+`<p>${esc(tzName(L))}에게 ${esc(tzFN(s,f))}의 장수가 되기를 청해요.</p><p class="sub">받아 줄 가능성: <b>${p>=.6?'높음':p>=.35?'보통':'낮음'}</b> · 매력 · 명성 · 군주와의 친밀 · 상성(${tzAisTxt(tzAisD(g,L))})이 높을수록 잘 받아 줘요. 행동 1을 써요.</p><button type="button" class="btn red wide" data-pcx="srv|">청하기</button>`);return}
+  if(a==='gye'){const why=tzPcGyeWhy(s);if(why)return toast(why);const pre=pick&&tzPcGyeTs(s).includes(pick)?pick:'',ts=tzPcGyeTs(s).sort((a,b)=>(b===pre)-(a===pre));
+    const pc=v=>`${Math.round(v*100)}%`;
+    openSheet(head(`계략 · ${tzCN(k)}`)+`<p class="sub">성 금 ${fmt(C.g)}에서 200을 쓰고 행동 1을 써요. 성공하면 신뢰 +1, 할 때마다 명성 +1 · 공적 +5.</p>
+     <p class="sub" style="margin:0 0 8px">파괴는 그 성의 방어·농업·상업 중 하나를 (5 + 지력/10)쯤 깎아요. 실패하면 10% 확률로 붙잡혀요. 정찰은 성공하면 ${TZ_SCT_N}개월 동안 그 성의 '?'가 풀려요.</p>
+     <div class="list">${ts.map(n=>{const T=s.C[n],lf=tzSeenLeft(s,n),sp=tzSabP(s,g,n),cp=tzSctP(s,g,n);
+       return `<div class="li" style="display:block;border-left:4px solid ${tzCol(T.o)}${n===pre?';outline:1px solid var(--bronze)':''}"><div class="info"><b>${tzCN(n)}</b><span>${esc(tzFN(s,T.o))} · 병사 ${fmt(T.tr)} · 방어 ${T.df}${lf?` · 정찰 ${lf}달 남음`:''}</span></div>
+        <div class="pc-acts" style="margin-top:6px">${Object.entries(TZ_INV).map(([st,nm])=>`<button type="button" class="pc-a" data-pcx="gye|sab|${n}|${st}">파괴 · ${nm}<small>${nm} ${lf||tzPcFacC(s,n)||st==='df'?T[st]:'?'} · 성공 ${pc(sp)}</small></button>`).join('')}<button type="button" class="pc-a" data-pcx="gye|sct|${n}">정찰<small>성공 ${pc(cp)}</small></button></div></div>`}).join('')}</div>`);return}
   if(a==='atk'){const why=tzPcAtkWhy(s);if(why)return toast(why);const f=G.o,L=tzPcLord(s),food=tzPcFood(s,C),gs=tzPcAtkGs(s,k,f);
     openSheet(head(`공략 제안 · ${tzCN(k)}`)+`<p class="sub">${esc(tzName(L))}에게 이웃 성 공략을 청해요. 허락받으면 이번 달을 끝낼 때 병사 ${fmt(Math.round(C.tr*.7))}(70%)와 군량 ${fmt(food)}로 내가 이끌고 출진해요. 행동 1을 써요.</p>
      <p class="sub" style="margin:0 0 8px">함께 나갈 장수: ${gs.map(tzName).map(esc).join(' · ')}<br>이기면 공적 +30 · 신뢰 +8 · 명성 +3, 지면 신뢰 −5. 형세가 불리한 곳을 청했다가 거절되면 신뢰 −2.</p>
@@ -10166,7 +10185,7 @@ const tzPcDuelSide=bt=>{const m=tzPcDuelU(bt);return m?m.i:tzBTop(bt,0)>=tzBTop(
 (()=>{const st=document.createElement('style');st.textContent=`
 .tz-slots{grid-template-columns:repeat(5,1fr)}
 .pc-mode{margin:6px 0}
-.pc-me{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;background:var(--panel)}
+.pc-me{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;background:var(--panel)}
 .pc-me h3{margin:0;font-size:17px}.pc-me .rk{font-size:12px;color:var(--mute);margin-top:2px}
 .pc-sts{grid-column:1/-1;display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
 .pc-st{position:relative;display:flex;flex-direction:column;align-items:center;border:1px solid var(--line);border-radius:6px;padding:3px 0 7px;font-variant-numeric:tabular-nums}
@@ -10174,7 +10193,7 @@ const tzPcDuelSide=bt=>{const m=tzPcDuelU(bt);return m?m.i:tzBTop(bt,0)>=tzBTop(
 .pc-st em{position:absolute;left:4px;right:4px;bottom:2px;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--bronze) var(--x,0%),rgba(127,127,127,.25) var(--x,0%))}
 .pc-meta{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:3px 12px;font-size:12px;color:var(--mute)}.pc-meta b{color:var(--fg)}
 .pc-city{border-top:1px dashed var(--line);padding-top:6px}
-.pc-fac{display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;width:100%;margin-top:6px;padding:6px 8px;border:1px dashed var(--line);border-radius:8px;background:transparent;color:inherit;font:inherit;font-size:13px;text-align:left;cursor:pointer}.pc-fac small{margin-left:auto;opacity:.75}
+.pc-fac{grid-column:1/-1;box-sizing:border-box;display:flex;flex-wrap:wrap;gap:4px 8px;align-items:baseline;width:100%;margin-top:6px;padding:6px 8px;border:1px dashed var(--line);border-radius:8px;background:transparent;color:inherit;font:inherit;font-size:13px;text-align:left;cursor:pointer}.pc-fac small{margin-left:auto;opacity:.75}
 .pc-acts{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:6px;margin:8px 0}
 .pc-a{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:inherit;font:inherit;font-weight:700;font-size:14px;cursor:pointer;text-align:left;min-width:0}
 .pc-a small{font-weight:400;font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
@@ -10364,6 +10383,9 @@ let tzSctPre='';
    <button type="button" class="btn red wide" style="margin-top:8px" data-tzgo="do" ${D.g&&D.tg&&C.g>=TZ_SCT_G?'':'disabled'}>정찰${C.g<TZ_SCT_G?' · 금이 모자라요':''}</button>`)}}
 // 성 카드: 정찰 표시 · 위임 성에서도 정찰 버튼
 {const _cc=tzCityCard;tzCityCard=function(s,k){let h=_cc.apply(this,arguments);const C=s.C[k];if(!C)return h;
+  if(tzPcOn(s)&&tzPcRank(s)===2&&tzPcGyeTs(s).includes(k)){const P=s.pc,ap=P.ap>0&&!s.end,gw=tzPcGyeWhy(s),aw=tzPcAtkWhy(s),i0=h.indexOf('<div class="tz-num">');
+    const sc=`<div class="pc-acts" style="margin:8px 0 0"><button type="button" class="pc-a" data-pcgy="${k}" ${ap&&!gw?'':'disabled'}>파괴 · 정찰<small>${esc(gw||'행동 1 · 성 금 200')}</small></button><button type="button" class="pc-a" data-pc="atk" ${ap&&!aw?'':'disabled'}>공략 제안<small>${esc(aw||'군주에게 출진을 청해요')}</small></button></div>`;
+    if(i0>=0)h=h.slice(0,i0)+sc+h.slice(i0)}
   if(tzPcFacC(s,k)){const i=h.indexOf('<div class="tz-num">'),tag=`<p class="tz-note" style="margin:6px 0 0">우리 세력 성 · 명령은 군주와 태수가 내려요. 보기만 돼요</p>`;return i<0?h:h.slice(0,i)+tag+h.slice(i)}
   if(C.o===s.me){const ok=tzSctIdle(s,k).length&&C.g>=TZ_SCT_G;h=h.replace(/<button type="button" data-tzc="sct"( disabled)?>/,`<button type="button" data-tzc="sct"${ok?'':' disabled'}>`);return h}
   const lf=tzSeenLeft(s,k),tag=lf?`<p class="tz-note" style="margin:6px 0 0">偵 정찰 정보 · ${lf}달 더 보여요</p>`:`<p class="tz-note" style="margin:6px 0 0">'?'는 정찰하면 ${TZ_SCT_N}개월 동안 보여요</p>`;
