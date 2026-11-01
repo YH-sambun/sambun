@@ -904,6 +904,7 @@ body.pc .pc-r{position:sticky;top:0;max-height:calc(100dvh - 200px);overflow-y:a
 body.pc .pc-r>h2:first-child{margin-top:0}
 body.pc #view:has(>.banner-card){display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px;align-content:start}
 body.pc #view:has(>.banner-card)>:not(.banner-card){grid-column:1/-1}
+body.pc .tz-start{max-width:760px;margin:0 auto}
 body.pc #sheet{align-items:center}
 body.pc .sheet-body{max-width:640px;border-radius:18px;border:1px solid var(--line);max-height:88vh}
 body.pc .bt{max-width:1240px}
@@ -5629,7 +5630,7 @@ function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.
   return h+`</div>`}
 function vTz(){const s=tzState();
   const rule=infoP('tz','군주가 되어 한 달씩 천하를 다퉈요',`천하는 13주 ${TZ_K.length}성이에요. 1턴은 1개월이고, 장수마다 한 달에 명령 1개를 해요. 성마다 태수를 두면 저절로 자라고, 1월에 금·9월에 군량이 들어와요. 출진하면 장수마다 자기 병종 부대를 이끌고 세 국면으로 싸워요. 자세한 규칙은 도움말에 있어요.`,'margin:0')+`<button type="button" class="btn ghost sm tz-help-b" data-tzhelp>도움말</button>`;
-  if(!s.on)return tzStartHtml(s,rule);
+  if(!s.on)return `<div class="tz-start">${tzStartHtml(s,rule)}</div>`;
   let h=tzTopBar(s);const mine=tzMine(s);
   if(s.end){const R=s.end===1?tzReward(s):null;if(R)save();
     h+=`<div class="labbox" style="margin:8px 0;border-color:${s.end===1?'var(--bronze)':'var(--cinnabar)'}"><h3 style="margin:0 0 6px">${s.end===1?'천하통일!':'패배'}</h3><p class="sub" style="margin:0 0 6px">${s.end===1?`${s.y}년 ${s.m}월, ${s.t}턴 만에 천하를 하나로 모았어요.${s.done[tzDK(s)]&&!(R&&R.gold)?' (이 시나리오 통일 보상은 이미 받았어요)':''}`:'성을 모두 잃었어요.'}</p>
@@ -8845,8 +8846,10 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.3.9';
-const GW_NOTICES=[{v:'1.3.9',date:'2026-11-01',title:'군웅할거 v1.3.9 · 탐색하면 금이 늘 들어와요 · 등용 확률 보기',items:[
+const GW_VER='1.3.10';
+const GW_NOTICES=[{v:'1.3.10',date:'2026-11-01',title:'군웅할거 v1.3.10 · PC 시작 화면 바로잡기',items:[
+  '넓은 PC 창에서 시작 화면을 열면 맨 위 "군웅할거" 제목 카드가 눌려 글자 아래쪽과 소개 문구 · 도움말 버튼이 잘려 보이던 문제를 고쳤어요.',
+  'PC 시작 화면에서 세이브 칸과 군주 목록이 화면 끝까지 늘어나던 것을 가운데 폭으로 모았어요. 폰 화면과 게임을 시작한 뒤의 지도 화면은 그대로예요.']},{v:'1.3.9',date:'2026-11-01',title:'군웅할거 v1.3.9 · 탐색하면 금이 늘 들어와요 · 등용 확률 보기',items:[
   '탐색이 보물 → 재야 장수 → 금 중 하나만 나와서, 지력이 높을수록 장수만 나오고 금은 거의 안 들어오던 문제를 고쳤어요. 이제 내가 하는 탐색은 금이 늘 들어오고(100 + 지력×3 + 상업/5, 지력 90 · 상업 500이면 약 470), 보물과 재야 장수는 그와 따로 찾아요.',
   '탐색으로 찾은 재야 장수는 그달 안에 등용하면 확률이 +15% 올라요. 장수로 시작한 판에서 장수를 찾으면 바로 권유할 수 있는 창이 뜨고 확률이 함께 나와요.',
   '장수로 시작한 판의 권유에 붙어 있던 −10%를 없앴어요. 교류 화면의 권유 버튼에 확률(%)이 나와요.',
