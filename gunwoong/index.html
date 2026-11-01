@@ -5295,7 +5295,7 @@ const tzR=()=>.8+tzRng()*.4, tzRR=v=>Math.floor(v+tzRng());
 const tzInvV=(key,g)=>key==='df'?4+tzLead(g)*.08:12+tzPol(g)*.35;
 const tzHate=(s,x,f)=>s.X&&s.X[x]&&s.X[x].hd===f?.2:1;  // 부모를 처형한 세력에는 원한
 const tzPrsP=(s,g,x,it)=>Math.max(.03,Math.min(.9,(.1+tzCha(g)/300+(70-s.G[x].ly)/150-tzGiri(x)/400+(it?.2:0)+tzSc(s,g))*tzHate(s,x,s.G[g].o)));
-const tzRecP=(s,g,x,it)=>Math.max(.03,Math.min(.95,(.3+tzCha(g)/250+tzCha(s.F[s.G[g].o].lord)/500-tzGiri(x)/600+(it?.2:0)+(s.FT&&s.FT[x]===s.t?.15:0))*tzHate(s,x,s.G[g].o)));
+const tzRecP=(s,g,x,it)=>Math.max(.03,Math.min(.95,(.3+tzCha(g)/250+tzCha(s.F[s.G[g].o].lord)/500-tzGiri(x)/600+(it?.2:0)+tzHdRec(s,s.G[g].o)+(s.FT&&s.FT[x]===s.t?.15:0))*tzHate(s,x,s.G[g].o)));
 const tzSurP=(s,f,t,g)=>{const mc=tzCities(s,f).length,tc=Math.max(1,tzCities(s,t).length);const e=tzEnv(s,g);return Math.max(0,Math.min(.6+e,(mc/tc-3)*.08+.05+tzCha(g)/600-tzGiri(s.F[t].lord)/400+(mc/tc>=4?e:0)))};
 const tzSabP=(s,g,tk)=>{const gv=tzGov(s,tk);return Math.max(.1,Math.min(.95,.5+(tzInt(g)-(gv?tzInt(gv):50))/200+tzSc(s,g)))};
 function tzDo(s,k,cmd,g,tg,it){const C=s.C[k],G=s.G[g],cha=tzCha(g),f=G.o,lc=tzCha(s.F[f].lord);let msg='',fx='';
@@ -8849,8 +8849,15 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.5.0';
-const GW_NOTICES=[{v:'1.5.0',date:'2026-11-02',title:'군웅할거 v1.5.0 · 연의 사건 · 의형제',items:[
+const GW_VER='1.6.0';
+const GW_NOTICES=[{v:'1.6.0',date:'2026-11-02',title:'군웅할거 v1.6.0 · 헌제 옹립 · 칭제',items:[
+  '헌제가 생겼어요. 헌제가 있는 성을 가진 세력이 모셔요(184·189년 낙양, 194년 장안, 200·208·219년 허창). 그 성을 빼앗으면 헌제도 넘어가요.',
+  '헌제를 모시면 등용 확률 +10%, 헌제가 있는 성 민심이 매달 +1이에요. 대신 다른 세력이 꺼리고(적대 +5), 천하의 1/4만 가져도 반○○ 연합의 표적이 돼요.',
+  '칙명: 6달에 한 번 토벌 칙명(다른 세력 모두가 그 세력과 적대 +15)이나 관직 수여(그 군주와 적대 −20)를 내릴 수 있어요. 메뉴 › 조정에서 해요. AI도 칙명을 써요.',
+  '칭제: 왕(7개 주)에 오르고 성이 13곳 이상이면 황제에 오를 수 있어요. 1월 세금 +10%, 장수 충성 +5. 다른 황제와는 원수, 나머지 세력 적대 +10(헌제를 폐위하면 +30)이에요.',
+  '연의 사건 4가지를 더했어요: 원술 칭제(손책에게서 옥새를 받으면) · 조비 수선(조조가 죽으면) · 유비 칭제 · 손권 칭제.',
+  '손책이 독립한 판을 저장했다 다시 열면 손책 세력이 사라지던 문제를 고쳤어요.']},
+ {v:'1.5.0',date:'2026-11-02',title:'군웅할거 v1.5.0 · 연의 사건 · 의형제',items:[
   '연의 사건 11가지가 생겼어요. 조건이 맞으면 판마다 한 번씩 일어나고, 연표에 演으로 남아요.',
   '연환계 · 손책의 강동 평정 · 하비성의 최후 · 관도의 허유 · 관우의 귀환 · 삼고초려 · 적벽대전 · 마초의 복수 · 칠종칠금 · 백의도강 · 백제성 탁고예요.',
   '유비가 군주로 살아 있으면, 삼고초려 전에는 다른 세력이 재야 제갈량을 등용할 수 없어요.',
@@ -11192,7 +11199,7 @@ const TZ_YY=[
   ch:(s,x)=>x.f,ai:()=>true,
   q:(s,x)=>({t:`손책이 옥새를 맡기고 병사를 빌려 강동으로 가겠다고 해요.`,y:'옥새를 받고 보내 준다',no:'붙잡아 둔다',yd:`${tzCN(x.k)}와 손씨 장수들이 떠나 손책의 새 세력이 돼요. 금 3,000을 받고 2년 동맹을 맺어요.`,nd:'손책 충성이 30으로 떨어져요.'}),
   go:(s,x,yes)=>{const f=x.f,k=x.k;if(!yes){s.G.sunce.ly=Math.min(s.G.sunce.ly,30);tzYLog(s,'손책의 강동 평정','원술이 손책을 붙잡아 두었어요',[f]);return true}
-   const C=s.C[k];s.F.sunce={lord:'sunce',dead:0,al:{},zn:[],tt:0};C.o='sunce';C.dl='sunce'===s.me?'pj':'self';C.gov='sunce';Object.assign(s.G.sunce,{o:'sunce',c:k,ly:100});
+   const C=s.C[k];s.F.sunce={lord:'sunce',dead:0,al:{},zn:[],tt:0,rb:1};C.o='sunce';C.dl='sunce'===s.me?'pj':'self';C.gov='sunce';Object.assign(s.G.sunce,{o:'sunce',c:k,ly:100});
    ['zhouyu','chengpu','huanggai','handang','zhoutai','jiangqin','taishici','sunquan','sunshangxiang','sunyi','lvfan','zhutai'].forEach(g=>{if(tzYIn(s,g,f)&&!tzYPc(s,g))Object.assign(s.G[g],{o:'sunce',c:k,ly:85})});
    const lc=s.G[s.F[f].lord].c;if(s.C[lc]&&s.C[lc].o===f)s.C[lc].g=Math.min(99999,s.C[lc].g+3000);tzCoLink(s,f,'sunce',24);
    tzYLog(s,'손책의 강동 평정',`손책이 원술에게 옥새를 맡기고 ${tzCN(k)}에서 일어났어요`,[f]);return true}},
@@ -11331,6 +11338,97 @@ HELP.forEach(c=>{if(c.t==='사건')c.rows.push(['연의 사건','조건이 맞�
 (()=>{const st=document.createElement('style');st.textContent=`
 .tz-yy .t{color:var(--bronze)}.tz-yyd{margin:0 0 8px;font-size:13px;line-height:1.5;color:var(--mute)}.tz-yyd>div{margin:2px 0}.tz-yyd b{color:var(--bronze);margin-right:4px}
 .tz-bro{color:var(--bronze)!important}.tz-bro span{color:var(--mute);font-size:12px;margin-left:4px}
+`;document.head.appendChild(st)})();
+/* ==== 군웅할거 v1.6.0: 헌제 옹립 · 칭제 ==== */
+// 헌제: 헌제가 있는 성을 가진 세력이 모셔요. 그 성이 전선이 되면 군주가 있는 성으로 옮겨 모셔요
+const TZ_HD0={184:'luoyang',189:'luoyang',194:'changan',200:'xuchang',208:'xuchang',219:'xuchang'};
+const TZ_HDCD=6;
+function tzHdF(s){const H=s&&s.HD;if(!H||H.dep||!s.C[H.k])return '';const o=s.C[H.k].o;return s.F[o]&&!s.F[o].dead?o:''}
+const tzEmp=(s,f)=>!!(s.F[f]&&s.F[f].emp&&!s.F[f].dead);
+const tzEmps=s=>Object.keys(s.F).filter(f=>tzEmp(s,f)&&tzCities(s,f).length);
+const tzHdRec=(s,f)=>f&&tzHdF(s)===f?.1:0;
+// 칭제 조건: 왕(7개 주) · 성 13곳 이상 · 아직 황제가 아님
+function tzEmpCan(s,f){const F=s.F[f];if(!F||F.dead||F.emp)return {ok:false,c:[]};const c=[[`왕에 오름 (지금 ${TZ_TT[F.tt||0]})`,(F.tt||0)>=2],[`성 13곳 이상 (지금 ${tzCities(s,f).length}곳)`,tzCities(s,f).length>=13]];return {ok:c.every(x=>x[1]),c}}
+function tzEmpDo(s,f,why){const F=s.F[f];if(!F||F.emp)return;const hd=tzHdF(s)===f;F.emp=1;if(hd)s.HD.dep=1;
+  tzGL(s).forEach(b=>{const G=s.G[b.id];if(G.o===f&&b.id!==F.lord)G.ly=Math.min(100,G.ly+5)});
+  tzLiveF(s).forEach(o=>{if(o===f)return;if(tzEmp(s,o)){tzYCut(s,f,o)}else tzHAdd(s,f,o,why==='sy'?10:hd?30:10)});
+  const t=`${tzName(F.lord)}이(가) 황제에 올랐어요${why==='sy'?' · 헌제에게 선양받았어요':hd?' · 헌제를 폐위했어요':''}`;tzYLog(s,'칭제',t,[f]);tzYhAdd(s,'emp',t)}
+function tzEdict(s,f,ty,tg){const H=s.HD;if(tzHdF(s)!==f||!s.F[tg]||s.F[tg].dead||tg===f||(H.cd||0)>s.t)return '';H.cd=s.t+TZ_HDCD;let t='';
+  if(ty==='tb'){tzLiveF(s).forEach(o=>{if(o!==f&&o!==tg)tzHAdd(s,o,tg,15)});tzHAdd(s,f,tg,10);t=`헌제의 이름으로 ${tzFN(s,tg)} 토벌 칙명을 내렸어요 · 다른 세력이 모두 ${tzFN(s,tg)}과(와) 사이가 험악해졌어요`}
+  else{tzHAdd(s,f,tg,-20);t=`헌제의 이름으로 ${tzName(s.F[tg].lord)}에게 관직을 내렸어요 · 사이가 누그러졌어요`}
+  tzLog(s,'칙명 · '+t,f===tzSide(s)||tg===tzSide(s)?'令':'報');tzYhAdd(s,'hd',t);return t}
+function tzHdTick(s){if(!s||!s.on||s.end)return;if(!s.HD)return;const f=tzHdF(s),H=s.HD;
+  if(H.dep)return;if(f!==(H.f||'')){if(f){tzLiveF(s).forEach(o=>{if(o!==f)tzHAdd(s,o,f,5)});const t=`${tzFN(s,f)}이(가) ${tzCN(H.k)}에서 헌제를 모시게 됐어요`;tzLog(s,t,f===tzSide(s)||H.f===tzSide(s)?'民':'報');tzYhAdd(s,'hd',t)}H.f=f}
+  if(!f)return;const C=s.C[H.k];C.ml=Math.min(100,C.ml+1);
+  const lc=s.G[s.F[f].lord].c;if(lc!==H.k&&s.C[lc]&&s.C[lc].o===f&&tzFront(s,H.k)&&!tzFront(s,lc)){H.k=lc;tzLog(s,`헌제를 ${tzCN(lc)}(으)로 옮겨 모셨어요`,f===tzSide(s)?'民':'報')}
+  // AI 칙명: 6달마다 절반 확률로, 맞닿은 가장 큰 세력을 토벌
+  if(f!==s.me&&(H.cd||0)<=s.t&&tzRng()<.5){const tg=tzLiveF(s).filter(o=>o!==f&&!tzAlly(s,f,o)&&tzYAdjF(s,f,o)).sort((a,b)=>tzCities(s,b).length-tzCities(s,a).length)[0];if(tg)tzEdict(s,f,'tb',tg)}}
+function tzEmpTick(s){if(!s||!s.on||s.end)return;const E=tzEmps(s);
+  for(let i=0;i<E.length;i++)for(let j=i+1;j<E.length;j++){s.H=s.H||{};const k=tzHK(E[i],E[j]);if((s.H[k]||0)<90)s.H[k]=90;tzYCut(s,E[i],E[j]);s.H[k]=Math.max(90,s.H[k])}
+  if(s.m===1)E.forEach(f=>tzCities(s,f).forEach(k=>{const C=s.C[k];C.g=Math.min(99999,C.g+Math.round(tzGrowth(s,k).gold*.1))}));
+  // AI 칭제: 헌제를 모시지 않는 왕 · 성 13곳 이상이면 달마다 5%
+  tzLiveF(s).forEach(f=>{if(f===s.me||tzHdF(s)===f)return;if(tzEmpCan(s,f).ok&&tzRng()<.05)tzEmpDo(s,f,'')})}
+// 연의 사건: 원술 칭제 · 조비 수선 · 유비 칭제 · 손권 칭제
+TZ_YY.push(
+ {id:'ys',n:'원술 칭제',p:.2,
+  ok:s=>{const f=tzYLord(s,'yuanshu');if(!f||tzEmp(s,f)||s.OK!==f||tzCities(s,f).length<3)return null;return {f}},ch:(s,x)=>x.f,ai:()=>true,
+  q:()=>({t:'옥새를 손에 넣은 원술이 하늘의 뜻이라며 황제에 오르려 해요.',y:'황제에 오른다',no:'참는다',yd:'황제가 되지만, 다른 세력 모두와 사이가 크게 험악해져요(+20).',nd:'아무 일도 없어요.'}),
+  go:(s,x,yes)=>{if(!yes)return true;tzEmpDo(s,x.f,'');tzLiveF(s).forEach(o=>{if(o!==x.f)tzHAdd(s,x.f,o,10)});return true}},
+ {id:'cp',n:'조비 수선',p:1,
+  ok:s=>{const f=s.YL&&s.YL.cc;if(!f||!s.F[f]||s.F[f].dead||!s.G.caocao||s.G.caocao.o!=='dead'||!tzYIn(s,'caopi',f)||tzYPc(s,'caopi'))return null;return {f}},ch:(s,x)=>x.f,ai:()=>true,
+  q:(s,x)=>({t:`조조가 세상을 떠났어요. 조비가 뒤를 잇고${tzHdF(s)===x.f?' 헌제에게 선양받아 황제에 오르려':''} 해요.`,y:tzHdF(s)===x.f?'선양받는다':'뒤를 잇게 한다',no:'그대로 둔다',yd:tzHdF(s)===x.f?'조비가 군주가 되고 황제에 올라요(헌제 폐위, 다른 세력 적대 +10).':'조비가 군주가 돼요.',nd:'지금 군주가 그대로 이어 가요.'}),
+  go:(s,x,yes)=>{if(!yes)return true;const F=s.F[x.f];F.lord='caopi';s.G.caopi.ly=100;const hd=tzHdF(s)===x.f;if(hd&&!F.emp)tzEmpDo(s,x.f,'sy');else tzYLog(s,'조비 수선','조비가 조조의 뒤를 이었어요',[x.f]);return true}},
+ {id:'lbe',n:'유비 칭제',p:.3,
+  ok:s=>{const f=tzYLord(s,'liubei');if(!f||tzEmp(s,f)||!tzEmps(s).length||tzCities(s,f).length<6||tzHdF(s)===f)return null;return {f}},ch:(s,x)=>x.f,ai:()=>true,
+  q:(s,x)=>({t:`${tzEmps(s).map(o=>tzName(s.F[o].lord)).join('·')}이(가) 황제를 칭했어요. 신하들이 한실을 잇자고 유비에게 즉위를 청해요.`,y:'한의 황제에 오른다',no:'사양한다',yd:'황제가 돼요(1월 세금 +10%, 장수 충성 +5). 다른 황제와는 원수, 나머지 세력 적대 +10.',nd:'아무 일도 없어요.'}),
+  go:(s,x,yes)=>{if(yes)tzEmpDo(s,x.f,'');return true}},
+ {id:'sqe',n:'손권 칭제',p:.15,
+  ok:s=>{const f=tzYLord(s,'sunquan');if(!f||tzEmp(s,f)||!tzEmps(s).length||tzCities(s,f).length<6||tzHdF(s)===f)return null;return {f}},ch:(s,x)=>x.f,ai:()=>true,
+  q:(s,x)=>({t:'강동의 신하들이 손권에게도 황제에 오르자고 청해요.',y:'황제에 오른다',no:'사양한다',yd:'황제가 돼요(1월 세금 +10%, 장수 충성 +5). 다른 황제와는 원수, 나머지 세력 적대 +10.',nd:'아무 일도 없어요.'}),
+  go:(s,x,yes)=>{if(yes)tzEmpDo(s,x.f,'');return true}});
+TZ_YY.forEach(e=>TZ_YYM[e.id]=e);
+// 손책 사건에서 옥새를 받으면 원술이 옥새를 가져요
+{const sc=TZ_YYM.sc,_g=sc.go;sc.go=function(s,x,yes){const r=_g.apply(this,arguments);if(yes)s.OK=x.f;return r}}
+// 반○○ 연합: 헌제를 모신 세력은 천하의 1/4부터 표적
+{const _ct=tzCoTick;tzCoTick=function(s){const r=_ct.apply(this,arguments);try{if(!tzCoOn(s)&&s.t>=3){const f=tzHdF(s);if(f&&tzCities(s,f).length>=TZ_K.length/4&&tzCities(s,f).length<TZ_K.length/3&&!((s.COH[f]||0)>s.t)){
+  const near=tzCoNear(s,f),ai=near.filter(x=>x!==s.me);if(ai.length>=2&&tzLiveF(s).length>=3){tzCoForm(s,f,ai);const inv=s.me!=='_'&&near.includes(s.me)&&s.F[s.me]&&!s.F[s.me].dead;
+   if(inv&&!tzEvLive(s)){const by=ai.slice().sort((a,b)=>tzCities(s,b).length-tzCities(s,a).length)[0];s.ev={t:s.t,f:by,ty:'coa',tg:f,g:0,fd:0,done:0};tzLog(s,`${tzFN(s,by)}의 사신이 ${s.CO.nm}에 들어오라고 해요 · 평정에서 답해요`,'令')}}}}}catch(e){console.error(e)}return r}}
+// ---- 조정 창 ----
+function tzHdSheet(){const s=tzState();if(!s||!s.on)return;const H=s.HD,f=tzHdF(s),me=s.me!=='_'?s.me:'',mine=me&&f===me,cd=H?Math.max(0,(H.cd||0)-s.t):0,E=tzEmps(s);
+  const where=!H?'이 판에는 헌제가 없어요':H.dep?'헌제는 폐위됐어요':f?`${tzCN(H.k)} · ${tzFN(s,f)}이(가) 모셔요`:`${tzCN(H.k)} · 모시는 세력이 없어요`;
+  let ed='';if(mine){const fs=tzLiveF(s).filter(o=>o!==me).sort((a,b)=>tzCities(s,b).length-tzCities(s,a).length);
+    ed=cd?`<p class="sub" style="margin:6px 0">다음 칙명까지 ${cd}달</p>`:`<div class="tz-hdx">칙명은 6달에 한 번 내릴 수 있어요. 토벌 칙명은 다른 세력 모두가 그 세력과 사이가 험악해지게 하고(+15), 관직 수여는 그 군주와 사이를 누그러뜨려요(−20).</div>
+     <div class="tz-hdl">${fs.map(o=>`<div class="tz-hdr"><span style="color:${tzCol(o)}">${esc(tzFN(s,o))}</span><small>성 ${tzCities(s,o).length} · ${tzRel(s,o)?esc(tzRel(s,o)[1]):''}</small><button type="button" class="btn sm red" data-tzed="tb|${o}">토벌</button><button type="button" class="btn sm ghost" data-tzed="gw|${o}">관직</button></div>`).join('')}</div>`}
+  const can=me?tzEmpCan(s,me):null;
+  const emp=me?(s.F[me].emp?`<p class="tz-resb new" style="margin:6px 0">${esc(tzName(s.F[me].lord))} 황제 · 1월 세금 +10%</p>`:`<ul class="tz-hdc">${can.c.map(([t,o])=>`<li class="${o?'ok':''}">${o?'✓':'·'} ${esc(t)}</li>`).join('')}</ul>
+    <p class="sub" style="margin:4px 0 8px">황제가 되면 1월 세금 +10%, 장수 충성 +5(한 번). 다른 황제와는 원수가 되고, 나머지 세력 적대 +10${mine?' · 헌제를 모시고 있어 폐위하게 되고 적대 +30':''}.</p>
+    <button type="button" class="btn ${can.ok?'red':'ghost'} wide" data-tzemp ${can.ok?'':'disabled'}>황제에 오르기</button>`):'<p class="sub">장수제에서는 군주만 칭제할 수 있어요.</p>';
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">조정</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <h3>헌제</h3><p style="margin:0 0 4px">${esc(where)}</p><p class="sub" style="margin:0">모시는 세력은 등용 확률 +10%, 헌제가 있는 성 민심 매달 +1. 대신 다른 세력이 꺼리고(적대 +5), 천하의 1/4만 가져도 반○○ 연합의 표적이 돼요.</p>${ed}
+   <h3>칭제</h3>${E.length?`<p class="sub" style="margin:0 0 6px">황제: ${E.map(o=>`<b style="color:${tzCol(o)}">${esc(tzName(s.F[o].lord))}</b>`).join(' · ')}</p>`:''}${emp}`)}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tzhd],[data-tzed],[data-tzemp]');if(!b)return;const s=tzState();if(!s||!s.on)return;
+  if(b.dataset.tzhd!=null){tzHdSheet();return}
+  if(b.dataset.tzed){const[ty,tg]=b.dataset.tzed.split('|');const t=tzEdict(s,s.me,ty,tg);if(t){toast(t);save();renderView();tzHdSheet()}return}
+  if(b.hasAttribute('data-tzemp')){if(s.end||s.me==='_'||!tzEmpCan(s,s.me).ok)return;if(!confirm(tzHdF(s)===s.me?'헌제를 폐위하고 황제에 오를까요? 다른 세력 적대가 크게 올라요.':'황제에 오를까요? 다른 세력 적대가 올라요.'))return;tzEmpDo(s,s.me,'');toast('황제에 올랐어요');save();renderView();tzHdSheet()}});
+{const _gm=gwMenu;gwMenu=function(){_gm.apply(this,arguments);const s=tzState(),r=document.querySelector('#sheet [data-tzyh]');if(r&&s&&s.on)r.insertAdjacentHTML('afterend','<button type="button" class="btn ghost" data-tzhd>조정</button>')}}
+// 외교 창: 황제 · 헌제 표시
+{const _ds=tzDipSheet;tzDipSheet=function(){const r=_ds.apply(this,arguments);try{const s=tzState(),f=tzHdF(s),E=tzEmps(s),b=document.querySelector('#sheet .sheet-body')||document.querySelector('#sheet');
+  if(b&&(f||E.length))b.insertAdjacentHTML('afterbegin',`<p class="sub tz-hdi" style="margin:0 0 8px">${f?`헌제 · ${esc(tzFN(s,f))}(${esc(tzCN(s.HD.k))})`:''}${f&&E.length?' · ':''}${E.length?`황제 · ${E.map(o=>esc(tzName(s.F[o].lord))).join('·')}`:''} <button type="button" class="btn sm ghost" data-tzhd>조정</button></p>`)}catch(e){}return r}}
+// 턴 · 새 판 · 저장
+{const _t=tzTurn;tzTurn=function(s){if(s&&s.on&&!s.end)s.YL=Object.assign(s.YL||{},(()=>{const c=tzYLord(s,'caocao');return c?{cc:c}:{}})());const r=_t.apply(this,arguments);try{if(s&&s.on&&!s.end){tzHdTick(s);tzEmpTick(s)}}catch(e){console.error(e)}return r}}
+{const _n=tzNew;tzNew=function(sc){const s=_n.apply(this,arguments);try{const k=TZ_HD0[s.sc];s.HD=k?{k,f:'',dep:0,cd:0}:null;s.OK='';if(s.HD)s.HD.f=tzHdF(s);for(const f in s.F)s.F[f].emp=0}catch(e){}return s}}
+{const _cl=cleanTz;cleanTz=function(x){const o=_cl(x);if(!o.on)return o;x=x||{};const n=(v,a,b)=>Math.max(a,Math.min(b,Math.round(Number(v)||0)));
+  const H=x.HD;o.HD=H&&typeof H==='object'&&TZ_C[H.k]?{k:H.k,f:o.F[H.f]?H.f:'',dep:H.dep?1:0,cd:n(H.cd,0,99999)}:null;o.OK=o.F[x.OK]?x.OK:'';
+  if(x.F)for(const f in o.F)o.F[f].emp=x.F[f]&&x.F[f].emp?1:0;
+  const L=x.YL;if(L&&typeof L==='object'&&o.F[L.cc])o.YL=Object.assign(o.YL||{},{cc:L.cc});return o}}
+// 등용 확률: 헌제를 모신 세력 +10%
+TZ_YHI.emp='帝';TZ_YHI.hd='漢';
+HELP.forEach(c=>{if(c.t==='외교·계략')c.rows.push(['헌제 · 칙명','헌제가 있는 성을 가진 세력이 헌제를 모셔요(184·189년 낙양, 194년 장안, 200·208·219년 허창). 그 성을 빼앗으면 헌제도 넘어가고, 그 성이 전선이 되면 군주가 있는 성으로 옮겨 모셔요. 모시는 세력은 등용 확률 +10% · 헌제가 있는 성 민심 매달 +1. 대신 다른 세력 적대 +5, 천하의 1/4만 가져도 반○○ 연합의 표적이 돼요. 6달에 한 번 칙명을 내려요: 토벌(다른 세력 모두가 그 세력과 적대 +15) · 관직 수여(그 군주와 적대 −20). 메뉴 › 조정에서 해요.'],
+  ['칭제','왕(7개 주)에 오르고 성이 13곳 이상이면 메뉴 › 조정에서 황제에 오를 수 있어요. 1월 세금 +10% · 장수 충성 +5(한 번). 다른 황제와는 원수(적대 90 아래로 안 내려가고 동맹 불가), 나머지 세력 적대 +10. 헌제를 모신 채 칭제하면 헌제를 폐위하고 적대 +30이에요. 연의 사건으로 원술 칭제(옥새) · 조비 수선(조조가 죽으면) · 유비 칭제 · 손권 칭제(다른 황제가 있고 성 6곳 이상)도 일어나요.'])});
+(()=>{const st=document.createElement('style');st.textContent=`
+.tz-hdl{display:flex;flex-direction:column;gap:4px;margin:4px 0 8px}.tz-hdr{display:flex;align-items:center;gap:6px}.tz-hdr span{font-weight:700;min-width:5.5em}.tz-hdr small{flex:1;color:var(--mute);font-size:12px}
+.tz-hdc{list-style:none;padding:0;margin:4px 0}.tz-hdc li{color:var(--mute);font-size:13px}.tz-hdc li.ok{color:var(--bronze)}
+.tz-hdi .btn{margin-left:6px}.tz-hdx{margin:6px 0;font-size:13px;line-height:1.5;color:var(--mute)}
 `;document.head.appendChild(st)})();
 boot();
 </script>
