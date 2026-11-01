@@ -836,6 +836,29 @@ body.tz-focus header.top,body.tz-focus #claim,body.tz-focus #mode-banner{display
 .gw-ride{position:absolute;z-index:6;pointer-events:none;transform:translate(-50%,-78%)}.gw-ride i{display:block;filter:drop-shadow(0 1px 1.5px #000a);animation:gwGal .22s ease-in-out infinite alternate}.gw-ride.l i{transform:scaleX(-1)}.gw-map .gw-ride svg{position:static;inset:auto;width:48px;height:38px;display:block;overflow:visible}
 .gw-ride.l i{animation-name:gwGalL}@keyframes gwGal{from{transform:translateY(0) rotate(-2deg)}to{transform:translateY(-3px) rotate(2deg)}}@keyframes gwGalL{from{transform:scaleX(-1) translateY(0) rotate(-2deg)}to{transform:scaleX(-1) translateY(-3px) rotate(2deg)}}
 .gw-dust{position:absolute;z-index:5;width:16px;height:16px;border-radius:50%;pointer-events:none;background:radial-gradient(circle,#d8c39acc 0,#b89d6c88 45%,transparent 72%);margin-top:4px}
+.tz-cmd button small.why{color:var(--cinnabar);opacity:1}.tz-cmd button:disabled small.why{opacity:.95}
+.tz-tip{display:flex;flex-direction:column;gap:3px;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,var(--gold,#e9c66c) 10%,transparent);border:1px dashed color-mix(in srgb,var(--gold,#e9c66c) 45%,transparent);font-size:12.5px;line-height:1.45}.tz-tip b{font-size:12px;color:var(--gold,#e9c66c)}
+#tz-dock{position:fixed;left:0;right:0;bottom:0;z-index:15;display:flex;gap:6px;align-items:stretch;padding:8px 10px calc(8px + env(safe-area-inset-bottom));background:color-mix(in srgb,var(--bg,#152022) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid var(--line);box-shadow:0 -6px 18px #0006}
+#tz-dock button{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:inherit;font:inherit;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:6px 4px;min-height:48px;cursor:pointer}
+#tz-dock .tz-dk-c{flex:1.5 1 0;min-width:0;flex-direction:row;flex-wrap:wrap;justify-content:flex-start;gap:0 4px;padding:6px 8px;text-align:left;border-color:color-mix(in srgb,var(--gold,#e9c66c) 55%,transparent)}
+#tz-dock .tz-dk-c b{font-size:15px;white-space:nowrap}#tz-dock .tz-dk-c small{flex-basis:100%;font-size:11px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#tz-dock .tz-dk-c i{position:absolute;opacity:0}
+#tz-dock .tz-dk-b{flex:1 1 0;min-width:0}#tz-dock .tz-dk-b.wide{flex:4 1 0}#tz-dock .tz-dk-b b{font-size:14px}#tz-dock .tz-dk-b small{font-size:10.5px;opacity:.6}#tz-dock .tz-dk-b.off{opacity:.45}
+#tz-dock .tz-fg{margin-left:0}
+body.tz-dk #view{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+body.tz-dk #view>.tz-city{display:none}
+body.tz-dk #sheet .sheet-body{padding-bottom:calc(16px + env(safe-area-inset-bottom))}
+.pwa-sh a.btn,#pwa-ib a.btn{text-decoration:none}
+.pwa-i{width:18px;height:18px;vertical-align:-4px;margin:0 2px;color:var(--gold,#e9c66c)}
+.pwa-steps2{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}.pwa-steps2 li{display:flex;gap:10px;align-items:flex-start;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);line-height:1.5;font-size:14px}
+.pwa-steps2 li>i{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--gold,#e9c66c);color:#1a1a1a;font-style:normal;font-weight:800;font-size:13px}
+.pwa-save{display:flex;flex-direction:column;gap:4px;align-items:flex-start;padding:10px;margin:0 0 8px;border-radius:10px;border:1px dashed var(--cinnabar);font-size:13px;line-height:1.45}.pwa-save b{color:var(--cinnabar)}
+.pwa-other summary{cursor:pointer;margin-top:10px;font-size:13px;opacity:.8}
+#pwa-arrow{position:fixed;left:50%;bottom:6px;transform:translateX(-50%);z-index:30;display:flex;flex-direction:column;align-items:center;pointer-events:none;color:#ffd75e;text-shadow:0 1px 3px #000;animation:pwaB 0.9s ease-in-out infinite}
+#pwa-arrow span{font-size:12px;font-weight:700;background:#000a;padding:2px 8px;border-radius:8px}#pwa-arrow b{font-size:34px;line-height:1}
+@keyframes pwaB{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,8px)}}
+#sheet.pwa-sh .sheet-body{padding-bottom:70px}
+#pwa-ib{position:fixed;left:8px;right:8px;top:calc(8px + env(safe-area-inset-top));z-index:50;display:flex;gap:8px;align-items:center;padding:10px 12px;border-radius:12px;background:#3a1512;border:1px solid var(--cinnabar);box-shadow:0 6px 18px #0008;color:#fff}
+#pwa-ib span{flex:1;min-width:0;display:flex;flex-direction:column}#pwa-ib small{opacity:.8;font-size:12px}#pwa-ib .x{background:none;border:0;color:#fff;font-size:16px;padding:4px}
 .tz-gsw{display:flex;justify-content:center;align-items:flex-end;height:158px;margin:2px 0 4px;background:radial-gradient(ellipse 60% 14% at 50% 94%,#0004,transparent 70%)}.tz-gsp{image-rendering:auto}
 .tz-bio p{margin:0 0 6px;line-height:1.55;font-size:13.5px}.tz-bio b{display:inline-block;margin-right:6px;padding:0 6px;border-radius:6px;background:var(--line);font-size:11.5px;font-weight:700}
 .tz-gl td.tz-ifx{white-space:normal;min-width:190px;max-width:280px;line-height:1.35;font-size:11.5px}
@@ -5538,6 +5561,43 @@ function tzTopBar(s){const mine=tzMine(s),sum=key=>mine.reduce((a,k)=>a+s.C[k][k
   return `<div class="tz-top"><button type="button" class="tz-back" data-tz="exit" aria-label="군웅할거 나가기">←<span class="tz-bk-t"> 나가기</span></button><div class="tz-date"><b>${s.y}년 ${s.m}월</b><small>${TZ_SEAN[tzSea(s.m)]} · ${s.t+1}턴</small></div>
    <div class="tz-res"><span>금 <b>${fmt(sum('g'))}</b></span><span>군량 <b>${fmt(sum('fd'))}</b></span><span>병사 <b>${fmt(sum('tr'))}</b></span><span>성 <b>${mine.length}/${TZ_K.length}</b></span></div>
    <button type="button" class="btn sm ghost" data-tz="rep">보고</button>${s.end?'':(()=>{const n=tzIdleC(s).length;return `<button type="button" class="btn sm red${n?' tz-warnb':''}" data-tz="turn"${n?` aria-label="턴 종료 · 명령 안 한 성 ${n}곳"`:''}>턴 종료${n?`<i class="tz-bdg">${n}</i>`:''}</button>`})()}</div>`}
+// v1.3.5 명령 버튼: 못 하는 명령은 흐리게, 이유를 작게(예: 금 300 필요)
+function tzCmdWhy(s,k,c){const C=s.C[k],idle=tzIdle(s,k).length,me=s.me,adjE=TZ_ADJ[k].filter(n=>s.C[n].o!==me&&!tzAlly(s,me,s.C[n].o)),adjM=TZ_ADJ[k].filter(n=>s.C[n].o===me),need=n=>`금 ${fmt(n)} 필요`;
+  if(c==='trd')return TZ_TRADE[k]?'':'교역 도시가 아니에요';
+  if(c==='gift')return !tzItIn(s,'t:'+me).length?'금고 보물 없음':!tzGensIn(s,k,me).length?'장수 없음':'';
+  if(TZ_FREE[c])return '';
+  if(!idle)return tzDirect(tzDlOf(s,k))?'명령할 장수 없음':'위임한 성';
+  const sp=()=>TZ_ADJ[k].some(n=>{const o=s.C[n].o;return s.F[o]&&o!==me&&tzGensIn(s,n,o).some(g=>g!==s.F[o].lord)});
+  switch(c){
+    case 'inv':return C.g<300?need(300):Object.keys(TZ_INV).every(x=>C[x]>=tzCap(C,x))?'모두 상한':'';
+    case 'ben':return C.fd<500?'군량 500 필요':C.ml>=100?'민심 최고':'';
+    case 'drf':return C.tr>=tzCap(C,'tr')?'인구 한도':C.g<300?need(300):'';
+    case 'trn':return C.tn>=100?'훈련 최고':'';
+    case 'war':{if(!adjE.length)return '공격할 이웃 없음';const t=Math.round(C.tr*.5);return C.tr*.9<300?'병사 부족(334명 필요)':C.fd<Math.round(t*.3*(tzSea(s.m)==='winter'?1.5:1))?'군량 부족':''}
+    case 'mov':case 'snd':return adjM.length?'':'이웃한 내 성 없음';
+    case 'rec':return tzGL(s).some(b=>s.G[b.id].o==='free'&&s.G[b.id].c===k&&s.G[b.id].fd)?'':'찾은 재야 없음';
+    case 'rwd':return C.g<100?need(100):tzGL(s).some(b=>s.G[b.id].o===me&&s.G[b.id].c===k&&b.id!==s.F[me].lord)?'':'포상할 장수 없음';
+    case 'ali':return C.g<500?need(500):'';
+    case 'aid':return Object.keys(s.F).some(f=>tzAllyR(s,me,f))?'':'동맹 없음';
+    case 'sur':return C.g<1000?need(1000):'';
+    case 'spy':return sp()?'':'이웃 적 장수 없음';
+    case 'prs':return C.g<300?need(300):sp()?'':'이웃 적 장수 없음';
+    case 'sab':return C.g<200?need(200):adjE.length?'':'이웃 적 성 없음';
+    case 'sct':return C.g<(typeof TZ_SCT_G==='number'?TZ_SCT_G:200)?need(typeof TZ_SCT_G==='number'?TZ_SCT_G:200):'';
+  }return ''}
+function tzCmdBtns(s,k,cat){return cat[3].map(c=>{const v=TZ_CMD[c];if(!v)return '';const why=tzCmdWhy(s,k,c);return `<button type="button" data-tzc="${c}" ${why?'disabled':''}${why?` title="${esc(why)}"`:''}><b>${v[0]}</b><small${why?' class="why"':''}>${why?esc(why):v[2]}</small></button>`}).join('')}
+// v1.3.5 성 카드 군사 한마디: 지금 상황 때문에 막히거나 바뀌는 것
+function tzTips(s,k){const C=s.C[k],W=tzGrowth(s,k),t=[],cap=tzCap(C,'tr');
+  if(!W.g&&!tzHome(s,k))t.push('태수가 없어 이 성은 자동으로 자라지 않아요. 태수부터 두세요.');
+  if(C.ml<=60&&C.tr<cap)t.push(`민심이 ${C.ml}이라 의용군이 안 들어와요. 60을 넘으면 매달 병사가 저절로 늘어요(시혜).`);
+  if(C.fd<W.eat*3)t.push(`군량이 ${Math.max(0,Math.floor(C.fd/Math.max(1,W.eat)))}달 치밖에 없어요. 9월 수확 전에 바닥나면 병사가 줄어요.`);
+  if(C.g<300)t.push(`금이 ${fmt(C.g)}이라 투자·징병을 못 해요. 금은 1월에 들어와요.`);
+  if(C.tr>=cap)t.push('인구 한도까지 병사가 찼어요. 더 뽑으려면 인구가 늘어야 해요.');
+  if(tzFront(s,k)&&C.tn<40)t.push(`전선인데 훈련이 ${C.tn}이에요. 훈련이 낮으면 전투에서 약해요.`);
+  if(C.ml<40)t.push('민심이 40 아래라 반란이 날 수 있어요.');
+  return t.slice(0,2)}
+function tzTipHtml(s,k){const t=tzTips(s,k);if(!t.length)return '';const a=typeof tzAdv==='function'&&tzAdv(s);
+  return `<div class="tz-tip"><b>${a?`군사 ${esc(tzName(a))}`:'군사 한마디'}</b>${t.map(x=>`<span>${esc(x)}</span>`).join('')}</div>`}
 function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.g;
   let h=`<div class="tz-city"><div class="tz-ch"><h3>${tzCN(k)}</h3><span class="sub" style="margin:0">${tzHZ(k)} · ${TZ_ZH[TZ_ZK[k]][0]}${tzZOwn(s,TZ_ZK[k])?` <b style="color:${tzCol(tzZOwn(s,TZ_ZK[k]))}">평정</b>`:''}</span>${TZ_PASS[k]?`<span class="tz-tag front" title="관문: 수비 체력 ×1.15">${TZ_PASS[k]}</span>`:''}<span class="chip" style="border-color:${tzCol(o)};color:${tzCol(o)}">${tzFN(s,o)}${tzRelTxt(s,o)}</span>${TZ_TRADE[k]?'<span class="tz-tag home">商</span>':''}
    ${my?`<button type="button" class="tz-gov" data-tzc="gov">태수 <b>${gov?esc(tzName(gov)):'없음'}</b></button>`:''}${my?tzGovRecBtn(s,k):''}</div>`;
@@ -5558,8 +5618,8 @@ function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.
   h+=`<details class="tz-gens" ${tzGOpen?'open':''}><summary>장수 ${gs.length}명${my?` · 명령 가능 ${tzIdle(s,k).length}명`:''}${fr.length?` · 찾은 재야 ${fr.length}명`:''}</summary><div class="list" style="margin-top:6px">${gs.map(g=>tzGenRow(s,g,my,vis)).join('')||'<p class="sub" style="margin:0">장수가 없어요</p>'}
    ${fr.length?`<p class="sub" style="margin:6px 0 2px">찾은 재야 장수</p>${fr.map(g=>tzGenRow(s,g,false)).join('')}`:''}</div></details>`;
   if(my&&!s.end){const idle=tzIdle(s,k).length,cat=TZ_CAT.find(c=>c[0]===tzCat)||TZ_CAT[0];
-    h+=`<div class="tz-cats" role="tablist">${TZ_CAT.map(([c,n,hz])=>`<button type="button" role="tab" data-tzcat="${c}" aria-pressed="${cat[0]===c}"><b>${n}</b><small>${hz}</small></button>`).join('')}</div>
-     <div class="tz-cmd">${cat[3].map(c=>{const v=TZ_CMD[c];const ok=c==='trd'?!!TZ_TRADE[k]:c==='gift'?tzItIn(s,'t:'+s.me).length&&tzGensIn(s,k,s.me).length:TZ_FREE[c]||idle;return `<button type="button" data-tzc="${c}" ${ok?'':'disabled'}><b>${v[0]}</b><small>${v[2]}</small></button>`}).join('')}</div>
+    h+=tzTipHtml(s,k)+`<div class="tz-cats" role="tablist">${TZ_CAT.map(([c,n,hz])=>`<button type="button" role="tab" data-tzcat="${c}" aria-pressed="${cat[0]===c}"><b>${n}</b><small>${hz}</small></button>`).join('')}</div>
+     <div class="tz-cmd">${tzCmdBtns(s,k,cat)}</div>
      <p class="sub" style="margin:6px 0 0;font-size:12px">${!tzDirect(tzDlOf(s,k))?'위임한 성이라 장수 명령은 정찰만 할 수 있어요 · ':''}명령할 수 있는 장수 ${idle}명 · 장수마다 한 달에 명령 1개 · 금고 보물 ${tzItIn(s,'t:'+s.me).length}개</p>`}
   return h+`</div>`}
 function vTz(){const s=tzState();
@@ -8780,8 +8840,14 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.3.4';
-const GW_NOTICES=[{v:'1.3.4',date:'2026-11-01',title:'군웅할거 v1.3.4 · 보물 특수 능력 · 장수 전신 · 출진 연출',items:[
+const GW_VER='1.3.5';
+const GW_NOTICES=[{v:'1.3.5',date:'2026-11-01',title:'군웅할거 v1.3.5 · 폰 아래 명령줄 · 군사 한마디 · 쉬운 설치 안내',items:[
+  '폰 화면 아래에 명령줄이 붙었어요. 고른 성 이름과 내정 · 군사 · 인사 · 계략 버튼이 늘 보여서, 지도나 천하 표를 내리지 않고 바로 명령해요. 성 이름을 누르거나 지도에서 고른 성을 한 번 더 누르면 성 카드가 아래에서 올라와요.',
+  '지금 할 수 없는 명령은 흐리게 보이고, 이유가 빨간 글씨로 나와요(예: 금 300 필요 · 군량 부족 · 이웃한 내 성 없음). 할 수 있는 명령이 하나도 없는 분류는 명령줄에서도 흐려져요.',
+  '성 카드에 군사 한마디가 생겼어요. 민심이 60 이하라 의용군이 안 들어오는 것, 군량이 몇 달 치밖에 없는 것, 태수가 없어 자라지 않는 것처럼 지금 막혀 있는 일을 두 줄까지 알려 줘요.',
+  '앱 설치 안내를 새로 만들었어요. 카카오톡 · 아이폰 Safari · 아이폰 크롬 · 안드로이드 크롬 · 삼성 인터넷 · PC 중 지금 화면을 알아서 골라 그 방법만 그림과 함께 보여 줘요. 다른 기기 방법도 눌러 볼 수 있어요.',
+  '카카오톡 같은 앱 안에서 열면 위쪽에 \'여기서는 설치가 안 돼요\' 띠와 \'밖에서 열기\' 버튼이 떠요. 아이폰 Safari에서는 공유 버튼 쪽을 가리키는 화살표가 나오고, 설치 전에 구글 저장 공유를 먼저 켜도록 알려 줘요(아이폰은 Safari와 설치한 앱의 저장이 따로예요).',
+  '주소 뒤에 #설치 를 붙여 열면 설치 안내가 바로 떠요. 설치 안내 아래 \'안내 링크 복사\'로 단톡방에 바로 붙여 넣을 수 있어요.']},{v:'1.3.4',date:'2026-11-01',title:'군웅할거 v1.3.4 · 보물 특수 능력 · 장수 전신 · 출진 연출',items:[
   '보물 51종이 이제 판마다 모두 천하에 깔려요(전에는 24개). ★3은 탐색으로 잘 나오고 ★5는 잘 안 나와요. 예전 판을 이어 하면 빠져 있던 보물이 빈 성들에 새로 숨겨져요.',
   '보물에 특수 능력이 붙었어요. 명마(적토마 · 한혈보마 · 절영)는 퇴각 때 절대 안 붙잡히고 적로는 한 판에 한 번 빠져나와요. 전국옥새는 매력을 100으로 맞추고 동맹 · 원조 · 항복 권고를 +30%p 올려요. 일기토 · 돌격 · 궁병 · 수비 · 사기 · 계략 효과도 있어요. 보물 일람의 특수 능력 칸과 하사 창에서 확인해요.',
   '덧붙인 효과: 적토마는 데려오기 1달 단축, 손자병법은 계략 +10%p와 직접 지휘 때 적 작전 미리 보기, 전국옥새는 있는 성 민심 매달 +2, 팔진도는 성을 지킬 때 받는 피해 −15%예요. 학우선 · 백우선을 가지면 직접 지휘 때 군사가 작전을 추천하고, 칠성보도를 가지면 전투에서 \'암살\'을 한 번 쓸 수 있어요.',
@@ -10359,6 +10425,78 @@ let gwRideQ=[];
 {const _a=tzAtk;tzAtk=function(s,b,f){try{if(s&&b&&s.C[b.n]&&s.C[b.n].o===s.me&&f!==s.me&&gwRideQ.length<4)gwRideQ.push({k:b.k,n:b.n,col:tzCol(f)})}catch(e){}return _a.apply(this,arguments)}}
 {const _t=tzTurn;tzTurn=function(){gwRideQ=[];return _t.apply(this,arguments)}}
 {const _r=tzRepSheet;tzRepSheet=function(){const q=gwRideQ;gwRideQ=[];if(!q.length||!gwRideOk()||gwRiding)return _r.apply(this,arguments);const self=this,args=arguments;gwRide(q,()=>_r.apply(self,args))}}
+// v1.3.5 폰: 아래 고정 명령줄(고른 성 · 내정/군사/인사/계략) + 성 카드는 아래에서 올라오는 시트
+const tzDockOn=()=>view==='stage'&&stMode==='tz'&&!!(S&&S.tz&&S.tz.on)&&!document.body.classList.contains('pc')&&!isWork();
+function tzDockHtml(s){const k=tzSel,C=k&&s.C[k];if(!C)return '';const my=C.o===s.me,idle=my?tzIdle(s,k).length:0,col=tzCol(C.o),mk=s.F[C.o]?tzMk(s,C.o):'';
+  const head=`<button type="button" class="tz-dk-c" data-tzdock="card" aria-label="${tzCN(k)} 성 카드 열기">${mk?`<span class="tz-fg" style="--fac:${col};--fct:${tzFct(col)}">${esc(mk)}</span>`:''}<b>${tzCN(k)}</b><small>${my?(idle?`명령 ${idle}명`:'명령 끝'):esc(tzFN(s,C.o))}</small><i>▴</i></button>`;
+  if(!my||s.end)return head+`<button type="button" class="tz-dk-b wide" data-tzdock="card"><b>성 정보</b><small>${tzSeen(s,k)?'정찰 정보 있음':'병사 '+fmt(C.tr)}</small></button>`;
+  return head+TZ_CAT.map(([c,n,hz])=>{const any=c&&TZ_CAT.find(x=>x[0]===c)[3].some(x=>!tzCmdWhy(s,k,x));return `<button type="button" class="tz-dk-b${any?'':' off'}" data-tzdock="${c}"><b>${n}</b><small>${hz}</small></button>`}).join('')}
+function tzDock(){let d=document.getElementById('tz-dock');const on=tzDockOn();document.body.classList.toggle('tz-dk',on);
+  if(!on){if(d)d.remove();return}if(!d){d=document.createElement('nav');d.id='tz-dock';d.setAttribute('aria-label','고른 성 명령');document.body.appendChild(d)}d.innerHTML=tzDockHtml(tzState())}
+function tzDockCat(c){const s=tzState(),k=tzSel,cat=TZ_CAT.find(x=>x[0]===c);if(!cat||!s.C[k]||s.C[k].o!==s.me)return;tzCat=c;const idle=tzIdle(s,k).length;
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">${tzCN(k)} · ${cat[1]}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <div class="tz-cats" role="tablist" style="margin-bottom:8px">${TZ_CAT.map(([x,n,hz])=>`<button type="button" role="tab" data-tzdock="${x}" aria-pressed="${x===c}"><b>${n}</b><small>${hz}</small></button>`).join('')}</div>
+   <div class="tz-cmd">${tzCmdBtns(s,k,cat)}</div>${tzTipHtml(s,k).replace('class="tz-tip"','class="tz-tip" style="margin-top:8px"')}
+   <p class="sub" style="margin:6px 0 0;font-size:12px">${!tzDirect(tzDlOf(s,k))?'위임한 성이라 장수 명령은 정찰만 할 수 있어요 · ':''}명령할 수 있는 장수 ${idle}명 · 금 ${fmt(s.C[k].g)} · 군량 ${fmt(s.C[k].fd)}</p>
+   <button type="button" class="btn ghost wide" style="margin-top:8px" data-tzdock="card">성 카드 전체 보기</button>`);$('#sheet').dataset.tzdk='cat:'+c}
+function tzDockCard(){const s=tzState(),k=tzSel;if(!s.C[k])return;const sb=$('#sheet .sheet-body'),y=sb&&$('#sheet').dataset.tzdk==='card'?sb.scrollTop:0;
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">성 카드</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>${tzCityCard(s,k)}`);$('#sheet').dataset.tzdk='card';const nb=$('#sheet .sheet-body');if(nb&&y)nb.scrollTop=y}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tzdock]');if(!b)return;e.preventDefault();const v=b.dataset.tzdock;if(v==='card')tzDockCard();else tzDockCat(v)});
+// 성 카드 시트 안에서 고른 탭·위임·태수 같은 걸 바꾸면 시트도 새로 그려요
+{const _rv=renderView;renderView=function(){const r=_rv.apply(this,arguments);try{tzDock();const sh=$('#sheet'),m=sh&&!sh.hidden&&sh.dataset.tzdk;if(m&&tzDockOn()){if(m==='card'&&sh.querySelector('.tz-city'))tzDockCard();else if(m.startsWith('cat:')&&sh.querySelector('[data-tzdock]'))tzDockCat(m.slice(4))}}catch(e){}return r}}
+{const _os=openSheet;openSheet=function(){const r=_os.apply(this,arguments);delete $('#sheet').dataset.tzdk;return r}}
+{const _cs=closeSheet;closeSheet=function(){delete $('#sheet').dataset.tzdk;return _cs.apply(this,arguments)}}
+document.addEventListener('click',e=>{if(!tzDockOn())return;const t=e.target.closest('[data-tzk]');if(!t||t.closest('#sheet'))return;if(t.dataset.tzk===tzSel){e.stopImmediatePropagation();e.preventDefault();tzDockCard()}},true);  // 고른 성을 한 번 더 누르면 성 카드
+addEventListener('resize',()=>{clearTimeout(window.__dkT);window.__dkT=setTimeout(tzDock,120)});
+// v1.3.5 설치 안내: 기기·브라우저를 알아서 판별해 그 경우의 단계만 그림으로. 카톡 등 앱 안 브라우저는 위쪽 띠로 밖에서 열게 해요. 주소 뒤 #설치 로 바로 열려요
+const PWA_ENV={kakao:'카카오톡',inapp:'앱 안 브라우저',ios:'아이폰 Safari',iosc:'아이폰 크롬',and:'안드로이드 크롬',sam:'삼성 인터넷',pc:'PC'};
+function pwaEnv(){const u=navigator.userAgent;if(/KAKAOTALK/i.test(u))return 'kakao';
+  if(/NAVER\(inapp|Instagram|FBAN|FBAV|FB_IAB|Line\/|DaumApps|everytimeApp|BAND\/|Whale\/.*Mobile.*inapp|; wv\)/i.test(u))return 'inapp';
+  if(pwaIOS())return /CriOS|FxiOS|EdgiOS/i.test(u)?'iosc':'ios';if(/SamsungBrowser/i.test(u))return 'sam';if(/Android/i.test(u))return 'and';return 'pc'}
+const PWA_I={share:'<svg viewBox="0 0 24 24" class="pwa-i" aria-hidden="true"><path d="M7 9H5v12h14V9h-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M12 15V3M8 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+ dots:'<svg viewBox="0 0 24 24" class="pwa-i" aria-hidden="true"><circle cx="12" cy="5" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="19" r="2" fill="currentColor"/></svg>',
+ bars:'<svg viewBox="0 0 24 24" class="pwa-i" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+ add:'<svg viewBox="0 0 24 24" class="pwa-i" aria-hidden="true"><rect x="4" y="4" width="16" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
+ inst:'<svg viewBox="0 0 24 24" class="pwa-i" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v6M9 10.5l3 3 3-3M8 21h8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>'};
+const pwaUrl=()=>location.origin+location.pathname;
+function pwaOutHref(env){const u=pwaUrl()+'#설치';if(env==='kakao')return 'kakaotalk://web/openExternal?url='+encodeURIComponent(u);if(/Android/i.test(navigator.userAgent))return `intent://${(pwaUrl()+'?install=1').replace(/^https?:\/\//,'')}#Intent;scheme=https;package=com.android.chrome;end`;return ''}
+function pwaSteps(env){const I=PWA_I,b=x=>`<b>${x}</b>`,out=pwaOutHref(env);
+  const st={kakao:[`카카오톡 안에서는 설치가 안 돼요. 아래 ${b('다른 브라우저로 열기')}를 눌러요.`,`${pwaIOS()?'Safari':'크롬'}에서 열리면 이 안내가 다시 떠요. 거기서 설치해요.`,`안 열리면 ${pwaIOS()?'오른쪽 아래':'오른쪽 위'} ${I.dots} 메뉴 → ${b('다른 브라우저로 열기')}를 눌러요.`],
+   inapp:[`지금은 앱 안의 브라우저라서 설치가 안 돼요.`,`${b('주소 복사')}를 누르고 ${pwaIOS()?'Safari':'크롬'}을 열어 주소창에 붙여 넣어요.`,`또는 화면 위·아래의 ${I.dots} 메뉴에서 ${b('다른 브라우저로 열기')}를 골라요.`],
+   ios:[`화면 아래 가운데 ${I.share} ${b('공유')} 버튼을 눌러요(아이패드는 위쪽).`,`목록을 아래로 내려 ${I.add} ${b('홈 화면에 추가')}를 눌러요.`,`오른쪽 위 ${b('추가')}를 누르면 끝이에요. 홈 화면의 군웅할거 아이콘으로 열어요.`],
+   iosc:[`주소창 오른쪽의 ${I.share} ${b('공유')} 버튼을 눌러요.`,`${I.add} ${b('홈 화면에 추가')}를 눌러요(iOS 16.4 이상). 목록에 없으면 Safari로 열어 주세요.`,`${b('추가')}를 누르면 끝이에요.`],
+   and:[pwaPrompt?`아래 ${b('지금 설치')} 버튼을 눌러요.`:`오른쪽 위 ${I.dots} 메뉴를 눌러요.`,pwaPrompt?`뜨는 창에서 ${b('설치')}를 눌러요.`:`${b('앱 설치')} 또는 ${b('홈 화면에 추가')} → ${b('설치')}를 눌러요.`,`홈 화면이나 앱 목록의 군웅할거 아이콘으로 열어요.`],
+   sam:[pwaPrompt?`아래 ${b('지금 설치')} 버튼을 눌러요.`:`화면 아래 오른쪽 ${I.bars} 메뉴를 눌러요.`,pwaPrompt?`뜨는 창에서 ${b('설치')}를 눌러요.`:`${I.add} ${b('현재 페이지 추가')} → ${b('홈 화면')}을 눌러요.`,`홈 화면의 군웅할거 아이콘으로 열어요.`],
+   pc:[pwaPrompt?`아래 ${b('지금 설치')} 버튼을 눌러요.`:`크롬·엣지 주소창 오른쪽의 ${I.inst} ${b('설치')} 아이콘을 눌러요.`,`아이콘이 없으면 ${I.dots} 메뉴 → ${b('앱 설치')}(엣지는 ${b('앱')} → ${b('이 사이트를 앱으로 설치')})를 골라요.`,`바탕화면·시작 메뉴에 군웅할거가 생겨요.`]}[env];
+  let act='';if(env==='kakao'||env==='inapp')act=`<div class="row" style="gap:6px;margin-top:10px">${out?`<a class="btn red" style="flex:1;text-align:center" href="${out}">다른 브라우저로 열기</a>`:''}<button type="button" class="btn ghost" style="flex:1" data-pwa2="copy">주소 복사</button></div>`;
+  else if(pwaPrompt&&!pwaIOS())act=`<button type="button" class="btn red wide" style="margin-top:10px" data-pwa2="go">지금 설치</button>`;
+  return `<ol class="pwa-steps2">${st.map((x,i)=>`<li><i>${i+1}</i><span>${x}</span></li>`).join('')}</ol>${act}`}
+let pwaTab='';
+function pwaGuide2(){const env=pwaEnv(),t=pwaTab||env,ios=pwaIOS();
+  const sync=ios&&(t==='ios'||t==='iosc')&&!pwaStandalone()?`<div class="pwa-save"><b>먼저 세이브 지키기</b><span>아이폰은 Safari와 설치한 앱의 저장이 따로예요. 설치 전에 구글로 기기 간 저장 공유를 켜 두면, 앱에서 같은 계정으로 이어서 해요.</span>${typeof GWU!=='undefined'&&GWU?'<small>저장 공유가 켜져 있어요 ✓</small>':'<button type="button" class="btn sm" data-pwa2="sync">구글로 저장 공유 켜기</button>'}</div>`:'';
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">앱으로 설치하기</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   ${pwaStandalone()?'<p class="sub">이미 설치한 앱으로 열려 있어요.</p>':`<p class="sub" style="margin:0 0 8px">지금 화면: <b>${PWA_ENV[env]}</b>${t!==env?` · ${PWA_ENV[t]} 방법을 보고 있어요`:''}</p>${sync}${pwaSteps(t)}`}
+   <details class="pwa-other"${t!==env?' open':''}><summary>다른 기기 방법 보기</summary><div class="tz-dl" style="flex-wrap:wrap;margin-top:6px">${Object.entries(PWA_ENV).map(([k,n])=>`<button type="button" data-pwa2="tab:${k}" aria-pressed="${k===t}">${n}</button>`).join('')}</div></details>
+   <div class="row" style="gap:6px;margin-top:10px"><button type="button" class="btn ghost sm" data-pwa2="link">안내 링크 복사(#설치)</button></div>
+   <p class="sub" style="margin-top:8px;font-size:12px">설치해도 앱스토어를 거치지 않아요. 새 버전은 앱을 켤 때 알려 드려요.</p>`);
+  $('#sheet').classList.add('pwa-sh');if(t==='ios'&&env==='ios'&&!pwaStandalone()&&!/iPad/.test(navigator.userAgent))pwaArrow(1)}
+function pwaArrow(on){let a=document.getElementById('pwa-arrow');if(!on){if(a)a.remove();return}if(!a){a=document.createElement('div');a.id='pwa-arrow';a.setAttribute('aria-hidden','true');a.innerHTML='<span>여기 공유 버튼</span><b>↓</b>';document.body.appendChild(a)}}
+async function pwaCopy(t,msg){try{await navigator.clipboard.writeText(t);toast(msg)}catch(e){prompt('길게 눌러 복사해요',t)}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-pwa2]');if(!b)return;const v=b.dataset.pwa2;
+  if(v==='copy')pwaCopy(pwaUrl(),'주소를 복사했어요. Safari·크롬 주소창에 붙여 넣어요');
+  else if(v==='link')pwaCopy(pwaUrl()+'#설치','설치 안내 링크를 복사했어요. 단톡방에 붙여 넣어요');
+  else if(v==='go')pwaInstall();else if(v==='sync'){closeSheet();gwsLogin()}
+  else if(v.startsWith('tab:')){pwaTab=v.slice(4);pwaGuide2()}});
+pwaGuide=function(){pwaTab='';pwaGuide2()};
+{const _cs=closeSheet;closeSheet=function(){pwaArrow(0);$('#sheet').classList.remove('pwa-sh');return _cs.apply(this,arguments)}}
+{const _os=openSheet;openSheet=function(){pwaArrow(0);$('#sheet').classList.remove('pwa-sh');return _os.apply(this,arguments)}}
+// 카톡 등 앱 안 브라우저: 위쪽 띠
+function pwaInappBar(){const env=pwaEnv();if((env!=='kakao'&&env!=='inapp')||pwaStandalone())return;try{if(sessionStorage.getItem('pwa-ib'))return}catch(e){}
+  const out=pwaOutHref(env),d=document.createElement('div');d.id='pwa-ib';d.setAttribute('role','status');
+  d.innerHTML=`<span><b>${env==='kakao'?'카카오톡':'이 앱'} 안에서는 설치가 안 돼요</b><small>${pwaIOS()?'Safari':'크롬'}로 열면 홈 화면에 설치할 수 있어요</small></span>${out?`<a class="btn sm red" href="${out}">밖에서 열기</a>`:`<button type="button" class="btn sm red" data-pwa2="copy">주소 복사</button>`}<button type="button" class="x" aria-label="닫기">✕</button>`;
+  d.querySelector('.x').onclick=()=>{d.remove();try{sessionStorage.setItem('pwa-ib','1')}catch(e){}};document.body.appendChild(d)}
+const pwaHashGo=()=>{let h='';try{h=decodeURIComponent(location.hash.slice(1))}catch(e){}if(h==='설치'||h==='install'||/[?&]install=1/.test(location.search)){setTimeout(()=>{pwaGuide();try{history.replaceState(null,'',location.pathname)}catch(e){}},600)}};
+addEventListener('hashchange',pwaHashGo);setTimeout(()=>{pwaInappBar();pwaHashGo()},900);
 boot();
 </script>
 </body>
