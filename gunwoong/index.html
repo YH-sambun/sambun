@@ -10094,17 +10094,22 @@ function tzMk(s,o){const F=s.F[o];if(!F||F.dead||!GMAP[F.lord])return '';const h
 function tzMkC(s,o){const F=s.F[o];if(!F||F.dead)return 'neu';return tzMk(s,o).length>1?'two':''}
 function tzFct(c){const m=/^#?([0-9a-f]{6})$/i.exec(c||'');if(!m)return '#fff';const n=parseInt(m[1],16),r=n>>16,g=n>>8&255,b=n&255;return (r*299+g*587+b*114)/1000>170?'#1a1a1a':'#fff'}
 (()=>{const st=document.createElement('style');st.textContent=`
-.gw-n{width:26px;height:32px;border:0;border-radius:0;background:none;box-shadow:none;transform:translate(-2px,-100%);display:block;z-index:3}
+.gw-n{width:30px;height:26px;border:0;border-radius:0;background:none;box-shadow:none;transform:translate(-2px,-100%);display:block;z-index:3}
 .gw-zl{opacity:.82}
-.gw-n::before{content:'';position:absolute;left:1px;bottom:0;width:2px;height:32px;background:#2a1d0e;border-radius:1px;box-shadow:0 0 1px #fff8}
-.gw-n i{position:absolute;left:3px;top:0;width:22px;height:20px;display:flex;align-items:center;justify-content:center;background:var(--fac,#8a8a8a);color:var(--fct,#fff);border:1.5px solid #2a1d0e;border-left:0;border-radius:0 2px 2px 0;font-size:13px;line-height:1;text-shadow:none;box-shadow:1px 1px 3px #0008}
+.gw-box{display:flex;flex-wrap:wrap;align-items:center;gap:6px}.gw-box>.gw-wrap{flex:1 0 100%;order:2;min-width:0}
+.gw-box>.gw-mine,.gw-box>.gw-zb{position:static;order:1;box-shadow:none}.gw-box>.gw-mine{padding:5px 10px;order:0}  /* v1.3.4 지도 위 버튼을 지도 바깥 윗줄로(깃발 가림 방지) */
+.gw-n::before{content:'';position:absolute;left:1px;bottom:0;width:2px;height:29px;background:linear-gradient(#5a3b17,#2a1d0e);border-radius:1px;box-shadow:0 0 1px #fff8}
+.gw-n::after{content:'';position:absolute;left:0;top:-5px;width:4px;height:4px;border-radius:50%;background:#e9c66c;box-shadow:0 0 1px #000}
+.gw-n i{position:absolute;left:3px;top:0;width:22px;height:19px;display:flex;align-items:center;justify-content:center;background:var(--fac,#8a8a8a);color:var(--fct,#fff);border:1.5px solid #e9c66c;border-left:0;border-radius:0;font-size:13px;line-height:1;text-shadow:none;box-shadow:1px 2px 3px #0008}
+.gw-n i::after{content:'';position:absolute;left:-1px;right:-5px;top:100%;height:5px;background:repeating-linear-gradient(90deg,#e9c66c 0 1.5px,transparent 1.5px 3px);-webkit-mask:linear-gradient(#000 60%,#0006);mask:linear-gradient(#000 60%,#0006)}
+.gw-n i::before{content:'';position:absolute;top:-1.5px;bottom:-1.5px;left:100%;width:5px;background:repeating-linear-gradient(180deg,#e9c66c 0 1.5px,transparent 1.5px 3px);-webkit-mask:linear-gradient(90deg,#000 60%,#0006);mask:linear-gradient(90deg,#000 60%,#0006)}
 .gw-n.two i{font-size:9.5px;letter-spacing:-1px}
 .gw-n small{left:2px;top:100%}
-.gw-n em{top:-8px;right:-6px}.gw-n u{top:-8px;left:-8px}
-.gw-n.me{border:0;box-shadow:none}.gw-n.me i{border-color:#ffd75e;box-shadow:0 0 0 1.5px #0007,0 0 8px #ffd75e}
+.gw-n em{top:-9px;right:-2px}.gw-n u{top:-8px;left:-8px}
+.gw-n.me{border:0;box-shadow:none}.gw-n.me i{border-color:#fff3c4;box-shadow:0 0 0 1.5px #0007,0 0 9px #ffd75e}
 .gw-n.sel{outline:0}.gw-n.sel i{outline:2px solid #fff;outline-offset:1px}
 .gw-n.hit{animation:none}.gw-n.hit i{animation:gwp 1.4s ease-in-out infinite}
-.gw-n.neu{height:12px;transform:translate(-50%,-50%);width:12px}.gw-n.neu::before{display:none}.gw-n.neu i{left:0;width:10px;height:10px;border:1.5px solid #2a1d0e;border-radius:50%;background:#8d8a80}.gw-n.neu small{left:50%}
+.gw-n.neu{height:12px;transform:translate(-50%,-50%);width:12px}.gw-n.neu::before{display:none}.gw-n.neu::after{display:none}.gw-n.neu i::before,.gw-n.neu i::after{display:none}.gw-n.neu i{left:0;width:10px;height:10px;border:1.5px solid #2a1d0e;border-radius:50%;background:#8d8a80}.gw-n.neu small{left:50%}
 `;document.head.appendChild(st)})();
 
 /* v1.3.3 정찰: 금 200 · 지력 성공률 · 천하 어느 성이든 · 성공하면 12개월 동안 그 성 정보와 장수 충성이 보여요 · 실패하면 15% 확률로 들켜 적대 +10
@@ -10189,6 +10194,25 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-tzcall]');
     if(G.o===s.me)arr.push(`${tzName(b.id)} → ${tzCN(G.c)}`)});
   if(arr.length)tzLog(s,`도착 · ${arr.join(' · ')}`,'民');return r}}
 {const _cl=cleanTz;cleanTz=function(x){const o=_cl(x);if(!o.on||!x||!x.G)return o;for(const id in x.G){const v=x.G[id],t=Math.round(Number(v&&v.tv)||0);if(o.G[id]&&t>0)o.G[id].tv=Math.min(12,t)}return o}}
+
+/* v1.3.4 주 이름표 자리 잡기: 깃발 · 성 이름과 겹치면 겹침이 가장 적은 근처 자리로 비켜요(지도 크기가 바뀌면 다시) */
+function gwZlFix(){const map=document.querySelector('.gw-map');if(!map)return;const zs=[...map.querySelectorAll('.gw-zl')];if(!zs.length)return;
+  const pad=(r,p)=>({l:r.left-p,t:r.top-p,r:r.right+p,b:r.bottom+p});
+  const obs=[];map.querySelectorAll('.gw-n').forEach(n=>{const i=n.querySelector('i'),sm=n.querySelector('small');if(i){const r=i.getBoundingClientRect();obs.push({l:r.left-2,t:r.top-2,r:r.right+6,b:r.bottom+6})}if(sm)obs.push(pad(sm.getBoundingClientRect(),1))});
+  const M=map.getBoundingClientRect(),ov=(a,b)=>Math.max(0,Math.min(a.r,b.r)-Math.max(a.l,b.l))*Math.max(0,Math.min(a.b,b.b)-Math.max(a.t,b.t));
+  const C=[[0,0],[0,-16],[0,16],[-26,0],[26,0],[-22,-14],[22,-14],[-22,14],[22,14],[0,-28],[0,28],[-40,0],[40,0]];
+  zs.forEach(z=>{z.style.marginLeft='0px';z.style.marginTop='0px'});
+  zs.forEach(z=>{const r0=z.getBoundingClientRect();let best=null;
+    for(const [dx,dy] of C){const r={l:r0.left+dx,t:r0.top+dy,r:r0.right+dx,b:r0.bottom+dy};let sc=0;for(const o of obs)sc+=ov(r,o);
+      if(r.l<M.left)sc+=(M.left-r.l)*40;if(r.r>M.right)sc+=(r.r-M.right)*40;if(r.t<M.top)sc+=(M.top-r.t)*40;if(r.b>M.bottom)sc+=(r.b-M.bottom)*40;
+      sc+=(Math.abs(dx)+Math.abs(dy))*.5;if(!best||sc<best.sc)best={sc,dx,dy,r};if(sc===0)break}
+    z.style.marginLeft=best.dx+'px';z.style.marginTop=best.dy+'px';{const q=best.r;obs.push({l:q.l-2,t:q.t-2,r:q.r+2,b:q.b+2})}})}
+let gwZlRO=null;
+function gwZlWatch(){const m=document.querySelector('.gw-map');if(!m)return;requestAnimationFrame(gwZlFix);if(m.__zl)return;m.__zl=1;
+  if(window.ResizeObserver){if(!gwZlRO)gwZlRO=new ResizeObserver(()=>{clearTimeout(window.__zlT);window.__zlT=setTimeout(gwZlFix,60)});gwZlRO.observe(m)}
+  const img=m.querySelector('img');if(img&&!img.complete)img.addEventListener('load',()=>setTimeout(gwZlFix,30),{once:true})}
+{const _rv=renderView;renderView=function(){const r=_rv.apply(this,arguments);gwZlWatch();return r}}
+addEventListener('resize',()=>{clearTimeout(window.__zlT);window.__zlT=setTimeout(gwZlFix,150)});
 
 boot();
 </script>
