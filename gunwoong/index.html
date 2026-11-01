@@ -5475,12 +5475,12 @@ function tzReward(s){if(s.end!==1||s.rw)return null;s.rw=1;const dk=tzDK(s);if(s
 function tzMapHtml(s){const sea=tzSea(s.m);
   const roads=TZ_E.map(([a,b])=>{const A=TZ_C[a],B=TZ_C[b],on=s.C[a].o===s.me||s.C[b].o===s.me;return `<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" class="${on?'on':''}"/>`}).join('');
   const nodes=TZ_K.map(k=>{const[x,y]=TZ_C[k],o=s.C[k].o,me=o===s.me,cap=Object.values(s.F).some(F=>!F.dead&&s.G[F.lord].c===k&&s.G[F.lord].o===s.C[k].o);
-    return `<button type="button" class="gw-n ${me?'me':''} ${tzSel===k?'sel':''}" style="left:${x}%;top:${y}%;--fac:${tzCol(o)}" data-tzk="${k}" aria-label="${tzCN(k)}"><i>${tzHZ(k)[0]}</i>${cap?'<em>★</em>':''}${s.lc&&s.lc.k===k?'<u>蝗</u>':''}<small>${tzCN(k)}</small></button>`}).join('');
+    return `<button type="button" class="gw-n ${me?'me':''} ${tzSel===k?'sel':''} ${tzMkC(s,o)}" style="left:${x}%;top:${y}%;--fac:${tzCol(o)};--fct:${tzFct(tzCol(o))}" data-tzk="${k}" aria-label="${tzCN(k)} · ${s.F[o]?esc(tzFN(s,o)):'빈 성'}"><i>${tzMk(s,o)}</i>${cap?'<em>★</em>':''}${s.lc&&s.lc.k===k?'<u>蝗</u>':''}<small>${tzCN(k)}</small></button>`}).join('');
   setTimeout(()=>{const w=document.querySelector('.gw-wrap');if(!w)return;if(tzSx==null){const k=tzSel||s.G[s.F[s.me].lord].c;tzSx=Math.max(0,w.scrollWidth*TZ_C[k][0]/100-w.clientWidth/2)}w.scrollLeft=tzSx;w.onscroll=()=>{tzSx=w.scrollLeft}},0);
   return `<div class="gw-wrap"><div class="gw-map"><img src="${gwMapSrc(sea)}" alt="" draggable="false"><svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${roads}</svg>${nodes}</div></div>`}
-function tzGenRow(s,g,mine){const b=GMAP[g],G=s.G[g],P=TZ_PC[g]||[50,50,50],isL=Object.values(s.F).some(F=>F.lord===g&&!F.dead),gov=G.o!=='free'&&s.C[G.c]&&tzGov(s,G.c)===g;
+function tzGenRow(s,g,mine,seen){const b=GMAP[g],G=s.G[g],P=TZ_PC[g]||[50,50,50],isL=Object.values(s.F).some(F=>F.lord===g&&!F.dead),gov=G.o!=='free'&&s.C[G.c]&&tzGov(s,G.c)===g;
   return `<div class="li tz-g ${G.ac?'done':''}"><button type="button" class="tz-gd" data-tzgd="${g}" aria-label="${esc(b.name)} 상세">${seal(b,'sm')}</button><div class="info"><b>${esc(b.name)}${isL?' <span class="chip">군주</span>':''}${b.kid?` <span class="chip">${b.kid}</span>`:''}${gov?' <span class="chip">태수</span>':''}${G.ac&&mine?' <span class="chip">명령 끝</span>':''}${tzItOf(s,g)?` <span class="chip" style="color:var(--bronze)">${esc(IMAP[tzItOf(s,g)].name)}</span>`:''}</b>
-   <span>무${tzStr(g)} 지${tzInt(g)} 통${tzLead(g)} 정${P[0]} 매${tzCha(g)}${mine||G.o==='free'?` · ${G.o==='free'?'의리 '+P[2]:'충성 '+G.ly} · Lv ${tzLv(s,g)}`:''}</span></div></div>`}
+   <span>무${tzStr(g)} 지${tzInt(g)} 통${tzLead(g)} 정${P[0]} 매${tzCha(g)}${mine||seen||G.o==='free'?` · ${G.o==='free'?'의리 '+P[2]:'충성 '+G.ly} · Lv ${tzLv(s,g)}`:''}</span></div></div>`}
 const tzTag=(s,k)=>tzHome(s,k)?['home','거점']:tzFront(s,k)?['front','전선']:['rear','후방'];
 const tzF1=v=>Math.round(v*10)/10;
 // 성 수치 설명: [이름, 값 표시, 상한, 매달 자동, 올리는 법, 효과]
@@ -5514,9 +5514,9 @@ function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.
   if(my){const home=tzHome(s,k),dl=tzDlOf(s,k);
     h+=`<div class="tz-dl" role="group" aria-label="위임">${(home?['self','pj']:Object.keys(TZ_DL)).map(m=>`<button type="button" data-tzdl="${k}:${m}" aria-pressed="${dl===m}">${TZ_DL[m][0]}</button>`).join('')}</div>
      <p class="tz-note">${home?'군주가 있는 성은 직접 또는 평정으로 다스려요. '+TZ_DL[dl][1]:TZ_DL[dl][1]}</p>`}
-  const bar=(key,nm,col)=>{const cp=tzCap(C,key),v=C[key],show=my||key==='tr'||key==='df';
+  const vis=my||tzSeen(s,k),bar=(key,nm,col)=>{const cp=tzCap(C,key),v=C[key],show=vis||key==='tr'||key==='df';
     return `<button type="button" class="tz-sb" data-tzh="${key}" ${my?'':'disabled'}><span>${nm}</span><i style="--p:${show?Math.min(100,Math.round(v/cp*100)):0}%;--c:${col}"></i><em>${show?fmt(v):'?'}${my?`<small>/${fmt(cp)}</small>`:''}</em></button>`};
-  h+=`<div class="tz-num">${[['g','금'],['fd','군량'],['pop','인구']].map(([key,nm])=>`<button type="button" data-tzh="${key}" ${my?'':'disabled'}><small>${nm}</small><b>${my?fmt(C[key]):'?'}</b></button>`).join('')}</div>
+  h+=`<div class="tz-num">${[['g','금'],['fd','군량'],['pop','인구']].map(([key,nm])=>`<button type="button" data-tzh="${key}" ${my?'':'disabled'}><small>${nm}</small><b>${vis?fmt(C[key]):'?'}</b></button>`).join('')}</div>
    ${tzArmLine(s,k,my)}<div class="tz-bars">${bar('tr','병사','var(--cinnabar)')}${bar('tn','훈련','var(--cinnabar)')}${bar('fa','농업','var(--jade)')}${bar('co','상업','var(--bronze)')}${bar('df','방어','#9aa3ad')}${bar('ml','민심','var(--jade)')}</div>`;
   if(my){const up=(n,v)=>v>0?`${n} <b class="up">+${tzF1(v)}</b>`:'';
     h+=`<div class="tz-inc"><span>다음 달 자동 ${[up('농업',Math.min(W.fa,tzCap(C,'fa')-C.fa)),up('상업',Math.min(W.co,tzCap(C,'co')-C.co)),up('방어',Math.min(W.df,100-C.df)),W.ml?`민심 <b class="${W.ml>0?'up':'dn'}">${W.ml>0?'+':''}${tzF1(W.ml)}</b>`:''].filter(Boolean).join(' · ')||'없음'}</span>
@@ -5525,12 +5525,12 @@ function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.
    if(my&&gov&&!tzHome(s,k)&&s.G[gov].ly<50)w.push(`태수 ${tzName(gov)} 충성 ${s.G[gov].ly} · 50 아래면 독립할 수 있어요`);if(my&&C.ml<40)w.push(`민심 ${C.ml} · 40 아래면 주민 반란 위험`);
    if(w.length)h+=`<p class="tz-warn">${w.join('<br>')}</p>`}
   const gs=tzGensIn(s,k,o),fr=my?tzGL(s).map(b=>b.id).filter(g=>s.G[g].o==='free'&&s.G[g].c===k&&s.G[g].fd):[];
-  h+=`<details class="tz-gens" ${tzGOpen?'open':''}><summary>장수 ${gs.length}명${my?` · 명령 가능 ${tzIdle(s,k).length}명`:''}${fr.length?` · 찾은 재야 ${fr.length}명`:''}</summary><div class="list" style="margin-top:6px">${gs.map(g=>tzGenRow(s,g,my)).join('')||'<p class="sub" style="margin:0">장수가 없어요</p>'}
+  h+=`<details class="tz-gens" ${tzGOpen?'open':''}><summary>장수 ${gs.length}명${my?` · 명령 가능 ${tzIdle(s,k).length}명`:''}${fr.length?` · 찾은 재야 ${fr.length}명`:''}</summary><div class="list" style="margin-top:6px">${gs.map(g=>tzGenRow(s,g,my,vis)).join('')||'<p class="sub" style="margin:0">장수가 없어요</p>'}
    ${fr.length?`<p class="sub" style="margin:6px 0 2px">찾은 재야 장수</p>${fr.map(g=>tzGenRow(s,g,false)).join('')}`:''}</div></details>`;
   if(my&&!s.end){const idle=tzIdle(s,k).length,cat=TZ_CAT.find(c=>c[0]===tzCat)||TZ_CAT[0];
     h+=`<div class="tz-cats" role="tablist">${TZ_CAT.map(([c,n,hz])=>`<button type="button" role="tab" data-tzcat="${c}" aria-pressed="${cat[0]===c}"><b>${n}</b><small>${hz}</small></button>`).join('')}</div>
      <div class="tz-cmd">${cat[3].map(c=>{const v=TZ_CMD[c];const ok=c==='trd'?!!TZ_TRADE[k]:c==='gift'?tzItIn(s,'t:'+s.me).length&&tzGensIn(s,k,s.me).length:TZ_FREE[c]||idle;return `<button type="button" data-tzc="${c}" ${ok?'':'disabled'}><b>${v[0]}</b><small>${v[2]}</small></button>`}).join('')}</div>
-     <p class="sub" style="margin:6px 0 0;font-size:12px">${!tzDirect(tzDlOf(s,k))?'위임한 성이라 장수 명령은 할 수 없어요 · ':''}명령할 수 있는 장수 ${idle}명 · 장수마다 한 달에 명령 1개 · 금고 보물 ${tzItIn(s,'t:'+s.me).length}개</p>`}
+     <p class="sub" style="margin:6px 0 0;font-size:12px">${!tzDirect(tzDlOf(s,k))?'위임한 성이라 장수 명령은 정찰만 할 수 있어요 · ':''}명령할 수 있는 장수 ${idle}명 · 장수마다 한 달에 명령 1개 · 금고 보물 ${tzItIn(s,'t:'+s.me).length}개</p>`}
   return h+`</div>`}
 function vTz(){const s=tzState();
   const rule=infoP('tz','군주가 되어 한 달씩 천하를 다퉈요',`천하는 13주 ${TZ_K.length}성이에요. 1턴은 1개월이고, 장수마다 한 달에 명령 1개를 해요. 성마다 태수를 두면 저절로 자라고, 1월에 금·9월에 군량이 들어와요. 출진하면 장수마다 자기 병종 부대를 이끌고 세 국면으로 싸워요. 자세한 규칙은 도움말에 있어요.`,'margin:0')+`<button type="button" class="btn ghost sm tz-help-b" data-tzhelp>도움말</button>`;
@@ -8741,8 +8741,13 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.3.2';
-const GW_NOTICES=[{v:'1.3.2',date:'2026-11-01',title:'군웅할거 v1.3.2 · 음량 조절',items:[
+const GW_VER='1.3.3';
+const GW_NOTICES=[{v:'1.3.3',date:'2026-11-01',title:'군웅할거 v1.3.3 · 정찰 · 지도 깃발',items:[
+  '계략에 \'정찰\'이 생겼어요. 금 200으로 천하 어느 성이든 살펴봐요. 성공하면 12개월 동안 그 성의 금 · 군량 · 인구 · 훈련 · 농업 · 상업 · 민심과 장수 충성 · 레벨이 보여요.',
+  '성공률은 맡긴 장수의 지력이 높을수록, 그 성 태수의 지력이 낮을수록 올라가요. 실패하면 15% 확률로 들켜서 그 세력의 적대가 10 올라요.',
+  '남의 성 카드에서도 바로 \'정찰\'을 누를 수 있어요. 지력이 가장 높은 장수가 있는 내 성에서 보내요.',
+  '위임한 성의 장수도 정찰만큼은 직접 시킬 수 있어요. 공략 · 방어로 맡긴 성은 금이 1,000 이상이면 맞닿은 적 성 중 정보가 없는 곳을 알아서 정찰하고, 결과를 보고(委)에 적어요.',
+  '지도의 성 표시가 네모 깃발로 바뀌었어요. 깃발 색은 세력 고유색이고(조조 청 · 유비 녹 · 손씨 적 · 원소 황금 · 동탁 자주 등), 깃발 글자는 군주의 성씨예요. 같은 성씨 군주가 둘 이상이면 이름 글자(備 · 表 · 紹 · 術 등)를 써요. 빈 성은 회색 점이에요.']},{v:'1.3.2',date:'2026-11-01',title:'군웅할거 v1.3.2 · 음량 조절',items:[
   '메뉴(☰)에 음량 칸이 생겼어요. 배경음악과 효과음악(승리 · 패배 · 경사 · 흉사)을 슬라이더로 따로 조절해요. 움직이면 바로 바뀌고, 효과음악은 손을 떼면 한 번 들려줘요.',
   '음량은 기기마다 저장돼요. 폰은 작게, PC는 크게 따로 맞출 수 있어요. 기본값은 배경음악 50% · 효과음악 75%로, 지금까지 들리던 크기와 같아요.',
   '음량 칸에서도 배경음악을 켜고 끌 수 있어요. 윗줄 ♪ 버튼도 그대로예요.']},{v:'1.3.1',date:'2026-11-01',title:'군웅할거 v1.3.1 · PC·폰 저장 공유 · 윗줄 정리',items:[
@@ -9566,9 +9571,9 @@ function tzQaSrc(s,k,c){const T=s.C[k],o=T.o,adj=TZ_ADJ[k].filter(n=>s.C[n].o===
   return ''}
 const TZ_QA=[['war','출진'],['sab','파괴'],['nae','내응'],['prs','권유'],['ind','독립 유도'],['tru','정전'],['ali','동맹']];
 function tzQaRow(s,k){const o=s.C[k].o;if(o===s.me||s.end)return '';const near=TZ_ADJ[k].some(n=>s.C[n].o===s.me);
-  const bs=TZ_QA.filter(([c])=>o!=='neu'||c==='war'||c==='sab').map(([c,nm])=>{const src=tzQaSrc(s,k,c);return src?`<button type="button" data-tzqa="${c}|${k}" title="${tzCN(src)}에서">${nm}<small>${tzCN(src)}</small></button>`:''}).join('');
+  const bs=TZ_QA.filter(([c])=>o!=='neu'||c==='war'||c==='sab'||c==='sct').map(([c,nm])=>{const src=tzQaSrc(s,k,c);return src?`<button type="button" data-tzqa="${c}|${k}" title="${tzCN(src)}에서">${nm}<small>${tzCN(src)}</small></button>`:''}).join('');
   const dip=o!=='neu'?'<button type="button" data-tzqa="dip|'+k+'">외교 현황</button>':'';
-  return `<div class="tz-qa" role="group" aria-label="이 성에 할 일">${bs}${dip}${!near?'<span class="tz-qan">이웃한 내 성이 없어요</span>':(!bs?'<span class="tz-qan">지금 맡길 장수가 없어요</span>':'')}</div>`}
+  return `<div class="tz-qa" role="group" aria-label="이 성에 할 일">${bs}${dip}${!near&&!bs?'<span class="tz-qan">이웃한 내 성이 없어요</span>':(!bs?'<span class="tz-qan">지금 맡길 장수가 없어요</span>':'')}</div>`}
 {const _cc=tzCityCard;tzCityCard=function(s,k){const h=_cc.apply(this,arguments);if(!s.C[k]||s.C[k].o===s.me)return h;const r=tzQaRow(s,k);const i=h.indexOf('</div>');return i<0?h+r:h.slice(0,i+6)+r+h.slice(i+6)}}
 document.addEventListener('click',e=>{const b=e.target.closest('[data-tzqa]');if(!b)return;e.stopPropagation();const s=tzState(),[c,k]=b.dataset.tzqa.split('|');if(!s.C[k])return;
   if(c==='dip')return tzDipSheet();const src=tzQaSrc(s,k,c);if(!src){toast('지금은 할 수 없어요');return}const o=s.C[k].o;
@@ -10073,6 +10078,81 @@ document.addEventListener('change',e=>{const t=e.target.closest&&e.target.closes
 {const _m=gwMenu;gwMenu=function(){_m.apply(this,arguments);const h=$('#sheet .sheet-h');if(h){h.insertAdjacentHTML('afterend',gwsRow()+gwVolRow());gwsBind()}}}
 // 전에 로그인했던 기기는 열 때 바로 연결해요(처음 쓰는 기기는 메뉴에서 로그인할 때만 서버 파일을 받아요)
 setTimeout(()=>{const m=gwsMeta();if(m.uid||m.pend)gwsLoad()},1200);
+
+/* v1.3.3 지도 깃발: 세력 고유색(또렷하게) + 군주 글자(성씨, 같은 성씨 군주가 둘 이상이면 이름 글자) */
+Object.assign(TZ_COL,{caocao:'#2563c9',liubei:'#23914a',sunjian:'#d0342c',sunce:'#d0342c',sunquan:'#d0342c',yuanshao:'#c9a227',yuanshu:'#e07b1f',dongzhuo:'#7b2d8f',lijue:'#9a4fa8',
+  lubu:'#5a1a1f',liubiao:'#4fa3d9',liuyan:'#6fae2a',liuzhang:'#6fae2a',mateng:'#8b5a2b',hansui:'#a0784a',gongsunzan:'#ececec',zhangjiao:'#f2d13a',zhanglu:'#1f9a8f',menghuo:'#6a3fb5',
+  hanfu:'#6d7f8f',kongrong:'#8f9fd0',taoqian:'#c05a8a',gongsundu:'#4a6a7a',gongsunkang:'#4a6a7a',liuyu:'#a89060',zhangmiao:'#a0522d',zhangyang:'#6b7a2f',liuyao:'#2f7f8f',yanbaihu:'#b0703a',wanglang:'#5a4fa0'});
+const TZ_FX2=['公孫','諸葛','夏侯','司馬','皇甫','太史','歐陽','令狐','上官','東方','鍾離','淳于','尉遲'];
+function tzSurn(hz){hz=String(hz||'');return TZ_FX2.find(x=>hz.startsWith(x))||hz.slice(0,1)}
+function tzMk(s,o){const F=s.F[o];if(!F||F.dead||!GMAP[F.lord])return '';const hz=GMAP[F.lord].hz||'',sn=tzSurn(hz);
+  const dup=Object.keys(s.F).some(f=>f!==o&&!s.F[f].dead&&GMAP[s.F[f].lord]&&tzSurn(GMAP[s.F[f].lord].hz)===sn&&tzCities(s,f).length);
+  return dup?(hz.slice(sn.length,sn.length+1)||sn):sn}
+function tzMkC(s,o){const F=s.F[o];if(!F||F.dead)return 'neu';return tzMk(s,o).length>1?'two':''}
+function tzFct(c){const m=/^#?([0-9a-f]{6})$/i.exec(c||'');if(!m)return '#fff';const n=parseInt(m[1],16),r=n>>16,g=n>>8&255,b=n&255;return (r*299+g*587+b*114)/1000>170?'#1a1a1a':'#fff'}
+(()=>{const st=document.createElement('style');st.textContent=`
+.gw-n{width:26px;height:32px;border:0;border-radius:0;background:none;box-shadow:none;transform:translate(-2px,-100%);display:block;z-index:3}
+.gw-zl{opacity:.82}
+.gw-n::before{content:'';position:absolute;left:1px;bottom:0;width:2px;height:32px;background:#2a1d0e;border-radius:1px;box-shadow:0 0 1px #fff8}
+.gw-n i{position:absolute;left:3px;top:0;width:22px;height:20px;display:flex;align-items:center;justify-content:center;background:var(--fac,#8a8a8a);color:var(--fct,#fff);border:1.5px solid #2a1d0e;border-left:0;border-radius:0 2px 2px 0;font-size:13px;line-height:1;text-shadow:none;box-shadow:1px 1px 3px #0008}
+.gw-n.two i{font-size:9.5px;letter-spacing:-1px}
+.gw-n small{left:2px;top:100%}
+.gw-n em{top:-8px;right:-6px}.gw-n u{top:-8px;left:-8px}
+.gw-n.me{border:0;box-shadow:none}.gw-n.me i{border-color:#ffd75e;box-shadow:0 0 0 1.5px #0007,0 0 8px #ffd75e}
+.gw-n.sel{outline:0}.gw-n.sel i{outline:2px solid #fff;outline-offset:1px}
+.gw-n.hit{animation:none}.gw-n.hit i{animation:gwp 1.4s ease-in-out infinite}
+.gw-n.neu{height:12px;transform:translate(-50%,-50%);width:12px}.gw-n.neu::before{display:none}.gw-n.neu i{left:0;width:10px;height:10px;border:1.5px solid #2a1d0e;border-radius:50%;background:#8d8a80}.gw-n.neu small{left:50%}
+`;document.head.appendChild(st)})();
+
+/* v1.3.3 정찰: 금 200 · 지력 성공률 · 천하 어느 성이든 · 성공하면 12개월 동안 그 성 정보와 장수 충성이 보여요 · 실패하면 15% 확률로 들켜 적대 +10
+   위임한 성의 장수도 정찰만은 직접 시킬 수 있고, 공략·방어로 맡긴 성은 맞닿은 적 성을 알아서 정찰해요. s.SC[성] = 보이는 마지막 턴 다음 값 */
+TZ_CMD.sct=['정찰','다른 성 정보 1년 보기','금 200 · 지력'];
+{const g=TZ_CAT.find(c=>c[0]==='gye');if(g&&!g[3].includes('sct'))g[3].push('sct')}
+TZ_QA.push(['sct','정찰']);
+const TZ_SCT_N=12,TZ_SCT_G=200;
+const tzSeen=(s,k)=>!!(s&&s.SC&&(s.SC[k]|0)>s.t);
+const tzSeenLeft=(s,k)=>tzSeen(s,k)?(s.SC[k]|0)-s.t:0;
+const tzSctIdle=(s,k)=>s.C[k]&&s.C[k].o===s.me?tzGensIn(s,k,s.me).filter(g=>!s.G[g].ac):[];
+function tzSctP(s,g,tk){const T=s.C[tk],gv=T&&T.o!=='neu'?tzGov(s,tk):'';return Math.max(.2,Math.min(.95,.55+tzInt(g)/250-(gv?tzInt(gv)/400:0)))}
+{const _cl=cleanTz;cleanTz=function(x){const o=_cl(x);if(!o.on)return o;x=x||{};o.SC={};if(x.SC&&typeof x.SC==='object')for(const k in x.SC){const v=Math.round(Number(x.SC[k])||0);if(TZ_C[k]&&v>o.t)o.SC[k]=v}return o}}
+{const _do=tzDo;tzDo=function(s,k,cmd,g,tg,it){if(cmd!=='sct')return _do.apply(this,arguments);
+  const C=s.C[k],G=s.G[g],T=s.C[tg];if(!C||!G||G.o!==C.o)return '이 성의 장수가 아니에요';if(G.ac)return '이번 달 명령을 이미 했어요';
+  if(!T||T.o===C.o)return '정찰할 성을 골라요';if(C.g<TZ_SCT_G)return '금이 모자라요';C.g-=TZ_SCT_G;
+  let msg;if(tzRng()<tzSctP(s,g,tg)){s.SC=s.SC||{};s.SC[tg]=s.t+TZ_SCT_N;msg=`${tzCN(tg)} 정찰 성공 · ${TZ_SCT_N}개월 동안 정보가 보여요`}
+  else if(s.F[T.o]&&tzRng()<.15){tzHAdd(s,C.o,T.o,10);msg=`${tzCN(tg)} 정찰 실패 · ${tzFN(s,T.o)}에 들켰어요(적대 +10)`}
+  else msg=`${tzCN(tg)} 정찰 실패`;
+  G.ac=1;G.mr=Math.min(9999,G.mr+5);return {ok:1,msg,fx:''}}}
+let tzSctPre='';
+{const _q=tzQaSrc;tzQaSrc=function(s,k,c){if(c!=='sct')return _q.apply(this,arguments);if(tzSeenLeft(s,k)>3)return '';
+  const ks=tzMine(s).filter(n=>s.C[n].g>=TZ_SCT_G&&tzSctIdle(s,n).length);if(!ks.length)return '';const sc=n=>Math.max(...tzSctIdle(s,n).map(tzInt));
+  const adj=ks.filter(n=>TZ_ADJ[k].includes(n)),best=(adj.length?adj:ks).sort((a,b)=>sc(b)-sc(a))[0];tzSctPre=k;return best}}
+{const _cs=tzCmdSheet;tzCmdSheet=function(c){if(c!=='sct')return _cs.apply(this,arguments);const s=tzState(),k=tzSel,C=s.C[k],idle=tzSctIdle(s,k);if(!C||!idle.length)return;
+  if(!tzDraft||tzDraft.c!=='sct'||tzDraft.k!==k){tzDraft={c:'sct',k,g:'',tg:tzSctPre&&s.C[tzSctPre]&&s.C[tzSctPre].o!==s.me?tzSctPre:'',gs:[],pct:70,st:'df',it:''}}tzSctPre='';const D=tzDraft;
+  const srt=idle.slice().sort((a,b)=>tzInt(b)-tzInt(a));if(!D.g||!idle.includes(D.g))D.g=srt[0];
+  const all=TZ_K.filter(n=>s.C[n].o!==s.me),near=n=>TZ_ADJ[k].includes(n)||TZ_ADJ[n].some(x=>s.C[x].o===s.me);
+  const ord=all.slice().sort((a,b)=>(near(b)-near(a))||(TZ_ZK[a]<TZ_ZK[b]?-1:TZ_ZK[a]>TZ_ZK[b]?1:0));
+  if(D.tg&&!all.includes(D.tg))D.tg='';
+  const chip=n=>{const o=s.C[n].o,lf=tzSeenLeft(s,n);return `<button type="button" data-tzt="${n}" aria-pressed="${D.tg===n}" style="border-left:4px solid ${tzCol(o)}">${tzCN(n)} · ${s.F[o]?esc(tzFN(s,o)):'빈 성'} · ${Math.round(tzSctP(s,D.g,n)*100)}%${lf?`<small style="display:block;opacity:.75;font-size:11px">정찰 ${lf}달 남음</small>`:''}</button>`};
+  const nr=ord.filter(near),far=ord.filter(n=>!near(n));
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">${tzCN(k)} · 정찰</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <p class="sub" style="margin:0 0 8px">천하 어느 성이든 정찰해요 · 금 ${TZ_SCT_G} (남은 금 ${fmt(C.g)}) · 성공하면 ${TZ_SCT_N}개월 동안 금 · 군량 · 인구 · 훈련 · 농업 · 상업 · 민심과 장수 충성이 보여요.${tzDirect(tzDlOf(s,k))?'':' 위임한 성이지만 정찰은 직접 시킬 수 있어요.'}</p>
+   <h3 style="margin:0 0 6px">맡길 장수</h3><div class="dl-pick">${srt.map(g=>tzPickBtn(s,g,`data-tzg="${g}"`,D.g===g)).join('')}</div>
+   ${nr.length?`<h3 style="margin:8px 0 6px">가까운 성</h3><div class="chips">${nr.map(chip).join('')}</div>`:''}
+   ${far.length?`<h3 style="margin:8px 0 6px">먼 성</h3><div class="chips">${far.map(chip).join('')}</div>`:''}
+   <p class="sub" style="margin:6px 0 0;font-size:12px">성공률은 맡긴 장수의 지력이 높을수록, 그 성 태수의 지력이 낮을수록 올라가요. 실패하면 15% 확률로 들켜서 그 세력의 적대가 10 올라요.</p>
+   <button type="button" class="btn red wide" style="margin-top:8px" data-tzgo="do" ${D.g&&D.tg&&C.g>=TZ_SCT_G?'':'disabled'}>정찰${C.g<TZ_SCT_G?' · 금이 모자라요':''}</button>`)}}
+// 성 카드: 정찰 표시 · 위임 성에서도 정찰 버튼
+{const _cc=tzCityCard;tzCityCard=function(s,k){let h=_cc.apply(this,arguments);const C=s.C[k];if(!C)return h;
+  if(C.o===s.me){const ok=tzSctIdle(s,k).length&&C.g>=TZ_SCT_G;h=h.replace(/<button type="button" data-tzc="sct"( disabled)?>/,`<button type="button" data-tzc="sct"${ok?'':' disabled'}>`);return h}
+  const lf=tzSeenLeft(s,k),tag=lf?`<p class="tz-note" style="margin:6px 0 0">偵 정찰 정보 · ${lf}달 더 보여요</p>`:`<p class="tz-note" style="margin:6px 0 0">'?'는 정찰하면 ${TZ_SCT_N}개월 동안 보여요</p>`;
+  const i=h.indexOf('<div class="tz-num">');return i<0?h:h.slice(0,i)+tag+h.slice(i)}}
+// 위임 AI: 공략·방어 성은 맞닿은 적 성 중 정보가 없는 곳을 정찰(금 1,000 이상일 때, 성마다 한 달 1번)
+{const _dg=tzDeleg;tzDeleg=function(s){const busy={};
+  for(const k of tzMine(s)){const m=tzDlOf(s,k),C=s.C[k];if(tzDirect(m)||(m!=='atk'&&m!=='def')||C.g<1000)continue;
+    const ts=TZ_ADJ[k].filter(n=>s.C[n].o!==s.me&&!busy[n]&&!tzSeen(s,n)&&!(s.F[s.C[n].o]&&tzAllyR(s,s.me,s.C[n].o)));if(!ts.length)continue;
+    const gs=tzSctIdle(s,k).sort((a,b)=>tzInt(b)-tzInt(a));if(!gs.length)continue;const tg=ts.sort((a,b)=>s.C[b].tr-s.C[a].tr)[0];busy[tg]=1;
+    const r=tzDo(s,k,'sct',gs[0],tg);if(r&&r.msg)tzLog(s,`${tzCN(k)} ${tzName(gs[0])} · ${r.msg}`,'委')}
+  return _dg.apply(this,arguments)}}
 
 boot();
 </script>
