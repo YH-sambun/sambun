@@ -8849,8 +8849,14 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.6.0';
-const GW_NOTICES=[{v:'1.6.0',date:'2026-11-02',title:'군웅할거 v1.6.0 · 헌제 옹립 · 칭제',items:[
+const GW_VER='1.7.0';
+const GW_NOTICES=[{v:'1.7.0',date:'2026-11-02',title:'군웅할거 v1.7.0 · 군단 · 도독',items:[
+  '군단: 메뉴 › 군단에서 내 성을 묶어 군단을 최대 4개 만들어요. 주 단위로 한 번에 묶을 수도 있어요. 군단마다 도독과 방침을 정하면 군단 성 모두에 그 위임이 걸려요.',
+  '공략 방침인 군단은 성 하나를 거점으로, 2칸 안의 군단 성들이 남는 병사와 쉬는 장수 5명을 모아 함께 쳐요. 목표 성을 정할 수 있고, 도독 통솔이 높을수록 출진 기준이 낮아져요(1.3배 → 1.15배).',
+  'AI 도독: 성이 8곳 넘는 AI 세력은 먼 성들을 군단으로 묶고 도독을 둬요. 도독 충성이 낮거나, 의리 낮은 도독이 세력 병사를 많이 쥐면 군단 성을 모두 들고 독립할 수 있어요.',
+  '장수제 도독: 태수로 공적 400 · 신뢰 70을 넘기고 세력 성이 8곳 이상이면 군주가 군단(내 성 + 이웃 2~4성)을 맡겨요. 처음 도독이 되면 금 3,000.',
+  '도독은 달마다 행동 5번 · 공동 출진(내가 앞장서고 군단 병사를 모아 쳐요) · 군단 내정 · 장수 이동 · 포상 · 군단 방침을 해요. 독립하면 군단 성을 모두 들고 군주가 돼요.']},
+ {v:'1.6.0',date:'2026-11-02',title:'군웅할거 v1.6.0 · 헌제 옹립 · 칭제',items:[
   '헌제가 생겼어요. 헌제가 있는 성을 가진 세력이 모셔요(184·189년 낙양, 194년 장안, 200·208·219년 허창). 그 성을 빼앗으면 헌제도 넘어가요.',
   '헌제를 모시면 등용 확률 +10%, 헌제가 있는 성 민심이 매달 +1이에요. 대신 다른 세력이 꺼리고(적대 +5), 천하의 1/4만 가져도 반○○ 연합의 표적이 돼요.',
   '칙명: 6달에 한 번 토벌 칙명(다른 세력 모두가 그 세력과 적대 +15)이나 관직 수여(그 군주와 적대 −20)를 내릴 수 있어요. 메뉴 › 조정에서 해요. AI도 칙명을 써요.',
@@ -11429,6 +11435,143 @@ HELP.forEach(c=>{if(c.t==='외교·계략')c.rows.push(['헌제 · 칙명','헌�
 .tz-hdl{display:flex;flex-direction:column;gap:4px;margin:4px 0 8px}.tz-hdr{display:flex;align-items:center;gap:6px}.tz-hdr span{font-weight:700;min-width:5.5em}.tz-hdr small{flex:1;color:var(--mute);font-size:12px}
 .tz-hdc{list-style:none;padding:0;margin:4px 0}.tz-hdc li{color:var(--mute);font-size:13px}.tz-hdc li.ok{color:var(--bronze)}
 .tz-hdi .btn{margin-left:6px}.tz-hdx{margin:6px 0;font-size:13px;line-height:1.5;color:var(--mute)}
+`;document.head.appendChild(st)})();
+/* ==== 군웅할거 v1.7.0: 군단 · 도독 ==== */
+const TZ_GDN=4,TZ_GDM=['pj','dev','snd','def','atk'];
+// 공동 공략 계획: 군단 성 하나를 거점으로, 우리 성만 거쳐 2칸 안의 군단 성들이 남는 병사를 보태요
+function tzGdPlan(s,f,cs,o){o=o||{};const own=cs.filter(k=>s.C[k]&&s.C[k].o===f),L=s.F[f].lord,pc=o.pc||'';let best=null;
+  for(const k of own){if(pc&&s.G[pc].c!==k&&!own.includes(s.G[pc].c))continue;
+    const dist={[k]:0},q=[k];while(q.length){const x=q.shift();if(dist[x]>=2)continue;for(const y of TZ_ADJ[x])if(dist[y]==null&&own.includes(y)){dist[y]=dist[x]+1;q.push(y)}}
+    const ks=Object.keys(dist);
+    for(const n of TZ_ADJ[k]){const T=s.C[n];if(T.o===f||tzAlly(s,f,T.o)||(o.tg&&n!==o.tg))continue;if(s.t<12&&T.o!=='neu'&&(tzHome(s,n)||(tzL(s)[T.o]||[])[0]===n))continue;
+      const hp=[];ks.forEach(y=>{if(y===k)return;const Y=s.C[y],v=Math.max(0,Math.floor((Y.tr-Math.max(1500,Y.tr*.3))/100)*100);if(v>=500)hp.push({k:y,n:v})});
+      let gs=ks.flatMap(y=>tzGensIn(s,y,f)).filter(g=>!s.G[g].ac&&g!==L&&g!==pc&&!tzIsPc(s,g)).sort((a,b)=>tzPow(b)-tzPow(a));
+      gs=(pc?[pc]:[]).concat(gs).slice(0,NSLOT);if(!gs.length)continue;
+      const A=s.C[k],base=Math.round(A.tr*.7),add=hp.reduce((a,h)=>a+h.n,0),cap=gs.reduce((a,g)=>a+tzUCap(g),0),use=Math.min(cap,base+add);if(use<2500||!add&&!o.solo)continue;
+      const food=Math.round(use*.3*(tzSea(s.m)==='winter'?1.5:1)),fdAll=ks.reduce((a,y)=>a+s.C[y].fd,0);if(fdAll<food)continue;
+      const t0=A.tr;A.tr=use/.7;const r=tzAtkRatio(s,k,n,gs);A.tr=t0;
+      if(r>=(o.thr||0)&&(!best||r>best.r))best={k,n,gs,hp,r,use,food,add}}}
+  return best}
+function tzGdGo(s,f,b,nm,ch){const A=s.C[b.k],tgt=s.C[b.n].o;let need=Math.max(0,b.use-Math.round(A.tr*.7));
+  b.hp.forEach(h=>{const v=Math.min(h.n,need);if(v<=0)return;const Y=s.C[h.k];if(v)A.tn=Math.round((A.tn*A.tr+Y.tn*v)/(A.tr+v));Y.tr-=v;A.tr+=v;need-=v});
+  b.gs.forEach(g=>{s.G[g].c=b.k});let fd=b.food;for(const y of [b.k,...b.hp.map(h=>h.k)]){const d=Math.min(fd,s.C[y].fd);s.C[y].fd-=d;fd-=d;if(!fd)break}
+  const tr=Math.min(b.use,A.tr);A.tr-=tr;ch=ch||(tgt===s.me||f===s.me||f===tzSide(s)?'戰':'報');
+  tzLog(s,`${nm} 공동 공략 · ${b.hp.length+1}성 병사 ${fmt(tr)}명이 ${tzCN(b.k)}에 모여 ${tzCN(b.n)}을(를) 쳐요`,ch);
+  const o=tzBattle(s,b.k,b.n,b.gs,tr);o.txt.forEach(t=>tzLog(s,t,ch));return o}
+// ---- 군주제: 내 군단 ----
+const tzGdOf=(s,k)=>(s.GD||[]).find(G=>G.cs.includes(k))||null;
+function tzGdThr(s,G){const d=G.g&&s.G[G.g]&&s.G[G.g].o===s.me?G.g:'';return Math.max(1.15,1.3-(d?Math.max(0,tzLead(d)-60)/200:0))}
+function tzGdSync(s){if(!s.GD)return;s.GD.forEach(G=>{G.cs=G.cs.filter(k=>s.C[k].o===s.me);if(G.tg&&(!s.C[G.tg]||s.C[G.tg].o===s.me))G.tg='';if(G.g&&(!s.G[G.g]||s.G[G.g].o!==s.me))G.g='';
+  G.cs.forEach(k=>{if(!tzHome(s,k))s.C[k].dl=G.m})});s.GD=s.GD.filter(G=>G.cs.length)}
+{const _dg=tzDeleg;tzDeleg=function(s){try{if(s.me!=='_'&&s.GD&&s.GD.length){tzGdSync(s);
+  for(const G of s.GD){if(G.m!=='atk'||s.end||s.m===1)continue;const d=G.g&&s.G[G.g];if(d&&d.ly<60&&tzRng()<.5)continue;
+    const b=tzGdPlan(s,s.me,G.cs,{thr:tzGdThr(s,G),tg:G.tg});if(!b)continue;const o=tzGdGo(s,s.me,b,G.nm,'戰');
+    if(s.C[b.n].o===s.me&&!G.cs.includes(b.n)&&G.cs.length<12)G.cs.push(b.n);if(o.win)tzLog(s,`${G.nm} · ${tzCN(b.n)}을(를) 군단에 넣었어요`,'委')}}}catch(e){console.error(e)}return _dg.apply(this,arguments)}}
+// ---- AI 도독: 성 8곳 넘는 AI 세력은 군주 성에서 3칸 넘게 먼 성들을 군단으로 묶어요. 도독 충성이 50 아래면 군단째 독립할 수 있어요 ----
+function tzAdMake(s,f){const F=s.F[f],L=s.G[F.lord],lc=L&&s.C[L.c]&&s.C[L.c].o===f?L.c:tzCities(s,f)[0];if(!lc)return null;
+  const dist={[lc]:0},q=[lc];while(q.length){const x=q.shift();for(const y of TZ_ADJ[x])if(dist[y]==null&&s.C[y].o===f){dist[y]=dist[x]+1;q.push(y)}}
+  const cs=tzCities(s,f).filter(k=>dist[k]==null||dist[k]>=3).sort((a,b)=>(dist[b]==null?99:dist[b])-(dist[a]==null?99:dist[a])).slice(0,6);if(cs.length<2)return null;
+  const g=cs.flatMap(k=>tzGensIn(s,k,f)).filter(g=>g!==F.lord&&!tzIsPc(s,g)).sort((a,b)=>tzPow(b)-tzPow(a))[0];return g?{g,cs}:null}
+function tzAdRebel(s,f0,A){const g=A.g,G=s.G[g],cs=A.cs.filter(k=>s.C[k].o===f0&&!tzHome(s,k));if(!cs.includes(G.c))return;const k0=G.c;
+  tzRebel(s,k0,g);cs.filter(k=>k!==k0).forEach(k=>{const C=s.C[k];C.o=g;C.dl='self';C.gov='';
+    tzGensIn(s,k,f0).forEach(x=>{const X=s.G[x];if(X.ly<60)X.o=g;else{const nb=TZ_ADJ[k].find(n=>s.C[n].o===f0);if(nb)X.c=nb;else Object.assign(X,{o:'free',fd:0})}})});
+  s.H=s.H||{};s.H[tzHK(g,f0)]=100;const t=`${tzFN(s,f0)}의 도독 ${tzName(g)}이(가) 군단 성 ${cs.length}곳을 들고 독립했어요`;tzLog(s,t,f0===tzSide(s)?'民':'報');tzYhAdd(s,'betray',t)}
+function tzAdTick(s){s.AD=s.AD||{};for(const f in s.AD){const A=s.AD[f];if(!s.F[f]||s.F[f].dead||!s.G[A.g]||s.G[A.g].o!==f||f===s.me)delete s.AD[f]}
+  if(s.t%12===1)tzLiveF(s).forEach(f=>{if(f===s.me||tzCities(s,f).length<=8){delete s.AD[f];return}const A=tzAdMake(s,f);if(A)s.AD[f]=A;else delete s.AD[f]});
+  for(const f in s.AD){const A=s.AD[f];A.cs=A.cs.filter(k=>s.C[k].o===f);const G=s.G[A.g];if(A.cs.length<2||tzIsPc(s,A.g)){delete s.AD[f];continue}
+    const ctr=A.cs.reduce((x,k)=>x+s.C[k].tr,0),ftr=tzCities(s,f).reduce((x,k)=>x+s.C[k].tr,0),gi=tzGiri(A.g);
+    const p=s.t<12?0:G.ly<50?(50-G.ly)/300:gi<70&&ctr>ftr*.35?(70-gi)/3000:0;if(p&&tzRng()<p){tzAdRebel(s,f,A);delete s.AD[f]}}}
+// ---- 장수제: 도독 신분 ----
+const tzPcDd=s=>{const P=s&&s.pc;return P&&P.dd&&tzPcRank(s)===2?P.dd:null};
+function tzPcDdTick(s){const P=s.pc;if(!P||s.me!=='_'||s.end)return;const rk=tzPcRank(s),G=s.G[P.g],f=G.o;
+  if(P.dd){P.dd.cs=P.dd.cs.filter(k=>s.C[k].o===f);if(rk!==2||P.tr<40||P.dd.cs.length<2){const why=rk!==2?'태수 자리를 잃어':P.tr<40?'신뢰를 잃어':'군단 성을 잃어';P.dd=null;tzLog(s,`${why} 도독에서 내려왔어요`,'令');tzPcLg(s,'도독에서 내려옴');return}
+    P.ap=Math.max(P.ap,5);return}
+  if(rk!==2||tzHome(s,G.c)||tzCities(s,f).length<8||P.tr<70||G.mr<400||tzRng()>.3)return;
+  const own=k=>s.C[k].o===f&&!tzHome(s,k),cs=[G.c],q=[G.c],d={[G.c]:0};while(q.length&&cs.length<5){const x=q.shift();if(d[x]>=2)continue;for(const y of TZ_ADJ[x])if(d[y]==null&&own(y)){d[y]=d[x]+1;cs.push(y);q.push(y);if(cs.length>=5)break}}
+  if(cs.length<3)return;P.dd={cs,m:'ai'};P.ap=5;if(s.AD&&s.AD[f])delete s.AD[f];
+  const t=`${tzName(s.F[f].lord)}이(가) ${tzName(P.g)}에게 ${cs.map(tzCN).join('·')} 군단을 맡겼어요 · 도독`;tzLog(s,t,'令');tzPcLg(s,'도독');tzPcFirst(s,'pc3',3000,'도독이 됐어요');tzEvPush(s,'recruit',t)}
+// 도독 방침: 군단 성(내 성 말고)에서 AI 일을 방침대로
+{const _w=tzWork;tzWork=function(s,k,mode){const D=tzPcDd(s);if(D&&mode==='ai'&&D.cs.includes(k)&&k!==s.G[s.pc.g].c&&D.m!=='ai')mode=D.m;return _w.call(this,s,k,mode)}}
+{const _pa=tzPickAtk;tzPickAtk=function(s,f,min,skip,only){const D=tzPcDd(s);if(D&&D.m==='def'&&!only&&f===tzPcFac(s)){skip=new Set(skip||[]);D.cs.forEach(k=>skip.add(k))}return _pa.call(this,s,f,min,skip,only)}}
+const PC_DDM={ai:['맡기기','군주 뜻대로 해요'],dev:['내정','투자 · 시혜 · 인재 찾기 위주'],def:['방어','징병 · 훈련 · 방어, 군단 성에서는 출진하지 않아요'],atk:['공략','징병 · 훈련을 쌓아 출진에 대비해요']};
+function tzPcDdSheet(a){const s=tzState(),P=s.pc,D=tzPcDd(s);if(!D)return;const f=s.G[P.g].o,head=t=>`<div class="sheet-h"><h2 style="margin:0">${t}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>`;
+  if(a==='m'){openSheet(head('군단 방침')+`<p class="sub">내가 직접 하지 않는 군단 성들이 할 일을 정해요. 행동은 쓰지 않아요.</p><div class="list">${Object.entries(PC_DDM).map(([v,[n,d]])=>`<button type="button" class="li" data-pcdd="m|${v}" aria-pressed="${D.m===v}" style="text-align:left"><div class="info"><b>${n}${D.m===v?' ✓':''}</b><span>${d}</span></div></button>`).join('')}</div>`);return}
+  if(a==='gov'){const cm=[['inv|fa','농업'],['inv|co','상업'],['inv|df','방어'],['trn|','훈련'],['drf|','징병'],['ben|','시혜']];
+    openSheet(head('군단 내정')+`<p class="sub">군단 성 하나에 내가 직접 명령해요. 행동 1을 써요.</p>${D.cs.map(k=>{const C=s.C[k];return `<div class="tz-gdc"><b>${tzCN(k)}</b><small>금 ${fmt(C.g)} · 군량 ${fmt(C.fd)} · 병사 ${fmt(C.tr)} · 민심 ${C.ml}</small><div class="row" style="gap:4px;flex-wrap:wrap">${cm.map(([v,n])=>`<button type="button" class="btn sm ghost" data-pcdd="gov|${k}|${v}">${n}</button>`).join('')}</div></div>`}).join('')}`);return}
+  if(a==='mv'){const gs=D.cs.flatMap(k=>tzGensIn(s,k,f)).filter(g=>g!==P.g&&g!==s.F[f].lord&&!s.G[g].ac);
+    openSheet(head('장수 이동')+`<p class="sub">군단 안의 쉬는 장수를 다른 군단 성으로 보내요. 행동 1을 써요.</p>${gs.length?gs.map(g=>`<div class="tz-gdc"><b>${esc(tzName(g))}</b><small>${tzCN(s.G[g].c)} · 충성 ${s.G[g].ly}</small><div class="row" style="gap:4px;flex-wrap:wrap">${D.cs.filter(k=>k!==s.G[g].c).map(k=>`<button type="button" class="btn sm ghost" data-pcdd="mv|${g}|${k}">${tzCN(k)}</button>`).join('')}</div></div>`).join(''):'<p class="sub">쉬는 장수가 없어요.</p>'}`);return}
+  if(a==='rwd'){const gs=D.cs.flatMap(k=>tzGensIn(s,k,f)).filter(g=>g!==P.g&&g!==s.F[f].lord);
+    openSheet(head('포상')+`<p class="sub">그 장수가 있는 성 금 300으로 포상해 충성을 올려요. 행동 1을 써요.</p><div class="list">${gs.map(g=>`<button type="button" class="li" data-pcdd="rwd|${g}" style="text-align:left"><div class="info"><b>${esc(tzName(g))}</b><span>${tzCN(s.G[g].c)} · 충성 ${s.G[g].ly}</span></div></button>`).join('')||'<p class="sub">군단에 장수가 없어요.</p>'}</div>`);return}
+  if(a==='atk'){const ts=[...new Set(D.cs.filter(k=>s.C[k].o===f).flatMap(k=>TZ_ADJ[k]))].filter(n=>s.C[n].o!==f&&!tzAlly(s,f,s.C[n].o));
+    const rows=ts.map(n=>{const b=tzGdPlan(s,f,D.cs,{tg:n,pc:P.g,solo:1});return `<div class="tz-gdc"><b style="color:${tzCol(s.C[n].o)}">${tzCN(n)}</b><small>${esc(tzFN(s,s.C[n].o))} · 수비 병사 ${fmt(s.C[n].tr)}${b?` · 모을 병사 ${fmt(b.use)} · 힘 ${b.r.toFixed(2)}배`:' · 모을 병사가 모자라요'}</small>${b?`<button type="button" class="btn sm ${b.r>=1.1?'red':'ghost'}" data-pcdd="atk|${n}">공동 출진</button>`:''}</div>`}).join('');
+    openSheet(head('공동 출진')+`<div class="tz-hdx">내가 앞장서고, 군단 성들이 남는 병사(성마다 1,500명과 30% 중 많은 쪽은 남겨요)와 쉬는 장수를 모아 함께 쳐요. 행동 1을 써요. 힘이 1배 아래면 지기 쉬워요.</div>${rows||'<p class="sub">맞닿은 적 성이 없어요.</p>'}`);return}}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-pcdd]');if(!b||b.disabled)return;const s=tzState();if(!tzPcOn(s))return;const D=tzPcDd(s);if(!D)return;const P=s.pc,g=P.g,f=s.G[g].o,[a,x,y,z]=b.dataset.pcdd.split('|');
+  if(a==='open'){tzPcDdSheet(x);return}
+  if(a==='m'){if(PC_DDM[x])D.m=x;save();closeSheet();renderView();toast(`군단 방침 · ${PC_DDM[D.m][0]}`);return}
+  if(!tzPcAp(s))return;
+  if(a==='gov'){if(!D.cs.includes(x)||s.C[x].o!==f)return;tzRng=Math.random;const r=tzDo(s,x,y,g,z||'');if(typeof r==='string')return toast(r);tzPcUse(s,`도독 ${tzName(g)} · ${tzCN(x)} ${r.msg}`);return}
+  if(a==='mv'){const G=s.G[x];if(!G||G.o!==f||!D.cs.includes(G.c)||!D.cs.includes(y)||G.ac)return;G.c=y;G.ac=1;tzPcUse(s,`도독 ${tzName(g)} · ${tzName(x)}을(를) ${tzCN(y)}(으)로 보냈어요`);return}
+  if(a==='rwd'){const G=s.G[x];if(!G||G.o!==f)return;const C=s.C[G.c];if(C.g<300)return toast('그 성 금이 모자라요');C.g-=300;G.ly=Math.min(100,G.ly+10);P.tr=Math.min(100,P.tr+1);tzPcUse(s,`도독 ${tzName(g)} · ${tzName(x)} 포상 · 충성 +10 (${G.ly})`);return}
+  if(a==='atk'){const pl=tzGdPlan(s,f,D.cs,{tg:x,pc:g,solo:1});if(!pl)return toast('모을 병사가 모자라요');tzRng=Math.random;const k0=s.G[g].c,gv=s.C[k0].gov===g;const o=tzGdGo(s,f,pl,`도독 ${tzName(g)}의 군단`,'戰');const win=s.C[x].o===f;
+    if(s.G[g].o===f&&s.C[k0].o===f){s.G[g].c=k0;if(gv)s.C[k0].gov=g}
+    if(win){D.cs.length<8&&!D.cs.includes(x)&&D.cs.push(x);P.tr=Math.min(100,P.tr+8);s.G[g].mr=Math.min(9999,s.G[g].mr+40);tzPcLg(s,`군단을 이끌고 ${tzCN(x)} 점령`)}else{P.tr=Math.max(0,P.tr-6);tzPcLg(s,`${tzCN(x)} 공동 출진 실패`)}
+    P.ap=Math.max(0,P.ap-1);tzPcSync(s);save();closeSheet();renderView();tzEvShow([{ty:win?'win':'lose',xs:[o.txt[0]]}]);return}});
+{const _pt=tzPcTop;tzPcTop=function(s){const h=_pt.apply(this,arguments);return tzPcDd(s)?h.replace(`행동 <b>${s.pc.ap}/3</b>`,`행동 <b>${s.pc.ap}/5</b>`):h}}
+{const _ac=tzPcActs;tzPcActs=function(s){let h=_ac.apply(this,arguments);const D=tzPcDd(s);if(!D)return h;const P=s.pc,ap=P.ap>0&&!s.end;
+  const B=(a,nm,sub,ok,cls)=>`<button type="button" class="pc-a${cls?' '+cls:''}" data-pcdd="${a}" ${ok?'':'disabled'}>${nm}<small>${esc(sub)}</small></button>`;
+  const dd=`<div class="tz-pcdd"><b>도독</b> · 군단 ${D.cs.map(tzCN).join(' · ')} · 방침 ${PC_DDM[D.m][0]} · 이번 달 행동 ${P.ap}</div><div class="pc-acts">${B('open|atk','공동 출진','군단 병사를 모아 앞장서기',ap,'hot')}${B('open|gov','군단 내정','군단 성에 직접 명령',ap)}${B('open|mv','장수 이동','군단 안에서 보내기',ap)}${B('open|rwd','포상','금 300 · 충성 +10',ap)}${B('open|m','군단 방침',PC_DDM[D.m][0],!s.end)}</div>`;
+  return dd+h.replace('이 성을 들고 독립',`군단 ${D.cs.length}성을 들고 독립`)}}
+// 도독이 독립하면 군단 성을 모두 가져가요
+{const _pa=tzPcAct;tzPcAct=function(s,a,x){const D=a==='ind'?tzPcDd(s):null,P=s.pc,f0=P&&s.G[P.g].o,cs=D?D.cs.slice():null;const r=_pa.apply(this,arguments);
+  try{if(D&&s.G[P.g].o===P.g&&s.F[P.g]){const g=P.g;let n=0;cs.forEach(k=>{const C=s.C[k];if(C.o!==f0||tzHome(s,k))return;C.o=g;C.dl=s.me===g?'pj':'self';C.gov='';n++;
+    tzGensIn(s,k,f0).forEach(y=>{const Y=s.G[y];if(Y.ly<60||(P.fr[y]|0)>=60)Object.assign(Y,{o:g,ly:Math.max(Y.ly,70)});else{const nb=TZ_ADJ[k].find(m=>s.C[m].o===f0);if(nb)Y.c=nb;else Object.assign(Y,{o:'free',fd:0})}})});
+    s.H[tzHK(g,f0)]=100;P.dd=null;if(n)tzLog(s,`군단 성 ${n}곳도 함께 들고 나왔어요 · ${tzFN(s,f0)}과(와) 원수가 됐어요`,'令');tzPcSync(s);save();renderView()}}catch(e){console.error(e)}return r}}
+{const _ps=tzPcSheet;tzPcSheet=function(a){const r=_ps.apply(this,arguments);try{const s=tzState(),D=a==='ind'&&tzPcDd(s);if(D){const p=document.querySelector('#sheet p');if(p)p.insertAdjacentHTML('afterend',`<p class="tz-pcdd" style="margin:0 0 8px">도독이라 군단 성 ${D.cs.length}곳(${D.cs.map(tzCN).join('·')})도 함께 가져가요. 충성 60 아래이거나 친밀 60 이상인 그 성 장수가 따라와요. 옛 세력과는 원수가 돼요.</p>`)}}catch(e){}return r}}
+{const _pc=tzPcClean;tzPcClean=function(x,o){const P=_pc.apply(this,arguments);const d=x&&x.dd;if(d&&Array.isArray(d.cs)){const cs=d.cs.filter(k=>TZ_C[k]).slice(0,8);if(cs.length>=2){P.dd={cs,m:PC_DDM[d.m]?d.m:'ai'};P.ap=Math.max(0,Math.min(5,Math.round(Number(x.ap)||0)))}}return P}}
+// ---- 군주제 군단 창 ----
+function tzGdSheet(){const s=tzState();if(!s||!s.on||s.me==='_')return;s.GD=s.GD||[];tzGdSync(s);const mine=tzMine(s),free=mine.filter(k=>!tzGdOf(s,k)&&!tzHome(s,k));
+  const opt=(v,cur,t)=>`<option value="${v}" ${v===cur?'selected':''}>${esc(t)}</option>`;
+  const card=(G,i)=>{const gs=G.cs.flatMap(k=>tzGensIn(s,k,s.me)).filter(g=>g!==s.F[s.me].lord),ts=[...new Set(G.cs.flatMap(k=>TZ_ADJ[k]))].filter(n=>s.C[n].o!==s.me&&!tzAlly(s,s.me,s.C[n].o));
+    const d=G.g&&s.G[G.g],thr=tzGdThr(s,G);
+    return `<div class="tz-gd"><div class="tz-gdh"><b>${esc(G.nm)}</b><small>성 ${G.cs.length} · 병사 ${fmt(G.cs.reduce((a,k)=>a+s.C[k].tr,0))}</small><button type="button" class="btn sm ghost" data-gdx="del|${i}">해산</button></div>
+     <label>도독<select data-gdf="g|${i}">${opt('','', '없음')}${gs.map(g=>opt(g,G.g,`${tzName(g)} · 통솔 ${tzLead(g)} · 충성 ${s.G[g].ly}`)).join('')}</select></label>
+     <label>방침<select data-gdf="m|${i}">${TZ_GDM.map(m=>opt(m,G.m,TZ_DL[m][0])).join('')}</select></label>
+     ${G.m==='atk'?`<label>목표<select data-gdf="tg|${i}">${opt('',G.tg,'알아서')}${ts.map(n=>opt(n,G.tg,`${tzCN(n)} · ${tzFN(s,s.C[n].o)}`)).join('')}</select></label><div class="tz-hdx" style="margin:2px 0 6px">공동 공략 기준 ${thr.toFixed(2)}배${d&&d.ly<60?' · 도독 충성이 60 아래라 절반은 쉬어요':''}</div>`:''}
+     <div class="tz-gdcs">${G.cs.map(k=>`<button type="button" class="chip" data-gdx="rm|${i}|${k}">${tzCN(k)} ✕</button>`).join('')}${free.length?`<select data-gdf="add|${i}"><option value="">+ 성 넣기</option>${free.map(k=>`<option value="${k}">${tzCN(k)}</option>`).join('')}</select>`:''}</div></div>`};
+  openSheet(`<div class="sheet-h"><h2 style="margin:0">군단</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
+   <div class="tz-hdx" style="margin:0 0 8px">성을 묶어 군단을 최대 ${TZ_GDN}개 만들어요. 방침은 군단 성 모두의 위임이 돼요. 공략 방침이면 군단 안 성들이 병사를 모아 함께 쳐요(거점에서 2칸 안, 성마다 1,500명과 30% 중 많은 쪽은 남겨요). 도독 통솔이 높을수록 출진 기준이 1.3배에서 1.15배까지 낮아져요.</div>
+   ${s.GD.map(card).join('')||'<p class="sub">아직 군단이 없어요.</p>'}
+   <div class="row" style="gap:6px;margin-top:8px"><button type="button" class="btn ghost" data-gdx="new" ${s.GD.length>=TZ_GDN||!free.length?'disabled':''}>새 군단</button><button type="button" class="btn ghost" data-gdx="zh" ${s.GD.length>=TZ_GDN||!free.length?'disabled':''}>주 단위로 묶기</button></div>`)}
+function tzGdNm(s,cs){const z=TZ_ZK[cs[0]];const n=z?TZ_ZH[z][0].replace(/\(.*\)/,'')+' 군단':'제'+((s.GD||[]).length+1)+'군단';return (s.GD||[]).some(G=>G.nm===n)?n+' '+((s.GD||[]).length+1):n}
+document.addEventListener('click',e=>{const b=e.target.closest('[data-gdx],[data-tzgdo]');if(!b||b.disabled)return;const s=tzState();if(!s||!s.on||s.me==='_')return;if(b.dataset.tzgdo!=null){tzGdSheet();return}s.GD=s.GD||[];const[a,i,k]=b.dataset.gdx.split('|');
+  const free=tzMine(s).filter(x=>!tzGdOf(s,x)&&!tzHome(s,x));
+  if(a==='new'&&s.GD.length<TZ_GDN&&free.length){const k0=tzSel&&free.includes(tzSel)?tzSel:free[0];s.GD.push({nm:tzGdNm(s,[k0]),cs:[k0],g:'',m:'dev',tg:''})}
+  if(a==='zh'){const by={};free.forEach(x=>{const z=TZ_ZK[x];if(z)(by[z]=by[z]||[]).push(x)});Object.entries(by).sort((p,q)=>q[1].length-p[1].length).forEach(([z,cs])=>{if(s.GD.length<TZ_GDN&&cs.length>=2)s.GD.push({nm:tzGdNm(s,cs),cs,g:'',m:'dev',tg:''})})}
+  if(a==='del'&&s.GD[+i])s.GD.splice(+i,1);
+  if(a==='rm'&&s.GD[+i]){const G=s.GD[+i];G.cs=G.cs.filter(x=>x!==k);if(!G.cs.length)s.GD.splice(+i,1)}
+  tzGdSync(s);save();tzGdSheet()});
+document.addEventListener('change',e=>{const el=e.target.closest('[data-gdf]');if(!el)return;const s=tzState();if(!s||!s.on||s.me==='_'||!s.GD)return;const[a,i]=el.dataset.gdf.split('|'),G=s.GD[+i],v=el.value;if(!G)return;
+  if(a==='g')G.g=v&&s.G[v]&&s.G[v].o===s.me?v:'';if(a==='m'&&TZ_GDM.includes(v))G.m=v;if(a==='tg')G.tg=TZ_C[v]?v:'';
+  if(a==='add'&&v&&s.C[v]&&s.C[v].o===s.me&&!tzGdOf(s,v)&&!tzHome(s,v))G.cs.push(v);tzGdSync(s);save();renderView();tzGdSheet()});
+{const _gm=gwMenu;gwMenu=function(){_gm.apply(this,arguments);const s=tzState(),r=document.querySelector('#sheet [data-tzhd]');if(r&&s&&s.on&&s.me!=='_')r.insertAdjacentHTML('afterend','<button type="button" class="btn ghost" data-tzgdo>군단</button>')}}
+// 장수 상세: 도독 표시
+const tzGdWho=(s,g)=>{if(!s||!s.on)return '';const P=s.pc;if(P&&P.g===g&&tzPcDd(s))return `${tzFN(s,s.G[g].o)} 도독 · ${tzPcDd(s).cs.map(tzCN).join('·')}`;
+  const G=(s.GD||[]).find(x=>x.g===g);if(G)return `${tzFN(s,s.me)} ${G.nm} 도독 · 성 ${G.cs.length}곳`;for(const f in s.AD||{})if(s.AD[f].g===g)return `${tzFN(s,f)} 도독 · ${s.AD[f].cs.map(tzCN).join('·')}`;return ''};
+{const _gs=tzGenSheet;tzGenSheet=function(g){const r=_gs.apply(this,arguments);try{const t=tzGdWho(tzState(),g);if(t){const h=document.querySelector('#sheet .sheet-h .sub');if(h)h.insertAdjacentHTML('beforeend',` · <b style="color:var(--bronze)">${esc(t)}</b>`)}}catch(e){}return r}}
+// 턴 · 새 판 · 저장
+{const _t=tzTurn;tzTurn=function(s){const r=_t.apply(this,arguments);try{if(s&&s.on&&!s.end){tzAdTick(s);tzPcDdTick(s);if(s.GD)tzGdSync(s)}}catch(e){console.error(e)}return r}}
+{const _n=tzNew;tzNew=function(){const s=_n.apply(this,arguments);try{s.GD=[];s.AD={}}catch(e){}return s}}
+{const _cl=cleanTz;cleanTz=function(x){const o=_cl(x);if(!o.on)return o;x=x||{};
+  o.GD=(Array.isArray(x.GD)?x.GD:[]).filter(G=>G&&Array.isArray(G.cs)).slice(0,TZ_GDN).map(G=>({nm:String(G.nm||'군단').slice(0,20),cs:[...new Set(G.cs.filter(k=>TZ_C[k]))].slice(0,20),g:o.G[G.g]?G.g:'',m:TZ_GDM.includes(G.m)?G.m:'dev',tg:TZ_C[G.tg]?G.tg:''})).filter(G=>G.cs.length);
+  o.AD={};if(x.AD&&typeof x.AD==='object')for(const f in x.AD){const A=x.AD[f];if(o.F[f]&&A&&o.G[A.g]&&Array.isArray(A.cs))o.AD[f]={g:A.g,cs:A.cs.filter(k=>TZ_C[k]).slice(0,20)}}return o}}
+HELP.forEach(c=>{if(c.t==='외교·계략')c.rows.push(['군단 · 도독','메뉴 › 군단에서 내 성을 묶어 군단을 최대 4개 만들어요(주 단위로 한 번에 묶을 수도 있어요). 군단마다 도독과 방침(평정·내정·수송·방어·공략)을 정하면 군단 성 모두에 그 위임이 걸려요. 공략 방침이면 군단 성 하나를 거점으로, 우리 성만 거쳐 2칸 안의 군단 성들이 남는 병사(성마다 1,500명과 30% 중 많은 쪽은 남겨요)와 쉬는 장수 5명을 모아 함께 쳐요. 목표 성을 정할 수 있고, 도독 통솔이 높을수록 출진 기준이 1.3배에서 1.15배까지 낮아져요. 도독 충성이 60 아래면 절반은 쉬어요.'],
+  ['AI 도독','성이 8곳 넘는 AI 세력은 군주 성에서 3칸 넘게 먼 성들(가장 먼 쪽부터 최대 6곳)을 군단으로 묶고 도독을 둬요(1년마다 다시 정해요). 도독 충성이 50 아래면 군단 성을 모두 들고 독립할 수 있어요. 장수 상세에 "○○군 도독"이 나와요.'],
+  ['장수제 도독','태수로 공적 400 · 신뢰 70을 넘기고 세력의 성이 8곳 이상이면 군주가 내 성과 이웃 성 2~4곳을 군단으로 맡겨요(군주가 있는 성은 안 돼요). 도독은 달마다 행동 5번 · 공동 출진(내가 앞장서고 군단 병사를 모아 쳐요) · 군단 내정 · 장수 이동 · 포상 · 군단 방침을 해요. 이기면 점령한 성이 군단에 들어와요. 신뢰가 40 아래로 떨어지면 도독에서 내려와요. 독립하면 군단 성을 모두 들고 군주가 되고, 옛 세력과는 원수가 돼요.'])});
+(()=>{const st=document.createElement('style');st.textContent=`
+.tz-gd{border:1px solid var(--line,rgba(255,255,255,.12));border-radius:8px;padding:8px 10px;margin:0 0 8px}.tz-gdh{display:flex;align-items:center;gap:8px;margin-bottom:4px}.tz-gdh b{color:var(--bronze)}.tz-gdh small{flex:1;color:var(--mute)}
+.tz-gd label{display:flex;align-items:center;gap:8px;margin:4px 0;font-size:13px}.tz-gd select{flex:1;min-width:0}.tz-gdcs{display:flex;flex-wrap:wrap;gap:4px;margin-top:6px}.tz-gdcs select{flex:1;min-width:8em}
+.tz-gdc{border-bottom:1px solid var(--line,rgba(255,255,255,.08));padding:6px 0}.tz-gdc small{display:block;color:var(--mute);font-size:12px;margin:2px 0 4px}
+.tz-pcdd{margin:8px 0 4px;font-size:13px;color:var(--mute)}.tz-pcdd b{color:var(--bronze)}
 `;document.head.appendChild(st)})();
 boot();
 </script>
