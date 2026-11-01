@@ -8849,8 +8849,12 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.4.1';
-const GW_NOTICES=[{v:'1.4.1',date:'2026-11-02',title:'군웅할거 v1.4.1 · 반(反) 연합 원군 · 연합 공동 출병',items:[
+const GW_VER='1.4.2';
+const GW_NOTICES=[{v:'1.4.2',date:'2026-11-02',title:'군웅할거 v1.4.2 · 208년 · 219년 조조 시작 힘 줄이기',items:[
+  '208년 적벽대전 · 219년 삼국정립에서 조조가 너무 쉽게 천하를 통일하던 것을 줄였어요. AI끼리 둘 때 10년 안에 조조가 통일하는 판이 열에 아홉 넘게였는데, 219년은 열에 여섯, 208년은 열에 여덟 정도로 내려가요.',
+  '219년: 조조 성의 시작 병사가 60%로 줄어요(성마다 3,500 → 2,100).',
+  '208년: 조조 성의 시작 병사가 40%(성마다 1,400)로 줄고, 민심 45로 시작해요. 형주를 막 삼킨 조조가 25성을 다스리느라 처음 몇 해는 의용군이 잘 모이지 않아요.',
+  '조조를 골라 시작해도 똑같이 적용돼요. 새로 시작하는 판부터 바뀌고, 진행 중인 판은 그대로예요.']},{v:'1.4.1',date:'2026-11-02',title:'군웅할거 v1.4.1 · 반(反) 연합 원군 · 연합 공동 출병',items:[
   '연합 공동 출병: 연합이 맺어진 동안 두 달에 한 번, 표적의 성 하나에 맞닿은 연합 성들이 병력을 모아 함께 쳐요. 한 세력이 장수와 함께 앞장서고, 다른 연합 세력이 병사의 절반(성마다 1,500은 남겨요)을 보태요. 장수가 이끌 수 있는 만큼만 모으고, 이길 만할 때(전력 1.15배 이상)만 나가요. 살아남은 연합 병사는 끝나면 제 성으로 돌아가요. 우리 성 병사는 보내지 않아요.',
   '원군: 표적이 연합 성을 치면, 그 성과 맞닿은 다른 연합 세력의 성이 병사를 보내 함께 지켜요. 성마다 병사의 30%(최대 3,000)씩 2곳까지 오고, 지켜 내면 살아남은 원군은 제 성으로 돌아가요. 우리가 연합에 들면 우리 성도 원군을 받아요(우리 병사는 보내지 않아요). 우리가 표적이면 연합 성을 칠 때 원군을 함께 상대해요.']},{v:'1.4.0',date:'2026-11-02',title:'군웅할거 v1.4.0 · 반(反)○○ 연합 · 판 끝 결과 · 연표 · 장수별 통일 기록',items:[
   '반(反) 연합이 생겼어요. 한 세력이 천하 성의 1/3 이상을 갖거나, 성 8곳 이상이면서 2위의 두 배가 되면 그 세력과 가까운(길 2칸 안) 세력들이 \'반○○ 연합\'을 맺어요. 연합끼리 2년 동맹을 맺고 표적과는 험악해져요. 연합 AI는 표적의 성을 먼저 노려요.',
@@ -11113,7 +11117,9 @@ function tzResAuto(){setTimeout(()=>{const s=tzState(),sh=$('#sheet');if(s&&s.on
   try{if(!s.end)tzCoTick(s);tzStTick(s);tzYhEvq(s)}catch(e){console.error(e)}save();return r}}
 {const _e=tzEnd;tzEnd=function(s){const was=s&&s.end,r=_e.apply(this,arguments);
   try{if(s&&s.on&&s.end&&!was){tzStTick(s);tzYhAdd(s,'end',`${tzEndT(s)} · ${tzDur(s.t)}`);if(s.end===1)tzClrAdd(s)}}catch(e){console.error(e)}return r}}
-{const _n=tzNew;tzNew=function(sc,me,rs){const s=_n.apply(this,arguments);try{s.CO=null;s.COH={};s.yh=[];s.st=null;s.cr=0;s.rsv=0;
+// 시나리오 밸런스: 처음부터 너무 큰 세력은 시작 병력을 줄여요(성마다 병사 × 비율)
+const TZ_SCTR={208:{caocao:{tr:.4,ml:45}},219:{caocao:{tr:.6}}};  // tr: 병사 비율 · ml: 민심(있으면 그 값으로) · eco: 농업·상업 비율
+{const _n=tzNew;tzNew=function(sc,me,rs){const s=_n.apply(this,arguments);try{const tb=!s.rs&&TZ_SCTR[s.sc];if(tb)for(const f in tb)if(s.F[f])tzCities(s,f).forEach(k=>{const v=tb[f],C=s.C[k];if(v.tr!=null)C.tr=Math.round(C.tr*v.tr/100)*100;if(v.ml!=null)C.ml=v.ml;if(v.eco!=null){C.fa=Math.round(C.fa*v.eco);C.co=Math.round(C.co*v.eco)}});s.CO=null;s.COH={};s.yh=[];s.st=null;s.cr=0;s.rsv=0;
   const D=TZ_SC[s.sc];tzYhAdd(s,'start',`${s.rs?'임의 시작':D?D.n:''}${s.F[s.me]?' · '+tzFN(s,s.me):''}`);
   if(String(s.sc)==='189'&&!s.rs&&s.F.dongzhuo&&!s.F.dongzhuo.dead){const m=TZ_CO189.filter(f=>s.F[f]&&!s.F[f].dead&&tzCities(s,f).length);if(m.length>=2)tzCoForm(s,'dongzhuo',m,18)}
   tzSt(s)}catch(e){console.error(e)}return s}}
