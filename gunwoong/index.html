@@ -5301,9 +5301,9 @@ const tzSabP=(s,g,tk)=>{const gv=tzGov(s,tk);return Math.max(.1,Math.min(.95,.5+
 function tzDo(s,k,cmd,g,tg,it){const C=s.C[k],G=s.G[g],cha=tzCha(g),f=G.o,lc=tzCha(s.F[f].lord);let msg='',fx='';
   const pay=n=>{if(C.g<n)return false;C.g-=n;return true},myIt=x=>!x||s.I[x]==='t:'+f;
   if(cmd==='inv'){if(!TZ_INV[tg])return '투자할 곳을 골라요';const cp=tzCap(C,tg);if(C[tg]>=cp)return `${TZ_INV[tg]}이(가) 이미 상한이에요`;if(!pay(300))return '금이 모자라요';
-    const v=Math.max(1,Math.round(tzInvV(tg,g)*tzR()));C[tg]=Math.min(cp,C[tg]+v);msg=`${TZ_INV[tg]} +${v}`}
+    const v=Math.max(1,Math.round(tzInvV(tg,g)*tzR()*(tzSea(s.m)==='autumn'?1.1:1)));C[tg]=Math.min(cp,C[tg]+v);msg=`${TZ_INV[tg]} +${v}`}
   else if(cmd==='ben'){if(C.fd<500)return '군량이 모자라요';C.fd-=500;const v=Math.round((4+cha*.1)*tzR()*tzSpM(g,'ben'));C.ml=Math.min(100,C.ml+v);msg=`민심 +${v}`}
-  else if(cmd==='drf'){if(C.tr>=tzCap(C,'tr'))return '이 성 인구로는 더 뽑을 수 없어요';if(!pay(300))return '금이 모자라요';const v=Math.min(tzCap(C,'tr')-C.tr,Math.round(1000*(.8+cha/500)*tzR()));C.tn=Math.round(C.tn*C.tr/(C.tr+v));C.tr+=v;C.ml=Math.max(0,C.ml-3);msg=`병사 +${fmt(v)}`}
+  else if(cmd==='drf'){if(C.tr>=tzCap(C,'tr'))return '이 성 인구로는 더 뽑을 수 없어요';if(!pay(300))return '금이 모자라요';const v=Math.min(tzCap(C,'tr')-C.tr,Math.round(1000*(.8+cha/500)*tzR()*(tzSea(s.m)==='spring'?1.1:1)));C.tn=Math.round(C.tn*C.tr/(C.tr+v));C.tr+=v;C.ml=Math.max(0,C.ml-3);msg=`병사 +${fmt(v)}`}
   else if(cmd==='trn'){if(C.tn>=100)return '훈련이 이미 최고예요';const v=Math.round((5+tzLead(g)*.1)*tzR()*(tzIFv(s,g,'trn')||1)*tzSpM(g,'trn'));C.tn=Math.min(100,C.tn+v);msg=`훈련 +${v}`}
   else if(cmd==='sch'&&(f===s.me||tzIsPc(s,g))){const hi=tzItIn(s,'h:'+k),fr=tzGL(s).map(x=>x.id).filter(x=>s.G[x].o==='free'&&s.G[x].c===k&&!s.G[x].fd),m=[];
     const v=Math.round(100+tzInt(g)*3+C.co/5);C.g=Math.min(99999,C.g+v);m.push(`금 +${fmt(v)}`);
@@ -8849,8 +8849,15 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.8.0';
-const GW_NOTICES=[{v:'1.8.0',date:'2026-11-02',title:'군웅할거 v1.8.0 · 특기 · 수전',items:[
+const GW_VER='1.9.0';
+const GW_NOTICES=[{v:'1.9.0',date:'2026-11-02',title:'군웅할거 v1.9.0 · 수명 · 계절',items:[
+  '수명: 장수가 정사의 몰년 무렵 병으로 세상을 떠날 수 있어요. 몰년 3년 전부터 가능성이 오르고 몰년이 지나면 크게 높아져서, 판마다 몇 년씩 달라요. 장수 상세에 나이가 나와요.',
+  '싸움 · 처형으로 죽은 장수(관우 · 장비 · 여포 등)는 12년 더 살 수 있어요. 시나리오 전에 죽었다가 다시 나온 장수는 시작 후 15년 무렵이에요.',
+  '후계: 군주가 병으로 죽으면 아들(조조 → 조비, 유비 → 유선, 손책 → 손권 등) → 자식 → 의형제 → 매력이 가장 높은 장수 순으로 세력을 이어받아요.',
+  '계절: 봄 징병 +10% · 가을 투자 +10%. 여름에 남쪽(형남 4군 · 건녕 · 운남)을 치면 풍토병, 겨울에 북쪽(계 · 북평 · 양평 · 진양 · 서량)을 치면 추위로 공격 쪽 힘 −10%예요.',
+  '겨울에는 황하가 얼어 낙양–진양, 진류–복양 길의 수전 불이익이 없어져요. 출진 화면과 전투 기록에 계절 효과가 나와요.',
+  '조조가 220년 무렵 세상을 떠나는 만큼 208년 조조의 시작 병사 · 민심을 조금 더 올렸어요.']},
+ {v:'1.8.0',date:'2026-11-02',title:'군웅할거 v1.8.0 · 특기 · 수전',items:[
   '특기: 장수마다 특기가 최대 2개 생겼어요. 전투 9가지(돌격 · 궁술 · 철벽 · 공성 · 신산 · 화공 · 일기 · 명의 · 수군)와 내정 6가지(농정 · 상재 · 축성 · 조련 · 인덕 · 명망)예요.',
   '연의 장수는 연의대로 특기를 받아요(관우 일기 · 수군, 주유 수군 · 화공, 제갈량 신산 · 화공, 화타 명의 등). 나머지는 능력치에 따라 하나를 받아요.',
   '직접 명령할 때 그 일에 맞는 특기 장수가 맨 위에 오고 "농정 +30%"처럼 노란 배지가 붙어요. 평정 제안 · 위임 · AI도 특기 장수에게 먼저 그 일을 맡겨요.',
@@ -11160,7 +11167,7 @@ function tzScGive(s){const G0=!s.rs&&TZ_SCGIVE[s.sc];if(!G0)return;for(const k i
   const lc=s.G[s.F[f0].lord].c;tzGensIn(s,k,f0).forEach(g=>{s.G[g].c=lc});C.gov='';
   if(to==='neu')Object.assign(C,{o:'neu',g:300,fd:2000,tr:1500,tn:30,ml:50,dl:'self',wp:300,hs:0});else Object.assign(C,{o:to,dl:'self'})}}
 // 시나리오 밸런스: 처음부터 너무 큰 세력은 시작 병력을 줄여요(성마다 병사 × 비율)
-const TZ_SCTR={208:{caocao:{tr:.55,ml:50}},219:{caocao:{tr:.6,ml:55}}};  // tr: 병사 비율 · ml: 민심(있으면 그 값으로) · eco: 농업·상업 비율
+const TZ_SCTR={208:{caocao:{tr:.63,ml:53}},219:{caocao:{tr:.6,ml:55}}};  // tr: 병사 비율 · ml: 민심(있으면 그 값으로) · eco: 농업·상업 비율
 {const _n=tzNew;tzNew=function(sc,me,rs){const s=_n.apply(this,arguments);try{tzScGive(s);const tb=!s.rs&&TZ_SCTR[s.sc];if(tb)for(const f in tb)if(s.F[f])tzCities(s,f).forEach(k=>{const v=tb[f],C=s.C[k];if(v.tr!=null)C.tr=Math.round(C.tr*v.tr/100)*100;if(v.ml!=null)C.ml=v.ml;if(v.eco!=null){C.fa=Math.round(C.fa*v.eco);C.co=Math.round(C.co*v.eco)}});s.CO=null;s.COH={};s.yh=[];s.st=null;s.cr=0;s.rsv=0;
   const D=TZ_SC[s.sc];tzYhAdd(s,'start',`${s.rs?'임의 시작':D?D.n:''}${s.F[s.me]?' · '+tzFN(s,s.me):''}`);
   if(String(s.sc)==='189'&&!s.rs&&s.F.dongzhuo&&!s.F.dongzhuo.dead){const m=TZ_CO189.filter(f=>s.F[f]&&!s.F[f].dead&&tzCities(s,f).length);if(m.length>=2)tzCoForm(s,'dongzhuo',m,18)}
@@ -11651,6 +11658,63 @@ HELP.forEach(c=>{if(c.t==='전쟁')c.rows.push(['특기','장수마다 특기가
 .tz-sp{font-style:normal;font-size:10px;line-height:1.3;padding:0 4px;border-radius:4px;border:1px solid var(--line,rgba(255,255,255,.15));color:var(--mute)}
 .tz-sp.hi{color:#1b1206;background:#e9c66c;border-color:#e9c66c;font-weight:700}.tz-wtn{color:#7fb6ee!important;margin:0 0 6px!important}
 `;document.head.appendChild(st)})();
+/* ==== 군웅할거 v1.9.0: 수명 · 계절 ==== */
+// 정사 기준 출생년(알려진 장수만). 모르는 장수는 몰년 − 55로 어림해요(약 N세)
+const TZ_BORN={caocao:155,liubei:161,sunjian:155,sunce:175,sunquan:182,zhouyu:175,zhugeliang:181,simayi:179,pangtong:179,guojia:170,xunyu:163,xunyou:157,jiaxu:147,lusu:172,lvmeng:178,
+  luxun:183,dengai:197,jiangwei:202,machao:176,guanyu:160,zhangliao:169,caoren:168,caopi:187,caozhi:192,caozhang:189,liushan:207,zhugejin:174,zhugeke:203,fazheng:176,maliang:187,masu:190,
+  yufan:164,zhangzhao:156,simashi:208,simazhao:211,zhonghui:225,wangsu:195,zhongyao:151,huaxin:157,kongrong:153,liubiao:142,taoqian:132,caiyong:133,caiwenji:177,wangyun:137,shixie:137,
+  chengyu:141,dongzhao:156,zhenji:183,wangcan:177,caochun:170,taishici:166,lidian:174,yangxiu:175,lingtong:189,guyong:168,luji:188,zhuhuan:177,zhuran:182,lvdai:161,guanlu:209,
+  huangzhong:148,dongzhuo:139,yuanshao:154,yuanshu:155,lubu:161,zhangfei:165,zhaoyun:168,xiahoudun:157,xiahouyuan:160,diaochan:176,lushi:139,huangfusong:135,mateng:156,
+  gongsunzan:150,huatuo:145,zhangjiao:140,liuyan:130,liuzhang:162,menghuo:185,zhurong:188,zhanglu:160,caoang:177,liuqi:175,liucong:190,sunshangxiang:189,daqiao:180,xiaoqiao:182,
+  huangyueying:183,guanping:178,guanxing:190,zhangbao2:192,xushu:180,zhanghe:167,xuhuang:169,xuchu:170,dianwei:160,ganning:175,huanggai:155,chengpu:150,handang:155,zhoutai:170,xusheng:175};
+// 싸움 · 처형 · 암살로 죽은 장수는 병으로 죽을 나이를 12년 늦춰요
+const TZ_VIOL=new Set('lubu gaoshun chengong guanyu guanping zhoucang xiahouyuan pangtong dianwei caoang sunjian huaxiong yanliang wenchou dongzhuo liru wangyun zhangren pangde zhangfei sunce mateng maxiu matie jushou tianfeng shenpei quyi gongsunzan jiling chunyuqiong xuyou guotu lijue guosi zhangji niufu baoxin kongrong huangzu zhangwei weiyan zhonghui dengai jiangwei yangxiu caimao dongcheng yuantan yuanshang yuanxi gaogan zhangxiu lejin zhanghe liyan dingyuan hejin zhangjiao zhangliang zhangbao guanhai yanbaihu sunyi liufeng masu'.split(' '));
+const tzBorn=g=>TZ_BORN[g]!=null?TZ_BORN[g]:TZ_DIE[g]!=null?Math.floor(TZ_DIE[g])-55:null;
+const tzAge=(s,g)=>{const b=tzBorn(g);return b==null||!s?null:s.y-b};
+// 병으로 죽는 해: 몰년(싸워 죽은 장수 +12). 시나리오 시작 전에 이미 죽은 장수는 시작 + 15년
+function tzLife(s,g){const d=TZ_DIE[g];if(d==null||GMAP[g]&&GMAP[g].kid)return null;let L=d+(TZ_VIOL.has(g)?12:0);const y0=(TZ_SC[s.sc]||{y:s.y}).y;if(d<y0)L=Math.max(L,y0+15);return L}
+// 한 해 확률: 3년 전부터 6%씩 오르고, 그해부터 35% + 해마다 20% (최대 95%). 달마다 나눠 굴려요
+function tzDieP(s,g){const L=tzLife(s,g);if(L==null)return 0;const x=s.y+(s.m-1)/12-L;if(x<-3)return 0;const pa=x<0?.06*(x+3):Math.min(.95,.35+.2*x);return 1-Math.pow(1-pa,1/12)}
+// 군주 후계: 아들(정해진 순서) → 가상 자식 → 의형제 → 매력
+const TZ_HEIR={caocao:['caopi','caozhang','caozhi'],liubei:['liushan'],sunjian:['sunce','sunquan'],sunce:['sunquan'],yuanshao:['yuanshang','yuantan','yuanxi'],liubiao:['liuqi','liucong'],
+  liuyan:['liuzhang'],mateng:['machao'],gongsundu:['gongsunkang'],gongsunkang:['gongsunyuan','gongsungong'],simayi:['simashi','simazhao'],simashi:['simazhao'],sunquan:['sunhuan'],caopi:['caozhen','caoxiu'],
+  zhangjiao:['zhangbao','zhangliang'],taoqian:['taoshang'],liuyu:['liuhe']};
+function tzHeir(s,f,L){const ok=g=>g&&g!==L&&s.G[g]&&s.G[g].o===f;
+  for(const g of TZ_HEIR[L]||[])if(ok(g))return g;
+  const kid=tzGL(s).map(b=>b.id).find(g=>ok(g)&&GMAP[g].pid===L);if(kid)return kid;
+  const br=(typeof tzBroOf==='function'?tzBroOf(s,L):[]).find(ok);if(br)return br;
+  return tzGL(s).map(b=>b.id).filter(ok).sort((a,b)=>tzCha(b)-tzCha(a)||s.G[b].mr-s.G[a].mr)[0]||''}
+function tzLifeTick(s){if(!s||!s.on||s.end)return;
+  for(const b of tzGL(s)){const g=b.id,G=s.G[g];if(!G||G.o==='dead'||G.o==='wait')continue;const p=tzDieP(s,g);if(!p||tzRng()>=p)continue;
+    const f=G.o,F=s.F[f],isL=!!F&&F.lord===g&&!F.dead,age=tzAge(s,g),aT=age!=null?` · 향년 ${TZ_BORN[g]!=null?'':'약 '}${age}세`:'';
+    G.o='dead';const it=Object.keys(s.I).find(id=>s.I[id]==='g:'+g);if(it)s.I[it]=F&&!F.dead?'t:'+f:'h:'+G.c;
+    if(s.C[G.c]&&s.C[G.c].gov===g)s.C[G.c].gov='';
+    const t=`${tzName(g)}이(가) 병으로 세상을 떠났어요${aT}`;
+    if(isL){const h=tzHeir(s,f,g),fn=tzFN(s,f);if(h){F.lord=h;s.G[h].ly=100;tzLog(s,`${t} · ${tzName(h)}이(가) ${fn}을(를) 이어받았어요`,f===s.me?'民':'報')}else tzLog(s,t,f===s.me?'民':'報');tzEvPush(s,'death',g)}
+    else tzLog(s,t,f===s.me?'民':'報');
+}
+  tzLordCheck(s)}
+{const _rv=tzRevive;tzRevive=function(s){const r=_rv.apply(this,arguments);try{tzLifeTick(s)}catch(e){console.error(e)}return r}}
+
+// ---- 계절 ----
+// 겨울: 북쪽(유주 · 병주 · 서량) 성을 치는 쪽 힘 −10%, 황하가 얼어 황하 수전 불이익이 없어요
+// 여름: 남쪽(형남 4군 · 건녕 · 운남) 성을 치는 쪽 풍토병 힘 −10% · 봄: 징병 +10% · 가을: 투자 +10%
+const TZ_NORTH=new Set(['ji','beiping','xiangping','jinyang','xiliang']),TZ_SOUTH=new Set(['changsha','wuling','lingling','guiyang','jianning','yunnan']);
+const TZ_HH=new Set(['jinyang|luoyang','chenliu|puyang']);
+const tzIce=(s,a,b)=>tzSea(s.m)==='winter'&&TZ_HH.has([a,b].sort().join('|'));
+function tzSeaAtk(s,to){const se=tzSea(s.m);return se==='winter'&&TZ_NORTH.has(to)?['겨울 북방 추위',.9]:se==='summer'&&TZ_SOUTH.has(to)?['여름 남방 풍토병',.9]:null}
+{const _w=tzWater;tzWater=function(a,b){const s=S&&S.tz;if(s&&s.on&&tzIce(s,a,b))return false;return _w.apply(this,arguments)}}
+{const _bi=tzBInit;tzBInit=function(s,from,to){const bt=_bi.apply(this,arguments);try{if(!bt||!bt.U)return bt;const x=tzSeaAtk(s,to);if(x){bt.U[0].forEach(u=>u.q*=x[1]);bt.log.push(`${x[0]} · 공격 쪽 힘 −10%`)}
+  if(tzIce(s,from,to))bt.log.push('겨울이라 황하가 얼어 걸어서 건너요 · 수전 불이익 없음')}catch(e){}return bt}}
+{const _ar=tzAtkRatio;tzAtkRatio=function(s,k,n){const r=_ar.apply(this,arguments);const x=tzSeaAtk(s,n);return x?r*x[1]:r}}
+{const _cs=tzCmdSheet;tzCmdSheet=function(c){const r=_cs.apply(this,arguments);try{const D=tzDraft,s=tzState();if(c==='war'&&D&&D.tg){const sh=document.querySelector('#sheet'),p=sh&&[...sh.querySelectorAll('p.sub')].find(x=>/적 병사/.test(x.textContent));
+  const x=tzSeaAtk(s,D.tg),ice=tzIce(s,D.k,D.tg);if(p&&(x||ice))p.insertAdjacentHTML('afterend',`<p class="sub tz-wtn">${x?`${x[0]} · 공격 쪽 힘 −10%`:'겨울이라 황하가 얼었어요 · 수전 불이익 없음'}</p>`)}}catch(e){}return r}}
+{const _gs=tzGenSheet;tzGenSheet=function(g){const r=_gs.apply(this,arguments);try{const s=tzState(),a=tzAge(s,g),G=s&&s.G[g];if(a!=null&&G&&G.o!=='dead'&&G.o!=='wait'){const p=[...document.querySelectorAll('#sheet p.sub')].find(x=>/Lv \d/.test(x.textContent));
+  if(p)p.insertAdjacentHTML('afterbegin',`${TZ_BORN[g]!=null?'':'약 '}${a}세 · `)}}catch(e){}return r}}
+
+HELP.forEach(c=>{if(c.t==='사건')c.rows.push(['수명','장수는 정사의 몰년 무렵 병으로 세상을 떠날 수 있어요. 몰년 3년 전부터 가능성이 오르고, 몰년이 지나면 크게 높아져서 판마다 몇 년씩 달라요. 싸움 · 처형으로 죽은 장수는 12년 더 살 수 있고, 시나리오 전에 죽었다가 다시 나온 장수는 시작 후 15년 무렵이에요. 장수 상세에 나이가 나와요(정확히 모르는 장수는 "약").'],
+  ['후계','군주가 병으로 죽으면 아들(조조 → 조비, 유비 → 유선, 손책 → 손권 등) → 자식 → 의형제 → 매력이 가장 높은 장수 순으로 세력을 이어받아요. 이을 장수가 없으면 세력이 무너져요. 장수제에서 내 장수가 죽으면 판이 끝나요.'],
+  ['계절','봄: 징병 +10% · 여름: 남쪽(장사 · 무릉 · 영릉 · 계양 · 건녕 · 운남)을 치면 풍토병으로 공격 쪽 힘 −10% · 가을: 투자 +10% · 겨울: 군량 1.5배, 북쪽(계 · 북평 · 양평 · 진양 · 서량)을 치면 공격 쪽 힘 −10%, 황하가 얼어 황하 수전 불이익이 없어요.'])});
 boot();
 </script>
 </body>
