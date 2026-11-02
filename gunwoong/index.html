@@ -5534,7 +5534,7 @@ function tzReward(s){if(s.end!==1||s.rw)return null;s.rw=1;const dk=tzDK(s);if(s
   S.gold+=TZ_REW.gold;S.isk=(S.isk||0)+1;const tg=GMAP[g].pid||g;S.tok[tg]=Math.min(9999,tokOf(tg)+n);return {gold:TZ_REW.gold,g:tg,n}}
 // ---- 화면 ----
 function tzMapHtml(s){const sea=tzSea(s.m);
-  const roads=TZ_E.map(([a,b])=>{const A=TZ_C[a],B=TZ_C[b],on=s.C[a].o===s.me||s.C[b].o===s.me;return `<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" class="${on?'on':''}${tzWater(a,b)?' wt':''}"/>`}).join('');
+  const roads=TZ_E.map(([a,b])=>{const A=TZ_C[a],B=TZ_C[b],on=s.C[a].o===s.me||s.C[b].o===s.me;return `<line x1="${A[0]}" y1="${A[1]}" x2="${B[0]}" y2="${B[1]}" class="${on?'on':''}${tzWater(a,b)?' wt':''}${tzTer(a,b)?' '+tzTer(a,b):''}"/>`}).join('');
   const nodes=TZ_K.map(k=>{const[x,y]=TZ_C[k],o=s.C[k].o,me=o===s.me,cap=Object.values(s.F).some(F=>!F.dead&&s.G[F.lord].c===k&&s.G[F.lord].o===s.C[k].o);
     return `<button type="button" class="gw-n ${me?'me':''} ${tzSel===k?'sel':''} ${tzMkC(s,o)}" style="left:${x}%;top:${y}%;--fac:${tzCol(o)};--fct:${tzFct(tzCol(o))}" data-tzk="${k}" aria-label="${tzCN(k)} · ${s.F[o]?esc(tzFN(s,o)):'빈 성'}"><i>${tzMk(s,o)}</i>${cap?'<em>★</em>':''}${s.lc&&s.lc.k===k?'<u>蝗</u>':''}<small>${tzCN(k)}</small></button>`}).join('');
   setTimeout(()=>{const w=document.querySelector('.gw-wrap');if(!w)return;if(tzSx==null){const k=tzSel||s.G[s.F[s.me].lord].c;tzSx=Math.max(0,w.scrollWidth*TZ_C[k][0]/100-w.clientWidth/2)}w.scrollLeft=tzSx;w.onscroll=()=>{tzSx=w.scrollLeft}},0);
@@ -8849,8 +8849,14 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.9.0';
-const GW_NOTICES=[{v:'1.9.0',date:'2026-11-02',title:'군웅할거 v1.9.0 · 수명 · 계절',items:[
+const GW_VER='1.10.0';
+const GW_NOTICES=[{v:'1.10.0',date:'2026-11-02',title:'군웅할거 v1.10.0 · 지형',items:[
+  '지형: 길마다 협도 · 평원 · 밀림이 생겼어요. 지도에 협도는 갈색 톱니, 평원은 연두 굵은 선, 밀림은 초록 점선으로 보여요.',
+  '협도(검각 · 자오곡 · 기산 등 촉으로 들어가는 길): 공격 쪽 기병 −30%, 수비 힘 +10%, 군량 1.5배, 출진 장수 3명까지예요. 촉은 지키기 쉬워졌어요.',
+  '평원(백마 · 관도 등 하북 · 중원): 양쪽 기병 힘 +20%, 기병 돌격 피해 +10%예요. 밀림(건녕–운남): 공격 쪽 기병 −20%, 궁병 화공 +20%예요.',
+  '새 특기 험로: 등애 · 위연 · 강유 · 마대가 가져요. 출진 무리에 한 명만 있어도 협도 · 밀림 불이익을 모두 받지 않아요.',
+  '출진 화면 · 전투 기록에 지형 효과가 나오고, AI도 공격할 때 지형을 따져요.']},
+ {v:'1.9.0',date:'2026-11-02',title:'군웅할거 v1.9.0 · 수명 · 계절',items:[
   '수명: 장수가 정사의 몰년 무렵 병으로 세상을 떠날 수 있어요. 몰년 3년 전부터 가능성이 오르고 몰년이 지나면 크게 높아져서, 판마다 몇 년씩 달라요. 장수 상세에 나이가 나와요.',
   '싸움 · 처형으로 죽은 장수(관우 · 장비 · 여포 등)는 12년 더 살 수 있어요. 시나리오 전에 죽었다가 다시 나온 장수는 시작 후 15년 무렵이에요.',
   '후계: 군주가 병으로 죽으면 아들(조조 → 조비, 유비 → 유선, 손책 → 손권 등) → 자식 → 의형제 → 매력이 가장 높은 장수 순으로 세력을 이어받아요.',
@@ -9102,7 +9108,7 @@ const TZB_ACT={atk:['공격','보통으로 싸워요'],chg:['돌격·일제','�
 const TZ_HORSE={xiliang:1,anding:1,tianshui:1,beiping:1,ji:1,xiangping:1,jinyang:1};  // 군마 산지: 군마 반값
 const TZB_SAFE=Object.keys(TZ_IFX).filter(id=>TZ_IFX[id][0].safe||TZ_IFX[id][0].safe1);  // 명마: 부대가 무너져도 붙잡히지 않아요
 const tzBSafe=(s,g)=>tzIFv(s,g,'safe')>0;
-const tzBU=(bt,u,k)=>u&&u.g?tzSpB(u.g,k,tzIFv(bt.s0||(S&&S.tz),u.g,k)):0;
+const tzBU=(bt,u,k)=>u&&u.g?tzSpB(u.g,k,tzIFv(bt.s0||(S&&S.tz),u.g,k),bt,u):0;
 const tzBSide=(bt,i,k)=>bt.U[i].filter(u=>!u.out&&!u.cap&&u.n>0).reduce((m,u)=>Math.max(m,tzBU(bt,u,k)),0);
 // 붙잡힐 상황에서 빠져나가나(명마 · 적로는 한 판에 한 번)
 const tzBEsc=(bt,g)=>{const s=bt.s0||(S&&S.tz);if(!g)return false;if(tzIFv(s,g,'safe'))return true;if(tzIFv(s,g,'safe1')&&!(bt.e1||(bt.e1={}))[g]){bt.e1[g]=1;return true}return false};
@@ -11715,6 +11721,44 @@ function tzSeaAtk(s,to){const se=tzSea(s.m);return se==='winter'&&TZ_NORTH.has(t
 HELP.forEach(c=>{if(c.t==='사건')c.rows.push(['수명','장수는 정사의 몰년 무렵 병으로 세상을 떠날 수 있어요. 몰년 3년 전부터 가능성이 오르고, 몰년이 지나면 크게 높아져서 판마다 몇 년씩 달라요. 싸움 · 처형으로 죽은 장수는 12년 더 살 수 있고, 시나리오 전에 죽었다가 다시 나온 장수는 시작 후 15년 무렵이에요. 장수 상세에 나이가 나와요(정확히 모르는 장수는 "약").'],
   ['후계','군주가 병으로 죽으면 아들(조조 → 조비, 유비 → 유선, 손책 → 손권 등) → 자식 → 의형제 → 매력이 가장 높은 장수 순으로 세력을 이어받아요. 이을 장수가 없으면 세력이 무너져요. 장수제에서 내 장수가 죽으면 판이 끝나요.'],
   ['계절','봄: 징병 +10% · 여름: 남쪽(장사 · 무릉 · 영릉 · 계양 · 건녕 · 운남)을 치면 풍토병으로 공격 쪽 힘 −10% · 가을: 투자 +10% · 겨울: 군량 1.5배, 북쪽(계 · 북평 · 양평 · 진양 · 서량)을 치면 공격 쪽 힘 −10%, 황하가 얼어 황하 수전 불이익이 없어요.'])});
+/* ==== 군웅할거 v1.10.0: 지형 ==== */
+// 길의 종류: 협도(잔도) · 평원 · 밀림. 수전(강)과 함께 붙을 수 있어요
+const tzEK=(a,b)=>[a,b].sort().join('|');
+const TZ_TER={};
+[['hanzhong','zitong'],['hanzhong','xiabian'],['changan','hanzhong'],['tianshui','xiabian'],['jiangzhou','yongan']].forEach(([a,b])=>TZ_TER[tzEK(a,b)]='nar');
+[['puyang','chenliu'],['yecheng','puyang'],['nanpi','pingyuan'],['xuchang','chenliu'],['chenliu','xiaopei']].forEach(([a,b])=>TZ_TER[tzEK(a,b)]='pl');
+[['jianning','yunnan']].forEach(([a,b])=>TZ_TER[tzEK(a,b)]='jg');
+const TZ_TERN={nar:'협도',pl:'평원',jg:'밀림'};
+const tzTer=(a,b)=>a&&b?TZ_TER[tzEK(a,b)]||'':'';
+// 험로: 협도 · 밀림의 불이익을 받지 않아요(무리에 한 명만 있어도 함께 넘어가요)
+TZ_SPN.hum=['험로','협도 · 밀림 불이익 없음(함께 간 부대 모두)'];TZ_SPB.hum='험로 돌파';
+Object.assign(TZ_SP0,{dengai:'hum nong',weiyan:'dol hum',jiangwei:'sin hum',madai:'dol hum'});for(const k in tzSpC)delete tzSpC[k];
+const tzHum=gs=>(gs||[]).some(g=>tzSpHas(g,'hum'));
+function tzTerTxt(t,hum){return t==='nar'?(hum?'협도 · 험로 특기로 불이익 없음':'협도 · 공격 쪽 기병 −30% · 수비 힘 +10% · 군량 1.5배 · 출진 장수 3명까지'):t==='pl'?'평원 · 양쪽 기병 힘 +20% · 기병 돌격 피해 +10%':t==='jg'?(hum?'밀림 · 험로 특기로 기병 불이익 없음 · 궁병 화공 +20%':'밀림 · 공격 쪽 기병 −20% · 궁병 화공 피해 +20%'):''}
+{const _sb=tzSpB;tzSpB=function(g,k,v,bt,u){if(bt&&u){if(k==='chg'&&bt.ter==='pl'&&u.ty==='cav')v+=.1;if(k==='fire'&&bt.ter==='jg'&&u.ty==='arc')v+=.2}return _sb.call(this,g,k,v)}}
+{const _bi=tzBInit;tzBInit=function(s,from,to){const bt=_bi.apply(this,arguments);try{const t=tzTer(from,to);if(!bt||!bt.U||!t)return bt;bt.ter=t;
+  const U0=bt.U[0],hum=tzHum(U0.map(u=>u.g));bt.hum=hum;const lg=[`${TZ_TERN[t]}${hum?' · 험로 돌파':''}`];
+  if(t==='nar'&&!hum){U0.forEach(u=>{if(u.ty==='cav')u.q*=.7});bt.U[1].forEach(u=>u.q*=1.1);
+    const A=s.C[from],ex=Math.round((bt.tr||0)*.3*.5);if(A&&ex){A.fd=Math.max(0,A.fd-ex);lg.push(`보급이 어려워 군량 ${fmt(ex)} 더 들어요`)}
+    const gu=U0.filter(u=>u.g);if(gu.length>3){const keep=gu.slice(0,3),drop=gu.slice(3),n=drop.reduce((a,u)=>a+u.n,0),each=Math.floor(n/3);
+      keep.forEach((u,i)=>{const v=each+(i===0?n-each*3:0);u.n+=v;u.n0+=v});bt.U[0]=U0.filter(u=>!drop.includes(u));
+      bt.L[0]=keep.map(u=>u.g).sort((a,b)=>tzLead(b)-tzLead(a))[0];bt.I[0]=keep.reduce((m,u)=>Math.max(m,tzInt(u.g)),0);lg.push(`길이 좁아 ${drop.map(u=>tzName(u.g)).join('·')}은(는) 못 가고 병사만 보탰어요`)}
+    lg.push('공격 쪽 기병 −30% · 수비 힘 +10%')}
+  else if(t==='pl'){bt.U.forEach(U=>U.forEach(u=>{if(u.ty==='cav')u.q*=1.2}));lg.push('양쪽 기병 힘 +20%')}
+  else if(t==='jg'){if(!hum)U0.forEach(u=>{if(u.ty==='cav')u.q*=.8});lg.push(`${hum?'':'공격 쪽 기병 −20% · '}궁병 화공 +20%`)}
+  bt.log.push(lg.join(' · '))}catch(e){console.error(e)}return bt}}
+{const _ar=tzAtkRatio;tzAtkRatio=function(s,k,n,gs){const r=_ar.apply(this,arguments),t=tzTer(k,n);if(!t||tzHum(gs))return r;
+  if(t==='nar')return r*.84*((gs||[]).length>3?.95:1);if(t==='jg')return r*.95;return r}}
+{const _cs=tzCmdSheet;tzCmdSheet=function(c){const r=_cs.apply(this,arguments);try{const D=tzDraft;if(c==='war'&&D&&D.tg){const t=tzTer(D.k,D.tg);if(t){const sh=document.querySelector('#sheet'),p=sh&&[...sh.querySelectorAll('p.sub')].find(x=>/적 병사/.test(x.textContent));
+  if(p)p.insertAdjacentHTML('afterend',`<p class="sub tz-ter tz-ter-${t}">${tzTerTxt(t,tzHum(D.gs))}</p>`)}}}catch(e){}return r}}
+HELP.forEach(c=>{if(c.t==='전쟁')c.rows.push(['지형','길마다 지형이 있어요(지도 선 모양). 협도(갈색 톱니: 한중–자동 검각 · 한중–하변 · 장안–한중 자오곡 · 천수–하변 기산 · 강주–영안): 공격 쪽 기병 −30%, 수비 힘 +10%, 군량 1.5배, 출진 장수 3명까지(나머지는 병사만 보태요). 평원(연두 굵은 선: 복양–진류 · 업–복양 · 남피–평원 · 허창–진류 · 진류–소패): 양쪽 기병 +20%, 기병 돌격 피해 +10%. 밀림(초록 점선: 건녕–운남): 공격 쪽 기병 −20%, 궁병 화공 +20%.'],
+  ['험로','등애 · 위연 · 강유 · 마대의 특기예요. 출진 무리에 한 명만 있어도 협도 · 밀림의 불이익을 모두 받지 않아요(음평 우회처럼).'])});
+(()=>{const st=document.createElement('style');st.textContent=`
+.gw-map line.nar{stroke:#8a5a2b;stroke-opacity:.95;stroke-dasharray:1 1.2 3 1.2;stroke-width:3}.gw-map line.nar.on{stroke:#c27a36}
+.gw-map line.pl{stroke:#8fbf4a;stroke-opacity:.85;stroke-dasharray:none;stroke-width:3.5}.gw-map line.pl.on{stroke:#b4e06a}
+.gw-map line.jg{stroke:#2f8a4a;stroke-opacity:.9;stroke-dasharray:1 1;stroke-width:3}.gw-map line.jg.on{stroke:#4fbf6a}
+.tz-ter{margin:0 0 6px!important}.tz-ter-nar{color:#d49a5a!important}.tz-ter-pl{color:#a6d46a!important}.tz-ter-jg{color:#6ad48a!important}
+`;document.head.appendChild(st)})();
 boot();
 </script>
 </body>
