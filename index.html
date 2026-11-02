@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!--hj:early--><script>try{if(localStorage.getItem('sambun-theme')!=='night')document.documentElement.classList.add('hj')}catch(e){document.documentElement.classList.add('hj')}</script><!--/hj:early-->
 <meta name="theme-color" content="#0e1716">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/main-192.png">
@@ -16,7 +17,7 @@
 <title>연합 삼국지 · 창천토벌</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Song+Myung&family=IBM+Plex+Sans+KR:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Song+Myung&family=IBM+Plex+Sans+KR:wght@400;500;700&family=Gowun+Dodum&family=Hahmlet:wght@500;700&family=Noto+Serif+KR:wght@600;900&display=swap">
 <style>
 :root{
   /* Layout: phone-first command tent — bronze seals on patina lacquer, one scrolling column, tab bar at the foot */
@@ -892,6 +893,191 @@ body.pc #pwa-bar{bottom:20px}
 .pwa-steps{margin:10px 0 0;padding-left:20px;line-height:1.7}.pwa-steps b{color:var(--gold,#e9c66c)}
 .pwa-row{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.pwa-row .btn{flex:1 1 160px}.ly-row .btn{flex:1 1 60px}
 </style>
+<!--hj:css--><style id="hj-css">
+/* ==== v10.1.0 한지 군령문 (마지 바탕 · 흑칠 테 · 주칠 낙관) ==== */
+/* 켜짐: html.hj (기본). 밤 진영(예전 어두운 화면)은 html에 hj가 없음. 업무 모드에서는 꺼짐 */
+html.hj{
+  --bg:#E6DCC5; --panel:#F1EAD8; --panel2:#E0D3B3; --line:#A8987A;
+  --fg:#201A14; --mute:#62553F; --ink:#1B1512;
+  --bronze:#86601C; --bronze-d:#B09868; --cinnabar:#A8321F; --jade:#3F6F62;
+  --wei:#2F5D9E; --shu:#2E7D4F; --wu:#B5432B; --qun:#6B4E8C; --dong:#9C4A74; --yuan:#9A7A1E;
+  --r2:#857A68; --r3:#55706A; --r4:#7652B8; --r5:#A2781E;
+  --lac:#1B1512; --lac-fg:#F1EAD8; --lac-mute:#A89878; --lac-line:#4A3B30; --zhu-d:#5E1D12;
+  --display:"Song Myung","Noto Serif KR","Nanum Myeongjo","Batang",serif;
+  --body:"Gowun Dodum","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --num:"Hahmlet","Noto Serif KR",serif;
+  color-scheme:light;
+}
+/* 전장(전투 화면)은 그림 무대라 예전 어두운 색을 그대로 · 결과창만 다시 마지 */
+html.hj #battle{
+  --bg:#0e1716; --panel:#152220; --panel2:#1c2d2a; --line:#2a3f3a;
+  --fg:#ede5d1; --mute:#93a39b; --ink:#16120a;
+  --bronze:#d2aa55; --bronze-d:#7d6330; --cinnabar:#d0503a; --jade:#5ab596;
+  --wei:#6197d8; --shu:#5ab596; --wu:#db6a52; --qun:#ab8ed3; --dong:#cf6e98; --yuan:#d4b44e;
+  --r2:#6f7f7a; --r3:#9fb0aa; --r4:#ad90e6; --r5:#e9c66c;
+  color-scheme:dark;
+}
+html.hj #battle .bt-res{
+  --bg:#E6DCC5; --panel:#F1EAD8; --panel2:#E0D3B3; --line:#A8987A;
+  --fg:#201A14; --mute:#62553F; --ink:#1B1512;
+  --bronze:#86601C; --bronze-d:#B09868; --cinnabar:#A8321F; --jade:#3F6F62;
+  --wei:#2F5D9E; --shu:#2E7D4F; --wu:#B5432B; --qun:#6B4E8C; --dong:#9C4A74; --yuan:#9A7A1E;
+  --r2:#857A68; --r3:#55706A; --r4:#7652B8; --r5:#A2781E;
+  color-scheme:light; color:var(--fg);
+}
+html.hj body{background-color:var(--bg);background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .12 0 0 0 0 .1 0 0 0 0 .08 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.16'/%3E%3C/svg%3E")}
+html.hj .num,html.hj .coin,html.hj .stat b{font-family:var(--num);font-variant-numeric:tabular-nums}
+html.hj button:focus-visible,html.hj [tabindex]:focus-visible{outline-color:var(--cinnabar)}
+
+/* 모서리: 둥근 카드 → 각진 면(누르는 것만 2px) */
+html.hj :is(#help-q,#pwa-bar,#rt-notif .nt,#share-fallback textarea,#toast,#upd,.ad,.att-card,.banner,.banner-card,.bc-c,.bl-fil select,.brief,.bt-graph,.btn,.btn.sm,.bu,.chap,.chip,.chips button,.claim,.coin,.cpips i,.dl-pick button,.empty-state,.exn,.gc,.gf-q,.gw-map,.gw-wrap,.help-cats button,.ichip,.itm,.jpc,.labbox,.legend,.li,.lockb,.lvbox,.mv button,.mv-box,.mv-stage,.mv-tag,.mvp,.mvp-t,.nt,.nt-all,.nt-rw,.owed,.pity-hit,.pt .cnt,.res-top .stamp,.rgauge,.rt-stage,.rt-stat,.rt-top,.rtag,.rtc,.rv.x5,.rv.x5::after,.seg,.seg button,.sheet-body,.sj-cond>div,.sj-slot,.slot,.slot .pos .slv,.stamp,.stat,.stepper,.sweep-box,.tbox,.tz-bdg,.tz-cats button,.tz-cc,.tz-city,.tz-cmd button,.tz-dl button,.tz-glf button,.tz-glw,.tz-gov,.tz-inc,.tz-num button,.tz-rep li,.tz-rs select,.tz-slots button,.tz-vt button,.tz-warn,.warn,body.pc #tabs .tab,body.pc .sheet-body,button.sbar,details.fold){border-radius:2px}
+html.hj .sheet-body{border-radius:2px}
+
+/* ── 흑칠 머리 ── */
+html.hj .top{background:var(--lac);color:var(--lac-fg);padding:10px 14px 10px;margin-bottom:10px;position:relative;gap:6px}
+html.hj .top::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:6px;pointer-events:none;
+  background:linear-gradient(135deg,var(--lac) 25%,transparent 25%) 0 0/8px 6px,linear-gradient(225deg,var(--lac) 25%,transparent 25%) 0 0/8px 6px}
+html.hj .brand-hz{color:var(--lac-fg);font-size:20px}
+html.hj .brand-ko{color:var(--lac-mute)}
+html.hj .brand-ko .bk-deco{display:none}
+html.hj .top .nb,html.hj .top .hb{border-radius:0;background:transparent;border:1px solid var(--lac-line);color:var(--lac-fg)}
+html.hj .top .nb .dot{border-radius:0;border-color:var(--lac);width:8px;height:8px;top:3px;right:3px}
+html.hj .top .coin{background:transparent;border:0;border-radius:0;padding:0;color:var(--lac-fg);font-weight:500}
+html.hj .top .coin small{color:var(--lac-mute)}
+html.hj .top .sl{border-radius:0;width:20px;height:20px;background:transparent!important;border:1px solid currentColor;color:#d9c9a3;font-size:12px;font-family:"Noto Serif KR",var(--display);font-weight:900}
+html.hj .top .res{gap:14px;justify-content:flex-start}
+
+/* 징수 · 알림 줄은 얇게 */
+html.hj .claim{background:transparent;border:0;border-bottom:1px solid var(--line);padding:4px 2px 8px;margin:0 16px 6px}
+html.hj .banner{border-color:var(--line);color:var(--mute);margin:0 16px 6px}
+
+/* ── 흑칠 탭바 ── */
+html.hj .tabs{background:var(--lac);border-top:0;position:relative}
+html.hj .tabs::before{content:"";position:absolute;left:0;right:0;top:-6px;height:6px;pointer-events:none;
+  background:linear-gradient(45deg,var(--lac) 25%,transparent 25%) 0 0/8px 6px,linear-gradient(-45deg,var(--lac) 25%,transparent 25%) 0 0/8px 6px}
+html.hj .tab{color:var(--lac-mute)}
+html.hj .tab b{font-family:"Noto Serif KR",var(--display);font-weight:900;font-size:19px;width:30px;height:30px;display:grid;place-items:center}
+html.hj .tab[aria-current="true"]{color:var(--lac-fg)}
+html.hj .tab[aria-current="true"] b{background:var(--cinnabar);color:var(--lac-fg);filter:url(#hj-rough)}
+
+/* ── 제목 · 글 ── */
+html.hj h2{font-size:24px}
+html.hj h3{color:var(--mute);font-weight:700}
+
+/* ── 버튼: 칠한 면 + 찍힌 그림자 ── */
+html.hj .btn{background:var(--fg);color:var(--bg);border:1px solid var(--fg);border-radius:2px}
+html.hj .btn:not(.sm):not(.ghost):not(:disabled):active{transform:translate(2px,2px)}
+html.hj .btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--fg)}
+html.hj .btn.red{background:var(--cinnabar);color:#F6EEDC;border-color:var(--zhu-d,#5E1D12);box-shadow:3px 3px 0 var(--zhu-d,#5E1D12)}
+html.hj .btn.red:active{box-shadow:none}
+html.hj .btn.wide:not(.ghost):not(.red){box-shadow:3px 3px 0 rgba(32,26,20,.3)}
+
+/* ── 고르기 칸 ── */
+html.hj .seg{background:transparent;border:1px solid var(--fg);padding:0;gap:0}
+html.hj .seg button{border-radius:0;color:var(--mute);border-right:1px solid var(--line)}
+html.hj .seg button:last-child{border-right:0}
+html.hj .seg button[aria-pressed="true"],html.hj .seg-top button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+html.hj .seg.seg-many{gap:0;background:var(--line);border-color:var(--fg)}
+html.hj .seg.seg-many button{background:var(--panel);border:0}
+html.hj .seg.seg-many button[aria-pressed="true"]{background:var(--fg);color:var(--bg)}
+
+/* ── 면 · 카드 ── */
+html.hj .stat{background:transparent;border:1px solid var(--line)}
+html.hj .chap,html.hj .gc,html.hj .att-card,html.hj .banner-card{border-color:var(--fg)}
+html.hj .chap-h .hz{color:var(--cinnabar);font-family:"Noto Serif KR",var(--display);font-weight:900}
+html.hj .big{display:none!important}
+html.hj .chip,html.hj .rtag{border-radius:0}
+
+/* ── 낙관: 원형 → 정방형 漢印 ── */
+html.hj .seal{border-radius:2px;color:#F6EEDC;font-family:"Noto Serif KR",var(--display);font-weight:900}
+html.hj #battle .seal{color:var(--ink)}
+html.hj .seal.r5{box-shadow:0 0 0 2px var(--bg),0 0 0 3.5px var(--r5),0 0 0 5px var(--bg),0 0 0 6px var(--r5)}
+html.hj .stamp{border-radius:2px;filter:url(#hj-rough);font-family:"Noto Serif KR",var(--display);font-weight:900}
+html.hj .stamp.w{background:var(--cinnabar);color:#F6EEDC;border-color:var(--cinnabar)}
+html.hj .stamp.l{color:var(--fg);border-color:var(--fg)}
+html.hj .bt-res .stamp{width:84px;height:84px;font-size:52px;border-width:5px;transform:rotate(-5deg)}
+
+/* ── 창(시트) ── */
+html.hj #sheet{background:rgba(27,21,18,.55)}
+html.hj .sheet-body{border:1px solid var(--fg);box-shadow:4px 4px 0 rgba(27,21,18,.35)}
+html.hj .sheet-h{border-bottom:3px double var(--fg);padding-bottom:8px}
+html.hj .sheet-h .x,html.hj .x[data-close]{border-radius:0;background:transparent;border:1px solid var(--fg);color:var(--fg)}
+html.hj #toast{border-radius:2px}
+
+/* ── 결과창 ── */
+html.hj .bt-res{background:var(--bg);background-image:inherit}
+html.hj .res-card{background:transparent}
+html.hj .seg.seg-many{background:transparent;border:0;gap:4px}
+html.hj .seg.seg-many button{border:1px solid var(--line);background:var(--panel)}
+html.hj .seg.seg-many button[aria-pressed="true"]{border-color:var(--fg)}
+
+/* ── 출정 홈: 다음 전투(장 지도)를 맨 위로 ── */
+html.hj #view:has(> .seg[aria-label="출정 메뉴"] [data-stm="st"][aria-pressed="true"]){display:flex;flex-direction:column}
+html.hj #view:has(> .seg[aria-label="출정 메뉴"] [data-stm="st"][aria-pressed="true"])>*{flex-shrink:0;order:9}
+html.hj #view:has(> .seg[aria-label="출정 메뉴"] [data-stm="st"][aria-pressed="true"])>h2{order:0}
+html.hj #view:has(> .seg[aria-label="출정 메뉴"] [data-stm="st"][aria-pressed="true"])>.seg{order:1}
+html.hj #view:has(> .seg[aria-label="출정 메뉴"] [data-stm="st"][aria-pressed="true"])>.info{order:2}
+html.hj #view:has(> .seg[aria-label="출정 메뉴"] [data-stm="st"][aria-pressed="true"])>.chap{order:3}
+html.hj #view:has(> .seg[aria-label="출정 메뉴"] [data-stm="st"][aria-pressed="true"])>.chap~p.sub{order:4}
+html.hj #view:has(> .seg[aria-label="출정 메뉴"] [data-stm="st"][aria-pressed="true"])>#auto-adv{order:5;min-height:54px;font-size:17px;margin-top:10px!important}
+html.hj #view:has(> .seg[aria-label="출정 메뉴"] [data-stm="st"][aria-pressed="true"])>#auto-adv+p.sub{order:6}
+html.hj #view:has(> .seg[aria-label="출정 메뉴"] [data-stm="st"][aria-pressed="true"])>.stats{order:7}
+html.hj #view:has(> .seg[aria-label="출정 메뉴"] [data-stm="st"][aria-pressed="true"])>.row{order:8}
+html.hj .chap{background:var(--panel);border:1px solid var(--fg);box-shadow:3px 3px 0 rgba(32,26,20,.25)}
+html.hj .chap-h .hz{font-size:26px}
+html.hj .chap-h .ko{font-family:var(--display);font-weight:400;font-size:21px}
+html.hj .track i{height:0;background:none;border-top:2px dashed var(--line)}
+html.hj .track i.on{border-top:2px solid var(--fg)}
+html.hj .dot{border-radius:0;width:30px;height:30px;border:1px solid var(--fg);background:var(--bg);color:var(--fg);font-family:var(--num);font-size:13px}
+html.hj .dot.done{background:var(--fg);border-color:var(--fg);color:var(--bg)}
+html.hj .dot.next{background:var(--cinnabar);border-color:var(--zhu-d);color:#F6EEDC;box-shadow:none;filter:url(#hj-rough)}
+html.hj .dot.boss{width:36px;height:36px;font-family:"Noto Serif KR",var(--display);font-weight:900;border-style:double;border-width:3px}
+html.hj .gw-n .dot,html.hj .li .dot{width:8px;height:8px;border:0}
+
+/* ── 군웅할거 시작 화면 ── */
+html.hj .hj-slotbar{display:flex;align-items:baseline;gap:8px;width:100%;margin:8px 0 0;padding:8px 10px;border:1px dashed var(--mute);background:transparent;text-align:left;color:var(--fg)}
+html.hj .hj-slotbar span{font-size:12px;color:var(--mute)}
+html.hj .hj-slotbar small{color:var(--mute);font-size:12px}
+html.hj .hj-slotbar i{margin-left:auto;font-style:normal;font-weight:700;font-size:13px;text-decoration:underline;text-underline-offset:3px}
+html.hj .tz-slots.hj-fold{display:none}
+html:not(.hj) .hj-slotbar{display:none}
+html.hj .tz-glf{gap:0}
+html.hj .tz-glf button{border-radius:0;margin:0 -1px -1px 0;border-color:var(--fg);color:var(--fg);background:transparent}
+html.hj .tz-glf button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+html.hj .tz-scs{display:grid;grid-template-columns:repeat(6,1fr)}
+html.hj .tz-scs button{display:flex;flex-direction:column;align-items:center;line-height:1.15;padding:5px 0 4px}
+html.hj .tz-scs button b{font-family:var(--num);font-size:14px}
+html.hj .tz-scs .hj-era{font-family:"Noto Serif KR",var(--display);font-weight:600;font-size:10px;opacity:.75}
+html.hj .tz-scs [data-tzsc="rnd"]{grid-column:1/-1;padding:6px 0}
+html:not(.hj) .tz-scs .hj-era{display:none}
+html.hj .tz-start .li[data-tzf]{border:1px solid var(--fg);padding-left:0;gap:10px;overflow:hidden}
+html.hj .hj-pen{align-self:stretch;flex:none;width:28px;background:var(--pen,var(--fac));clip-path:polygon(0 0,100% 0,100% 100%,50% 84%,0 100%);display:flex;justify-content:center;padding-top:8px;font-family:"Noto Serif KR",var(--display);font-weight:900;font-size:16px;color:#F6EEDC;margin:-1px 0 -1px -1px}
+html.hj .hj-pen.two{font-size:12px;writing-mode:vertical-rl;padding-top:6px}
+html:not(.hj) .hj-pen{display:none}
+html.hj .chip.hj-dif{font-size:0!important}
+html.hj .chip.hj-dif::before{content:attr(data-hj)}
+html.hj .tz-scs .hj-y{display:none}
+html.hj .chip.hj-dif{font-family:"Noto Serif KR",var(--display);font-weight:900;width:20px;height:20px;padding:0;display:inline-grid;place-items:center;border-width:1.5px;vertical-align:2px;margin-left:4px}
+html.hj .chip.hj-dif::before{font-size:12px;font-family:"Noto Serif KR",var(--display);font-weight:900;line-height:1}
+html.hj .chip.hj-e{color:var(--jade);border-color:var(--jade)}
+html.hj .chip.hj-m{color:var(--mute);border-color:var(--mute)}
+html.hj .chip.hj-h{color:var(--cinnabar);border-color:var(--cinnabar)}
+
+/* ── QC 1차 ── */
+html.hj #battle{color:var(--fg)}
+html.hj body.pc #tabs{background:var(--lac);border-right:0}
+html.hj body.pc #tabs::before{display:none}
+html.hj body.pc #tabs .tab b{width:38px;height:38px}
+html.hj .rtag.r-guard{color:#2F5D9E}
+html.hj .rtag.r-plan{color:#6B4E8C}
+html.hj .dup i{color:#A8987A}
+html.hj .dup2{color:#7652B8}
+html.hj #battle .rtag.r-guard{color:#7fa6d6}
+html.hj #battle .rtag.r-plan{color:#b58fd6}
+html.hj #battle .dup i{color:var(--line)}
+html.hj .hj-pen.lt{color:var(--fg);box-shadow:inset -1px 0 0 var(--fg)}
+html.hj [data-gwm],html.hj .tz-mb,html.hj #gw-menu{border-radius:2px;border-color:var(--fg)}
+</style><!--/hj:css-->
 </head>
 <body>
 
@@ -3072,11 +3258,18 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='10.0.0';
+const GAME_VERSION='10.1.0';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['角',{ap:30}],['將',{gpk:10}],['選',{isk:1}],['換',{xtk:1}]];  // v9.5.0: 4·5일 룰렛 소환권 → 나팔 30 · 등용권 10
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'10.1.0',date:'2026-11-02',title:'한지 군령문 · 새 화면',reward:{ap:30},items:[
+  '화면 바탕을 밝은 마지(麻紙)로 바꾸고, 위쪽 막대와 아래 메뉴를 흑칠로 둘렀어요. 빨간 주칠은 자동 진군 · 출전처럼 꼭 누를 버튼과 도장에만 써요.',
+  '둥근 카드와 흐린 그림자 대신 각진 면과 찍힌 그림자를 써요. 둥근 도장은 한나라 관인처럼 네모 도장(勝 · 敗)으로 바뀌었어요.',
+  '출정 화면에서 다음 전투(장 지도)가 맨 위로 올라왔어요. 자동 진군 버튼과 시간당 생산은 그 아래에 있어요.',
+  '한자는 어느 기기에서나 같은 글꼴로 보이고, 숫자는 숫자 글꼴을 따로 써서 자릿수가 줄에 맞아요.',
+  '예전 어두운 화면이 좋으면 공지 창 위쪽 \'바탕\'에서 \'밤 진영\'을 고르세요. 전투 장면은 두 바탕 모두 예전 그대로예요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'10.0.0',date:'2026-10-31',title:'장수 능력치 재조정 · PC 화면 전환',items:[
   '장수 무력·지력·통솔을 다시 매겼어요. 무력 100은 여포 한 명, 지력 100은 제갈량, 통솔 100은 조조예요. 둔영·전투 능력치가 조금씩 달라질 수 있어요.',
   'PC 창 폭이 900px 이상이면 가로 화면이 돼요(1920 화면을 반으로 나눈 창도 가로로 나와요). 공지 창 위쪽 \'화면\' 버튼으로 자동·가로·세로를 고를 수 있어요.']},
@@ -5873,7 +6066,7 @@ const pastDays=n=>Array.from({length:n},(_,i)=>dayOf(Date.now()-(i+1)*DAY_MS));
 const duelReward=rank=>rank<=3?DUEL_REWARD[rank-1]:DUEL_REWARD_REST;
 /* v9.4.0 치팅 방지: 야전·토벌 기록을 seed로 다시 계산해 확인해요 (결과는 문서 id별로 저장해 한 번만 계산).
    AC_FROM(이 빌드 시각) 이전 기록은 다시 계산할 수 없어 그대로 인정, 이후 기록은 같은 버전만 인정해요. */
-const AC_FROM=1793066368911, AC_K='sg_ac1', AC_VOK=['9.4.0','9.5.0','9.5.1','9.5.2','9.6.0','9.6.1','9.6.2','9.6.3',GAME_VERSION];
+const AC_FROM=1793066368911, AC_K='sg_ac1', AC_VOK=['9.4.0','9.5.0','9.5.1','9.5.2','9.6.0','9.6.1','9.6.2','9.6.3','10.0.0',GAME_VERSION];
 let AC_C={};try{AC_C=JSON.parse(localStorage.getItem(AC_K)||'{}')||{}}catch(e){}
 let acQ=[],acBusy=false,acSaveT=null,BAT_RAW=[],PRAW={};
 const acPlain=x=>JSON.parse(JSON.stringify(x));
@@ -8754,5 +8947,20 @@ setTimeout(pwaBar,4000);
 
 boot();
 </script>
+<!--hj:js--><script>
+/* ==== v10.1.0 한지 군령문: 바탕(마지 · 밤 진영) ==== */
+const HJ_K='sambun-theme',HJ_N={hj:'마지',night:'밤 진영'};
+function hjMode(){try{return localStorage.getItem(HJ_K)==='night'?'night':'hj'}catch(e){return 'hj'}}
+function hjApply(){const r=document.documentElement,on=hjMode()==='hj'&&!r.classList.contains('work');
+  if(r.classList.contains('hj')!==on)r.classList.toggle('hj',on);
+  const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',on?'#1B1512':'#0e1716');
+  document.querySelectorAll('[data-hjt]').forEach(b=>{const a=b.dataset.hjt===hjMode();b.classList.toggle('ghost',!a);b.setAttribute('aria-pressed',a)})}
+new MutationObserver(hjApply).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
+function hjRowHtml(){const m=hjMode();return `<div class="pwa-row ly-row" role="group" aria-label="바탕"><span class="sub" style="margin:0;align-self:center;flex:none">바탕</span>${Object.entries(HJ_N).map(([k,n])=>`<button type="button" class="btn ${m===k?'':'ghost'} sm" data-hjt="${k}" aria-pressed="${m===k}">${n}</button>`).join('')}</div>`}
+if(typeof lyRowHtml==='function'){const _ly=lyRowHtml;lyRowHtml=function(){return _ly.apply(this,arguments)+hjRowHtml()}}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-hjt]');if(!t)return;try{localStorage.setItem(HJ_K,t.dataset.hjt)}catch(x){}hjApply()});
+(()=>{const add=()=>{if(document.getElementById('hj-defs'))return;document.body.insertAdjacentHTML('beforeend','<svg id="hj-defs" aria-hidden="true" style="position:absolute;width:0;height:0"><filter id="hj-rough"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="7"/><feDisplacementMap in="SourceGraphic" scale="2.2"/></filter></svg>');hjApply()};
+  document.body?add():document.addEventListener('DOMContentLoaded',add)})();
+</script><!--/hj:js-->
 </body>
 </html>
