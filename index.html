@@ -1136,7 +1136,7 @@ html.hj .hj-mvp-more summary{font:700 13px var(--body);cursor:pointer}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v10.2.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v10.3.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -3311,11 +3311,16 @@ document.addEventListener('click',e=>{
 });
 
 /* ---------------- 출석 · 공지 · 버전 ---------------- */
-const GAME_VERSION='10.2.0';
+const GAME_VERSION='10.3.0';
 // v3.7.2: 7일 주기 출석 보상 (칸 글자 · 보상)
 const ATT_RW7=[['角',{ap:50}],['將',{gpk:20}],['寶',{itk:30}],['角',{ap:30}],['將',{gpk:10}],['選',{isk:1}],['換',{xtk:1}]];  // v9.5.0: 4·5일 룰렛 소환권 → 나팔 30 · 등용권 10
 // 새 패치를 올릴 때 맨 위에 추가합니다. reward가 있는 공지는 확인 시 한 번 보상을 줍니다.
 const NOTICES=[
+ {v:'10.3.0',date:'2026-11-05',title:'장수 필터에 출혈 · 혼란 추가',reward:{ap:30},items:[
+  '장수 고르기 필터의 \'필터 더 보기 · 전법\'에 출혈 · 혼란 · 혼란 연계가 생겼어요. 둔영 자리 편성 · 연무장 장수 고르기 · 무장 탭 · 도감에서 모두 쓸 수 있어요.',
+  '출혈과 혼란은 기본 전법뿐 아니라 궁극기와 특성까지 보고 걸러요. 출혈은 감녕, 혼란은 제갈량 · 왕윤 · 초선 · 간옹 · 가후 · 이유 · 장보 · 순심이 나와요.',
+  '혼란 연계는 혼란 걸린 적에게 피해가 늘어나는 특성을 가진 장수예요. 관우 · 마초 · 황충 · 안량 · 문추 · 장합 · 고람 등을 혼란 장수와 함께 편성해 보세요.',
+  '업데이트 기념으로 나팔 30개를 드려요. 공지를 확인하면 받아요.']},
  {v:'10.2.0',date:'2026-11-02',title:'위쪽 막대 줄이기 · 등급 테두리 · MVP 정리',reward:{ap:30},items:[
   '위쪽 막대가 얇아졌어요. 징수는 금 · 군량 · 나팔 옆 \'징수\' 버튼으로 옮겼고, 버튼의 둥근 칸이 빨갛게 차오른 만큼 쌓여 있어요. 서버 알림은 게임 이름 옆 작은 표시가 되고, 누르면 내용이 나와요.',
   '등급을 ★ 대신 테두리로 보여 줘요. 3등급은 겹선, 4등급은 겹선에 석황 귀, 5등급은 석황 테에 붉은 낙관이에요. 등용 확률도 같은 견본으로 나와요.',
@@ -6622,7 +6627,7 @@ function autoDeck(){
 }
 function sortedOwned(lv){return Object.keys(S.gens).sort((a,b)=>GMAP[b].rar-GMAP[a].rar||specPower(specOf(b,lv))-specPower(specOf(a,lv)))}
 /* ---------------- 장수 고르기 공통 필터 · 정렬 (v2.0.4) ---------------- */
-const SKT={heal:'아군 회복',buff:'아군 강화',self:'자신 강화·회복',deb:'적 약화',taunt:'도발',guard:'호위',clean:'해제',ward:'전법 피해 감소',anti:'🔥화공 대비',stun:'기절',seal:'봉인',burn:'화상',aoe:'광역',multi:'연속',single:'단일'};
+const SKT={heal:'아군 회복',buff:'아군 강화',self:'자신 강화·회복',deb:'적 약화',taunt:'도발',guard:'호위',clean:'해제',ward:'전법 피해 감소',anti:'🔥화공 대비',stun:'기절',seal:'봉인',burn:'화상',bleed:'출혈',conf:'혼란',confx:'혼란 연계',aoe:'광역',multi:'연속',single:'단일'};
 const GF_SORT={power:'전투력',rar:'등급',atk:'공격',def:'방어',hp:'체력',spd:'속도',name:'이름'};
 const GF={pick:{q:'',role:'',fac:'',cls:'',rar:0,sk:'',sort:'power'},lab:{q:'',role:'',fac:'',cls:'',rar:0,sk:'',sort:'power'},gens:{q:'',role:'',fac:'',cls:'',rar:0,sk:'',st:'',sort:'rar'},dex:{q:'',role:'',fac:'',cls:'',rar:0,sk:'',own:'',bfk:'',bx:'',sort:'rar'},items:{q:''}};
 const skTagC={};
@@ -6631,6 +6636,8 @@ function skTags(id){if(skTagC[id])return skTagC[id];const s=skillOf(GMAP[id])||{
   if(s.heal&&s.heal.to!=='self')t.push('heal');if(arr(s.buff).some(b=>b.to==='all'&&up(b)))t.push('buff');if((s.heal&&s.heal.to==='self')||arr(s.buff).some(b=>b.to!=='all'&&up(b)))t.push('self');if(arr(s.deb).length)t.push('deb');
   if(s.cleanBurn||s.sealFire||arr(s.buff).some(b=>b.br))t.push('anti');if(s.taunt)t.push('taunt');if(s.guard)t.push('guard');if(s.clean)t.push('clean');if(arr(s.buff).some(b=>b.sr))t.push('ward');if(s.stun)t.push('stun');if(s.burn)t.push('burn');
   if(s.tg==='all')t.push('aoe');else if(s.tg&&s.tg!=='none')t.push((s.h||s.nt||1)>1?'multi':'single');if(s.seal||s.sealFire)t.push('seal');
+  const x3=SK3[id]||{},u3=x3.ult||{},p3=x3.pas||{};  // v10.3.0: 출혈·혼란은 궁극기·특성까지 판정 · 혼란 연계 = 혼란 걸린 적에게 추가 피해
+  if(s.bleed||u3.bleed||p3.bleed)t.push('bleed');if(s.conf||u3.conf||p3.conf||p3.confOnHit)t.push('conf');if(arr(p3.vsSt&&p3.vsSt.k).includes('conf'))t.push('confx');
   return skTagC[id]=t}
 /* v4.1.0 역할 태그: 수호·회복·맹장·책략 (전법으로 자동 판정, 애매하면 보조 태그 1개 더) */
 const ROLE={guard:{n:'수호',i:'🛡'},heal:{n:'회복',i:'🩹'},war:{n:'맹장',i:'⚔'},plan:{n:'책략',i:'📜'}};
