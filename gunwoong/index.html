@@ -1237,7 +1237,7 @@ html.hj .hj-mvp-more summary{font:700 13px var(--body);cursor:pointer}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v1.12.0</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v1.12.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -9088,8 +9088,13 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.12.0';
-const GW_NOTICES=[{v:'1.12.0',date:'2026-11-02',title:'군웅할거 v1.12.0 · 새 버전 알림 고침',items:[
+const GW_VER='1.12.1';
+const GW_NOTICES=[{v:'1.12.1',date:'2026-11-07',title:'군웅할거 v1.12.1 · 도독 이동 고침',items:[
+  '장수 플레이에서 도독이 다른 성으로 옮기면 태수 자리를 잃고 일반 장수로 바뀌면서 도독과 군단까지 사라지던 문제를 고쳤어요.',
+  '이제 도독이 군단 성으로 옮기면 그 성 태수를 맡아 도독을 이어가요. 떠난 성은 추천 장수가 태수가 되고, 원래 태수는 일반 장수로 남아요.',
+  '군단 밖 성으로 옮기면 그 자리에서 도독에서 내려와요. 이동 창에서 성마다 \'군단\' · \'도독 내려놓음\'으로 미리 알려 줘요.',
+  '업데이트 기념 나팔 30개는 본편 공지에서 받아요.']},
+ {v:'1.12.0',date:'2026-11-02',title:'군웅할거 v1.12.0 · 새 버전 알림 고침',items:[
   '앱을 열어 둔 채로 새 버전이 나오면 \'새 버전이 나왔어요\' 알림이 다시 떠요(그동안 v1.0.0에 멈춰 있었어요).',
   '본편과 같이 등급 표시가 ★ 대신 테두리로 바뀌었어요.',
   '업데이트 기념 나팔 30개는 본편 공지에서 받아요.']},
@@ -11800,6 +11805,18 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-pcdd]');if
     s.H[tzHK(g,f0)]=100;P.dd=null;if(n)tzLog(s,`군단 성 ${n}곳도 함께 들고 나왔어요 · ${tzFN(s,f0)}과(와) 원수가 됐어요`,'令');tzPcSync(s);save();renderView()}}catch(e){console.error(e)}return r}}
 {const _ps=tzPcSheet;tzPcSheet=function(a){const r=_ps.apply(this,arguments);try{const s=tzState(),D=a==='ind'&&tzPcDd(s);if(D){const p=document.querySelector('#sheet p');if(p)p.insertAdjacentHTML('afterend',`<p class="tz-pcdd" style="margin:0 0 8px">도독이라 군단 성 ${D.cs.length}곳(${D.cs.map(tzCN).join('·')})도 함께 가져가요. 충성 60 아래이거나 친밀 60 이상인 그 성 장수가 따라와요. 옛 세력과는 원수가 돼요.</p>`)}}catch(e){}return r}}
 {const _pc=tzPcClean;tzPcClean=function(x,o){const P=_pc.apply(this,arguments);const d=x&&x.dd;if(d&&Array.isArray(d.cs)){const cs=d.cs.filter(k=>TZ_C[k]).slice(0,8);if(cs.length>=2){P.dd={cs,m:PC_DDM[d.m]?d.m:'ai'};P.ap=Math.max(0,Math.min(5,Math.round(Number(x.ap)||0)))}}return P}}
+// v1.12.1: 도독이 군단 성으로 옮기면 그 성 태수를 이어받아 도독을 지켜요. 떠난 성은 추천 장수가 태수가 돼요. 군단 밖으로 가면 바로 도독에서 내려와요
+{const _mv=tzPcAct;tzPcAct=function(s,a,x){const D=a==='mov'?tzPcDd(s):null;if(!D)return _mv.apply(this,arguments);
+  const P=s.pc,g=P.g,G=s.G[g],f=G.o,k0=G.c,in_=D.cs.includes(x)&&s.C[x]&&s.C[x].o===f&&!tzHome(s,x),C0=s.C[k0];let nx='';
+  if(in_){nx=tzGensIn(s,k0,f).filter(y=>y!==g&&y!==s.F[f].lord).sort((p,q)=>tzGovSc(q)-tzGovSc(p))[0]||'';C0.gov=nx}
+  const r=_mv.apply(this,arguments);
+  try{if(G.c!==x){if(in_&&C0.gov===nx)C0.gov=g;return r}
+    if(in_){const old=tzGov(s,x);s.C[x].gov=g;tzLog(s,`도독 ${tzName(g)}이(가) ${tzCN(x)} 태수를 겸해요${old&&old!==g?` · ${tzName(old)}은(는) 태수에서 물러나요`:''}${nx?` · ${tzCN(k0)} 태수는 ${tzName(nx)}`:` · ${tzCN(k0)} 태수는 비어요`}`,'令');tzPcSync(s)}
+    else{P.dd=null;P.ap=Math.min(P.ap,3);tzLog(s,'군단 밖으로 옮겨 도독에서 내려왔어요','令');tzPcLg(s,'도독에서 내려옴')}
+    save();renderView()}catch(e){console.error(e)}return r}}
+{const _ms=tzPcSheet;tzPcSheet=function(a){const r=_ms.apply(this,arguments);try{const s=tzState(),D=a==='mov'&&tzPcDd(s);if(D){const p=document.querySelector('#sheet p.sub');
+  if(p)p.textContent=`도독은 군단 성(${D.cs.map(tzCN).join('·')})으로 옮기면 그 성 태수를 맡고 도독을 이어가요. 떠난 성은 추천 장수가 태수가 돼요. 군단 밖으로 가면 태수 · 도독 · 군단을 모두 내려놓아요. 행동 1을 써요.`;
+  document.querySelectorAll('#sheet [data-pcx^="mov|"]:not([disabled])').forEach(b=>{const x=b.dataset.pcx.split('|')[1],sp=b.querySelector('.info span');if(sp)sp.insertAdjacentHTML('beforeend',D.cs.includes(x)?' · <b style="color:var(--bronze)">군단</b>':' · 도독 내려놓음')})}}catch(e){}return r}}
 // ---- 군주제 군단 창 ----
 function tzGdSheet(){const s=tzState();if(!s||!s.on||s.me==='_')return;s.GD=s.GD||[];tzGdSync(s);const mine=tzMine(s),free=mine.filter(k=>!tzGdOf(s,k)&&!tzHome(s,k));
   const opt=(v,cur,t)=>`<option value="${v}" ${v===cur?'selected':''}>${esc(t)}</option>`;
