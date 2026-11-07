@@ -1237,7 +1237,7 @@ html.hj .hj-mvp-more summary{font:700 13px var(--body);cursor:pointer}
 
 <div id="app">
   <header class="top">
-    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v1.12.1</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
+    <div class="brand-row"><div class="brand"><span class="brand-hz">연합 삼국지</span><span class="brand-ko"><span class="bk-deco">창천토벌 · 蒼天討伐 · </span><span id="ver" role="button" tabindex="0" title="눌러서 새로고침">v1.12.2</span><button type="button" class="savest" id="save-st" aria-live="polite"></button></span></div><button type="button" class="nb" id="work-btn" aria-label="업무 모드 전환" title="업무 모드 (` 키)" aria-pressed="false">◐</button><button type="button" class="nb" id="coupon-btn" aria-label="쿠폰">券</button><button type="button" class="nb" id="notice-btn" aria-label="공지와 출석">告<i class="dot" id="notice-dot" hidden></i></button><button type="button" class="hb" data-help="" aria-label="도움말">?</button></div>
     <div class="res">
       <span class="coin" title="금"><b class="sl gold">金</b><span id="r-gold">0</span></span>
       <span class="coin" title="군량"><b class="sl food">糧</b><span id="r-food">0</span></span>
@@ -9088,8 +9088,14 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.12.1';
-const GW_NOTICES=[{v:'1.12.1',date:'2026-11-07',title:'군웅할거 v1.12.1 · 도독 이동 고침',items:[
+const GW_VER='1.12.2';
+const GW_NOTICES=[{v:'1.12.2',date:'2026-11-07',title:'군웅할거 v1.12.2 · 포로 심문 · 파괴 실패 도주',items:[
+  '장수 플레이에서 내 장수가 붙잡히면 묻지도 않고 적 세력에 들어가거나 바로 처형되던 문제를 고쳤어요.',
+  '이제 붙잡히면 포로 심문 창이 떠요. 투항(그 세력 장수가 돼요) · 뇌물(개인 금 200 + 명성×3, 성공 60~90%) · 거절(확률로 처형, 살면 명성 +10) 중에 골라요. 확률은 창에 나와요.',
+  '성 파괴에 실패해 들켜도 무력·지력이 높을수록 빠져나와요. 그래도 붙잡히면 경비병 매수(금 150, 성공 70%)로 원래 성으로 돌아갈 기회가 한 번 더 있어요.',
+  '심문에 답하기 전에는 다른 행동이나 달 넘기기를 할 수 없어요.',
+  '업데이트 기념 나팔 30개는 본편 공지에서 받아요.']},
+ {v:'1.12.1',date:'2026-11-07',title:'군웅할거 v1.12.1 · 도독 이동 고침',items:[
   '장수 플레이에서 도독이 다른 성으로 옮기면 태수 자리를 잃고 일반 장수로 바뀌면서 도독과 군단까지 사라지던 문제를 고쳤어요.',
   '이제 도독이 군단 성으로 옮기면 그 성 태수를 맡아 도독을 이어가요. 떠난 성은 추천 장수가 태수가 되고, 원래 태수는 일반 장수로 남아요.',
   '군단 밖 성으로 옮기면 그 자리에서 도독에서 내려와요. 이동 창에서 성마다 \'군단\' · \'도독 내려놓음\'으로 미리 알려 줘요.',
@@ -10420,7 +10426,7 @@ function tzPcSheet(a,pick){const s=tzState(),P=s.pc,g=P.g,G=s.G[g],k=G.c,C=s.C[k
   if(a==='gye'){const why=tzPcGyeWhy(s);if(why)return toast(why);const pre=pick&&tzPcGyeTs(s).includes(pick)?pick:'',ts=tzPcGyeTs(s).sort((a,b)=>(b===pre)-(a===pre));
     const pc=v=>`${Math.round(v*100)}%`;
     openSheet(head(`계략 · ${tzCN(k)}`)+`<p class="sub">성 금 ${fmt(C.g)}에서 200을 쓰고 행동 1을 써요. 성공하면 신뢰 +1, 할 때마다 명성 +1 · 공적 +5.</p>
-     <p class="sub" style="margin:0 0 8px">파괴는 그 성의 방어·농업·상업 중 하나를 (5 + 지력/10)쯤 깎아요. 실패하면 10% 확률로 붙잡혀요. 정찰은 성공하면 ${TZ_SCT_N}개월 동안 그 성의 '?'가 풀려요.</p>
+     <p class="sub" style="margin:0 0 8px">파괴는 그 성의 방어·농업·상업 중 하나를 (5 + 지력/10)쯤 깎아요. 실패하면 10% 확률로 들키는데, 무력·지력이 높을수록 잘 빠져나와요. 붙잡히면 경비병 매수(금 150)로 한 번 더 빠져나갈 수 있어요. 정찰은 성공하면 ${TZ_SCT_N}개월 동안 그 성의 '?'가 풀려요.</p>
      <div class="list">${ts.map(n=>{const T=s.C[n],lf=tzSeenLeft(s,n),sp=tzSabP(s,g,n),cp=tzSctP(s,g,n);
        return `<div class="li" style="display:block;border-left:4px solid ${tzCol(T.o)}${n===pre?';outline:1px solid var(--bronze)':''}"><div class="info"><b>${tzCN(n)}</b><span>${esc(tzFN(s,T.o))} · 병사 ${fmt(T.tr)} · 방어 ${T.df}${lf?` · 정찰 ${lf}달 남음`:''}</span></div>
         <div class="pc-acts" style="margin-top:6px">${Object.entries(TZ_INV).map(([st,nm])=>`<button type="button" class="pc-a" data-pcx="gye|sab|${n}|${st}">파괴 · ${nm}<small>${nm} ${lf||tzPcFacC(s,n)||st==='df'?T[st]:'?'} · 성공 ${pc(sp)}</small></button>`).join('')}<button type="button" class="pc-a" data-pcx="gye|sct|${n}">정찰<small>성공 ${pc(cp)}</small></button></div></div>`}).join('')}</div>`);return}
@@ -10575,7 +10581,7 @@ HELP.splice(Math.min(1,HELP.length),0,{t:'장수제',rows:[
   ['임무','장수는 매달 군주에게 임무를 받아요. 하면 신뢰 +6 · 공적 +15, 안 하고 달을 넘기면 신뢰 −6. 신뢰가 15보다 낮아지면 쫓겨나 재야가 돼요. 전투에서 이기면 신뢰 +3.'],
   ['행동','이동(이웃 성) · 교류(친밀 올리기 · 선물 · 재야 장수 권유) · 단련(능력치 경험, 원래 값 +10까지) · 의뢰(개인 금 · 명성) · 사관(재야) · 거병(재야 · 주인 없는 성 · 명성 40 · 금 1,000) · 내정 · 성 방침 · 독립(태수) · 하야.'],
   ['상성 · 친밀','장수마다 상성 값(삼국지8R PK 능력표 기준)이 있어서, 가까울수록 교류할 때 친밀이 많이 올라요. 군주와 상성 · 친밀이 좋으면 사관이 쉬워지고, 친밀 높은 장수는 독립 · 거병 때 따라와요.'],
-  ['전투 · 일기토','세력의 출진에 뽑히면 내 장수도 싸워요. \'일기토\'를 적극으로 두면 전투마다 먼저 일기토를 청해요. 이기면 명성 +5, 지면 붙잡힐 수 있어요. 포로가 되면 적 군주가 등용 · 해방 · 처형 중에 정해요.'],
+  ['전투 · 일기토','세력의 출진에 뽑히면 내 장수도 싸워요. \'일기토\'를 적극으로 두면 전투마다 먼저 일기토를 청해요. 이기면 명성 +5, 지면 붙잡힐 수 있어요. 포로가 되면 포로 심문 창에서 투항(등용) · 뇌물 · 거절 중에 골라요. 거절하면 확률로 처형되거나 풀려나요(창에 % 가 나와요).'],
   ['하야','장수는 세력을 떠나 재야가 될 수 있어요. 군주도 \'하야\'로 가신에게 자리를 넘기고 장수로 남거나 재야로 떠날 수 있어요(군주로 시작한 판도 돼요). 군주로 다스리다 성을 모두 잃어도 장수가 살아 있으면 재야로 이어서 해요.'],
   ['끝','장수가 죽거나(처형) · 은퇴하거나 · 내 세력이 천하를 통일하면 끝나요. 열전에 일생이 남아요. 처음 태수가 되면 금 2,000, 처음 군주가 되면 금 5,000(한 번씩).']]});
 HELP.splice(Math.min(2,HELP.length),0,{t:'사건 그림 · 음악',rows:[
@@ -11817,6 +11823,71 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-pcdd]');if
 {const _ms=tzPcSheet;tzPcSheet=function(a){const r=_ms.apply(this,arguments);try{const s=tzState(),D=a==='mov'&&tzPcDd(s);if(D){const p=document.querySelector('#sheet p.sub');
   if(p)p.textContent=`도독은 군단 성(${D.cs.map(tzCN).join('·')})으로 옮기면 그 성 태수를 맡고 도독을 이어가요. 떠난 성은 추천 장수가 태수가 돼요. 군단 밖으로 가면 태수 · 도독 · 군단을 모두 내려놓아요. 행동 1을 써요.`;
   document.querySelectorAll('#sheet [data-pcx^="mov|"]:not([disabled])').forEach(b=>{const x=b.dataset.pcx.split('|')[1],sp=b.querySelector('.info span');if(sp)sp.insertAdjacentHTML('beforeend',D.cs.includes(x)?' · <b style="color:var(--bronze)">군단</b>':' · 도독 내려놓음')})}}catch(e){}return r}}
+// v1.12.2: 장수제에서 내 장수가 붙잡히면 AI가 바로 정하지 않고 포로 심문 창(투항 · 뇌물 · 거절)을 띄워요. 파괴에 실패하면 붙잡히기 전에 도주 판정을 해요
+const tzPcqLord=(s,q)=>s.F[q.f]?s.F[q.f].lord:'';
+const tzPcqCost=s=>200+(s.pc.fm|0)*3;
+const tzPcqBP=(s,q)=>{const g=s.pc.g,L=tzPcqLord(s,q);return Math.max(.6,Math.min(.9,.6+(tzCha(g)-50)/170+((s.pc.fr[L]|0)/500)-(tzHate(s,g,q.f)<1?.15:0)))};
+const tzPcqEP=(s,q)=>{const g=s.pc.g,L=tzPcqLord(s,q);return Math.max(.3,Math.min(.6,.45+(tzHate(s,g,q.f)<1?.15:0)-(tzGiri(g)-50)/500-Math.min(.1,(s.pc.fm|0)/1000)-((s.pc.fr[L]|0)/500)))};
+const tzPcqEsc=g=>Math.max(.2,Math.min(.85,.05+tzStr(g)*.006+tzInt(g)*.002));
+const TZ_PCQ_GRD=150,TZ_PCQ_GRP=.7;
+{const _ac=tzAiCap;tzAiCap=function(s,f,g){if(tzIsPc(s,g)&&s.pc.cq&&s.pc.cq.f===f)return;return _ac.apply(this,arguments)}}
+{const _c=tzCapture;tzCapture=function(s,g,by,at){
+  if(!(s&&s.on&&!s.end&&tzIsPc(s,g)&&s.F[by]&&!s.F[by].dead&&!tzIsL(s,g)))return _c.apply(this,arguments);
+  const P=s.pc,G=s.G[g],sab=!!s._pcSab;
+  if(sab){s._pcSab=0;if(Math.random()<tzPcqEsc(g)){s._pcEsc=1;return}}
+  P.cq={f:by,k:at||G.c,t:s.t,o0:s.F[G.o]&&!s.F[G.o].dead?G.o:'',c0:G.c,it:tzItOf(s,g)||'',sab:sab?1:0,bb:0,gb:0};
+  const r=_c.apply(this,arguments);
+  if(G.o!=='cap'){P.cq=null;return r}
+  P.tk=null;P.of=null;P.pa=null;if(P.dd)P.dd=null;
+  tzLog(s,`${tzName(g)}이(가) ${tzFN(s,by)}에 붙잡혔어요 · ${tzName(s.F[by].lord)}이(가) 등용을 권해요`,'令');tzPcLg(s,`${tzCN(P.cq.k)}에서 ${tzFN(s,by)}에 붙잡힘`);return r}}
+{const _d=tzDo;tzDo=function(s,k,cmd,g,tg){if(cmd!=='sab'||!tzIsPc(s,g))return _d.apply(this,arguments);
+  s._pcSab=1;s._pcEsc=0;let r;try{r=_d.apply(this,arguments)}finally{const esc=s._pcEsc;delete s._pcSab;delete s._pcEsc;
+    if(esc&&r&&typeof r==='object'){const tk=String(tg||'').split('|')[0];r.msg=`${tzCN(tk)} 파괴 실패 · 들켰지만 ${tzName(g)}이(가) 간신히 빠져나왔어요`}}
+  return r}}
+{const _pc=tzPcClean;tzPcClean=function(x,o){const P=_pc.apply(this,arguments);const q=x&&x.cq,G=o.G&&o.G[P.g];
+  if(q&&typeof q==='object'&&G&&G.o==='cap'&&o.F[q.f]){const t=Math.max(0,Math.min(99999,Math.round(Number(q.t)||0)));
+    P.cq={f:q.f,k:TZ_C[q.k]?q.k:G.c,t,o0:o.F[q.o0]?q.o0:'',c0:TZ_C[q.c0]?q.c0:'',it:IMAP[q.it]?q.it:'',sab:q.sab?1:0,bb:q.bb?1:0,gb:q.gb?1:0}}
+  return P}}
+// 심문 답하기
+function tzPcqDo(s,act){const P=s&&s.pc,q=P&&P.cq;if(!q||s.end)return;const g=P.g,G=s.G[g],nm=tzName(g),f=q.f,FN=tzFN(s,f);let msg='',ty='';
+  const fin=()=>{P.cq=null;tzLog(s,msg,'令');tzPcSync(s);tzEnd(s);save();renderView();toast(msg);if(ty)tzEvShow([{ty,xs:[msg]}])};
+  if(G.o!=='cap'){P.cq=null;save();renderView();return}
+  if(!s.F[f]||s.F[f].dead){tzFree(s,g);msg=`${FN}이(가) 무너져 ${nm}이(가) 풀려났어요`;tzPcLg(s,'풀려남');return fin()}
+  const L=tzPcqLord(s,q);
+  if(act==='sur'){const L0=q.o0&&s.F[q.o0]&&!s.F[q.o0].dead?s.F[q.o0].lord:'';
+    Object.assign(G,{o:f,ly:55,cb:'',of:''});tzRecC(s,g,f);P.tr=40;P.fr[L]=Math.max(P.fr[L]|0,20);if(L0&&L0!==L)P.fr[L0]=Math.max(0,(P.fr[L0]|0)-20);
+    msg=`${nm}이(가) ${FN}에 투항해 ${tzName(L)}을(를) 섬겨요${L0&&L0!==L?` · ${tzName(L0)}과(와) 친밀 −20`:''}`;tzPcLg(s,`${FN}에 투항`);ty='recruit';return fin()}
+  if(act==='bri'){const c=tzPcqCost(s);if(q.bb)return toast('뇌물은 이미 건넸어요');if(P.gd<c)return toast(`개인 금이 모자라요 (금 ${fmt(c)})`);
+    P.gd-=c;const C=s.C[G.c];if(C&&C.o===f)C.g=Math.min(99999,C.g+c);
+    if(Math.random()<tzPcqBP(s,q)){const back=tzFree(s,g);msg=`${tzName(L)}에게 금 ${fmt(c)}을(를) 건네고 풀려났어요${back?` · ${tzFN(s,back)}(으)로 돌아가요`:' · 재야가 됐어요'}`;tzPcLg(s,'뇌물로 풀려남');return fin()}
+    q.bb=1;msg=`금 ${fmt(c)}을(를) 건넸지만 ${tzName(L)}이(가) 받아 주지 않았어요`;tzLog(s,msg,'令');save();renderView();toast(msg);return}
+  if(act==='grd'){if(!q.sab||q.gb)return toast('경비병 매수는 한 번만 할 수 있어요');if(P.gd<TZ_PCQ_GRD)return toast(`개인 금이 모자라요 (금 ${TZ_PCQ_GRD})`);
+    P.gd-=TZ_PCQ_GRD;
+    if(Math.random()<TZ_PCQ_GRP){const o0=q.o0;
+      if(o0&&s.F[o0]&&!s.F[o0].dead&&s.C[q.c0]&&s.C[q.c0].o===o0)Object.assign(G,{o:o0,c:q.c0,cb:'',of:''});else tzFree(s,g);
+      if(q.it&&s.I[q.it]==='t:'+f)s.I[q.it]='g:'+g;
+      msg=`경비병을 매수해 ${nm}이(가) 빠져나왔어요${s.F[G.o]?` · ${tzCN(G.c)}(으)로 돌아가요`:' · 재야가 됐어요'}`;tzPcLg(s,'경비병 매수로 탈출');return fin()}
+    q.gb=1;msg=`경비병 매수에 실패했어요 (금 ${TZ_PCQ_GRD} 잃음)`;tzLog(s,msg,'令');save();renderView();toast(msg);return}
+  if(act==='ref'){if(Math.random()<tzPcqEP(s,q)){G.o='dead';G.cb='';if(!GMAP[g].kid)s.kd.push({p:g,t:s.t+36,hd:f});
+      msg=`${nm}이(가) ${tzName(L)}의 등용을 거절하고 처형됐어요`;tzPcLg(s,`${FN}의 등용을 거절하고 처형됨 · 절개를 지킴`);ty='exec';return fin()}
+    const back=tzFree(s,g);P.fm=Math.min(999,(P.fm|0)+10);msg=`${nm}이(가) 등용을 거절했어요 · ${tzName(L)}이(가) 절개에 감탄해 풀어 줬어요 · 명성 +10${back?` · ${tzFN(s,back)}(으)로 돌아가요`:' · 재야가 됐어요'}`;
+    tzPcLg(s,'등용을 거절하고 풀려남');return fin()}}
+function tzPcqHtml(s){const P=s.pc,q=P.cq,g=P.g,f=q.f,L=tzPcqLord(s,q),pc=v=>`${Math.round(v*100)}%`,c=tzPcqCost(s);
+  const B=(a,t,sm,ok,cls)=>`<button type="button" class="pc-a${cls?' '+cls:''}" data-pcq="${a}" ${ok?'':'disabled'}>${t}<small style="white-space:normal;overflow:visible;text-overflow:clip">${sm}</small></button>`;
+  let b=B('sur','투항(등용)',`${esc(tzFN(s,f))} 장수가 돼요 · 충성 55`,1);
+  if(q.sab)b+=B('grd','경비병 매수',q.gb?'이미 해 봤어요':`금 ${TZ_PCQ_GRD} · 성공 ${pc(TZ_PCQ_GRP)} · 원래 성으로`,!q.gb&&P.gd>=TZ_PCQ_GRD);
+  b+=B('bri','뇌물',q.bb?'이미 건넸어요':`금 ${fmt(c)} · 성공 ${pc(tzPcqBP(s,q))}`,!q.bb&&P.gd>=c);
+  b+=B('ref','거절(절개)',`처형 ${pc(tzPcqEP(s,q))} · 살면 명성 +10`,1);
+  return `<div class="pc-box pc-cq" style="border-color:var(--cinnabar);display:block"><p style="margin:0 0 4px"><b>포로 심문 · ${esc(tzFN(s,f))}</b><br>${esc(tzName(g))}이(가) ${esc(tzCN(q.k))}에서 붙잡혔어요. ${esc(tzName(L))}이(가) "나를 섬기겠느냐" 하고 물어요.</p>
+   <div class="pc-acts">${b}</div><p class="sub" style="margin:0">개인 금 ${fmt(P.gd)} · 답하기 전에는 다른 행동을 하거나 달을 넘길 수 없어요. 뇌물·매수에 실패하면 금만 잃어요.</p></div>`}
+{const _v=tzPcView;tzPcView=function(s){
+  try{const P=s&&s.pc,G=P&&s.G&&s.G[P.g];if(tzPcOn(s)&&!s.end&&G.o==='cap'&&!P.cq){if(s.F[G.cb]&&!s.F[G.cb].dead)P.cq={f:G.cb,k:G.c,t:s.t,o0:'',c0:'',it:'',sab:0,bb:0,gb:0};else{tzFree(s,P.g);tzPcSync(s)}}}catch(e){console.error(e)}
+  let h=_v.apply(this,arguments);
+  try{if(tzPcOn(s)&&!s.end&&s.pc.cq){const top=tzPcTop(s),box=tzPcqHtml(s);h=h.startsWith(top)?top+box+h.slice(top.length):box+h}}catch(e){console.error(e)}
+  return h}}
+document.addEventListener('click',e=>{const s=tzState();if(!tzPcOn(s)||s.end||!s.pc.cq)return;const b=e.target.closest&&e.target.closest('[data-pc],[data-pcx],[data-pcgy],[data-pcdd]');if(!b)return;
+  if(b.dataset.pc==='life')return;e.preventDefault();e.stopImmediatePropagation();toast('포로 심문에 먼저 답해요')},true);
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-pcq]');if(!b||b.disabled)return;const s=tzState();if(!tzPcOn(s))return;tzPcqDo(s,b.dataset.pcq)});
 // ---- 군주제 군단 창 ----
 function tzGdSheet(){const s=tzState();if(!s||!s.on||s.me==='_')return;s.GD=s.GD||[];tzGdSync(s);const mine=tzMine(s),free=mine.filter(k=>!tzGdOf(s,k)&&!tzHome(s,k));
   const opt=(v,cur,t)=>`<option value="${v}" ${v===cur?'selected':''}>${esc(t)}</option>`;
