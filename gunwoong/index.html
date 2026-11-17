@@ -4462,7 +4462,7 @@ const HELP=[
   ['통일','모든 성을 차지하면 통일이에요. 시나리오마다 첫 통일 때 금·보물 선택권·공적 1위 장수 증표를 받아요.']]},
  {t:'내정',rows:[
   ['성 목록','내 성이 격자로 나와요. 民은 민심 40 아래, 糧은 군량이 석 달치도 안 남음, 叛은 태수 충성 50 아래, 蝗은 메뚜기 떼예요.'],
-  ['투자','금 300으로 농업·상업(정치)이나 방어(통솔)를 올려요. 농업은 9월 군량, 상업은 1월 금이 돼요.'],
+  ['투자','금 300으로 농업·상업(정치)이나 방어(통솔)를 올려요. 농업은 9월 군량, 상업은 매달 금이 돼요.'],
   ['시혜','군량 500으로 민심을 올려요(매력). 민심이 60을 넘으면 매달 의용군이 와요.'],
   ['태수','성마다 태수를 두면 매달 농업·상업 +(1 + 정치/25), 방어 +통솔/50, 민심 +매력/50이 저절로 올라요. 추천 버튼은 정치 + 매력×0.4 + 통솔×0.2가 가장 높은 장수를 앉혀요. 태수 없는 성에 한꺼번에 임명할 수도 있어요.'],
   ['위임','군주가 없는 성은 내정·수송·방어·공략으로 맡길 수 있어요. 위임한 성의 장수는 직접 명령할 수 없어요.'],
@@ -4497,7 +4497,7 @@ const HELP=[
   ['해방','풀어 주면 원래 세력이 몸값을 내요(군주였던 장수 2,000, 그 밖 300 + 등급×100).'],
   ['처형','그 판에서 영원히 사라지고 우리 장수 충성이 떨어져요(같은 나라 출신은 더). 3년 뒤 그 장수의 자식이 원한을 품고 재야로 나타나요.']]},
  {t:'사건',rows:[
-  ['수입','1월에 금, 9월에 군량이 들어와요. 병사는 매달 병사×4%의 군량을 먹고, 군량이 떨어지면 병사가 흩어져요.'],
+  ['수입','금은 매달, 군량은 9월에 들어와요. 장수마다 매달 급여((무력+지력+정치)/30)가 머무는 성의 금에서 나가요(군주 제외). 못 주면 그 성 장수 충성이 2 내려가요. 병사는 매달 병사×4%의 군량을 먹고, 군량이 떨어지면 병사가 흩어져요.'],
   ['풍작·대풍년','농업이 상한의 70% 이상이면 9월 군량이 최대 ×1.5예요. 가끔 대풍년으로 +30%예요.'],
   ['메뚜기 떼','6~8월에 드물게 나타나 3~4달 동안 이웃 성으로 옮겨 다니며 군량 −20% · 농업 −10%예요.'],
   ['반란','민심이 40 아래면 주민 반란으로 금·군량·병사를 잃어요. 충성 50 아래 태수는 성을 들고 독립할 수 있어요.'],
@@ -5545,7 +5545,7 @@ function tzDo(s,k,cmd,g,tg,it){const C=s.C[k],G=s.G[g],cha=tzCha(g),f=G.o,lc=tzC
   else if(cmd==='drf'){if(C.tr>=tzCap(C,'tr'))return '이 성 인구로는 더 뽑을 수 없어요';if(!pay(300))return '금이 모자라요';const v=Math.min(tzCap(C,'tr')-C.tr,Math.round(1000*(.8+cha/500)*tzR()*(tzSea(s.m)==='spring'?1.1:1)));C.tn=Math.round(C.tn*C.tr/(C.tr+v));C.tr+=v;C.ml=Math.max(0,C.ml-3);msg=`병사 +${fmt(v)}`}
   else if(cmd==='trn'){if(C.tn>=100)return '훈련이 이미 최고예요';const v=Math.round((5+tzLead(g)*.1)*tzR()*(tzIFv(s,g,'trn')||1)*tzSpM(g,'trn'));C.tn=Math.min(100,C.tn+v);msg=`훈련 +${v}`}
   else if(cmd==='sch'&&(f===s.me||tzIsPc(s,g))){const hi=tzItIn(s,'h:'+k),fr=tzGL(s).map(x=>x.id).filter(x=>s.G[x].o==='free'&&s.G[x].c===k&&!s.G[x].fd),m=[];
-    const v=Math.round(100+tzInt(g)*3+C.co/5);C.g=Math.min(99999,C.g+v);m.push(`금 +${fmt(v)}`);
+    const v=Math.round(30+tzInt(g));C.g=Math.min(99999,C.g+v);m.push(`금 +${fmt(v)}`);  // v1.13.0: 100+지력×3+상업/5 → 30+지력
     const hx=hi.length?hi[Math.floor(tzRng()*hi.length)]:'';if(hx&&tzRng()<.25+tzInt(g)/300+({3:.15,4:0,5:-.08})[IMAP[hx].rar]){s.I[hx]='t:'+f;m.push(`보물 ${IMAP[hx].name}을(를) 찾았어요!`)}
     if(fr.length&&tzRng()<.35+tzInt(g)/200){const x=fr[Math.floor(tzRng()*fr.length)];s.G[x].fd=1;s.FT=s.FT||{};s.FT[x]=s.t;m.push(`재야 장수 ${tzName(x)}을(를) 찾았어요(이번 달 등용 +15%)`);fx=x}
     msg=m.join(' · ')}
@@ -5737,26 +5737,31 @@ function tzDeleg(s){for(const k of tzMine(s)){const m=tzDlOf(s,k);if(tzDirect(m)
     if(n){const T=s.C[n],t=Math.round((C.tr-T.tr)/3);T.tn=Math.round((T.tn*T.tr+C.tn*t)/(T.tr+t));C.tr-=t;T.tr+=t;out.push(`${tzCN(n)}에 병사 ${fmt(t)} 지원`)}}
   if((m==='atk'||m==='def')&&s.C[k].o===s.me){const t=tzArmAuto(s,k);if(t)out.push(t)}if(s.C[k].o===s.me)out.push(...tzWork(s,k,m==='snd'?'dev':m));
   if(out.length)tzLog(s,`${tzCN(k)} · ${out.join(' · ')}`,'委')}}
+// v1.13.0 급여: 장수 1명당 매달 (무력+지력+정치)/30, 머무는 성 금에서 나가요(군주 제외). 못 주면 그 성 장수 충성 −2. 금 수입은 매달 연 기준액/6(연 총액 2배)
+const TZ_GM=6, tzPayOf=g=>Math.max(1,Math.round((tzStr(g)+tzInt(g)+tzPol(g))/30));
+function tzPayMap(s){const M={};tzGL(s).forEach(b=>{const G=s.G[b.id];if(!G||!s.F[G.o]||s.F[G.o].dead||s.F[G.o].lord===b.id||G.tv>0)return;const C=s.C[G.c];if(!C||C.o!==G.o)return;const p=M[G.c]||(M[G.c]={n:0,gs:[]});p.n+=tzPayOf(b.id);p.gs.push(b.id)});return M}
+const tzPayCity=(s,k)=>{const p=tzPayMap(s)[k];return p?p.n:0};
 // ---- 턴 종료 ----
 function tzTurn(s){if(s.end)return;tzRng=mulberry((s.sd+s.t*104729)>>>0);s.rep=[];
   tzDeleg(s);
   Object.keys(s.F).filter(f=>f!==s.me).forEach(f=>{if(!s.end)tzAi(s,f)});
   s.t++;s.m++;if(s.m>12){s.m=1;s.y++}
-  let vol=0,vc=0,gold=0,food=0,hv=0;
+  let vol=0,vc=0,gold=0,food=0,hv=0,sal=0,owe=0;const PAY=tzPayMap(s);
   for(const k of TZ_K){const C=s.C[k],me=C.o===s.me;
     if(C.o==='neu'){C.tr=Math.min(3500,C.tr+120);continue}
     if(!me||!tzDirect(tzDlOf(s,k)))tzAutoGov(s,k);
     const W=tzGrowth(s,k);C.fa=Math.min(tzCap(C,'fa'),C.fa+tzRR(W.fa));C.co=Math.min(tzCap(C,'co'),C.co+tzRR(W.co));C.df=Math.min(100,C.df+tzRR(W.df));
     C.ml=Math.max(0,Math.min(100,C.ml+tzRR(W.ml)));
     if(W.vol>0&&C.tr<tzCap(C,'tr')){const v=Math.min(tzCap(C,'tr')-C.tr,tzRR(W.vol));if(v>0){C.tn=Math.round(C.tn*C.tr/(C.tr+v));C.tr+=v;if(me){vol+=v;vc++}}}
-    if(s.m===1){const v=Math.round(W.gold);C.g=Math.min(99999,C.g+v);if(me)gold+=v}
+    {const v=Math.round(W.gold/TZ_GM);C.g=Math.min(99999,C.g+v);if(me)gold+=v}
+    {const p=PAY[k];if(p){const v=Math.min(C.g,p.n);C.g-=v;if(me)sal+=v;if(v<p.n){p.gs.forEach(x=>{if(!tzIsPc(s,x))s.G[x].ly=Math.max(0,s.G[x].ly-2)});if(me)owe++}}}
     if(s.m===9){const v=Math.round(W.food);C.fd=Math.min(99999,C.fd+v);if(me){food+=v;if(W.hv>1)hv++}}
     C.fd-=Math.round(C.tr*.04);if(C.fd<0){C.fd=0;C.tr=Math.round(C.tr*.9);C.ml=Math.max(0,C.ml-5);if(me)tzLog(s,`${tzCN(k)} 군량이 떨어져 병사가 흩어졌어요`,'民')}
     if(s.m===9&&tzRng()<.06){C.fd=Math.min(99999,Math.round(C.fd*1.3));if(me)tzLog(s,`${tzCN(k)} 대풍년 · 군량 +30%`,'民')}
     if(C.ml<40&&tzRng()<(40-C.ml)/100){const gv=tzGov(s,k),q=(.2+tzRng()*.1)*(1-(gv?tzLead(gv):0)/300);C.g=Math.round(C.g*(1-q));C.fd=Math.round(C.fd*(1-q));C.tr=Math.round(C.tr*.9);
       if(me)tzLog(s,`${tzCN(k)} 주민 반란 · 금·군량 −${Math.round(q*100)}% · 병사 −10%`,'民')}
     if(s.F[C.o]&&!tzHome(s,k)){const gv=tzGov(s,k);if(gv&&s.G[gv].ly<50&&!tzIsPc(s,gv)&&tzRng()<(50-s.G[gv].ly)/200)tzRebel(s,k,gv)}}
-  if(gold)tzLog(s,`1월 세금 · 금 +${fmt(gold)}`,'民');if(food)tzLog(s,`9월 수확 · 군량 +${fmt(food)}${hv?` (풍작 ${hv}성)`:''}`,'民');if(vol)tzLog(s,`의용군 ${fmt(vol)}명이 모였어요(${vc}성)`,'民');
+  if(gold||sal)tzLog(s,`세금 · 금 +${fmt(gold)}${sal?` · 급여 −${fmt(sal)}`:''}`,'民');if(owe)tzLog(s,`금이 모자라 급여를 다 못 준 성이 ${owe}곳 있어요 · 그 성 장수 충성 −2`,'民');if(food)tzLog(s,`9월 수확 · 군량 +${fmt(food)}${hv?` (풍작 ${hv}성)`:''}`,'民');if(vol)tzLog(s,`의용군 ${fmt(vol)}명이 모였어요(${vc}성)`,'民');
   tzLocust(s);if(s.m===1)tzKids(s);tzRevive(s);tzZhCheck(s);
   s.kd.filter(e=>e.t<=s.t).forEach(e=>tzBirth(s,e));s.kd=s.kd.filter(e=>e.t>s.t);
   for(const b of tzGL(s)){const G=s.G[b.id],fo=G.o,F=s.F[fo];G.ac=0;G.tr=0;if(!F||F.lord===b.id||tzIsPc(s,b.id))continue;
@@ -5790,13 +5795,13 @@ function tzHelp(s,k,key){const C=s.C[k],W=tzGrowth(s,k),g=W.g,gn=g?tzName(g):'',
     df:g?`+${tzF1(W.df)} (태수 통솔 ${tzLead(g)} → 통솔/50)`:'0 (태수가 있으면 통솔/50)',
     ml:`${W.ml>=0?'+':''}${tzF1(W.ml)} (태수 매력/50${g?' = '+tzF1(tzCha(g)/50):' · 태수 없음'}, 50 미만이면 +1, 70 넘으면 −1)`,
     tr:W.vol>0?`의용군 +${fmt(Math.round(W.vol))} (민심 60 초과 · 인구×(민심−50)/10000)`:'의용군 없음 (민심이 60을 넘으면 와요)',tn:'변화 없음 (징병·의용군이 들어오면 새 병사만큼 낮아져요)',
-    g:'1월에만 들어와요',fd:'9월에만 들어오고, 매달 병사×4%를 먹어요',pop:'변하지 않아요'}[key];
+    g:'매달 세금이 들어오고 장수 급여가 나가요',fd:'9월에만 들어오고, 매달 병사×4%를 먹어요',pop:'변하지 않아요'}[key];
   const up={fa:'투자(금 300) +12 + 정치×0.35',co:'투자(금 300) +12 + 정치×0.35',df:'투자(금 300) +4 + 통솔×0.08',ml:'시혜(군량 500) +4 + 매력×0.1 · 징병하면 −3',
-    tr:'징병(금 300) +1,000×(0.8 + 매력/500) · 수송으로 받기',tn:'훈련 +5 + 통솔×0.1',g:'상업을 올리고 민심을 높여요 · 탐색할 때마다 금(100 + 지력×3 + 상업/5)',fd:'농업을 올려요 · 수송으로 받기',pop:'-'}[key];
-  const eff={fa:`9월 군량 = (농업×12 + 인구×0.04) × 풍작 → 이 성 +${fmt(Math.round(W.food))}${W.hv>1?` (풍작 ×${tzF1(W.hv)})`:''} · 풍작은 농업이 상한의 70% 이상일 때 ×1.2, 상한이면 ×1.5 · 메뚜기 떼가 오면 농업 −10%`,co:`1월 금 = 상업×2.5 + 인구×0.006×민심/60 → 이 성 +${fmt(Math.round(W.gold))}`,
-    df:`수비 병사 체력 ×${tzF1(1+C.df/100*.3)} · 적 AI도 방어가 높은 성은 덜 노려요`,
-    ml:`60을 넘으면 매달 의용군 · 1월 금 ×민심/60 · 30 아래면 반란(병사 −15%) 위험`,tr:`매달 군량 −${fmt(Math.round(W.eat))} · 출진 때 데려갈 병사`,tn:`전투 체력 ×${tzF1(.85+C.tn/100*.3)}`,
-    g:`다음 1월 +${fmt(Math.round(W.gold))} 예정`,fd:`매달 −${fmt(Math.round(W.eat))} · 다음 9월 +${fmt(Math.round(W.food))} 예정`,pop:`농업·상업 상한 ${fmt(tzCap(C,'fa'))}(인구/100) · 병사 상한 ${fmt(tzCap(C,'tr'))}(인구×12%)`}[key];
+    tr:'징병(금 300) +1,000×(0.8 + 매력/500) · 수송으로 받기',tn:'훈련 +5 + 통솔×0.1',g:'상업을 올리고 민심을 높여요 · 탐색할 때마다 금(30 + 지력)',fd:'농업을 올려요 · 수송으로 받기',pop:'-'}[key];
+  const eff={fa:`9월 군량 = (농업×12 + 인구×0.04) × 풍작 → 이 성 +${fmt(Math.round(W.food))}${W.hv>1?` (풍작 ×${tzF1(W.hv)})`:''} · 풍작은 농업이 상한의 70% 이상일 때 ×1.2, 상한이면 ×1.5 · 메뚜기 떼가 오면 농업 −10%`,co:`매달 금 = (상업×2.5 + 인구×0.006×민심/60) ÷ 6 → 이 성 +${fmt(Math.round(W.gold/TZ_GM))}`,
+    df:`수비군이 받는 피해 −${Math.round(C.df/TZB_K.dfd*100)}% (방어 100이면 −${Math.round(100/TZB_K.dfd*100)}%) · 적 AI도 방어가 높은 성은 덜 노려요`,
+    ml:`60을 넘으면 매달 의용군 · 세금 ×민심/60 · 30 아래면 반란(병사 −15%) 위험`,tr:`매달 군량 −${fmt(Math.round(W.eat))} · 출진 때 데려갈 병사`,tn:`전투 체력 ×${tzF1(.85+C.tn/100*.3)}`,
+    g:`매달 세금 +${fmt(Math.round(W.gold/TZ_GM))} · 장수 급여 −${fmt(tzPayCity(s,k))}(장수마다 (무력+지력+정치)/30, 못 주면 충성 −2)`,fd:`매달 −${fmt(Math.round(W.eat))} · 다음 9월 +${fmt(Math.round(W.food))} 예정`,pop:`농업·상업 상한 ${fmt(tzCap(C,'fa'))}(인구/100) · 병사 상한 ${fmt(tzCap(C,'tr'))}(인구×12%)`}[key];
   const nm={fa:'농업',co:'상업',df:'방어',ml:'민심',tr:'병사',tn:'훈련',g:'금',fd:'군량',pop:'인구'}[key];
   const capT=key==='g'||key==='fd'?'99,999':key==='pop'?'-':key==='fa'||key==='co'?`${fmt(cp)} (인구/100)`:key==='tr'?`${fmt(cp)} (인구×12%)`:'100';
   openSheet(`<div class="sheet-h"><h2 style="margin:0">${tzCN(k)} · ${nm}</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
@@ -5838,7 +5843,7 @@ function tzTips(s,k){const C=s.C[k],W=tzGrowth(s,k),t=[],cap=tzCap(C,'tr');
   if(!W.g&&!tzHome(s,k))t.push('태수가 없어 이 성은 자동으로 자라지 않아요. 태수부터 두세요.');
   if(C.ml<=60&&C.tr<cap)t.push(`민심이 ${C.ml}이라 의용군이 안 들어와요. 60을 넘으면 매달 병사가 저절로 늘어요(시혜).`);
   if(C.fd<W.eat*3)t.push(`군량이 ${Math.max(0,Math.floor(C.fd/Math.max(1,W.eat)))}달 치밖에 없어요. 9월 수확 전에 바닥나면 병사가 줄어요.`);
-  if(C.g<300)t.push(`금이 ${fmt(C.g)}이라 투자·징병을 못 해요. 금은 1월에 들어와요.`);
+  if(C.g<300)t.push(`금이 ${fmt(C.g)}이라 투자·징병을 못 해요. 금은 매달 조금씩 들어와요.`);
   if(C.tr>=cap)t.push('인구 한도까지 병사가 찼어요. 더 뽑으려면 인구가 늘어야 해요.');
   if(tzFront(s,k)&&C.tn<40)t.push(`전선인데 훈련이 ${C.tn}이에요. 훈련이 낮으면 전투에서 약해요.`);
   if(C.ml<40)t.push('민심이 40 아래라 반란이 날 수 있어요.');
@@ -5857,7 +5862,7 @@ function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.
    ${tzArmLine(s,k,my||tzPcFacC(s,k))}<div class="tz-bars">${bar('tr','병사','var(--cinnabar)')}${bar('tn','훈련','var(--cinnabar)')}${bar('fa','농업','var(--jade)')}${bar('co','상업','var(--bronze)')}${bar('df','방어','#9aa3ad')}${bar('ml','민심','var(--jade)')}</div>`;
   if(my){const up=(n,v)=>v>0?`${n} <b class="up">+${tzF1(v)}</b>`:'';
     h+=`<div class="tz-inc"><span>다음 달 자동 ${[up('농업',Math.min(W.fa,tzCap(C,'fa')-C.fa)),up('상업',Math.min(W.co,tzCap(C,'co')-C.co)),up('방어',Math.min(W.df,100-C.df)),W.ml?`민심 <b class="${W.ml>0?'up':'dn'}">${W.ml>0?'+':''}${tzF1(W.ml)}</b>`:''].filter(Boolean).join(' · ')||'없음'}</span>
-     <span>의용군 <b class="up">+${fmt(Math.round(W.vol))}</b></span><span>군량 소모 <b class="dn">−${fmt(Math.round(W.eat))}</b></span><span>1월 금 <b>+${fmt(Math.round(W.gold))}</b>${W.zb?` (주 평정 +${Math.round(W.zb*100)}%)`:''}</span><span>9월 군량 <b>+${fmt(Math.round(W.food))}</b>${W.hv>1?` (풍작 ×${tzF1(W.hv)})`:''}</span></div>`}
+     <span>의용군 <b class="up">+${fmt(Math.round(W.vol))}</b></span><span>군량 소모 <b class="dn">−${fmt(Math.round(W.eat))}</b></span><span>매달 금 <b>+${fmt(Math.round(W.gold/TZ_GM))}</b>${W.zb?` (주 평정 +${Math.round(W.zb*100)}%)`:''}</span><span>급여 <b class="dn">−${fmt(tzPayCity(s,k))}</b></span><span>9월 군량 <b>+${fmt(Math.round(W.food))}</b>${W.hv>1?` (풍작 ×${tzF1(W.hv)})`:''}</span></div>`}
   {const w=[];if(s.lc&&s.lc.k===k)w.push(`蝗 메뚜기 떼가 와 있어요(${s.lc.n}달 더). 매달 군량 −20% · 농업 −10%`);if(s.lc&&s.lc.k!==k&&TZ_ADJ[k].includes(s.lc.k))w.push(`蝗 이웃 ${tzCN(s.lc.k)}에 메뚜기 떼가 있어요`);
    if(my&&gov&&!tzHome(s,k)&&s.G[gov].ly<50)w.push(`태수 ${tzName(gov)} 충성 ${s.G[gov].ly} · 50 아래면 독립할 수 있어요`);if(my&&C.ml<40)w.push(`민심 ${C.ml} · 40 아래면 주민 반란 위험`);
    if(w.length)h+=`<p class="tz-warn">${w.join('<br>')}</p>`}
@@ -5870,7 +5875,7 @@ function tzCityCard(s,k){const C=s.C[k],o=C.o,my=o===s.me,W=tzGrowth(s,k),gov=W.
      <p class="sub" style="margin:6px 0 0;font-size:12px">${!tzDirect(tzDlOf(s,k))?'위임한 성이라 장수 명령은 정찰만 할 수 있어요 · ':''}명령할 수 있는 장수 ${idle}명 · 장수마다 한 달에 명령 1개 · 금고 보물 ${tzItIn(s,'t:'+s.me).length}개</p>`}
   return h+`</div>`}
 function vTz(){const s=tzState();
-  const rule=infoP('tz','군주가 되어 한 달씩 천하를 다퉈요',`천하는 13주 ${TZ_K.length}성이에요. 1턴은 1개월이고, 장수마다 한 달에 명령 1개를 해요. 성마다 태수를 두면 저절로 자라고, 1월에 금·9월에 군량이 들어와요. 출진하면 장수마다 자기 병종 부대를 이끌고 세 국면으로 싸워요. 자세한 규칙은 도움말에 있어요.`,'margin:0')+`<button type="button" class="btn ghost sm tz-help-b" data-tzhelp>도움말</button>`;
+  const rule=infoP('tz','군주가 되어 한 달씩 천하를 다퉈요',`천하는 13주 ${TZ_K.length}성이에요. 1턴은 1개월이고, 장수마다 한 달에 명령 1개를 해요. 성마다 태수를 두면 저절로 자라고, 금은 매달·군량은 9월에 들어와요. 장수 급여는 매달 금에서 나가요. 출진하면 장수마다 자기 병종 부대를 이끌고 세 국면으로 싸워요. 자세한 규칙은 도움말에 있어요.`,'margin:0')+`<button type="button" class="btn ghost sm tz-help-b" data-tzhelp>도움말</button>`;
   if(!s.on)return `<div class="tz-start">${tzStartHtml(s,rule)}</div>`;
   let h=tzTopBar(s);const mine=tzMine(s);
   if(s.end){const R=s.end===1?tzReward(s):null;if(R)save();
@@ -5983,7 +5988,7 @@ function tzCmdSheet(c){const s=tzState(),k=tzSel;if(c==='gov')return tzGovSheet(
        <div class="row" style="gap:8px"><button type="button" class="btn ghost" style="flex:1" data-tzgo="quick" ${D.gs.length&&s.C[k].fd>=food&&tr>=300?'':'disabled'}>자동 전투</button><button type="button" class="btn red" style="flex:1" data-tzgo="watch" ${D.gs.length&&s.C[k].fd>=food&&tr>=300?'':'disabled'}>출진 · 직접 지휘</button></div>`}}
   else{let tgt='';const C=s.C[k];
     if(c==='inv'){tgt=`<h3 style="margin:8px 0 6px">투자할 곳</h3><div class="chips">${Object.entries(TZ_INV).map(([x,n])=>{const cp=tzCap(C,x);return `<button type="button" data-tzt="${x}" aria-pressed="${D.tg===x}" ${C[x]>=cp?'disabled':''}>${n} ${fmt(C[x])}/${fmt(cp)} · +${Math.round(tzInvV(x,D.g||srt[0]))}</button>`}).join('')}</div>
-      <p class="sub" style="margin:6px 0 0;font-size:12px">농업은 9월 군량(상한의 70% 넘으면 풍작), 상업은 1월 금, 방어는 수비 병사 체력에 영향을 줘요.</p>`}
+      <p class="sub" style="margin:6px 0 0;font-size:12px">농업은 9월 군량(상한의 70% 넘으면 풍작), 상업은 매달 금, 방어는 수비군이 받는 피해에 영향을 줘요.</p>`}
     else if(c==='rec'){const fr=tzGL(s).map(b=>b.id).filter(g=>s.G[g].o==='free'&&s.G[g].c===k&&s.G[g].fd);if(!fr.length)tgt='<p class="sub">이 성에서 찾은 재야 장수가 없어요. 먼저 탐색하세요.</p>';else{if(!fr.includes(D.tg))D.tg=fr[0];tgt=`<h3 style="margin:8px 0 6px">등용할 장수</h3><div class="dl-pick">${fr.map(g=>tzPickBtn(s,g,`data-tzt="${g}"`,D.tg===g)).join('')}</div>${D.g&&s.G[D.g]?(()=>{const q=tzRecP(s,D.g,D.tg,D.it||''),w=tzRecWhy(s,D.g,D.tg);return `<p style="margin:6px 0 0;font-size:13px;color:var(--mute)">${esc(tzName(D.g))}이(가) 권하면 ${esc(tzName(D.tg))} 등용 확률 <b>${tzPctTxt(q)}</b>${w?` · ${esc(w)}`:''}. 매력이 높을수록, 의리가 낮을수록 잘 돼요.</p>`})():''}`}}
     else if(c==='rwd'){const ms=tzGL(s).map(b=>b.id).filter(g=>s.G[g].o===s.me&&s.G[g].c===k&&g!==s.F[s.me].lord).sort((a,b)=>s.G[a].ly-s.G[b].ly);if(!ms.length)tgt='<p class="sub">포상할 장수가 없어요.</p>';else{if(!ms.includes(D.tg))D.tg=ms[0];tgt=`<h3 style="margin:8px 0 6px">포상할 장수</h3><div class="chips">${ms.map(g=>`<button type="button" data-tzt="${g}" aria-pressed="${D.tg===g}">${esc(tzName(g))} · 충성 ${s.G[g].ly}</button>`).join('')}</div>`}}
     else if(c==='mov'||c==='snd'){const ns=TZ_ADJ[k].filter(n=>s.C[n].o===s.me);if(!ns.length)tgt='<p class="sub">이웃한 내 성이 없어요.</p>';else{if(!ns.includes(D.tg))D.tg=ns[0];tgt=`<h3 style="margin:8px 0 6px">보낼 성</h3><div class="chips">${ns.map(n=>`<button type="button" data-tzt="${n}" aria-pressed="${D.tg===n}">${tzCN(n)}</button>`).join('')}</div>${c==='snd'?`<p class="sub" style="margin:6px 0 0;font-size:12px">금 ${fmt(Math.floor(C.g/2))} · 군량 ${fmt(Math.floor(C.fd/2))} · 병사 ${fmt(Math.floor(C.tr/2))}을(를) 보내요</p>`:''}`}}
@@ -9088,8 +9093,15 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#sheet').hidden
 
 
 // v9.9.0 군웅할거 앱: 공지(나팔 없음) · 로그인 보너스 · 본편 세이브 가져오기 · 메뉴(☰)
-const GW_VER='1.12.2';
-const GW_NOTICES=[{v:'1.12.2',date:'2026-11-07',title:'군웅할거 v1.12.2 · 포로 심문 · 파괴 실패 도주',items:[
+const GW_VER='1.13.0';
+const GW_NOTICES=[{v:'1.13.0',date:'2026-11-18',title:'군웅할거 v1.13.0 · 금 매달 받기 · 급여 · 방어도 완화',items:[
+  '금이 1월에 한꺼번에 들어오지 않고 매달 나눠 들어와요. 1년 총액은 예전의 약 2배예요.',
+  '장수 급여가 생겼어요. 장수마다 매달 (무력+지력+정치)/30의 금이 머무는 성에서 나가요(군주는 제외). 금이 모자라 못 주면 그 성 장수들의 충성이 2 내려가요. AI 세력도 똑같아요.',
+  '탐색으로 얻는 금이 100 + 지력×3 + 상업/5에서 30 + 지력으로 줄었어요. 탐색 한 번이 1년 세금의 절반씩 되던 것을 바로잡았어요.',
+  '방어도의 효과를 낮췄어요. 방어 100인 성의 수비군이 받는 피해가 −56%에서 −33%로 바뀌어, 오래 지나도 성을 빼앗을 수 있어요. 자동으로 방어가 오르는 속도는 그대로예요.',
+  '성 카드와 도움말의 금 · 방어 설명을 실제 계산과 맞게 고쳤어요.',
+  '업데이트 기념 나팔 30개는 본편 공지에서 받아요.']},
+ {v:'1.12.2',date:'2026-11-07',title:'군웅할거 v1.12.2 · 포로 심문 · 파괴 실패 도주',items:[
   '장수 플레이에서 내 장수가 붙잡히면 묻지도 않고 적 세력에 들어가거나 바로 처형되던 문제를 고쳤어요.',
   '이제 붙잡히면 포로 심문 창이 떠요. 투항(그 세력 장수가 돼요) · 뇌물(개인 금 200 + 명성×3, 성공 60~90%) · 거절(확률로 처형, 살면 명성 +10) 중에 골라요. 확률은 창에 나와요.',
   '성 파괴에 실패해 들켜도 무력·지력이 높을수록 빠져나와요. 그래도 붙잡히면 경비병 매수(금 150, 성공 70%)로 원래 성으로 돌아갈 기회가 한 번 더 있어요.',
@@ -9143,7 +9155,7 @@ const GW_NOTICES=[{v:'1.12.2',date:'2026-11-07',title:'군웅할거 v1.12.2 · �
   '헌제가 생겼어요. 헌제가 있는 성을 가진 세력이 모셔요(184·189년 낙양, 194년 장안, 200·208·219년 허창). 그 성을 빼앗으면 헌제도 넘어가요.',
   '헌제를 모시면 등용 확률 +10%, 헌제가 있는 성 민심이 매달 +1이에요. 대신 다른 세력이 꺼리고(적대 +5), 천하의 1/4만 가져도 반○○ 연합의 표적이 돼요.',
   '칙명: 6달에 한 번 토벌 칙명(다른 세력 모두가 그 세력과 적대 +15)이나 관직 수여(그 군주와 적대 −20)를 내릴 수 있어요. 메뉴 › 조정에서 해요. AI도 칙명을 써요.',
-  '칭제: 왕(7개 주)에 오르고 성이 13곳 이상이면 황제에 오를 수 있어요. 1월 세금 +10%, 장수 충성 +5. 다른 황제와는 원수, 나머지 세력 적대 +10(헌제를 폐위하면 +30)이에요.',
+  '칭제: 왕(7개 주)에 오르고 성이 13곳 이상이면 황제에 오를 수 있어요. 세금 +10%, 장수 충성 +5. 다른 황제와는 원수, 나머지 세력 적대 +10(헌제를 폐위하면 +30)이에요.',
   '연의 사건 4가지를 더했어요: 원술 칭제(손책에게서 옥새를 받으면) · 조비 수선(조조가 죽으면) · 유비 칭제 · 손권 칭제.',
   '손책이 독립한 판을 저장했다 다시 열면 손책 세력이 사라지던 문제를 고쳤어요.']},
  {v:'1.5.0',date:'2026-11-02',title:'군웅할거 v1.5.0 · 연의 사건 · 의형제',items:[
@@ -9366,7 +9378,7 @@ const TZB_TY={inf:['보병','步'],spr:['창병','槍'],arc:['궁병','弓'],cav
 const TZB_ADV={cav:'arc',spr:'cav',arc:'inf'};  // 기병 → 궁병 → 보병, 창병 → 기병
 const TZB_BASE={inf:1,spr:1,arc:1.08,cav:1.15};
 const TZB_PH=['초반','중반','후반'];
-const TZB_K={dmg:.12,m1:50,m2:25,dfd:180,brk:.3,mb:20};  // 밸런스 값: 피해율 · 사기(잃은 비율 ×m1, 차이 ×m2) · 방어 감쇠 · 무너짐(병사 비율 · 사기)
+const TZB_K={dmg:.12,m1:50,m2:25,dfd:300,brk:.3,mb:20};  // 밸런스 값: 피해율 · 사기(잃은 비율 ×m1, 차이 ×m2) · 방어 감쇠 · 무너짐(병사 비율 · 사기)
 const TZB_ACT={atk:['공격','보통으로 싸워요'],chg:['돌격·일제','기병 돌격 ×1.5 · 궁병 일제 ×1.4(통솔 70+) · 받는 피해 ×1.25'],sch:['계략','성공하면 적 사기 −15 · 실패하면 아군 사기 −5'],def:['수비','주는 피해 ×0.5 · 받는 피해 ×0.55']};
 const TZ_HORSE={xiliang:1,anding:1,tianshui:1,beiping:1,ji:1,xiangping:1,jinyang:1};  // 군마 산지: 군마 반값
 const TZB_SAFE=Object.keys(TZ_IFX).filter(id=>TZ_IFX[id][0].safe||TZ_IFX[id][0].safe1);  // 명마: 부대가 무너져도 붙잡히지 않아요
@@ -9705,7 +9717,7 @@ function tzPjJudge(s,p){const C=s.C[p.k],front=tzFront(s,p.k),cap=tzCap(C,'tr');
     case 'ben':if(C.ml>=60)return N('민심은 이미 넉넉합니다. 군량을 아끼소서.');return Y(C.ml<40?`민심이 ${C.ml}뿐이라 반란이 걱정됩니다. 꼭 승인하소서.`:'백성을 돌보면 세금과 의용군이 늘어납니다.');
     case 'rwd':{const L=s.G[p.tg];if(!L)return N('대상이 없습니다.');return L.ly<55?Y(`${tzName(p.tg)}의 충성이 ${L.ly}까지 떨어져 떠날까 걱정입니다.`):N(`${tzName(p.tg)}은(는) 충성이 ${L.ly}이니 아직 괜찮습니다.`)}
     case 'inv':{if(front&&C.tr<cap*.4)return N('전선인데 병사가 적습니다. 투자보다 병사가 먼저입니다.');if(C[p.tg]>=tzCap(C,p.tg)*.95)return N(`${TZ_INV[p.tg]}은(는) 거의 다 올랐습니다.`);
-      return Y(p.tg==='fa'?'농업을 올리면 9월 군량이 늘어납니다.':p.tg==='co'?'상업을 올리면 1월 금이 늘어납니다.':'성벽을 높여 두면 지키기 쉽습니다.')}
+      return Y(p.tg==='fa'?'농업을 올리면 9월 군량이 늘어납니다.':p.tg==='co'?'상업을 올리면 매달 금이 늘어납니다.':'성벽을 높여 두면 지키기 쉽습니다.')}
     case 'sch':{const hid=tzItIn(s,'h:'+p.k).length,fr=tzGL(s).some(b=>s.G[b.id]&&s.G[b.id].o==='free'&&s.G[b.id].c===p.k&&!s.G[b.id].fd);
       return hid||fr?Y(`${tzCN(p.k)}에 숨은 ${fr?'인재':'보물'}가 있다는 소문입니다.`):N(`${tzCN(p.k)}에는 찾을 만한 것이 없어 보입니다.`)}
     case 'rec':{const q=tzRecP(s,p.g,p.tg,'');return q>=.5?Y(`${tzName(p.tg)}은(는) 우리 쪽으로 올 만한 인물입니다.`):N(`${tzName(p.tg)}은(는) 쉽게 오지 않을 인물입니다. 다음에 다시 청하소서.`)}
@@ -11654,7 +11666,7 @@ function tzHdTick(s){if(!s||!s.on||s.end)return;if(!s.HD)return;const f=tzHdF(s)
   if(f!==s.me&&(H.cd||0)<=s.t&&tzRng()<.5){const tg=tzLiveF(s).filter(o=>o!==f&&!tzAlly(s,f,o)&&tzYAdjF(s,f,o)).sort((a,b)=>tzCities(s,b).length-tzCities(s,a).length)[0];if(tg)tzEdict(s,f,'tb',tg)}}
 function tzEmpTick(s){if(!s||!s.on||s.end)return;const E=tzEmps(s);
   for(let i=0;i<E.length;i++)for(let j=i+1;j<E.length;j++){s.H=s.H||{};const k=tzHK(E[i],E[j]);if((s.H[k]||0)<90)s.H[k]=90;tzYCut(s,E[i],E[j]);s.H[k]=Math.max(90,s.H[k])}
-  if(s.m===1)E.forEach(f=>tzCities(s,f).forEach(k=>{const C=s.C[k];C.g=Math.min(99999,C.g+Math.round(tzGrowth(s,k).gold*.1))}));
+  E.forEach(f=>tzCities(s,f).forEach(k=>{const C=s.C[k];C.g=Math.min(99999,C.g+Math.round(tzGrowth(s,k).gold/TZ_GM*.1))}));
   // AI 칭제: 헌제를 모시지 않는 왕 · 성 13곳 이상이면 달마다 5%
   tzLiveF(s).forEach(f=>{if(f===s.me||tzHdF(s)===f)return;if(tzEmpCan(s,f).ok&&tzRng()<.05)tzEmpDo(s,f,'')})}
 // 연의 사건: 원술 칭제 · 조비 수선 · 유비 칭제 · 손권 칭제
@@ -11669,11 +11681,11 @@ TZ_YY.push(
   go:(s,x,yes)=>{if(!yes)return true;const F=s.F[x.f];F.lord='caopi';s.G.caopi.ly=100;const hd=tzHdF(s)===x.f;if(hd&&!F.emp)tzEmpDo(s,x.f,'sy');else tzYLog(s,'조비 수선','조비가 조조의 뒤를 이었어요',[x.f]);return true}},
  {id:'lbe',n:'유비 칭제',p:.3,
   ok:s=>{const f=tzYLord(s,'liubei');if(!f||tzEmp(s,f)||!tzEmps(s).length||tzCities(s,f).length<6||tzHdF(s)===f)return null;return {f}},ch:(s,x)=>x.f,ai:()=>true,
-  q:(s,x)=>({t:`${tzEmps(s).map(o=>tzName(s.F[o].lord)).join('·')}이(가) 황제를 칭했어요. 신하들이 한실을 잇자고 유비에게 즉위를 청해요.`,y:'한의 황제에 오른다',no:'사양한다',yd:'황제가 돼요(1월 세금 +10%, 장수 충성 +5). 다른 황제와는 원수, 나머지 세력 적대 +10.',nd:'아무 일도 없어요.'}),
+  q:(s,x)=>({t:`${tzEmps(s).map(o=>tzName(s.F[o].lord)).join('·')}이(가) 황제를 칭했어요. 신하들이 한실을 잇자고 유비에게 즉위를 청해요.`,y:'한의 황제에 오른다',no:'사양한다',yd:'황제가 돼요(세금 +10%, 장수 충성 +5). 다른 황제와는 원수, 나머지 세력 적대 +10.',nd:'아무 일도 없어요.'}),
   go:(s,x,yes)=>{if(yes)tzEmpDo(s,x.f,'');return true}},
  {id:'sqe',n:'손권 칭제',p:.15,
   ok:s=>{const f=tzYLord(s,'sunquan');if(!f||tzEmp(s,f)||!tzEmps(s).length||tzCities(s,f).length<6||tzHdF(s)===f)return null;return {f}},ch:(s,x)=>x.f,ai:()=>true,
-  q:(s,x)=>({t:'강동의 신하들이 손권에게도 황제에 오르자고 청해요.',y:'황제에 오른다',no:'사양한다',yd:'황제가 돼요(1월 세금 +10%, 장수 충성 +5). 다른 황제와는 원수, 나머지 세력 적대 +10.',nd:'아무 일도 없어요.'}),
+  q:(s,x)=>({t:'강동의 신하들이 손권에게도 황제에 오르자고 청해요.',y:'황제에 오른다',no:'사양한다',yd:'황제가 돼요(세금 +10%, 장수 충성 +5). 다른 황제와는 원수, 나머지 세력 적대 +10.',nd:'아무 일도 없어요.'}),
   go:(s,x,yes)=>{if(yes)tzEmpDo(s,x.f,'');return true}});
 TZ_YY.forEach(e=>TZ_YYM[e.id]=e);
 // 손책 사건에서 옥새를 받으면 원술이 옥새를 가져요
@@ -11689,8 +11701,8 @@ function tzHdSheet(){const s=tzState();if(!s||!s.on)return;const H=s.HD,f=tzHdF(
     ed=cd?`<p class="sub" style="margin:6px 0">다음 칙명까지 ${cd}달</p>`:`<div class="tz-hdx">칙명은 6달에 한 번 내릴 수 있어요. 토벌 칙명은 다른 세력 모두가 그 세력과 사이가 험악해지게 하고(+15), 관직 수여는 그 군주와 사이를 누그러뜨려요(−20).</div>
      <div class="tz-hdl">${fs.map(o=>`<div class="tz-hdr"><span style="color:${tzCol(o)}">${esc(tzFN(s,o))}</span><small>성 ${tzCities(s,o).length} · ${tzRel(s,o)?esc(tzRel(s,o)[1]):''}</small><button type="button" class="btn sm red" data-tzed="tb|${o}">토벌</button><button type="button" class="btn sm ghost" data-tzed="gw|${o}">관직</button></div>`).join('')}</div>`}
   const can=me?tzEmpCan(s,me):null;
-  const emp=me?(s.F[me].emp?`<p class="tz-resb new" style="margin:6px 0">${esc(tzName(s.F[me].lord))} 황제 · 1월 세금 +10%</p>`:`<ul class="tz-hdc">${can.c.map(([t,o])=>`<li class="${o?'ok':''}">${o?'✓':'·'} ${esc(t)}</li>`).join('')}</ul>
-    <p class="sub" style="margin:4px 0 8px">황제가 되면 1월 세금 +10%, 장수 충성 +5(한 번). 다른 황제와는 원수가 되고, 나머지 세력 적대 +10${mine?' · 헌제를 모시고 있어 폐위하게 되고 적대 +30':''}.</p>
+  const emp=me?(s.F[me].emp?`<p class="tz-resb new" style="margin:6px 0">${esc(tzName(s.F[me].lord))} 황제 · 세금 +10%</p>`:`<ul class="tz-hdc">${can.c.map(([t,o])=>`<li class="${o?'ok':''}">${o?'✓':'·'} ${esc(t)}</li>`).join('')}</ul>
+    <p class="sub" style="margin:4px 0 8px">황제가 되면 세금 +10%, 장수 충성 +5(한 번). 다른 황제와는 원수가 되고, 나머지 세력 적대 +10${mine?' · 헌제를 모시고 있어 폐위하게 되고 적대 +30':''}.</p>
     <button type="button" class="btn ${can.ok?'red':'ghost'} wide" data-tzemp ${can.ok?'':'disabled'}>황제에 오르기</button>`):'<p class="sub">장수제에서는 군주만 칭제할 수 있어요.</p>';
   openSheet(`<div class="sheet-h"><h2 style="margin:0">조정</h2><button class="x" type="button" data-close aria-label="닫기">✕</button></div>
    <h3>헌제</h3><p style="margin:0 0 4px">${esc(where)}</p><p class="sub" style="margin:0">모시는 세력은 등용 확률 +10%, 헌제가 있는 성 민심 매달 +1. 대신 다른 세력이 꺼리고(적대 +5), 천하의 1/4만 가져도 반○○ 연합의 표적이 돼요.</p>${ed}
@@ -11713,7 +11725,7 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-tzhd],[dat
 // 등용 확률: 헌제를 모신 세력 +10%
 TZ_YHI.emp='帝';TZ_YHI.hd='漢';
 HELP.forEach(c=>{if(c.t==='외교·계략')c.rows.push(['헌제 · 칙명','헌제가 있는 성을 가진 세력이 헌제를 모셔요(184·189년 낙양, 194년 장안, 200·208·219년 허창). 그 성을 빼앗으면 헌제도 넘어가고, 그 성이 전선이 되면 군주가 있는 성으로 옮겨 모셔요. 모시는 세력은 등용 확률 +10% · 헌제가 있는 성 민심 매달 +1. 대신 다른 세력 적대 +5, 천하의 1/4만 가져도 반○○ 연합의 표적이 돼요. 6달에 한 번 칙명을 내려요: 토벌(다른 세력 모두가 그 세력과 적대 +15) · 관직 수여(그 군주와 적대 −20). 메뉴 › 조정에서 해요.'],
-  ['칭제','왕(7개 주)에 오르고 성이 13곳 이상이면 메뉴 › 조정에서 황제에 오를 수 있어요. 1월 세금 +10% · 장수 충성 +5(한 번). 다른 황제와는 원수(적대 90 아래로 안 내려가고 동맹 불가), 나머지 세력 적대 +10. 헌제를 모신 채 칭제하면 헌제를 폐위하고 적대 +30이에요. 연의 사건으로 원술 칭제(옥새) · 조비 수선(조조가 죽으면) · 유비 칭제 · 손권 칭제(다른 황제가 있고 성 6곳 이상)도 일어나요.'])});
+  ['칭제','왕(7개 주)에 오르고 성이 13곳 이상이면 메뉴 › 조정에서 황제에 오를 수 있어요. 세금 +10% · 장수 충성 +5(한 번). 다른 황제와는 원수(적대 90 아래로 안 내려가고 동맹 불가), 나머지 세력 적대 +10. 헌제를 모신 채 칭제하면 헌제를 폐위하고 적대 +30이에요. 연의 사건으로 원술 칭제(옥새) · 조비 수선(조조가 죽으면) · 유비 칭제 · 손권 칭제(다른 황제가 있고 성 6곳 이상)도 일어나요.'])});
 (()=>{const st=document.createElement('style');st.textContent=`
 .tz-hdl{display:flex;flex-direction:column;gap:4px;margin:4px 0 8px}.tz-hdr{display:flex;align-items:center;gap:6px}.tz-hdr span{font-weight:700;min-width:5.5em}.tz-hdr small{flex:1;color:var(--mute);font-size:12px}
 .tz-hdc{list-style:none;padding:0;margin:4px 0}.tz-hdc li{color:var(--mute);font-size:13px}.tz-hdc li.ok{color:var(--bronze)}
